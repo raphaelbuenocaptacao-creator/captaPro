@@ -62,26 +62,26 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <body>
 <div class="wrap">
   <div class="top">
+
     <div class="eagleLogo" aria-label="CaptaPro Elite">
       <svg viewBox="0 0 260 150" xmlns="http://www.w3.org/2000/svg" role="img">
         <defs>
           <linearGradient id="eg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#ffffff"/>
-            <stop offset="42%" stop-color="#ff3333"/>
+            <stop offset="0%" stop-color="#ff3333"/>
             <stop offset="100%" stop-color="#7a0000"/>
           </linearGradient>
         </defs>
-        <path d="M130 8 C99 35,63 52,9 63 C54 69,83 69,106 59 C80 85,54 100,24 109 C74 113,106 105,124 78 L130 142 L136 78 C154 105,186 113,236 109 C206 100,180 85,154 59 C177 69,206 69,251 63 C197 52,161 35,130 8Z" fill="url(#eg)"/>
-        <path d="M130 35 C117 48,109 62,102 83 L124 71 L130 119 L136 71 L158 83 C151 62,143 48,130 35Z" fill="#060606"/>
-        <path d="M110 58 L130 43 L150 58 L138 62 L130 55 L122 62Z" fill="#fff"/>
-        <circle cx="119" cy="67" r="3.2" fill="#ff3333"/><circle cx="141" cy="67" r="3.2" fill="#ff3333"/>
-        <path d="M130 72 L118 86 L142 86 Z" fill="#ff3333"/>
+        <path d="M25 88 C68 35,124 18,235 28 C183 42,151 64,130 106 C112 132,72 128,38 110 C62 105,86 93,99 74 C76 86,48 93,25 88Z" fill="url(#eg)"/>
+        <path d="M112 56 C145 39,180 33,225 31 C182 48,153 70,132 108 C126 88,119 70,112 56Z" fill="#ffffff"/>
+        <path d="M151 48 L181 39 L160 60 Z" fill="#050505"/>
+        <circle cx="164" cy="47" r="4" fill="#ff3333"/>
       </svg>
     </div>
+
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
     <div class="version">CaptaPro Elite 4.0</div>
-    <p>Dashboard Executivo • Heatmap • FIPE • Brindes • Metas • GPS</p>
+    <p>Sistema Inteligente de Captação</p>
   </div>
 
   <div id="loginBox" class="card">
@@ -90,19 +90,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
     <button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button>
     <p id="loginMsg"></p>
   </div>
-
-  <div id="eliteFeatures" class="card">
-    <h2>CaptaPro Elite 4.0</h2>
-    <div class="grid2">
-      <div class="pill">📊 Dashboard executivo com gráficos</div><div class="pill">🔥 Heatmap real no mapa</div>
-      <div class="pill">📍 Conversão por ponto e abordagem</div><div class="pill">🎁 Controle financeiro de brindes</div>
-      <div class="pill">💰 Custo por casal/profissional/ponto</div><div class="pill">🚗 FIPE automática do veículo</div>
-      <div class="pill">🎯 Metas PARK x EXTERNA</div><div class="pill">🏆 Ranking diário, semanal e mensal</div>
-      <div class="pill">🕒 Histórico completo</div><div class="pill">📡 Localização em tempo real</div>
-    </div>
-  </div>
-
-  <div id="aguardandoBox" class="card hidden"><h2>Aguardando aprovação</h2><p class="erro">Seu e-mail ainda não foi aprovado pelo gestor.</p><button onclick="location.reload()">Voltar</button></div>
+<div id="aguardandoBox" class="card hidden"><h2>Aguardando aprovação</h2><p class="erro">Seu e-mail ainda não foi aprovado pelo gestor.</p><button onclick="location.reload()">Voltar</button></div>
 
   <div id="appBox" class="hidden">
     <div class="tabs">
@@ -289,10 +277,10 @@ async function entrar(){
   if(!data){await db.from('approved_users').insert({email,name:nome,approved:false,role:'captador'});showOnlyLogin('aguardandoBox');return}
   if(!data.approved){showOnlyLogin('aguardandoBox');return}
   userRole=data.role||'captador';
-  document.getElementById('loginBox').classList.add('hidden');document.getElementById('eliteFeatures').classList.add('hidden');document.getElementById('appBox').classList.remove('hidden');
+  document.getElementById('loginBox').classList.add('hidden');document.getElementById('appBox').classList.remove('hidden');
   aplicarPermissaoVisual();gps();carregarConfig();iniciarJornadaAutomatica();setInterval(enviarLocalizacaoTempoReal,60000);
 }
-function showOnlyLogin(id){document.getElementById('loginBox').classList.add('hidden');document.getElementById('eliteFeatures').classList.add('hidden');document.getElementById(id).classList.remove('hidden')}
+function showOnlyLogin(id){document.getElementById('loginBox').classList.add('hidden');document.getElementById(id).classList.remove('hidden')}
 function aplicarPermissaoVisual(){const isAdm=['ceo','gestor','lider','líder','admin'].includes(String(userRole).toLowerCase());document.querySelectorAll('.admOnly').forEach(el=>el.style.display=isAdm?'block':'none')}
 
 function aba(id,b){
