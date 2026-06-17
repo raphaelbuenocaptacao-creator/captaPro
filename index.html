@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>CaptaPro Elite 4.1</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+<title>CaptaPro Elite 4.3</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -43,13 +46,13 @@ textarea{min-height:65px;resize:vertical}
 button.main{background:linear-gradient(135deg,var(--red),var(--red2));border:0;font-weight:900;cursor:pointer}
 button.secondary{background:#202020;border:1px solid #444}
 .rowbtn{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.hidden{display:none!important}.admOnly{display:none}
+.hidden{display:none!important}.admOnly,.promotorOnly{display:none}
 .ok{color:var(--ok);font-weight:800}.erro{color:var(--bad);font-weight:800}
 .result{padding:12px;border-radius:12px;text-align:center;font-weight:900;margin-top:8px}
 .q{background:#05381f;color:var(--ok)}.nq1{background:#3a2f03;color:var(--warn)}.nq{background:#3b0505;color:var(--bad)}
 table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #2b2b2b;padding:8px;text-align:left}th{color:#ff7777}
 .pill{display:inline-block;background:#260000;border:1px solid #5b1111;color:#ff8585;border-radius:999px;padding:5px 9px;font-size:12px;margin:2px}
-#map,#heatMap{height:430px;border-radius:14px;border:1px solid #333;overflow:hidden}
+#map{height:500px;border-radius:14px;border:1px solid #333;overflow:hidden}
 .compact input,.compact select,.compact textarea{margin:0}
 .badge{display:inline-block;border-radius:999px;padding:4px 8px;font-size:12px;background:#260000;border:1px solid #5b1111;color:#ff8585}
 .footer{text-align:center;color:#777;font-size:12px;margin:22px 0}
@@ -106,6 +109,33 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 }
 
 
+
+.filterBar{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0}
+.filterBar.four{grid-template-columns:repeat(4,1fr)}
+.filterBar.three{grid-template-columns:repeat(3,1fr)}
+.filterLabel{display:flex;flex-direction:column;gap:5px;color:#bbb;font-size:11px;font-weight:800}
+.filterLabel input,.filterLabel select{margin:0}
+.sectionNote{padding:9px 11px;border-radius:10px;background:#151515;border:1px solid #303030;color:#bbb;font-size:12px;margin:8px 0}
+.metricPositive{color:var(--ok);font-weight:900}.metricNegative{color:var(--bad);font-weight:900}.metricNeutral{color:var(--warn);font-weight:900}
+.heatWrap{overflow:auto;border:1px solid #292929;border-radius:14px;margin-top:10px}
+.heatTable{border-collapse:separate;border-spacing:4px;min-width:760px;width:max-content}
+.heatTable th{position:sticky;top:0;background:#111;z-index:2;border:0;text-align:center;min-width:48px}
+.heatTable th:first-child{left:0;z-index:3;min-width:170px;text-align:left}
+.heatTable td{border:0;padding:0;text-align:center}
+.heatName{position:sticky;left:0;background:#111!important;z-index:1;padding:9px!important;text-align:left!important;font-weight:900;min-width:170px}
+.heatCell{width:48px;height:42px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;border:1px solid rgba(255,255,255,.08)}
+.mapPing{width:14px;height:14px;border-radius:50%;background:#ef1b24;border:2px solid #fff;box-shadow:0 0 12px rgba(239,27,36,.9)}
+.projCard b{color:#00e676!important}
+.periodCompare{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.periodBox{background:#121212;border:1px solid #2d2d2d;border-radius:13px;padding:12px}
+.periodBox h3{margin-top:0}
+.chartBox{position:relative;min-height:290px}
+.chartBox canvas{max-height:340px}
+@media(max-width:900px){
+  .filterBar,.filterBar.four,.filterBar.three,.periodCompare{grid-template-columns:1fr}
+  #map{height:430px}
+}
+
 </style>
 </head>
 <body>
@@ -129,12 +159,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 4.1</div>
+    <div class="version">CaptaPro Elite 4.3 • Atualizado em 17/06/2026</div>
     <p>Sistema Inteligente de Captação</p>
   </div>
 
   <div id="loginBox" class="card">
-    <h2>Entrada</h2>
+    <h2>Entrada</h2><div class="warningBox"><b>Versão 4.3:</b> filtros por período, comparativos, Pulsador, metas diárias, rota por promotor e painel individual com projeções.</div>
     <div class="grid2"><input id="email" type="email" placeholder="Seu e-mail"><input id="captadorNome" placeholder="Seu nome completo"></div>
     <button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button>
     <p id="loginMsg"></p>
@@ -144,17 +174,20 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
   <div id="appBox" class="hidden">
     <div class="tabs">
       <button class="active" onclick="aba('pesquisa',this)">Pesquisa</button>
-      <button onclick="aba('dash',this)">Dashboard</button>
-      <button onclick="aba('heat',this)">Heatmap</button>
-      <button onclick="aba('ranking',this)">Rankings</button>
-      <button onclick="aba('brindesDash',this)">Brindes</button>
-      <button onclick="aba('metas',this)">Metas</button>
+      <button class="promotorOnly" onclick="aba('meuDesempenho',this)">Meu Desempenho</button>
+      <button class="admOnly" onclick="aba('dash',this)">Dashboard</button>
+      <button class="admOnly" onclick="aba('ranking',this)">Rankings</button>
+      <button class="admOnly" onclick="aba('comparativo',this)">Comparativo</button>
+      <button class="admOnly" onclick="aba('pulsador',this)">Pulsador</button>
+      <button class="admOnly" onclick="aba('metas',this)">Metas</button>
       <button class="admOnly" onclick="aba('mapa',this)">Mapa</button>
       <button class="admOnly" onclick="aba('salaAdmin',this)">Sala ADM</button>
-      <button onclick="aba('historico',this)">Histórico</button>
-      <button onclick="aba('profissionais',this)">Profissionais</button>
-      <button onclick="aba('ceo',this)">CEO</button>
+      <button class="admOnly" onclick="aba('historico',this)">Histórico</button>
+      <button class="admOnly" onclick="aba('profissionais',this)">Profissionais</button>
+      <button class="admOnly" onclick="aba('ceo',this)">CEO</button>
     </div>
+
+    <section id="pesquisa"
 
     <section id="pesquisa" class="card">
       <h2>Pesquisa Rápida</h2>
@@ -211,64 +244,151 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       </div>
     </section>
 
-    <section id="dash" class="card hidden">
+    <section id="dash" class="card hidden admOnly">
       <h2>Dashboard Executivo</h2>
-      <button class="main" onclick="carregarDashboard()">Atualizar Dashboard</button>
-      <div class="kpis">
-        <div class="kpi">Pesquisas<b id="kTotal">0</b></div><div class="kpi">Q<b id="kQ">0</b></div><div class="kpi">NQ<b id="kNQ">0</b></div>
-        <div class="kpi">Sala<b id="kSala">0</b></div><div class="kpi">Conversão<b id="kConv">0%</b></div><div class="kpi">Custo/Casal<b id="kCustoCasal">R$ 0</b></div>
+      <div class="filterBar">
+        <label class="filterLabel">Data inicial<input id="dashDe" type="date"></label>
+        <label class="filterLabel">Data final<input id="dashAte" type="date"></label>
+        <label class="filterLabel">Equipe<select id="dashEquipe"><option value="">Todas as equipes</option><option>PARK</option><option>EXTERNA</option></select></label>
+        <label class="filterLabel">Captador<select id="dashCaptador"><option value="">Todos os captadores</option></select></label>
+        <label class="filterLabel">&nbsp;<button class="main" onclick="carregarDashboard()">Aplicar filtros</button></label>
       </div>
-      <div class="grid2"><div class="card"><h2>Conversão por Ponto</h2><canvas id="chartPontos"></canvas></div><div class="card"><h2>Abordagens por Horário</h2><canvas id="chartHoras"></canvas></div></div>
-      <div class="grid2"><div class="card"><h2>PARK x EXTERNA</h2><canvas id="chartEquipes"></canvas></div><div class="card"><h2>Q x NQ</h2><canvas id="chartQNQ"></canvas></div></div>
+      <div id="dashResumoFiltro" class="sectionNote"></div>
+      <div class="kpis">
+        <div class="kpi">Pesquisas<b id="kTotal">0</b></div>
+        <div class="kpi">Q<b id="kQ">0</b></div>
+        <div class="kpi">NQ<b id="kNQ">0</b></div>
+        <div class="kpi">Sala<b id="kSala">0</b></div>
+        <div class="kpi">Eficiência<b id="kConv">0%</b></div>
+        <div class="kpi">Pendentes<b id="kPendentes">0</b></div>
+      </div>
+      <div class="grid2">
+        <div class="card chartBox"><h2>Conversão por Ponto</h2><canvas id="chartPontos"></canvas></div>
+        <div class="card chartBox"><h2>Abordagens por Horário</h2><canvas id="chartHoras"></canvas></div>
+      </div>
+      <div class="grid2">
+        <div class="card chartBox"><h2>PARK x EXTERNA</h2><canvas id="chartEquipes"></canvas></div>
+        <div class="card chartBox"><h2>Q x NQ</h2><canvas id="chartQNQ"></canvas></div>
+      </div>
     </section>
 
-    <section id="heat" class="card hidden">
-      <h2>Heatmap Real</h2>
-      <button class="main" onclick="carregarHeatmap()">Atualizar Heatmap</button>
-      <p class="hint">Mapa de calor por concentração de pesquisas e tabela 10h às 20h.</p>
-      <div id="heatMap"></div>
-      <div id="heatCards" class="grid" style="margin-top:10px"></div>
-    </section>
-
-    <section id="ranking" class="card hidden">
-      <h2>Rankings Diário / Semanal / Mensal</h2>
-      <div class="grid"><select id="rankingPeriodo"><option value="dia">Hoje</option><option value="semana">Semana</option><option value="mes">Mês</option><option value="todos">Todos</option></select><button class="main" onclick="carregarRanking()">Atualizar</button><span></span></div>
-      <div class="grid2"><div class="card"><h2>Top Profissionais</h2><div id="rankingCaptadores"></div></div><div class="card"><h2>Top Pontos</h2><div id="rankingPontos"></div></div></div>
+    <section id="ranking" class="card hidden admOnly">
+      <h2>Rankings por Período</h2>
+      <div class="filterBar">
+        <label class="filterLabel">Data inicial<input id="rankingDe" type="date"></label>
+        <label class="filterLabel">Data final<input id="rankingAte" type="date"></label>
+        <label class="filterLabel">Equipe<select id="rankingEquipe"><option value="">Todas as equipes</option><option>PARK</option><option>EXTERNA</option></select></label>
+        <label class="filterLabel">Captador<select id="rankingCaptadorFiltro"><option value="">Todos os captadores</option></select></label>
+        <label class="filterLabel">&nbsp;<button class="main" onclick="carregarRanking()">Aplicar filtros</button></label>
+      </div>
+      <div id="rankingResumoFiltro" class="sectionNote"></div>
+      <div class="grid2">
+        <div class="card"><h2>Top Profissionais</h2><div id="rankingCaptadores"></div></div>
+        <div class="card"><h2>Top Pontos</h2><div id="rankingPontos"></div></div>
+      </div>
       <div class="card"><h2>Equipes</h2><div id="rankingEquipes"></div></div>
     </section>
 
-    <section id="brindesDash" class="card hidden">
-      <h2>Controle Financeiro de Brindes</h2>
-      <button class="main" onclick="carregarBrindes()">Atualizar Brindes</button>
-      <div class="kpis">
-        <div class="kpi">Brindes<b id="bTotal">0</b></div><div class="kpi">Custo Total<b id="bCusto">R$ 0</b></div><div class="kpi">Custo/Casal<b id="bCustoCasal">R$ 0</b></div>
-        <div class="kpi">Custo/Sala<b id="bCustoSala">R$ 0</b></div><div class="kpi">Profissionais<b id="bProf">0</b></div><div class="kpi">Pontos<b id="bPontos">0</b></div>
+    <section id="comparativo" class="card hidden admOnly">
+      <h2>Comparativo de Períodos</h2>
+      <div class="filterBar four">
+        <label class="filterLabel">Visão<select id="comparativoVisao" onchange="atualizarAlvosComparativo()"><option value="geral">Geral</option><option value="equipe">Por equipe</option><option value="captador">Por captador</option></select></label>
+        <label class="filterLabel">Equipe ou captador<select id="comparativoAlvo" disabled><option value="">Visão geral</option></select></label>
+        <span></span>
+        <label class="filterLabel">&nbsp;<button class="main" onclick="carregarComparativo()">Comparar períodos</button></label>
       </div>
-      <div class="grid2"><div class="card"><h2>Por Brinde</h2><div id="brindesTipo"></div></div><div class="card"><h2>Por Profissional</h2><div id="brindesProfissional"></div></div></div>
-      <div class="card"><h2>Por Ponto</h2><div id="brindesPonto"></div></div>
+      <div class="periodCompare">
+        <div class="periodBox">
+          <h3>Período 1</h3>
+          <div class="grid2"><label class="filterLabel">De<input id="comp1De" type="date"></label><label class="filterLabel">Até<input id="comp1Ate" type="date"></label></div>
+        </div>
+        <div class="periodBox">
+          <h3>Período 2</h3>
+          <div class="grid2"><label class="filterLabel">De<input id="comp2De" type="date"></label><label class="filterLabel">Até<input id="comp2Ate" type="date"></label></div>
+        </div>
+      </div>
+      <div id="comparativoResumo" class="kpis" style="margin-top:10px"></div>
+      <div class="card chartBox"><h2>Período 1 x Período 2</h2><canvas id="chartComparativo"></canvas></div>
+      <div id="comparativoTabela"></div>
     </section>
 
-    <section id="metas" class="card hidden">
-      <h2>Metas PARK x EXTERNA</h2>
-      <div class="grid compact">
-        <input id="meta_park_pesquisas" placeholder="Meta PARK pesquisas"><input id="meta_park_sala" placeholder="Meta PARK sala"><input id="meta_park_q" placeholder="Meta PARK Q">
-        <input id="meta_externa_pesquisas" placeholder="Meta EXTERNA pesquisas"><input id="meta_externa_sala" placeholder="Meta EXTERNA sala"><input id="meta_externa_q" placeholder="Meta EXTERNA Q">
+    <section id="pulsador" class="card hidden admOnly">
+      <h2>Pulsador • Mapa de Calor dos Resultados</h2>
+      <div class="filterBar">
+        <label class="filterLabel">Data inicial<input id="pulsadorDe" type="date"></label>
+        <label class="filterLabel">Data final<input id="pulsadorAte" type="date"></label>
+        <label class="filterLabel">Equipe<select id="pulsadorEquipe"><option value="">Todas as equipes</option><option>PARK</option><option>EXTERNA</option></select></label>
+        <label class="filterLabel">Métrica<select id="pulsadorMetrica"><option value="pesquisas">Pesquisas</option><option value="sala">Casais em sala</option><option value="eficiencia">Eficiência</option><option value="q">Q</option></select></label>
+        <label class="filterLabel">&nbsp;<button class="main" onclick="carregarPulsador()">Atualizar Pulsador</button></label>
       </div>
-      <div class="rowbtn" style="margin-top:8px"><button class="main" onclick="salvarMetas()">Salvar Metas</button><button class="main" onclick="carregarMetas()">Atualizar</button></div>
-      <div id="metasBox" style="margin-top:10px"></div>
+      <div id="pulsadorResumo" class="sectionNote"></div>
+      <div class="card chartBox"><h2>Resultado acumulado por promotor</h2><canvas id="chartPulsador"></canvas></div>
+      <div id="pulsadorHeat" class="heatWrap"></div>
+    </section>
+
+    <section id="meuDesempenho" class="card hidden promotorOnly">
+      <h2>Meu Desempenho</h2>
+      <div class="filterBar three">
+        <label class="filterLabel">Data inicial<input id="meuDe" type="date"></label>
+        <label class="filterLabel">Data final<input id="meuAte" type="date"></label>
+        <label class="filterLabel">&nbsp;<button class="main" onclick="carregarMeuDesempenho()">Atualizar meu gráfico</button></label>
+      </div>
+      <div class="kpis">
+        <div class="kpi">Pesquisas<b id="meuPesquisas">0</b></div>
+        <div class="kpi">Sala<b id="meuSala">0</b></div>
+        <div class="kpi">Eficiência<b id="meuEficiencia">0%</b></div>
+        <div class="kpi">Q<b id="meuQ">0</b></div>
+        <div class="kpi projCard">Projeção pesquisas no mês<b id="meuProjPesq">0</b></div>
+        <div class="kpi projCard">Projeção sala no mês<b id="meuProjSala">0</b></div>
+      </div>
+      <div class="card chartBox"><h2>Minha evolução diária</h2><canvas id="chartMeuPeriodo"></canvas></div>
+      <div class="card">
+        <h2>Comparar meus períodos</h2>
+        <div class="periodCompare">
+          <div class="periodBox"><h3>Período 1</h3><div class="grid2"><label class="filterLabel">De<input id="meuComp1De" type="date"></label><label class="filterLabel">Até<input id="meuComp1Ate" type="date"></label></div></div>
+          <div class="periodBox"><h3>Período 2</h3><div class="grid2"><label class="filterLabel">De<input id="meuComp2De" type="date"></label><label class="filterLabel">Até<input id="meuComp2Ate" type="date"></label></div></div>
+        </div>
+        <button class="main" style="margin-top:8px" onclick="compararMeuDesempenho()">Comparar meus resultados</button>
+        <div id="meuComparativoResumo" class="kpis"></div>
+        <div class="chartBox"><canvas id="chartMeuComparativo"></canvas></div>
+      </div>
+    </section>
+
+    <section id="metas" class="card hidden admOnly">
+      <h2>Metas Diárias por Promotor</h2>
+      <p class="hint">Defina a meta de abordagens e de casais em sala para cada promotor em cada dia. O realizado e a eficiência são calculados automaticamente.</p>
+      <div class="filterBar">
+        <label class="filterLabel">Data da meta<input id="metaData" type="date"></label>
+        <label class="filterLabel">Promotor<select id="metaPromotor"><option value="">Selecione o promotor</option></select></label>
+        <label class="filterLabel">Meta de abordagens<input id="metaAbordagens" type="number" min="0" placeholder="Ex.: 20"></label>
+        <label class="filterLabel">Meta de sala<input id="metaSala" type="number" min="0" placeholder="Ex.: 5"></label>
+        <label class="filterLabel">&nbsp;<button class="main" onclick="salvarMetas()">Salvar meta diária</button></label>
+      </div>
+      <p id="metasMsg"></p>
+      <div class="filterBar three">
+        <label class="filterLabel">Consultar de<input id="metasDe" type="date"></label>
+        <label class="filterLabel">Consultar até<input id="metasAte" type="date"></label>
+        <label class="filterLabel">&nbsp;<button class="secondary" onclick="carregarMetas()">Atualizar resultados</button></label>
+      </div>
+      <div id="metasBox" class="tableScroll"></div>
     </section>
 
     <section id="mapa" class="card hidden admOnly">
-      <h2>Mapa e Tempo Real</h2>
-      <div class="rowbtn"><button class="main" onclick="carregarMapa(true)">Atualizar Mapa</button><button class="secondary" onclick="centralizarMapa()">Centralizar profissionais</button></div>
-      <div id="mapStatus" class="statusLine"><span class="statusDot offline"></span><span class="mini">Aguardando atualização.</span></div>
-      <div class="warningBox">O mapa atualiza continuamente enquanto o aplicativo está aberto e autorizado no celular. Com o navegador totalmente fechado, um site não consegue coletar GPS em segundo plano; nesse caso aparece a última posição e há quanto tempo ela foi enviada.</div>
-      <div class="mapLegend"><span><i class="statusDot live"></i>até 2 min</span><span><i class="statusDot recent"></i>2 a 10 min</span><span><i class="statusDot offline"></i>mais de 10 min</span></div>
+      <h2>Mapa • Rota do Promotor</h2>
+      <div class="filterBar four">
+        <label class="filterLabel">Promotor<select id="mapaPromotor"><option value="">Todos • localização atual</option></select></label>
+        <label class="filterLabel">Dia<input id="mapaData" type="date"></label>
+        <label class="filterLabel">&nbsp;<button class="main" onclick="carregarMapa(true)">Mostrar rota</button></label>
+        <label class="filterLabel">&nbsp;<button class="secondary" onclick="centralizarMapa()">Centralizar pings</button></label>
+      </div>
+      <div id="mapStatus" class="statusLine"><span class="statusDot offline"></span><span class="mini">Selecione um promotor e um dia para ver todos os horários e locais.</span></div>
+      <div class="warningBox">A rota é formada pelos registros enviados pelo celular durante o dia. Cada ping mostra horário, local e precisão aproximada. O histórico começa a ser registrado após executar o SQL da versão 4.3.</div>
+      <div class="mapLegend"><span><i class="statusDot live"></i>posição atual</span><span><i class="statusDot recent"></i>trajeto do dia</span><span><i class="statusDot offline"></i>sem atualização recente</span></div>
       <div id="map"></div>
       <div id="mapaLista" class="tableScroll" style="margin-top:10px"></div>
     </section>
 
-    <section id="salaAdmin" class="card hidden admOnly">
+    <section id="salaAdmin"<section id="salaAdmin" class="card hidden admOnly">
       <h2>Confirmação de Entrada em Sala</h2>
       <p class="hint">Depois que o captador salva a pesquisa, somente o administrador confirma se o cliente entrou ou não em sala.</p>
       <div class="grid compact">
@@ -280,15 +400,15 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       <div id="salaAdminBox" class="tableScroll"></div>
     </section>
 
-    <section id="historico" class="card hidden"><h2>Histórico Completo</h2><button class="main" onclick="carregarHistorico()">Atualizar Histórico</button><div id="historicoBox"></div></section>
+    <section id="historico" class="card hidden admOnly"><h2>Histórico Completo</h2><button class="main" onclick="carregarHistorico()">Atualizar Histórico</button><div id="historicoBox"></div></section>
 
-    <section id="profissionais" class="card hidden">
+    <section id="profissionais" class="card hidden admOnly">
       <h2>Profissionais</h2>
       <div class="grid compact"><input id="prof_nome" placeholder="Nome"><input id="prof_email" type="email" placeholder="E-mail"><select id="prof_equipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select><select id="prof_ponto"><option value="">Ponto padrão</option><option>Porta dentro do Park</option><option>Corredor</option><option>Spinassi Avenida</option><option>Fábrica Spinassi</option><option>Baden Baden</option><option>Guarda-chuvas</option><option>Igreja</option><option>Djalma</option><option>Renner</option><option>Rua Roda Gigante</option></select><select id="prof_cargo"><option>Promotor de Marketing</option><option>Líder</option><option>Gestor</option><option>CEO</option></select><select id="prof_ativo"><option value="true">Ativo</option><option value="false">Inativo</option></select></div>
       <div class="rowbtn" style="margin-top:8px"><button class="main" onclick="salvarProfissional()">Salvar Profissional</button><button class="main" onclick="carregarProfissionais()">Carregar Profissionais</button></div><p id="profMsg"></p><div id="profissionaisBox"></div>
     </section>
 
-    <section id="ceo" class="card hidden">
+    <section id="ceo" class="card hidden admOnly">
       <h2>CEO • Qualificação e Regras</h2>
       <div class="grid compact">
         <input id="cfg_renda" placeholder="Renda mínima Q" value="R$ 15.000,00"><input id="cfg_ano" placeholder="Ano mínimo carro" value="2011"><input id="cfg_idmin" placeholder="Idade mínima casal" value="25">
@@ -300,7 +420,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       <button class="main" style="margin-top:8px" onclick="salvarCEO()">Salvar CEO</button><p id="ceoMsg"></p>
     </section>
   </div>
-  <div class="footer">CaptaPro Elite 4.1 • Operação de Captação</div>
+  <div class="footer">CaptaPro Elite 4.3 • Atualizado em 17/06/2026 • Operação de Captação</div>
 </div>
 
 <script>
@@ -310,10 +430,12 @@ const db=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
 let usuarioEmail="",captadorNome="",userRole="captador",latitude=null,longitude=null,precisaoGps=null,velocidadeGps=null,direcaoGps=null;
 let jornada=null,qualificacao="NQ",motivoQualificacao="",qualificacaoCalculada=false;
-let map=null,mapMarkerLayer=null,mapBounds=null,heatMap=null,heatLayer=null;
-let chPontos=null,chHoras=null,chEquipes=null,chQNQ=null,fipeConsultas=0;
+let map=null,mapMarkerLayer=null,mapBounds=null;
+let chPontos=null,chHoras=null,chEquipes=null,chQNQ=null,chComparativo=null,chPulsador=null,chMeuPeriodo=null,chMeuComparativo=null,fipeConsultas=0;
 let gpsWatchId=null,gpsUltimoEnvio=0,gpsHeartbeat=null,mapRefreshTimer=null,locationChannel=null;
+let gpsUltimoHistorico=0,gpsUltimaLatHist=null,gpsUltimaLngHist=null,historicoGpsDisponivel=true;
 let fipePrecosAtuais=[],salaAdminDados=[],veiculoProvider='parallelum';
+let profissionaisCache=[],pesquisasCache=[];
 let cfg={renda_minima:15000,ano_carro_minimo:2011,idade_minima_casal:25,idade_minima_solo:30,idade_maxima:64,uniao_estavel_minima_anos:2,casa_propria_obrigatoria:true,cartao_credito_obrigatorio:true,profissoes_definidas_obrigatorio:true};
 let profBloq=['Operador de caixa','Zelador','Secretária','Auxiliar','Assistente','Avon/Natura/Multinível','Gari','Vendedor ambulante','Motoboy','Do lar','Estoquista','Eletricista','Diarista','Doméstica','Garçom','Manicure','Pedreiro','Atendente','Balconista','Babá','Porteiro','Frentista','Estudante','Uber/App/Freelancer'];
 
@@ -336,6 +458,7 @@ function init(){
   });
   atualizarBrindesPorQualificacao();
   carregarMarcasFipe();
+  inicializarDatasPadrao();
 }
 
 document.addEventListener('DOMContentLoaded',init);
@@ -359,6 +482,8 @@ async function entrar(){
   document.getElementById('appBox').classList.remove('hidden');
   aplicarPermissaoVisual();
   await carregarConfig();
+  await carregarListasFiltros();
+  inicializarDatasPadrao();
   iniciarRastreamentoGps();
   iniciarJornadaAutomatica();
   iniciarRealtimeLocalizacoes();
@@ -369,19 +494,23 @@ function showOnlyLogin(id){document.getElementById('loginBox').classList.add('hi
 function aplicarPermissaoVisual(){
   const adm=isAdminRole();
   document.querySelectorAll('.admOnly').forEach(el=>{el.style.display=adm?'block':'none'});
+  document.querySelectorAll('.promotorOnly').forEach(el=>{el.style.display=adm?'none':'block'});
 }
 
 function aba(id,b){
-  if(['mapa','salaAdmin'].includes(id)&&!isAdminRole())return;
-  const ids=['pesquisa','dash','heat','ranking','brindesDash','metas','mapa','salaAdmin','historico','profissionais','ceo'];
+  const adm=isAdminRole();
+  const permitidasPromotor=['pesquisa','meuDesempenho'];
+  if(!adm&&!permitidasPromotor.includes(id))return;
+  const ids=['pesquisa','meuDesempenho','dash','ranking','comparativo','pulsador','metas','mapa','salaAdmin','historico','profissionais','ceo'];
   ids.forEach(x=>document.getElementById(x)?.classList.add('hidden'));
   document.getElementById(id)?.classList.remove('hidden');
   document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
   b?.classList.add('active');
   if(id==='dash')carregarDashboard();
-  if(id==='heat')setTimeout(carregarHeatmap,150);
   if(id==='ranking')carregarRanking();
-  if(id==='brindesDash')carregarBrindes();
+  if(id==='comparativo')carregarComparativo();
+  if(id==='pulsador')carregarPulsador();
+  if(id==='meuDesempenho')carregarMeuDesempenho();
   if(id==='metas')carregarMetas();
   if(id==='mapa')setTimeout(()=>{carregarMapa(true);iniciarAtualizacaoMapa()},180);else pararAtualizacaoMapa();
   if(id==='salaAdmin')carregarSalaAdmin();
@@ -418,15 +547,47 @@ function iniciarRastreamentoGps(){
   gpsHeartbeat=setInterval(()=>enviarLocalizacaoTempoReal(true),30000);
 }
 
+function distanciaMetros(lat1,lng1,lat2,lng2){
+  if([lat1,lng1,lat2,lng2].some(v=>v===null||v===undefined))return Infinity;
+  const R=6371000,toRad=v=>v*Math.PI/180;
+  const dLat=toRad(lat2-lat1),dLng=toRad(lng2-lng1);
+  const a=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLng/2)**2;
+  return 2*R*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+async function registrarHistoricoLocalizacao(force=false){
+  if(!historicoGpsDisponivel||!usuarioEmail||latitude===null||longitude===null)return;
+  const agora=Date.now();
+  const moveu=distanciaMetros(gpsUltimaLatHist,gpsUltimaLngHist,latitude,longitude);
+  if(!force&&agora-gpsUltimoHistorico<120000&&moveu<50)return;
+  const payload={
+    user_email:usuarioEmail,captador_nome:captadorNome,
+    equipe:val('equipe')||null,ponto_captacao:val('ponto_captacao')||null,
+    latitude:Number(latitude),longitude:Number(longitude),
+    accuracy:precisaoGps===null?null:Number(precisaoGps),
+    speed:velocidadeGps===null?null:Number(velocidadeGps),
+    heading:direcaoGps===null?null:Number(direcaoGps),
+    created_at:new Date().toISOString()
+  };
+  const {error}=await db.from('localizacoes_historico').insert(payload);
+  if(error){
+    if(/relation|does not exist|schema cache/i.test(error.message||''))historicoGpsDisponivel=false;
+    console.warn('Histórico de localização indisponível:',error.message);
+    return;
+  }
+  gpsUltimoHistorico=agora;gpsUltimaLatHist=latitude;gpsUltimaLngHist=longitude;
+}
+
 async function enviarLocalizacaoTempoReal(isOnline=true){
   if(!usuarioEmail||latitude===null||longitude===null)return;
-  const base={user_email:usuarioEmail,captador_nome:captadorNome,latitude,longitude,updated_at:new Date().toISOString()};
+  const base={user_email:usuarioEmail,captador_nome:captadorNome,latitude:Number(latitude),longitude:Number(longitude),updated_at:new Date().toISOString()};
   const completo={...base,accuracy:precisaoGps,speed:velocidadeGps,heading:direcaoGps,is_online:isOnline,last_seen:new Date().toISOString()};
   let {error}=await db.from('localizacoes_tempo_real').upsert(completo,{onConflict:'user_email'});
   if(error&&/accuracy|speed|heading|is_online|last_seen|column/i.test(error.message||'')){
     ({error}=await db.from('localizacoes_tempo_real').upsert(base,{onConflict:'user_email'}));
   }
   if(error)console.warn('Falha ao enviar localização:',error.message);
+  await registrarHistoricoLocalizacao(!gpsUltimoHistorico);
 }
 
 window.addEventListener('pagehide',()=>{enviarLocalizacaoTempoReal(false)});
@@ -452,7 +613,16 @@ function formatBRLInput(el){
   if(!digits){el.value='';return}
   el.value=(Number(digits)/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 }
-function moneyNumber(s){return Number(String(s||'').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.'))||0}
+function moneyNumber(s){
+  if(typeof s==='number')return Number.isFinite(s)?s:0;
+  const limpo=String(s??'').trim().replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.');
+  const numero=Number(limpo);
+  return Number.isFinite(numero)?numero:0;
+}
+function numericOrNull(s){
+  const numero=moneyNumber(s);
+  return Number.isFinite(numero)&&numero!==0?numero:null;
+}
 function moedaBR(v){return (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
 
 function toggleOutraProfissao(){
@@ -738,8 +908,9 @@ async function salvarPesquisa(){
     jornada_id:jornada?.id||null,inicio_meeting:jornada?.inicio_meeting||new Date().toISOString(),tempo_no_ponto_minutos:tempo,
     convidado_1:val('convidado_1'),idade_1:num('idade_1'),profissao_1:profissaoFinal('profissao_1','outra_profissao_1'),
     convidado_2:val('convidado_2'),idade_2:num('idade_2'),profissao_2:profissaoFinal('profissao_2','outra_profissao_2'),
-    estado_civil:val('estado_civil'),tempo_juntos:val('tempo_juntos'),renda_casal:val('renda_casal'),renda_bruta:val('renda_bruta'),renda_liquida:val('renda_liquida'),
-    veiculo:val('veiculo'),ano_veiculo:selectedText('ano_veiculo'),marca_carro:selectedText('marca_carro'),modelo_carro:selectedText('modelo_carro'),valor_fipe:moneyNumber(val('valor_fipe_preview'))||null,
+    estado_civil:val('estado_civil'),tempo_juntos:val('tempo_juntos'),
+    renda_casal:numericOrNull(val('renda_casal')),renda_bruta:numericOrNull(val('renda_bruta')),renda_liquida:numericOrNull(val('renda_liquida')),
+    veiculo:val('veiculo'),ano_veiculo:selectedText('ano_veiculo'),marca_carro:selectedText('marca_carro'),modelo_carro:selectedText('modelo_carro'),valor_fipe:numericOrNull(val('valor_fipe_preview')),
     cartao_credito:val('cartao_credito'),casa_propria:val('casa_propria'),multipropriedade:val('multipropriedade'),onde_multipropriedade:val('onde_multipropriedade'),
     brinde:val('brinde'),custo_brinde:valorBrindeEstimado(val('brinde')),levou_sala:'Pendente',contato:val('contato'),observacoes:val('observacoes'),
     status:qualificacao,qualificacao_automatica:qualificacao,motivo_qualificacao:motivoQualificacao,latitude,longitude,
@@ -767,9 +938,9 @@ function renderFichaSalva(p){
   const cls=status.includes('1 ITEM')?'nq1':status.startsWith('NQ')?'nq':'q';
   const nomes=[p.convidado_1,p.convidado_2].filter(Boolean).join(' e ')||'Cliente';
   const rendaDetalhes=[
-    p.renda_casal?`Renda informada: ${p.renda_casal}`:'',
-    p.renda_bruta?`Bruta: ${p.renda_bruta}`:'',
-    p.renda_liquida?`Líquida: ${p.renda_liquida}`:''
+    p.renda_casal?`Renda informada: ${valorExibicaoVeiculo(p.renda_casal)}`:'',
+    p.renda_bruta?`Bruta: ${valorExibicaoVeiculo(p.renda_bruta)}`:'',
+    p.renda_liquida?`Líquida: ${valorExibicaoVeiculo(p.renda_liquida)}`:''
   ].filter(Boolean).join(' • ')||'-';
   const carro=p.veiculo==='Sim'
     ? [p.marca_carro,p.modelo_carro,p.ano_veiculo].filter(Boolean).join(' ')+' • '+valorExibicaoVeiculo(p.valor_fipe)
@@ -783,7 +954,7 @@ function renderFichaSalva(p){
           <div class="fichaIcone">CP</div>
           <div>
             <div class="fichaTitulo">Ficha Completa do Casal</div>
-            <div class="fichaSubtitulo">CaptaPro Elite 4.1 • ${escapeHtml(dataFicha)}</div>
+            <div class="fichaSubtitulo">CaptaPro Elite 4.3 • ${escapeHtml(dataFicha)}</div>
           </div>
         </div>
         <div class="fichaStatus ${cls}">${escapeHtml(status)}</div>
@@ -916,10 +1087,133 @@ async function getPesquisas(){
   return data;
 }
 
-function periodoFiltro(data){
-  const p=val('rankingPeriodo')||'todos',now=new Date();
-  return data.filter(x=>{const d=new Date(x.created_at);if(p==='dia')return d.toDateString()===now.toDateString();if(p==='semana')return(now-d)<=7*864e5;if(p==='mes')return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();return true});
+function dataLocalInput(d){
+  const x=new Date(d);
+  return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`;
 }
+
+function inicializarDatasPadrao(){
+  const hoje=new Date(),inicioMes=new Date(hoje.getFullYear(),hoje.getMonth(),1);
+  const fimMesAnterior=new Date(hoje.getFullYear(),hoje.getMonth(),0);
+  const inicioMesAnterior=new Date(fimMesAnterior.getFullYear(),fimMesAnterior.getMonth(),1);
+  const atuais=['dashDe','rankingDe','pulsadorDe','meuDe','comp1De','meuComp1De','metasDe'];
+  const finais=['dashAte','rankingAte','pulsadorAte','meuAte','comp1Ate','meuComp1Ate','metasAte'];
+  atuais.forEach(id=>{if(document.getElementById(id)&&!val(id))setVal(id,dataLocalInput(inicioMes))});
+  finais.forEach(id=>{if(document.getElementById(id)&&!val(id))setVal(id,dataLocalInput(hoje))});
+  ['comp2De','meuComp2De'].forEach(id=>{if(document.getElementById(id)&&!val(id))setVal(id,dataLocalInput(inicioMesAnterior))});
+  ['comp2Ate','meuComp2Ate'].forEach(id=>{if(document.getElementById(id)&&!val(id))setVal(id,dataLocalInput(fimMesAnterior))});
+  ['metaData','mapaData'].forEach(id=>{if(document.getElementById(id)&&!val(id))setVal(id,dataLocalInput(hoje))});
+}
+
+function limitesData(de,ate){
+  const inicio=de?new Date(`${de}T00:00:00`):new Date('2000-01-01T00:00:00');
+  const fim=ate?new Date(`${ate}T23:59:59.999`):new Date('2999-12-31T23:59:59.999');
+  return{inicio,fim};
+}
+
+function filtrarPorPeriodo(data,de,ate){
+  const {inicio,fim}=limitesData(de,ate);
+  return data.filter(x=>{const d=new Date(x.created_at);return d>=inicio&&d<=fim});
+}
+
+function filtrarDados(data,de,ate,equipe='',captador=''){
+  return filtrarPorPeriodo(data,de,ate).filter(x=>
+    (!equipe||String(x.equipe||'')===equipe)&&
+    (!captador||String(x.captador_nome||'')===captador)
+  );
+}
+
+function dadosResumo(data){
+  const total=data.length;
+  const q=data.filter(x=>(x.qualificacao_automatica||x.status)==='Q').length;
+  const nq=data.filter(x=>String(x.qualificacao_automatica||x.status).startsWith('NQ')).length;
+  const sala=data.filter(x=>x.levou_sala==='Sim').length;
+  const pendentes=data.filter(x=>!['Sim','Não'].includes(x.levou_sala)).length;
+  return{total,q,nq,sala,pendentes,eficiencia:total?sala/total*100:0};
+}
+
+function normalizarNome(v){return String(v||'').trim().toLocaleLowerCase('pt-BR')}
+
+function dadosDoUsuario(data){
+  return data.filter(x=>
+    (x.user_email&&usuarioEmail&&String(x.user_email).toLowerCase()===usuarioEmail.toLowerCase())||
+    normalizarNome(x.captador_nome)===normalizarNome(captadorNome)
+  );
+}
+
+function preencherSelect(id,itens,primeiroTexto,modo='nome'){
+  const sel=document.getElementById(id);if(!sel)return;
+  const atual=sel.value;sel.innerHTML='';
+  const inicial=document.createElement('option');inicial.value='';inicial.textContent=primeiroTexto;sel.appendChild(inicial);
+  itens.forEach(p=>{
+    const o=document.createElement('option');
+    o.value=modo==='email'?(p.email||`nome:${p.nome}`):p.nome;
+    o.textContent=p.nome+(p.equipe?` • ${p.equipe}`:'');
+    sel.appendChild(o);
+  });
+  if([...sel.options].some(o=>o.value===atual))sel.value=atual;
+}
+
+async function carregarListasFiltros(){
+  const [profResp,pesqResp]=await Promise.all([
+    db.from('profissionais').select('*').order('nome'),
+    db.from('pesquisas').select('captador_nome,user_email,equipe,created_at').order('created_at',{ascending:false}).limit(2000)
+  ]);
+  pesquisasCache=pesqResp.data||[];
+  const mapa=new Map();
+  (profResp.data||[]).filter(p=>p.ativo!==false).forEach(p=>{
+    const nome=String(p.nome||'').trim();if(!nome)return;
+    const chave=(p.email||nome).toLowerCase();
+    mapa.set(chave,{nome,email:String(p.email||'').toLowerCase(),equipe:p.equipe||''});
+  });
+  pesquisasCache.forEach(p=>{
+    const nome=String(p.captador_nome||'').trim();if(!nome)return;
+    const email=String(p.user_email||'').toLowerCase();
+    const chave=(email||nome).toLowerCase();
+    if(!mapa.has(chave))mapa.set(chave,{nome,email,equipe:p.equipe||''});
+  });
+  profissionaisCache=[...mapa.values()].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  preencherSelect('dashCaptador',profissionaisCache,'Todos os captadores');
+  preencherSelect('rankingCaptadorFiltro',profissionaisCache,'Todos os captadores');
+  preencherSelect('mapaPromotor',profissionaisCache,'Todos • localização atual','email');
+  preencherSelect('metaPromotor',profissionaisCache,'Selecione o promotor','email');
+  atualizarAlvosComparativo();
+}
+
+function resolverProfissional(valor){
+  if(!valor)return null;
+  if(valor.startsWith('nome:')){
+    const nome=valor.slice(5);
+    return profissionaisCache.find(p=>p.nome===nome)||{nome,email:'',equipe:''};
+  }
+  return profissionaisCache.find(p=>String(p.email).toLowerCase()===String(valor).toLowerCase())||null;
+}
+
+function formatarPeriodo(de,ate){
+  const f=v=>v?new Date(`${v}T00:00:00`).toLocaleDateString('pt-BR'):'-';
+  return `${f(de)} até ${f(ate)}`;
+}
+
+function agruparPorDia(data){
+  const o={};
+  data.forEach(x=>{const d=new Date(x.created_at),k=dataLocalInput(d);if(!o[k])o[k]={pesquisas:0,sala:0,q:0};o[k].pesquisas++;if(x.levou_sala==='Sim')o[k].sala++;if((x.qualificacao_automatica||x.status)==='Q')o[k].q++});
+  return o;
+}
+
+function destruirChart(chart){if(chart&&typeof chart.destroy==='function')chart.destroy()}
+
+function renderBarChartMultiplo(id,labels,datasets,chartAtual,setter){
+  destruirChart(chartAtual);
+  const canvas=document.getElementById(id);if(!canvas)return;
+  setter(new Chart(canvas,{type:'bar',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#fff'}}},scales:{x:{ticks:{color:'#ddd'},grid:{color:'#222'}},y:{beginAtZero:true,ticks:{color:'#ddd'},grid:{color:'#222'}}}}}));
+}
+
+function deltaPercentual(a,b){
+  if(Number(b)===0)return Number(a)===0?0:100;
+  return (Number(a)-Number(b))/Math.abs(Number(b))*100;
+}
+
+function classeDelta(v){return v>0?'metricPositive':v<0?'metricNegative':'metricNeutral'}
 
 function agruparMetricas(data,campo){
   const o={};
@@ -937,35 +1231,144 @@ function agrupar(data,campo){const o={};data.forEach(x=>{const k=x[campo]||'Não
 function agruparHoras(data){const o={};for(let h=10;h<=20;h++)o[String(h).padStart(2,'0')+':00']=0;data.forEach(x=>{if(o[x.horario_local]!=null)o[x.horario_local]++});return o}
 
 async function carregarDashboard(){
-  const d=await getPesquisas(),total=d.length,q=d.filter(x=>(x.qualificacao_automatica||x.status)==='Q').length,nq=d.filter(x=>String(x.qualificacao_automatica||x.status).startsWith('NQ')).length;
-  const sala=d.filter(x=>x.levou_sala==='Sim').length,custo=d.reduce((s,p)=>s+Number(p.custo_brinde||valorBrindeEstimado(p.brinde)),0);
-  set('kTotal',total);set('kQ',q);set('kNQ',nq);set('kSala',sala);set('kConv',total?Math.round(sala/total*100)+'%':'0%');set('kCustoCasal',moedaBR(custo/(total||1)));
-  draw('chartPontos',agrupar(d,'ponto_captacao'),'bar',chPontos,c=>chPontos=c);draw('chartHoras',agruparHoras(d),'line',chHoras,c=>chHoras=c);draw('chartEquipes',agrupar(d,'equipe'),'bar',chEquipes,c=>chEquipes=c);draw('chartQNQ',{'Q':q,'NQ':nq},'doughnut',chQNQ,c=>chQNQ=c);
-}
-
-async function carregarHeatmap(){
-  const d=(await getPesquisas()).filter(x=>x.latitude&&x.longitude);
-  if(!heatMap){heatMap=L.map('heatMap').setView([-22.7386,-45.5926],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(heatMap)}
-  if(heatLayer)heatMap.removeLayer(heatLayer);heatLayer=L.heatLayer(d.map(p=>[p.latitude,p.longitude,0.7]),{radius:28,blur:18,maxZoom:18}).addTo(heatMap);
-  if(d[0])heatMap.setView([d[0].latitude,d[0].longitude],15);setTimeout(()=>heatMap.invalidateSize(),100);
-  const horas=agruparHoras(d),max=Math.max(1,...Object.values(horas));document.getElementById('heatCards').innerHTML=Object.keys(horas).map(h=>`<div class="kpi" style="background:rgba(239,27,36,${.15+horas[h]/max*.75});border-color:#ff3333">${h}<b>${horas[h]}</b><span class="mini">pesquisas</span></div>`).join('');
+  const todos=await getPesquisas();
+  const d=filtrarDados(todos,val('dashDe'),val('dashAte'),val('dashEquipe'),val('dashCaptador'));
+  const r=dadosResumo(d);
+  set('kTotal',r.total);set('kQ',r.q);set('kNQ',r.nq);set('kSala',r.sala);set('kConv',r.eficiencia.toFixed(1)+'%');set('kPendentes',r.pendentes);
+  const partes=[formatarPeriodo(val('dashDe'),val('dashAte')),val('dashEquipe')||'Todas as equipes',val('dashCaptador')||'Todos os captadores'];
+  set('dashResumoFiltro',partes.join(' • '));
+  draw('chartPontos',agrupar(d,'ponto_captacao'),'bar',chPontos,c=>chPontos=c);
+  draw('chartHoras',agruparHoras(d),'line',chHoras,c=>chHoras=c);
+  draw('chartEquipes',agrupar(d,'equipe'),'bar',chEquipes,c=>chEquipes=c);
+  draw('chartQNQ',{'Q':r.q,'NQ':r.nq},'doughnut',chQNQ,c=>chQNQ=c);
 }
 
 async function carregarRanking(){
-  const d=periodoFiltro(await getPesquisas()),cols=[{key:'nome',label:'Nome'},{key:'total',label:'Pesq.'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'pendente',label:'Pend.'},{key:'conversao',label:'Conv.'},{key:'custoCasal',label:'Custo/Casal'}];
-  document.getElementById('rankingCaptadores').innerHTML=criarTabela(agruparMetricas(d,'captador_nome').slice(0,30),cols);document.getElementById('rankingPontos').innerHTML=criarTabela(agruparMetricas(d,'ponto_captacao').slice(0,30),cols);document.getElementById('rankingEquipes').innerHTML=criarTabela(agruparMetricas(d,'equipe'),cols);
+  const todos=await getPesquisas();
+  const d=filtrarDados(todos,val('rankingDe'),val('rankingAte'),val('rankingEquipe'),val('rankingCaptadorFiltro'));
+  set('rankingResumoFiltro',[formatarPeriodo(val('rankingDe'),val('rankingAte')),val('rankingEquipe')||'Todas as equipes',val('rankingCaptadorFiltro')||'Todos os captadores'].join(' • '));
+  const cols=[{key:'nome',label:'Nome'},{key:'total',label:'Pesquisas'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'pendente',label:'Pend.'},{key:'conversao',label:'Eficiência'}];
+  document.getElementById('rankingCaptadores').innerHTML=criarTabela(agruparMetricas(d,'captador_nome').slice(0,100),cols);
+  document.getElementById('rankingPontos').innerHTML=criarTabela(agruparMetricas(d,'ponto_captacao').slice(0,100),cols);
+  document.getElementById('rankingEquipes').innerHTML=criarTabela(agruparMetricas(d,'equipe'),cols);
 }
 
-async function carregarBrindes(){
-  const d=await getPesquisas(),b=d.filter(p=>p.brinde),custo=b.reduce((s,p)=>s+Number(p.custo_brinde||valorBrindeEstimado(p.brinde)),0),sala=d.filter(p=>p.levou_sala==='Sim').length;
-  set('bTotal',b.length);set('bCusto',moedaBR(custo));set('bCustoCasal',moedaBR(custo/(d.length||1)));set('bCustoSala',moedaBR(custo/(sala||1)));set('bProf',new Set(b.map(p=>p.captador_nome)).size);set('bPontos',new Set(b.map(p=>p.ponto_captacao)).size);
-  const cols=[{key:'nome',label:'Nome'},{key:'total',label:'Qtd'},{key:'custoFmt',label:'Custo'},{key:'custoCasal',label:'Custo/Casal'},{key:'sala',label:'Sala'}];
-  document.getElementById('brindesTipo').innerHTML=criarTabela(agruparMetricas(b,'brinde'),cols);document.getElementById('brindesProfissional').innerHTML=criarTabela(agruparMetricas(b,'captador_nome'),cols);document.getElementById('brindesPonto').innerHTML=criarTabela(agruparMetricas(b,'ponto_captacao'),cols);
+function atualizarAlvosComparativo(){
+  const visao=val('comparativoVisao')||'geral',sel=document.getElementById('comparativoAlvo');if(!sel)return;
+  sel.innerHTML='';
+  if(visao==='geral'){
+    const o=document.createElement('option');o.value='';o.textContent='Visão geral';sel.appendChild(o);sel.disabled=true;return;
+  }
+  sel.disabled=false;
+  const inicial=document.createElement('option');inicial.value='';inicial.textContent=visao==='equipe'?'Selecione a equipe':'Selecione o captador';sel.appendChild(inicial);
+  if(visao==='equipe'){
+    ['PARK','EXTERNA'].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o)});
+  }else{
+    profissionaisCache.forEach(p=>{const o=document.createElement('option');o.value=p.nome;o.textContent=p.nome+(p.equipe?` • ${p.equipe}`:'');sel.appendChild(o)});
+  }
 }
 
-async function carregarFipe(){
-  const d=await getPesquisas();set('fipeMarcas',new Set(d.map(p=>p.marca_carro).filter(Boolean)).size);set('fipeModelos',new Set(d.map(p=>p.modelo_carro).filter(Boolean)).size);set('fipeQ',d.filter(p=>(p.qualificacao_automatica||p.status)==='Q').length);set('fipeNQ',d.filter(p=>String(p.qualificacao_automatica||p.status).startsWith('NQ')).length);set('fipeAnoMin',cfg.ano_carro_minimo||2011);set('fipeConsultas',fipeConsultas);document.getElementById('fipeResumo').innerHTML=criarTabela(agruparMetricas(d,'marca_carro'),[{key:'nome',label:'Marca'},{key:'total',label:'Pesq.'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'conversao',label:'Conv.'}]);
+function filtrarEscopoComparativo(data){
+  const visao=val('comparativoVisao')||'geral',alvo=val('comparativoAlvo');
+  if(visao==='equipe'&&alvo)return data.filter(x=>x.equipe===alvo);
+  if(visao==='captador'&&alvo)return data.filter(x=>x.captador_nome===alvo);
+  return data;
 }
+
+function cardComparativo(titulo,a,b,sufixo=''){
+  const delta=deltaPercentual(a,b);
+  return `<div class="kpi">${escapeHtml(titulo)}<b>${escapeHtml(a+sufixo)}</b><span class="${classeDelta(delta)}">${delta>=0?'+':''}${delta.toFixed(1)}% vs período 2</span><span class="mini">Período 2: ${escapeHtml(b+sufixo)}</span></div>`;
+}
+
+async function carregarComparativo(){
+  const todos=filtrarEscopoComparativo(await getPesquisas());
+  const p1=filtrarPorPeriodo(todos,val('comp1De'),val('comp1Ate')),p2=filtrarPorPeriodo(todos,val('comp2De'),val('comp2Ate'));
+  const a=dadosResumo(p1),b=dadosResumo(p2);
+  document.getElementById('comparativoResumo').innerHTML=
+    cardComparativo('Pesquisas',a.total,b.total)+
+    cardComparativo('Sala',a.sala,b.sala)+
+    cardComparativo('Q',a.q,b.q)+
+    cardComparativo('Eficiência',Number(a.eficiencia.toFixed(1)),Number(b.eficiencia.toFixed(1)),'%');
+  renderBarChartMultiplo('chartComparativo',['Pesquisas','Sala','Q','NQ','Eficiência %'],[
+    {label:'Período 1',data:[a.total,a.sala,a.q,a.nq,Number(a.eficiencia.toFixed(1))],backgroundColor:'#ef1b24'},
+    {label:'Período 2',data:[b.total,b.sala,b.q,b.nq,Number(b.eficiencia.toFixed(1))],backgroundColor:'#555'}
+  ],chComparativo,c=>chComparativo=c);
+  document.getElementById('comparativoTabela').innerHTML=criarTabela([
+    {periodo:'Período 1',datas:formatarPeriodo(val('comp1De'),val('comp1Ate')),pesquisas:a.total,sala:a.sala,q:a.q,nq:a.nq,eficiencia:a.eficiencia.toFixed(1)+'%'},
+    {periodo:'Período 2',datas:formatarPeriodo(val('comp2De'),val('comp2Ate')),pesquisas:b.total,sala:b.sala,q:b.q,nq:b.nq,eficiencia:b.eficiencia.toFixed(1)+'%'}
+  ],[{key:'periodo',label:'Período'},{key:'datas',label:'Datas'},{key:'pesquisas',label:'Pesquisas'},{key:'sala',label:'Sala'},{key:'q',label:'Q'},{key:'nq',label:'NQ'},{key:'eficiencia',label:'Eficiência'}]);
+}
+
+function listarDias(de,ate){
+  const {inicio,fim}=limitesData(de,ate),dias=[];
+  const cursor=new Date(inicio.getFullYear(),inicio.getMonth(),inicio.getDate());
+  const limite=new Date(fim.getFullYear(),fim.getMonth(),fim.getDate());
+  while(cursor<=limite&&dias.length<93){dias.push(dataLocalInput(cursor));cursor.setDate(cursor.getDate()+1)}
+  return dias;
+}
+
+function valorMetrica(data,metrica){
+  const r=dadosResumo(data);
+  if(metrica==='sala')return r.sala;
+  if(metrica==='eficiencia')return Number(r.eficiencia.toFixed(1));
+  if(metrica==='q')return r.q;
+  return r.total;
+}
+
+async function carregarPulsador(){
+  const todos=await getPesquisas();
+  const d=filtrarDados(todos,val('pulsadorDe'),val('pulsadorAte'),val('pulsadorEquipe'),'');
+  const metrica=val('pulsadorMetrica')||'pesquisas',dias=listarDias(val('pulsadorDe'),val('pulsadorAte'));
+  const nomes=[...new Set(d.map(x=>x.captador_nome).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  const linhas=nomes.map(nome=>{
+    const dadosPromotor=d.filter(x=>x.captador_nome===nome);
+    const valores=dias.map(dia=>valorMetrica(dadosPromotor.filter(x=>dataLocalInput(new Date(x.created_at))===dia),metrica));
+    return{nome,valores,total:valorMetrica(dadosPromotor,metrica)};
+  }).sort((a,b)=>b.total-a.total);
+  const max=Math.max(1,...linhas.flatMap(x=>x.valores));
+  const cabecalho=dias.map(d=>`<th>${escapeHtml(d.slice(8,10)+'/'+d.slice(5,7))}</th>`).join('');
+  const corpo=linhas.map(l=>`<tr><td class="heatName">${escapeHtml(l.nome)}</td>${l.valores.map(v=>{
+    const intensidade=metrica==='eficiencia'?Math.min(1,v/100):Math.min(1,v/max);
+    const alpha=.10+intensidade*.82;
+    return `<td><div class="heatCell" title="${escapeHtml(l.nome)} • ${escapeHtml(String(v))}" style="background:rgba(239,27,36,${alpha.toFixed(2)})">${escapeHtml(metrica==='eficiencia'?v+'%':String(v))}</div></td>`;
+  }).join('')}</tr>`).join('');
+  document.getElementById('pulsadorHeat').innerHTML=linhas.length?`<table class="heatTable"><thead><tr><th>Promotor</th>${cabecalho}</tr></thead><tbody>${corpo}</tbody></table>`:'<p class="mini" style="padding:12px">Sem dados para o período.</p>';
+  set('pulsadorResumo',`${formatarPeriodo(val('pulsadorDe'),val('pulsadorAte'))} • ${val('pulsadorEquipe')||'Todas as equipes'} • ${metrica==='eficiencia'?'Eficiência':metrica}`);
+  renderBarChartMultiplo('chartPulsador',linhas.map(x=>x.nome),[
+    {label:metrica==='eficiencia'?'Eficiência %':metrica,data:linhas.map(x=>x.total),backgroundColor:'#ef1b24'}
+  ],chPulsador,c=>chPulsador=c);
+}
+
+async function carregarMeuDesempenho(){
+  const meus=dadosDoUsuario(await getPesquisas());
+  const periodo=filtrarPorPeriodo(meus,val('meuDe'),val('meuAte')),r=dadosResumo(periodo);
+  set('meuPesquisas',r.total);set('meuSala',r.sala);set('meuEficiencia',r.eficiencia.toFixed(1)+'%');set('meuQ',r.q);
+  const hoje=new Date(),inicioMes=dataLocalInput(new Date(hoje.getFullYear(),hoje.getMonth(),1)),fimHoje=dataLocalInput(hoje);
+  const mesAtual=filtrarPorPeriodo(meus,inicioMes,fimHoje),rm=dadosResumo(mesAtual);
+  const diasDecorridos=Math.max(1,hoje.getDate()),diasMes=new Date(hoje.getFullYear(),hoje.getMonth()+1,0).getDate();
+  set('meuProjPesq',Math.round(rm.total/diasDecorridos*diasMes));
+  set('meuProjSala',Math.round(rm.sala/diasDecorridos*diasMes));
+  const diario=agruparPorDia(periodo),datas=Object.keys(diario).sort();
+  renderBarChartMultiplo('chartMeuPeriodo',datas.map(d=>d.slice(8,10)+'/'+d.slice(5,7)),[
+    {label:'Pesquisas',data:datas.map(d=>diario[d].pesquisas),backgroundColor:'#ef1b24'},
+    {label:'Sala',data:datas.map(d=>diario[d].sala),backgroundColor:'#00a857'}
+  ],chMeuPeriodo,c=>chMeuPeriodo=c);
+  await compararMeuDesempenho(false);
+}
+
+async function compararMeuDesempenho(recarregar=true){
+  const meus=dadosDoUsuario(await getPesquisas());
+  const a=dadosResumo(filtrarPorPeriodo(meus,val('meuComp1De'),val('meuComp1Ate')));
+  const b=dadosResumo(filtrarPorPeriodo(meus,val('meuComp2De'),val('meuComp2Ate')));
+  document.getElementById('meuComparativoResumo').innerHTML=
+    cardComparativo('Pesquisas',a.total,b.total)+cardComparativo('Sala',a.sala,b.sala)+
+    cardComparativo('Q',a.q,b.q)+cardComparativo('Eficiência',Number(a.eficiencia.toFixed(1)),Number(b.eficiencia.toFixed(1)),'%');
+  renderBarChartMultiplo('chartMeuComparativo',['Pesquisas','Sala','Q','Eficiência %'],[
+    {label:'Período 1',data:[a.total,a.sala,a.q,Number(a.eficiencia.toFixed(1))],backgroundColor:'#ef1b24'},
+    {label:'Período 2',data:[b.total,b.sala,b.q,Number(b.eficiencia.toFixed(1))],backgroundColor:'#555'}
+  ],chMeuComparativo,c=>chMeuComparativo=c);
+}
+
 
 function statusLocalizacao(updatedAt){
   const age=Math.max(0,(Date.now()-new Date(updatedAt).getTime())/1000);
@@ -976,25 +1379,88 @@ function statusLocalizacao(updatedAt){
 
 async function carregarMapa(ajustar=true){
   if(!isAdminRole())return;
-  const {data:loc=[],error}=await db.from('localizacoes_tempo_real').select('*').order('updated_at',{ascending:false});
-  if(error){document.getElementById('mapStatus').innerHTML=`<span class="statusDot offline"></span><span class="mini">Erro: ${escapeHtml(error.message)}</span>`;return}
-  if(!map){map=L.map('map').setView([-22.7386,-45.5926],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);mapMarkerLayer=L.layerGroup().addTo(map)}
+  if(!map){
+    map=L.map('map').setView([-22.7386,-45.5926],14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);
+    mapMarkerLayer=L.layerGroup().addTo(map);
+  }
   mapMarkerLayer.clearLayers();mapBounds=[];
-  const validas=loc.filter(l=>Number.isFinite(Number(l.latitude))&&Number.isFinite(Number(l.longitude)));
-  validas.forEach(l=>{
-    const st=statusLocalizacao(l.updated_at),lat=Number(l.latitude),lng=Number(l.longitude);
-    const icon=L.divIcon({className:'',html:`<div class="mapMarker ${st.classe}"></div>`,iconSize:[20,20],iconAnchor:[10,10]});
-    const marker=L.marker([lat,lng],{icon}).addTo(mapMarkerLayer);
-    marker.bindPopup(`<b>${escapeHtml(l.captador_nome||l.user_email||'Profissional')}</b><br>${escapeHtml(st.texto)}<br>Atualizado: ${escapeHtml(new Date(l.updated_at).toLocaleString('pt-BR'))}${l.accuracy?`<br>Precisão aproximada: ${Math.round(Number(l.accuracy))} m`:''}`);
+  const valorPromotor=val('mapaPromotor'),prof=resolverProfissional(valorPromotor);
+
+  if(!valorPromotor){
+    const {data:loc=[],error}=await db.from('localizacoes_tempo_real').select('*').order('updated_at',{ascending:false});
+    if(error){set('mapStatus','Não foi possível carregar as localizações atuais.');return}
+    const validas=loc.filter(l=>Number.isFinite(Number(l.latitude))&&Number.isFinite(Number(l.longitude)));
+    validas.forEach(l=>{
+      const st=statusLocalizacao(l.updated_at),lat=Number(l.latitude),lng=Number(l.longitude);
+      const icon=L.divIcon({className:'',html:`<div class="mapMarker ${st.classe}"></div>`,iconSize:[20,20],iconAnchor:[10,10]});
+      L.marker([lat,lng],{icon}).addTo(mapMarkerLayer).bindPopup(`<b>${escapeHtml(l.captador_nome||l.user_email||'Profissional')}</b><br>${escapeHtml(st.texto)}<br>${escapeHtml(new Date(l.updated_at).toLocaleString('pt-BR'))}`);
+      mapBounds.push([lat,lng]);
+    });
+    document.getElementById('mapaLista').innerHTML=criarTabela(validas.map(l=>({nome:l.captador_nome||l.user_email,status:statusLocalizacao(l.updated_at).texto,horario:new Date(l.updated_at).toLocaleString('pt-BR')})),[
+      {key:'nome',label:'Profissional'},{key:'status',label:'Status'},{key:'horario',label:'Última atualização'}
+    ]);
+    document.getElementById('mapStatus').innerHTML=`<span class="statusDot ${validas.some(l=>statusLocalizacao(l.updated_at).classe==='live')?'live':'offline'}"></span><span class="mini">${validas.length} profissional(is) com localização cadastrada.</span>`;
+    if(ajustar)centralizarMapa();setTimeout(()=>map.invalidateSize(),100);return;
+  }
+
+  const dataEscolhida=val('mapaData')||dataLocalInput(new Date()),{inicio,fim}=limitesData(dataEscolhida,dataEscolhida);
+  let query=db.from('localizacoes_historico').select('*').gte('created_at',inicio.toISOString()).lte('created_at',fim.toISOString()).order('created_at',{ascending:true}).limit(5000);
+  if(prof?.email)query=query.eq('user_email',prof.email);else query=query.eq('captador_nome',prof?.nome||valorPromotor.replace(/^nome:/,''));
+  let {data:historico=[],error}=await query;
+  let fonte='Histórico GPS';
+
+  if(error){
+    const pesquisas=filtrarPorPeriodo(await getPesquisas(),dataEscolhida,dataEscolhida).filter(p=>{
+      const mesmo=prof?.email?(String(p.user_email||'').toLowerCase()===prof.email.toLowerCase()):normalizarNome(p.captador_nome)===normalizarNome(prof?.nome);
+      return mesmo&&p.latitude&&p.longitude;
+    });
+    historico=pesquisas.map(p=>({captador_nome:p.captador_nome,user_email:p.user_email,latitude:p.latitude,longitude:p.longitude,accuracy:null,created_at:p.created_at,ponto_captacao:p.ponto_captacao}));
+    fonte='Pesquisas com GPS • execute o SQL 4.3 para registrar a rota completa';
+  }
+
+  historico=historico.filter(p=>Number.isFinite(Number(p.latitude))&&Number.isFinite(Number(p.longitude))).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+  const pontos=historico.map(p=>[Number(p.latitude),Number(p.longitude)]);
+  if(pontos.length>1)L.polyline(pontos,{color:'#ef1b24',weight:4,opacity:.75}).addTo(mapMarkerLayer);
+
+  historico.forEach((p,i)=>{
+    const lat=Number(p.latitude),lng=Number(p.longitude);
+    const marker=L.circleMarker([lat,lng],{radius:6,color:'#fff',weight:2,fillColor:'#ef1b24',fillOpacity:.95}).addTo(mapMarkerLayer);
+    marker.bindPopup(`<b>${escapeHtml(prof?.nome||p.captador_nome||'Promotor')}</b><br>Ping ${i+1} de ${historico.length}<br>${escapeHtml(new Date(p.created_at).toLocaleString('pt-BR'))}${p.ponto_captacao?`<br>${escapeHtml(p.ponto_captacao)}`:''}${p.accuracy?`<br>Precisão: ${Math.round(Number(p.accuracy))} m`:''}`);
     mapBounds.push([lat,lng]);
   });
-  if(ajustar)centralizarMapa();
-  setTimeout(()=>map.invalidateSize(),100);
-  const live=validas.filter(l=>statusLocalizacao(l.updated_at).classe==='live').length;
-  document.getElementById('mapStatus').innerHTML=`<span class="statusDot ${live?'live':'offline'}"></span><span class="mini">${live} profissional(is) atualizando agora • ${validas.length} localização(ões) cadastrada(s)</span>`;
-  document.getElementById('mapaLista').innerHTML=criarTabela(validas.map(l=>{const st=statusLocalizacao(l.updated_at);return{nome:l.captador_nome||l.user_email,status:st.texto,atualizado:new Date(l.updated_at).toLocaleString('pt-BR'),precisao:l.accuracy?Math.round(Number(l.accuracy))+' m':'-'}}),[{key:'nome',label:'Profissional'},{key:'status',label:'Status'},{key:'atualizado',label:'Última atualização'},{key:'precisao',label:'Precisão'}]);
+
+  const hoje=dataLocalInput(new Date())===dataEscolhida;
+  if(hoje){
+    let atualQuery=db.from('localizacoes_tempo_real').select('*').limit(1);
+    if(prof?.email)atualQuery=atualQuery.eq('user_email',prof.email);else atualQuery=atualQuery.eq('captador_nome',prof?.nome||'');
+    const {data:atuais=[]}=await atualQuery;
+    const atual=atuais[0];
+    if(atual&&Number.isFinite(Number(atual.latitude))&&Number.isFinite(Number(atual.longitude))){
+      const lat=Number(atual.latitude),lng=Number(atual.longitude),st=statusLocalizacao(atual.updated_at);
+      const icon=L.divIcon({className:'',html:`<div class="mapMarker ${st.classe}"></div>`,iconSize:[22,22],iconAnchor:[11,11]});
+      L.marker([lat,lng],{icon}).addTo(mapMarkerLayer).bindPopup(`<b>Posição atual</b><br>${escapeHtml(prof?.nome||atual.captador_nome)}<br>${escapeHtml(st.texto)}`);
+      mapBounds.push([lat,lng]);
+    }
+  }
+
+  const nome=prof?.nome||valorPromotor.replace(/^nome:/,'');
+  document.getElementById('mapStatus').innerHTML=`<span class="statusDot ${historico.length?'recent':'offline'}"></span><span class="mini">${escapeHtml(nome)} • ${escapeHtml(dataEscolhida.split('-').reverse().join('/'))} • ${historico.length} ping(s) • ${escapeHtml(fonte)}</span>`;
+  document.getElementById('mapaLista').innerHTML=criarTabela(historico.map((p,i)=>({
+    ping:i+1,horario:new Date(p.created_at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}),
+    local:p.ponto_captacao||'-',latitude:Number(p.latitude).toFixed(6),longitude:Number(p.longitude).toFixed(6),precisao:p.accuracy?Math.round(Number(p.accuracy))+' m':'-'
+  })),[{key:'ping',label:'Ping'},{key:'horario',label:'Horário'},{key:'local',label:'Ponto'},{key:'latitude',label:'Latitude'},{key:'longitude',label:'Longitude'},{key:'precisao',label:'Precisão'}]);
+  if(!historico.length)document.getElementById('mapaLista').innerHTML='<p class="mini">Nenhuma localização registrada para este promotor neste dia.</p>';
+  if(ajustar)centralizarMapa();setTimeout(()=>map.invalidateSize(),100);
 }
-function centralizarMapa(){if(map&&mapBounds?.length){if(mapBounds.length===1)map.setView(mapBounds[0],16);else map.fitBounds(mapBounds,{padding:[30,30],maxZoom:16})}}
+
+function centralizarMapa(){
+  if(map&&mapBounds?.length){
+    if(mapBounds.length===1)map.setView(mapBounds[0],17);
+    else map.fitBounds(mapBounds,{padding:[30,30],maxZoom:17});
+  }
+}
+
 function iniciarAtualizacaoMapa(){pararAtualizacaoMapa();mapRefreshTimer=setInterval(()=>carregarMapa(false),15000)}
 function pararAtualizacaoMapa(){if(mapRefreshTimer){clearInterval(mapRefreshTimer);mapRefreshTimer=null}}
 
@@ -1036,11 +1502,51 @@ async function carregarHistorico(){
   const d=await getPesquisas();document.getElementById('historicoBox').innerHTML=criarTabela(d.slice(0,200).map(p=>({hora:fmt(p.created_at),prof:p.captador_nome,ponto:p.ponto_captacao,q:p.qualificacao_automatica||p.status,sala:['Sim','Não'].includes(p.levou_sala)?p.levou_sala:'Pendente',brinde:p.brinde,custo:moedaBR(p.custo_brinde||valorBrindeEstimado(p.brinde)),tempo:(p.tempo_no_ponto_minutos||0)+' min'})),[{key:'hora',label:'Hora'},{key:'prof',label:'Profissional'},{key:'ponto',label:'Ponto'},{key:'q',label:'Q/NQ'},{key:'sala',label:'Sala'},{key:'brinde',label:'Brinde'},{key:'custo',label:'Custo'},{key:'tempo',label:'Tempo'}]);
 }
 
-function salvarMetas(){localStorage.setItem('captapro_metas_v4',JSON.stringify({parkP:val('meta_park_pesquisas'),parkS:val('meta_park_sala'),parkQ:val('meta_park_q'),extP:val('meta_externa_pesquisas'),extS:val('meta_externa_sala'),extQ:val('meta_externa_q')}));carregarMetas()}
+async function salvarMetas(){
+  if(!isAdminRole())return;
+  const data=val('metaData'),valorProf=val('metaPromotor'),prof=resolverProfissional(valorProf);
+  const metaAbordagens=Number(val('metaAbordagens')),metaSala=Number(val('metaSala'));
+  if(!data||!prof)return msg('metasMsg','Selecione a data e o promotor.','erro');
+  if(!Number.isFinite(metaAbordagens)||metaAbordagens<0||!Number.isFinite(metaSala)||metaSala<0)return msg('metasMsg','Informe metas válidas.','erro');
+  const payload={
+    data,user_email:prof.email||`nome:${prof.nome}`,captador_nome:prof.nome,equipe:prof.equipe||null,
+    meta_abordagens:metaAbordagens,meta_sala:metaSala,updated_by:usuarioEmail,updated_at:new Date().toISOString()
+  };
+  const {error}=await db.from('metas_diarias').upsert(payload,{onConflict:'data,user_email'});
+  if(error)return msg('metasMsg','Erro ao salvar meta. Execute o SQL da versão 4.3: '+escapeHtml(error.message),'erro');
+  msg('metasMsg','Meta diária salva com sucesso.','ok');carregarMetas();
+}
+
 async function carregarMetas(){
-  const m=JSON.parse(localStorage.getItem('captapro_metas_v4')||'{}');Object.entries({meta_park_pesquisas:m.parkP,meta_park_sala:m.parkS,meta_park_q:m.parkQ,meta_externa_pesquisas:m.extP,meta_externa_sala:m.extS,meta_externa_q:m.extQ}).forEach(([k,v])=>setVal(k,v||''));const d=await getPesquisas();
-  function bloco(nome,arr,mp,ms,mq){const sala=arr.filter(p=>p.levou_sala==='Sim').length,q=arr.filter(p=>(p.qualificacao_automatica||p.status)==='Q').length;return{nome,total:arr.length,q,sala,metaP:mp||'-',realP:mp?Math.round(arr.length/Number(mp)*100)+'%':'-',metaQ:mq||'-',realQ:mq?Math.round(q/Number(mq)*100)+'%':'-',metaS:ms||'-',realS:ms?Math.round(sala/Number(ms)*100)+'%':'-'}}
-  document.getElementById('metasBox').innerHTML=criarTabela([bloco('PARK',d.filter(p=>p.equipe==='PARK'),m.parkP,m.parkS,m.parkQ),bloco('EXTERNA',d.filter(p=>p.equipe==='EXTERNA'),m.extP,m.extS,m.extQ)],[{key:'nome',label:'Equipe'},{key:'total',label:'Pesq.'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'metaP',label:'Meta Pesq.'},{key:'realP',label:'% Pesq.'},{key:'metaQ',label:'Meta Q'},{key:'realQ',label:'% Q'},{key:'metaS',label:'Meta Sala'},{key:'realS',label:'% Sala'}]);
+  if(!isAdminRole())return;
+  const de=val('metasDe'),ate=val('metasAte');
+  let query=db.from('metas_diarias').select('*').order('data',{ascending:false}).order('captador_nome',{ascending:true});
+  if(de)query=query.gte('data',de);if(ate)query=query.lte('data',ate);
+  const [{data:metas=[],error},pesquisas]=await Promise.all([query,getPesquisas()]);
+  if(error){
+    document.getElementById('metasBox').innerHTML='<div class="warningBox">Execute o SQL da versão 4.3 para criar a tabela metas_diarias.</div>';
+    return;
+  }
+  const rows=metas.map(m=>{
+    const dia=pesquisas.filter(p=>{
+      const mesmoEmail=m.user_email&&String(m.user_email).startsWith('nome:')===false&&String(p.user_email||'').toLowerCase()===String(m.user_email).toLowerCase();
+      const mesmoNome=normalizarNome(p.captador_nome)===normalizarNome(m.captador_nome);
+      return (mesmoEmail||mesmoNome)&&dataLocalInput(new Date(p.created_at))===m.data;
+    });
+    const r=dadosResumo(dia),metaA=Number(m.meta_abordagens||0),metaS=Number(m.meta_sala||0);
+    return{
+      data:new Date(`${m.data}T00:00:00`).toLocaleDateString('pt-BR'),captador:m.captador_nome,equipe:m.equipe||'-',
+      metaA,realA:r.total,atingA:metaA?Math.round(r.total/metaA*100)+'%':'-',
+      metaS,realS:r.sala,atingS:metaS?Math.round(r.sala/metaS*100)+'%':'-',
+      eficiencia:r.eficiencia.toFixed(1)+'%'
+    };
+  });
+  document.getElementById('metasBox').innerHTML=criarTabela(rows,[
+    {key:'data',label:'Data'},{key:'captador',label:'Promotor'},{key:'equipe',label:'Equipe'},
+    {key:'metaA',label:'Meta abordagens'},{key:'realA',label:'Abordagens realizadas'},{key:'atingA',label:'% meta abordagens'},
+    {key:'metaS',label:'Meta sala'},{key:'realS',label:'Sala realizada'},{key:'atingS',label:'% meta sala'},
+    {key:'eficiencia',label:'Eficiência sala/abordagens'}
+  ]);
 }
 
 async function salvarProfissional(){
