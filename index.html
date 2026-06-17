@@ -7,6 +7,7 @@
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
@@ -73,6 +74,37 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .salaPendente{color:var(--warn);font-weight:800}.salaSim{color:var(--ok);font-weight:800}.salaNao{color:var(--bad);font-weight:800}
 .warningBox{padding:10px 12px;border-radius:12px;background:#301f00;border:1px solid #795900;color:#ffd978;font-size:12px;margin:8px 0}
 @media(max-width:900px){.fipeWrap{grid-template-columns:1fr}}
+
+.shareActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.btnWhatsApp{background:#18a84a!important;border:1px solid #22c55e!important;color:#fff!important;font-weight:900!important}
+.btnWhatsApp:disabled{opacity:.65;cursor:wait}
+.fichaImagem{
+  background:linear-gradient(145deg,#090909,#180000);
+  border:1px solid #5a1717;border-radius:18px;padding:20px;color:#fff;
+  max-width:980px;margin:0 auto;box-shadow:0 0 28px rgba(239,27,36,.18)
+}
+.fichaHeader{display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid #3b1b1b;padding-bottom:13px;margin-bottom:14px}
+.fichaMarca{display:flex;align-items:center;gap:12px}
+.fichaIcone{width:54px;height:54px;border-radius:15px;background:linear-gradient(135deg,#ef1b24,#7a0000);display:flex;align-items:center;justify-content:center;font-size:27px;font-weight:900;box-shadow:0 0 18px rgba(239,27,36,.35)}
+.fichaTitulo{font-size:23px;font-weight:900;line-height:1.1}
+.fichaSubtitulo{font-size:12px;color:#aaa;margin-top:4px}
+.fichaStatus{padding:8px 13px;border-radius:999px;font-weight:900;font-size:13px;text-align:center}
+.fichaStatus.q{background:#063d24;color:#00e676}.fichaStatus.nq1{background:#3a2f03;color:#ffd54f}.fichaStatus.nq{background:#3b0505;color:#ff7070}
+.fichaMotivo{padding:11px 13px;border-radius:12px;background:#121212;border-left:4px solid #ef1b24;margin-bottom:13px;color:#ddd;font-size:13px}
+.fichaGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.fichaCampo{background:#101010;border:1px solid #292929;border-radius:12px;padding:11px 12px;min-height:62px}
+.fichaCampo.full{grid-column:1/-1}
+.fichaLabel{display:block;color:#ff7777;font-size:10px;text-transform:uppercase;letter-spacing:.7px;font-weight:900;margin-bottom:5px}
+.fichaValor{font-size:14px;color:#fff;line-height:1.4;word-break:break-word}
+.fichaRodape{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid #3b1b1b;margin-top:14px;padding-top:12px;color:#888;font-size:11px}
+.shareHint{color:#aaa;font-size:12px;text-align:center;margin:8px 0 0}
+@media(max-width:900px){
+  .shareActions,.fichaGrid{grid-template-columns:1fr}
+  .fichaHeader{align-items:flex-start}
+  .fichaImagem{padding:14px}
+  .fichaCampo.full{grid-column:auto}
+}
+
 
 </style>
 </head>
@@ -707,7 +739,7 @@ async function salvarPesquisa(){
     convidado_1:val('convidado_1'),idade_1:num('idade_1'),profissao_1:profissaoFinal('profissao_1','outra_profissao_1'),
     convidado_2:val('convidado_2'),idade_2:num('idade_2'),profissao_2:profissaoFinal('profissao_2','outra_profissao_2'),
     estado_civil:val('estado_civil'),tempo_juntos:val('tempo_juntos'),renda_casal:val('renda_casal'),renda_bruta:val('renda_bruta'),renda_liquida:val('renda_liquida'),
-    veiculo:val('veiculo'),ano_veiculo:selectedText('ano_veiculo'),marca_carro:selectedText('marca_carro'),modelo_carro:selectedText('modelo_carro'),valor_fipe:val('valor_fipe_preview'),
+    veiculo:val('veiculo'),ano_veiculo:selectedText('ano_veiculo'),marca_carro:selectedText('marca_carro'),modelo_carro:selectedText('modelo_carro'),valor_fipe:moneyNumber(val('valor_fipe_preview'))||null,
     cartao_credito:val('cartao_credito'),casa_propria:val('casa_propria'),multipropriedade:val('multipropriedade'),onde_multipropriedade:val('onde_multipropriedade'),
     brinde:val('brinde'),custo_brinde:valorBrindeEstimado(val('brinde')),levou_sala:'Pendente',contato:val('contato'),observacoes:val('observacoes'),
     status:qualificacao,qualificacao_automatica:qualificacao,motivo_qualificacao:motivoQualificacao,latitude,longitude,
@@ -719,20 +751,163 @@ async function salvarPesquisa(){
   renderFichaSalva(data||p);enviarLocalizacaoTempoReal(true);
 }
 
+function valorExibicaoVeiculo(v){
+  if(v===null||v===undefined||v==='')return '-';
+  if(typeof v==='number')return moedaBR(v);
+  const numero=moneyNumber(v);
+  return numero?moedaBR(numero):String(v);
+}
+
+function fichaCampo(label,valor,full=false){
+  return `<div class="fichaCampo${full?' full':''}"><span class="fichaLabel">${escapeHtml(label)}</span><div class="fichaValor">${escapeHtml(valor||'-')}</div></div>`;
+}
+
 function renderFichaSalva(p){
-  const cls=String(p.qualificacao_automatica).includes('1 ITEM')?'nq1':String(p.qualificacao_automatica).startsWith('NQ')?'nq':'q';
-  document.getElementById('fichaSalvaConteudo').innerHTML=`<div class="result ${cls}">${escapeHtml(p.qualificacao_automatica)}<br><span class="mini">${escapeHtml(p.motivo_qualificacao)}</span></div><table>
-    <tr><th>Profissional</th><td>${escapeHtml(p.captador_nome)}</td></tr>
-    <tr><th>Equipe/Ponto</th><td>${escapeHtml(p.equipe)} • ${escapeHtml(p.ponto_captacao)}</td></tr>
-    <tr><th>Cliente(s)</th><td>${escapeHtml(p.convidado_1||'-')} (${escapeHtml(p.idade_1||'-')} / ${escapeHtml(p.profissao_1||'-')}) • ${escapeHtml(p.convidado_2||'-')} (${escapeHtml(p.idade_2||'-')} / ${escapeHtml(p.profissao_2||'-')})</td></tr>
-    <tr><th>Renda</th><td>${escapeHtml(p.renda_casal||'-')}${p.renda_liquida?' | Líquida: '+escapeHtml(p.renda_liquida):''}</td></tr>
-    <tr><th>Carro/Valor médio</th><td>${escapeHtml(p.marca_carro||'-')} ${escapeHtml(p.modelo_carro||'')} ${escapeHtml(p.ano_veiculo||'')} • ${escapeHtml(p.valor_fipe||'-')}</td></tr>
-    <tr><th>Casa/Cartão</th><td>${escapeHtml(p.casa_propria||'-')} / ${escapeHtml(p.cartao_credito||'-')}</td></tr>
-    <tr><th>Brinde</th><td>${escapeHtml(p.brinde||'-')} • Custo estimado: ${moedaBR(p.custo_brinde)}</td></tr>
-    <tr><th>Sala</th><td class="salaPendente">Pendente de confirmação do administrador</td></tr>
-    <tr><th>Tempo no ponto</th><td>${Number(p.tempo_no_ponto_minutos||0)} min</td></tr></table>`;
+  const status=String(p.qualificacao_automatica||p.status||'NQ');
+  const cls=status.includes('1 ITEM')?'nq1':status.startsWith('NQ')?'nq':'q';
+  const nomes=[p.convidado_1,p.convidado_2].filter(Boolean).join(' e ')||'Cliente';
+  const rendaDetalhes=[
+    p.renda_casal?`Renda informada: ${p.renda_casal}`:'',
+    p.renda_bruta?`Bruta: ${p.renda_bruta}`:'',
+    p.renda_liquida?`Líquida: ${p.renda_liquida}`:''
+  ].filter(Boolean).join(' • ')||'-';
+  const carro=p.veiculo==='Sim'
+    ? [p.marca_carro,p.modelo_carro,p.ano_veiculo].filter(Boolean).join(' ')+' • '+valorExibicaoVeiculo(p.valor_fipe)
+    : 'Não possui veículo';
+  const dataFicha=fmt(p.created_at||new Date().toISOString());
+
+  document.getElementById('fichaSalvaConteudo').innerHTML=`
+    <div id="fichaImagem" class="fichaImagem">
+      <div class="fichaHeader">
+        <div class="fichaMarca">
+          <div class="fichaIcone">CP</div>
+          <div>
+            <div class="fichaTitulo">Ficha Completa do Casal</div>
+            <div class="fichaSubtitulo">CaptaPro Elite 4.1 • ${escapeHtml(dataFicha)}</div>
+          </div>
+        </div>
+        <div class="fichaStatus ${cls}">${escapeHtml(status)}</div>
+      </div>
+
+      <div class="fichaMotivo"><b>Resultado da qualificação:</b> ${escapeHtml(p.motivo_qualificacao||'Perfil avaliado')}</div>
+
+      <div class="fichaGrid">
+        ${fichaCampo('Nome 1',p.convidado_1||'-')}
+        ${fichaCampo('Idade 1 / Profissão 1',[p.idade_1?`${p.idade_1} anos`:'',p.profissao_1].filter(Boolean).join(' • ')||'-')}
+        ${fichaCampo('Nome 2',p.convidado_2||'-')}
+        ${fichaCampo('Idade 2 / Profissão 2',[p.idade_2?`${p.idade_2} anos`:'',p.profissao_2].filter(Boolean).join(' • ')||'-')}
+        ${fichaCampo('Relacionamento',[p.estado_civil,p.tempo_juntos].filter(Boolean).join(' • ')||'-')}
+        ${fichaCampo('Renda',rendaDetalhes)}
+        ${fichaCampo('Veículo / Valor médio',carro,true)}
+        ${fichaCampo('Cartão de crédito',p.cartao_credito||'-')}
+        ${fichaCampo('Casa própria',p.casa_propria||'-')}
+        ${fichaCampo('Multipropriedade',[p.multipropriedade,p.onde_multipropriedade?`Onde: ${p.onde_multipropriedade}`:''].filter(Boolean).join(' • ')||'-',true)}
+        ${fichaCampo('Brinde entregue',[p.brinde,`Custo estimado: ${moedaBR(p.custo_brinde)}`].filter(Boolean).join(' • ')||'-',true)}
+        ${fichaCampo('WhatsApp / Contato',p.contato||'-')}
+        ${fichaCampo('Entrada em sala','Pendente de confirmação do administrador')}
+        ${fichaCampo('Equipe / Ponto',[p.equipe,p.ponto_captacao].filter(Boolean).join(' • ')||'-')}
+        ${fichaCampo('Tipo de abordagem',p.tipo_abordagem||'-')}
+        ${fichaCampo('Profissional responsável',p.captador_nome||'-')}
+        ${fichaCampo('Tempo no ponto',`${Number(p.tempo_no_ponto_minutos||0)} min`)}
+        ${fichaCampo('Observações',p.observacoes||'Sem observações',true)}
+      </div>
+
+      <div class="fichaRodape">
+        <span>Cliente(s): ${escapeHtml(nomes)}</span>
+        <span>Registro CaptaPro • Sala pendente</span>
+      </div>
+    </div>
+
+    <div class="shareActions">
+      <button id="btnCompartilharFicha" class="main btnWhatsApp" onclick="compartilharFichaWhatsApp()">Compartilhar imagem pelo WhatsApp</button>
+      <button class="secondary" onclick="baixarImagemFicha()">Baixar imagem da ficha</button>
+    </div>
+    <p class="shareHint">No celular, escolha o WhatsApp na tela de compartilhamento. No computador, a imagem será copiada ou baixada para envio.</p>`;
+
   document.getElementById('fichaSalvaBox').classList.remove('hidden');
+  document.getElementById('brindesDisponiveis').classList.add('hidden');
   document.getElementById('fichaSalvaBox').scrollIntoView({behavior:'smooth'});
+}
+
+async function gerarImagemFicha(){
+  const ficha=document.getElementById('fichaImagem');
+  if(!ficha)throw new Error('A ficha ainda não foi gerada.');
+  if(typeof html2canvas!=='function')throw new Error('O gerador de imagem não foi carregado. Atualize a página e tente novamente.');
+  return await html2canvas(ficha,{
+    backgroundColor:'#090909',
+    scale:Math.min(2,window.devicePixelRatio||2),
+    useCORS:true,
+    logging:false,
+    scrollX:0,
+    scrollY:-window.scrollY
+  });
+}
+
+function canvasParaBlob(canvas){
+  return new Promise((resolve,reject)=>{
+    canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('Não foi possível criar a imagem.')),'image/png',0.95);
+  });
+}
+
+function nomeArquivoFicha(){
+  const nomes=[val('convidado_1'),val('convidado_2')].filter(Boolean).join('_')||'casal';
+  return `ficha_captapro_${nomes.replace(/[^\p{L}\p{N}_-]+/gu,'_')}.png`;
+}
+
+async function baixarImagemFicha(){
+  try{
+    const canvas=await gerarImagemFicha();
+    const link=document.createElement('a');
+    link.download=nomeArquivoFicha();
+    link.href=canvas.toDataURL('image/png',0.95);
+    document.body.appendChild(link);link.click();link.remove();
+  }catch(e){
+    msg('formMsg',escapeHtml(e.message||'Erro ao gerar a imagem.'),'erro');
+  }
+}
+
+async function compartilharFichaWhatsApp(){
+  const botao=document.getElementById('btnCompartilharFicha');
+  const textoOriginal=botao?.textContent||'Compartilhar imagem pelo WhatsApp';
+  if(botao){botao.disabled=true;botao.textContent='Gerando imagem...';}
+
+  try{
+    const canvas=await gerarImagemFicha();
+    const blob=await canvasParaBlob(canvas);
+    const arquivo=new File([blob],nomeArquivoFicha(),{type:'image/png'});
+    const nomes=[val('convidado_1'),val('convidado_2')].filter(Boolean).join(' e ')||'casal';
+    const texto=`Ficha completa de ${nomes} • ${qualificacao} • CaptaPro`;
+
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[arquivo]})){
+      await navigator.share({title:'Ficha completa do casal',text:texto,files:[arquivo]});
+      return;
+    }
+
+    let copiada=false;
+    if(navigator.clipboard&&window.ClipboardItem){
+      try{
+        await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+        copiada=true;
+      }catch(e){}
+    }
+
+    if(!copiada){
+      const link=document.createElement('a');
+      link.download=nomeArquivoFicha();
+      link.href=URL.createObjectURL(blob);
+      document.body.appendChild(link);link.click();link.remove();
+      setTimeout(()=>URL.revokeObjectURL(link.href),1000);
+    }
+
+    window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`,'_blank');
+    alert(copiada
+      ? 'A imagem da ficha foi copiada. No WhatsApp, abra a conversa e pressione Ctrl+V para colar.'
+      : 'A imagem da ficha foi baixada. No WhatsApp, anexe o arquivo baixado à conversa.');
+  }catch(e){
+    msg('formMsg',escapeHtml(e.message||'Erro ao compartilhar a ficha.'),'erro');
+  }finally{
+    if(botao){botao.disabled=false;botao.textContent=textoOriginal;}
+  }
 }
 
 async function getPesquisas(){
