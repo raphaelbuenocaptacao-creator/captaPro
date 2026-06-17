@@ -12,36 +12,30 @@
 :root{--bg:#050505;--card:#111;--line:#2b2b2b;--red:#f3131f;--red2:#ff3030;--muted:#a8a8a8;--ok:#00e676;--warn:#ffd54f;--bad:#ff5252}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#050505,#180000);color:#fff}.wrap{max-width:1180px;margin:auto;padding:10px}.top{text-align:center;margin:10px 0 12px}.top h1{margin:0;font-size:32px}.top span{color:var(--red2)}.top p{margin:4px;color:#ccc;font-size:13px}.tabs{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin:12px 0}.tabs button{padding:13px 8px;border:0;border-radius:12px;background:#181818;color:#fff;font-weight:700}.tabs button.active{background:linear-gradient(135deg,var(--red),var(--red2))}.card{background:rgba(17,17,17,.96);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 0 18px rgba(243,19,31,.12)}h2{margin:0 0 10px;border-left:4px solid var(--red);padding-left:10px;font-size:22px}.hint{color:#ccc;font-size:13px;margin:4px 0 10px}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}input,select,textarea,button{width:100%;padding:11px 12px;border-radius:11px;border:1px solid #333;background:#050505;color:#fff;font-size:14px}textarea{min-height:62px;resize:vertical}button.main{background:linear-gradient(135deg,var(--red),var(--red2));border:0;font-weight:800;cursor:pointer}.rowbtn{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hidden{display:none}.ok{color:var(--ok);font-weight:800}.erro{color:var(--bad);font-weight:800}.result{padding:12px;border-radius:12px;text-align:center;font-weight:800}.q{background:#05381f;color:var(--ok)}.nq1{background:#3a2f03;color:var(--warn)}.nq{background:#3b0505;color:var(--bad)}.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.kpi{background:#181818;border:1px solid #2d2d2d;border-radius:13px;padding:12px;text-align:center}.kpi b{display:block;color:var(--red2);font-size:24px;margin-top:4px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #2b2b2b;padding:8px;text-align:left}th{color:#ff7777}.pill{display:inline-block;background:#260000;border:1px solid #5b1111;color:#ff8585;border-radius:999px;padding:4px 8px;font-size:12px}#map{height:420px;border-radius:14px;border:1px solid #333}.mini{font-size:12px;color:#bbb}.jornadaBox{border:1px solid #3a1111;background:#180606;border-radius:14px;padding:10px;margin-bottom:10px}.compactForm input,.compactForm select,.compactForm textarea{margin:0}@media(max-width:800px){.tabs{grid-template-columns:repeat(2,1fr)}.grid,.grid2,.kpis,.rowbtn{grid-template-columns:1fr}.wrap{padding:8px}input,select,textarea,button{padding:10px;font-size:13px}.top h1{font-size:28px}}
 
 .brandMark{width:118px;height:86px;margin:0 auto 6px;display:block;filter:drop-shadow(0 0 18px rgba(255,48,48,.42))}.brandMark svg{width:100%;height:100%}.brandMark .wing{fill:url(#g1)}.brandMark .cut{fill:#050505}.brandMark .eye{fill:#fff}.brandMark .beak{fill:#ff3030}.brandLine{width:150px;height:2px;margin:6px auto 0;background:linear-gradient(90deg,transparent,#ff3030,transparent)}.version{display:inline-block;margin-top:5px;padding:4px 10px;border-radius:999px;background:#1b0505;border:1px solid #5b1111;color:#ff7777;font-weight:800;font-size:12px}.loginFooter{text-align:center;color:#777;font-size:12px;margin-top:18px;padding:16px}.loginFooter b{color:#ff7777}.pulseBtn{animation:pulseRed 1.8s infinite}@keyframes pulseRed{0%{box-shadow:0 0 0 0 rgba(255,48,48,.55)}70%{box-shadow:0 0 0 12px rgba(255,48,48,0)}100%{box-shadow:0 0 0 0 rgba(255,48,48,0)}}
-
-.brand-mark{
-  width:180px;
-  margin:0 auto 15px;
-  filter:drop-shadow(0 0 18px rgba(255,49,49,.45));
-}
-.brand-mark svg{
-  width:100%;
-  display:block;
-}
-
+.admOnly{display:none}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="top">
-    <div class="brand-mark">
-<svg viewBox="0 0 220 120" xmlns="http://www.w3.org/2000/svg">
-<defs>
-  <linearGradient id="g" x1="0" x2="1">
-    <stop offset="0%" stop-color="#ff3131"/>
-    <stop offset="100%" stop-color="#8b0000"/>
-  </linearGradient>
-</defs>
-<path d="M18 70 C55 18,112 10,202 20 C165 32,135 50,112 82 C98 102,72 108,44 96 C60 92,78 82,88 68 C70 74,43 78,18 70Z" fill="url(#g)"/>
-<path d="M92 52 C118 36,146 30,184 28 C152 42,132 58,116 84 C108 72,100 62,92 52Z" fill="#fff"/>
-<path d="M122 44 L145 38 L130 52 Z" fill="#050505"/>
-<circle cx="133" cy="43" r="3" fill="#ff3131"/>
-</svg>
-</div>
+    <div class="brandMark" aria-label="CaptaPro Elite">
+      <svg viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg" role="img">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="38%" stop-color="#ff3030"/>
+            <stop offset="100%" stop-color="#7a0000"/>
+          </linearGradient>
+        </defs>
+        <path class="wing" d="M110 10 L198 42 L158 50 L214 74 L151 76 L191 104 L126 91 L110 140 L94 91 L29 104 L69 76 L6 74 L62 50 L22 42 Z"/>
+        <path class="cut" d="M110 30 L141 58 L119 55 L134 75 L116 72 L110 102 L104 72 L86 75 L101 55 L79 58 Z"/>
+        <path class="wing" d="M110 38 L137 64 L120 63 L131 83 L113 78 L110 116 L107 78 L89 83 L100 63 L83 64 Z" opacity=".95"/>
+        <path class="cut" d="M99 56 L110 46 L121 56 L114 58 L110 54 L106 58 Z"/>
+        <circle class="eye" cx="103" cy="62" r="3"/>
+        <circle class="eye" cx="117" cy="62" r="3"/>
+        <path class="beak" d="M110 66 L101 76 L119 76 Z"/>
+      </svg>
+    </div>
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
     <div class="version">Versão 1.0</div>
@@ -63,34 +57,56 @@
 
     <section id="pesquisa" class="card">
       <h2>Pesquisa Rápida</h2>
-      <div id="jornadaStatus" class="jornadaBox mini">Inicie a jornada/meeting antes da primeira pesquisa.</div>
-      <div class="grid compactForm">
+      <div id="jornadaStatus" class="jornadaBox mini admOnly">Jornada ADM: iniciada automaticamente ao entrar na pesquisa.</div>
+      <div id="jornadaControls" class="grid compactForm admOnly">
         <select id="jornada_equipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select>
         <select id="jornada_ponto"><option value="">Ponto de captação</option><option>Porta dentro do Park</option><option>Corredor</option><option>Spinassi Avenida</option><option>Fábrica Spinassi</option><option>Baden Baden</option><option>Guarda-chuvas</option><option>Igreja</option><option>Djalma</option><option>Renner</option><option>Rua Roda Gigante</option></select>
         <button class="main" onclick="iniciarJornada()">Iniciar Jornada / Meeting</button>
       </div>
-      <p class="hint">A pesquisa foi reduzida para caber melhor na tela do celular.</p>
+      <p class="hint">Pesquisa rápida para celular. O controle de jornada fica oculto para a equipe e visível apenas ao ADM.</p>
 
       <div class="grid compactForm">
         <input id="convidado_1" placeholder="Nome do senhor"><select id="idade_1"><option value="">Idade senhor</option></select><select id="profissao_1" onchange="toggleRendaEmpresa()"><option value="">Profissão senhor</option></select>
         <input id="convidado_2" placeholder="Nome da senhora"><select id="idade_2"><option value="">Idade senhora</option></select><select id="profissao_2" onchange="toggleRendaEmpresa()"><option value="">Profissão senhora</option></select>
         <select id="estado_civil"><option value="">Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option><option>Divorciado</option><option>Viúvo</option></select>
         <select id="tempo_juntos"><option value="">Tempo juntos</option><option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option><option>3 a 5 anos</option><option>6 a 10 anos</option><option>Mais de 10 anos</option></select>
-        <input id="renda_casal" inputmode="numeric" placeholder="Renda mensal livre. Ex: 15000">
+        <input id="renda_casal" inputmode="numeric" placeholder="Renda mensal. Ex: R$ 15.000,00">
         <div id="boxRendaEmpresa" class="grid hidden" style="grid-column:1/-1">
-          <input id="renda_bruta" inputmode="numeric" placeholder="Renda bruta empresa/casal">
-          <input id="renda_liquida" inputmode="numeric" placeholder="Renda líquida empresa/casal">
+          <input id="renda_bruta" inputmode="numeric" placeholder="Renda bruta. Ex: R$ 30.000,00">
+          <input id="renda_liquida" inputmode="numeric" placeholder="Renda líquida. Ex: R$ 15.000,00">
           <span class="mini">Empresário/comerciante: a qualificação usa a renda líquida.</span>
         </div>
         <select id="veiculo"><option value="">Possui carro?</option><option>Sim</option><option>Não</option></select><select id="ano_veiculo"><option value="">Ano carro</option></select><select id="marca_carro"><option value="">Marca carro</option></select>
         <select id="modelo_carro"><option value="">Modelo carro</option></select><select id="cartao_credito"><option value="">Cartão?</option><option>Sim</option><option>Não</option></select><select id="casa_propria"><option value="">Casa própria?</option><option>Sim</option><option>Não</option></select>
-        <select id="multipropriedade"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select><input id="onde_multipropriedade" placeholder="Onde conheceu?"><input id="programacao_casal" placeholder="Programação do casal hoje">
-        <select id="brinde"><option value="">Brinde entregue</option><option>2 Museu de Cera</option><option>1 Museu de Cera</option><option>2 Terror</option><option>1 Terror</option><option>2 Minimundo</option><option>1 Minimundo</option><option>2 Vale dos Dinossauros</option><option>1 Vale dos Dinossauros</option><option>R$ 100 em Museu de Cera</option><option>R$ 100 em Terror</option><option>R$ 100 em Minimundo</option><option>R$ 100 em Vale dos Dinossauros</option><option>R$ 100 Rostie</option><option>R$ 100 Vemaguet</option><option>R$ 100 Kankurus Boliche</option><option>R$ 100 Combustível</option><option>Spinassi Chocolate</option><option>Suvinis 150</option><option>Espelho do Jordão</option><option>Outro</option></select>
+        <select id="multipropriedade"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select><input id="onde_multipropriedade" placeholder="Onde conheceu?"><select id="brinde"><option value="">Brinde entregue</option><option>2 Museu de Cera</option><option>1 Museu de Cera</option><option>2 Terror</option><option>1 Terror</option><option>2 Minimundo</option><option>1 Minimundo</option><option>2 Vale dos Dinossauros</option><option>1 Vale dos Dinossauros</option><option>R$ 100 em Museu de Cera</option><option>R$ 100 em Terror</option><option>R$ 100 em Minimundo</option><option>R$ 100 em Vale dos Dinossauros</option><option>R$ 100 Rostie</option><option>R$ 100 Vemaguet</option><option>R$ 100 Kankurus Boliche</option><option>R$ 100 Combustível</option><option>Spinassi Chocolate</option><option>Suvinis 150</option><option>Espelho do Jordão</option><option>Outro</option></select>
         <select id="levou_sala"><option value="">Levou em sala?</option><option>Sim</option><option>Não</option></select><input id="contato" placeholder="WhatsApp / contato">
       </div>
       <textarea id="observacoes" style="margin-top:8px" placeholder="Observações"></textarea>
       <div class="rowbtn" style="margin-top:8px"><button class="main" onclick="calcularQualificacao()">Calcular Q/NQ</button><button class="main" onclick="salvarPesquisa()">Salvar Pesquisa</button></div>
-      <div id="resultadoQualificacao" style="margin-top:8px"></div><p id="formMsg"></p>
+      <div id="resultadoQualificacao" style="margin-top:8px"></div>
+      <div id="brindesDisponiveis" class="card hidden" style="margin-top:10px">
+        <h2>Brindes disponíveis para negociação</h2>
+        <div class="grid2">
+          <div class="pill">2 Museu de Cera ou 1 ingresso</div>
+          <div class="pill">2 Terror ou 1 ingresso</div>
+          <div class="pill">2 Minimundo ou 1 ingresso</div>
+          <div class="pill">2 Vale dos Dinossauros ou 1 ingresso</div>
+          <div class="pill">R$ 100 em Museu/Terror/Minimundo/Vale</div>
+          <div class="pill">R$ 100 Rostie</div>
+          <div class="pill">R$ 100 Vemaguet</div>
+          <div class="pill">R$ 100 Kankurus Boliche</div>
+          <div class="pill">R$ 100 Combustível</div>
+          <div class="pill">Spinassi Chocolate</div>
+          <div class="pill">Suvinis 150</div>
+          <div class="pill">Espelho do Jordão</div>
+        </div>
+      </div>
+<p id="formMsg"></p>
+      <div id="fichaSalvaBox" class="card hidden" style="margin-top:10px">
+        <h2>Ficha salva</h2>
+        <div id="fichaSalvaConteudo"></div>
+      </div>
+
     </section>
 
     <section id="dash" class="card hidden"><h2>Dashboard</h2><button class="main" onclick="carregarDashboard()">Atualizar</button><div class="kpis" style="margin-top:8px"><div class="kpi">Pesquisas<b id="kTotal">0</b></div><div class="kpi">Q<b id="kQ">0</b></div><div class="kpi">NQ<b id="kNQ">0</b></div><div class="kpi">Sala<b id="kSala">0</b></div><div class="kpi">Conversão<b id="kConv">0%</b></div></div><div class="grid2"><div class="card"><h2>Pontos</h2><canvas id="chartPontos"></canvas></div><div class="card"><h2>Horários</h2><canvas id="chartHoras"></canvas></div></div></section>
@@ -143,21 +159,91 @@ let usuarioEmail="",captadorNome="",userRole="captador",latitude=null,longitude=
 const profBloqDefault=['Operador de caixa','Zelador','Secretária','Auxiliar','Assistente','Avon/Natura/Multinível','Gari','Vendedor ambulante','Motoboy','Do lar','Estoquista','Eletricista','Diarista','Doméstica','Garçom','Manicure','Pedreiro','Atendente','Balconista','Babá','Porteiro','Frentista','Estudante','Uber/App/Freelancer'];
 let profBloq=[...profBloqDefault],cfg={renda_minima:15000,ano_carro_minimo:2011,idade_minima_casal:25,idade_minima_solo:30,idade_maxima:64,uniao_estavel_minima_anos:2,casa_propria_obrigatoria:true,cartao_credito_obrigatorio:true,profissoes_definidas_obrigatorio:true};
 const profs=['Empresário','Comerciante','Autônomo','Servidor público','Médico','Dentista','Advogado','Engenheiro','Arquiteto','Administrador','Gerente','Diretor','Consultor','Representante comercial','Professor','Contador','Policial','Militar','Aposentado','Produtor rural','Investidor','Vendedor','Corretor','Técnico','Operador de caixa','Zelador','Secretária','Auxiliar','Assistente','Avon/Natura/Multinível','Gari','Vendedor ambulante','Motoboy','Do lar','Estoquista','Eletricista','Diarista','Doméstica','Garçom','Manicure','Pedreiro','Atendente','Balconista','Babá','Porteiro','Frentista','Estudante','Uber/App/Freelancer','Outro'];
-const marcas=['Chevrolet','Fiat','Volkswagen','Toyota','Honda','Hyundai','Jeep','Renault','Nissan','Ford','BMW','Mercedes-Benz','Audi','Volvo','BYD','Caoa Chery','Peugeot','Citroën','Mitsubishi','Kia','Land Rover','Outro'];
-const modelos=['Onix','Onix Plus','Tracker','Cruze','Spin','S10','Toro','Strada','Argo','Cronos','Mobi','Pulse','Fastback','Uno','Gol','Polo','Virtus','T-Cross','Nivus','Taos','Saveiro','Corolla','Corolla Cross','Hilux','SW4','Yaris','Etios','Civic','City','HR-V','Fit','WR-V','Creta','HB20','Tucson','Compass','Renegade','Commander','Kwid','Sandero','Logan','Duster','Oroch','Kicks','Versa','Sentra','Frontier','Ka','EcoSport','Ranger','Fusion','X1','X3','320i','C180','GLA','A3','Q3','XC40','Dolphin','Song Plus','Tiggo 5x','Tiggo 7','Tiggo 8','2008','208','C3','C4 Cactus','L200','ASX','Sportage','Evoque','Discovery','Outro'];
+const marcas=["Chevrolet", "Fiat", "Volkswagen", "Toyota", "Honda", "Hyundai", "Jeep", "Renault", "Nissan", "Ford", "BMW", "Mercedes-Benz", "Audi", "Volvo", "BYD", "GWM", "Caoa Chery", "Peugeot", "Citroën", "Mitsubishi", "Kia", "Land Rover", "Ram", "Porsche", "Lexus", "Subaru", "Suzuki", "Mini", "JAC", "Troller", "Iveco", "Scania", "Volvo Caminhões", "MAN", "Agrale", "Outro"];
+const modelos=["Onix", "Onix Plus", "Tracker", "Cruze", "Spin", "S10", "Montana", "Equinox", "Trailblazer", "Cobalt", "Prisma", "Celta", "Classic", "Astra", "Vectra", "Zafira", "Meriva", "Captiva", "Agile", "Strada", "Toro", "Argo", "Cronos", "Mobi", "Pulse", "Fastback", "Uno", "Palio", "Siena", "Grand Siena", "Idea", "Bravo", "Linea", "Punto", "Doblò", "Fiorino", "Freemont", "Gol", "Polo", "Virtus", "T-Cross", "Nivus", "Taos", "Saveiro", "Voyage", "Fox", "CrossFox", "SpaceFox", "Golf", "Jetta", "Passat", "Tiguan", "Amarok", "Kombi", "Up", "Corolla", "Corolla Cross", "Hilux", "SW4", "Yaris", "Etios", "RAV4", "Camry", "Prius", "Bandeirante", "Civic", "City", "HR-V", "Fit", "WR-V", "CR-V", "Accord", "Civic Si", "HB20", "HB20S", "Creta", "Tucson", "Santa Fe", "ix35", "Azera", "Elantra", "i30", "Veloster", "Veracruz", "Compass", "Renegade", "Commander", "Cherokee", "Grand Cherokee", "Wrangler", "Kwid", "Sandero", "Logan", "Duster", "Oroch", "Captur", "Fluence", "Megane", "Scenic", "Clio", "Kicks", "Versa", "Sentra", "Frontier", "March", "Livina", "Tiida", "X-Trail", "Altima", "Leaf", "Ka", "EcoSport", "Ranger", "Fusion", "Fiesta", "Focus", "Edge", "Territory", "Bronco", "Maverick", "F-250", "X1", "X2", "X3", "X4", "X5", "X6", "X7", "118i", "120i", "320i", "330i", "530i", "M3", "M4", "iX", "i3", "i4", "C180", "C200", "C300", "A200", "CLA200", "GLA200", "GLB200", "GLC", "GLE", "SLC", "Sprinter", "Vito", "A3", "A4", "A5", "A6", "Q3", "Q5", "Q7", "Q8", "TT", "e-tron", "XC40", "XC60", "XC90", "S60", "V40", "C40", "EX30", "Dolphin", "Dolphin Mini", "Song Plus", "Song Pro", "Yuan Plus", "Seal", "Tan", "Han", "King", "Shark", "Haval H6", "Ora 03", "Poer", "Tank 300", "Tiggo 2", "Tiggo 3X", "Tiggo 5X", "Tiggo 7", "Tiggo 8", "Arrizo 5", "Arrizo 6", "iCar", "208", "2008", "3008", "5008", "Partner", "Expert", "C3", "C4 Cactus", "C4 Lounge", "Aircross", "Jumpy", "Berlingo", "L200", "Pajero", "Outlander", "ASX", "Eclipse Cross", "Lancer", "TR4", "Sportage", "Sorento", "Cerato", "Picanto", "Soul", "Bongo", "Evoque", "Discovery", "Discovery Sport", "Defender", "Range Rover", "Freelander", "Ram 1500", "Ram 2500", "Ram 3500", "Macan", "Cayenne", "Panamera", "911", "Boxster", "Cayman", "ES", "NX", "RX", "UX", "Forester", "Outback", "XV", "Impreza", "Jimny", "Vitara", "S-Cross", "Cooper", "Countryman", "J3", "J5", "T40", "T50", "T60", "Troller T4", "Daily", "Stralis", "Hi-Way", "Actros", "Atego", "Accelo", "Constellation", "Delivery", "Outro"];
+
+function formatBRLInput(el){
+  let v=String(el.value||'').replace(/\D/g,'');
+  if(!v){el.value='';return}
+  el.value=(Number(v)/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+}
+setTimeout(()=>{
+  ['renda_casal','renda_bruta','renda_liquida','cfg_renda','cfg_renda_individual'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.addEventListener('input',()=>formatBRLInput(el));
+  });
+},0);
+
 function init(){for(let i=18;i<=80;i++){opt('idade_1',i,i+' anos');opt('idade_2',i,i+' anos')}for(let a=2026;a>=1995;a--)opt('ano_veiculo',a,a);profs.forEach(p=>{opt('profissao_1',p,p);opt('profissao_2',p,p)});marcas.forEach(m=>opt('marca_carro',m,m));modelos.forEach(m=>opt('modelo_carro',m,m));}
 init();
-async function entrar(){const email=val('email').toLowerCase().trim(),nome=val('captadorNome').trim();if(!email||!nome)return msg('loginMsg','Preencha e-mail e nome','erro');usuarioEmail=email;captadorNome=nome;const {data}=await db.from('approved_users').select('*').eq('email',email).maybeSingle();if(!data){await db.from('approved_users').insert({email,name:nome,approved:false});showOnlyLogin('aguardandoBox');return}if(!data.approved){showOnlyLogin('aguardandoBox');return}userRole=data.role||'captador';document.getElementById('loginBox').classList.add('hidden');document.getElementById('appBox').classList.remove('hidden');gps();carregarConfig();}
+async function entrar(){const email=val('email').toLowerCase().trim(),nome=val('captadorNome').trim();if(!email||!nome)return msg('loginMsg','Preencha e-mail e nome','erro');usuarioEmail=email;captadorNome=nome;const {data}=await db.from('approved_users').select('*').eq('email',email).maybeSingle();if(!data){await db.from('approved_users').insert({email,name:nome,approved:false});showOnlyLogin('aguardandoBox');return}if(!data.approved){showOnlyLogin('aguardandoBox');return}userRole=data.role||'captador';document.getElementById('loginBox').classList.add('hidden');document.getElementById('appBox').classList.remove('hidden');gps();carregarConfig();aplicarPermissaoVisual();iniciarJornadaAutomatica();}
 function showOnlyLogin(id){document.getElementById('loginBox').classList.add('hidden');document.getElementById(id).classList.remove('hidden')}
 function aba(id,b){['pesquisa','dash','mapa','calor','rel','profissionais','users','ceo'].forEach(x=>document.getElementById(x).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(id==='dash')carregarDashboard();if(id==='mapa')setTimeout(carregarMapa,250);if(id==='calor')carregarCalor();if(id==='rel')carregarRelatorios();if(id==='profissionais')carregarProfissionais();if(id==='users')carregarUsuarios();if(id==='ceo')carregarConfig();}
 function gps(){navigator.geolocation&&navigator.geolocation.getCurrentPosition(p=>{latitude=p.coords.latitude;longitude=p.coords.longitude},()=>{}, {enableHighAccuracy:true})}
+
+async function iniciarJornadaAutomatica(){
+  gps();
+  if(jornada) return;
+  const equipe='PARK';
+  const ponto='Operação';
+  const {data,error}=await db.from('jornadas_captacao').insert({
+    user_email:usuarioEmail,captador_nome:captadorNome,equipe,ponto_captacao:ponto,
+    latitude_inicio:latitude,longitude_inicio:longitude,ativo:true
+  }).select().single();
+  if(!error&&data){
+    jornada=data;
+    const js=document.getElementById('jornadaStatus');
+    if(js) js.innerHTML=`<b class="ok">Jornada iniciada automaticamente:</b> ${new Date(data.inicio_meeting).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
+  }
+}
+function aplicarPermissaoVisual(){
+  const isAdm=['ceo','gestor','lider','líder','admin'].includes(String(userRole||'').toLowerCase());
+  document.querySelectorAll('.admOnly').forEach(el=>el.style.display=isAdm?'block':'none');
+  const jc=document.getElementById('jornadaControls');
+  if(jc) jc.style.display=isAdm?'grid':'none';
+}
+
 async function iniciarJornada(){gps();const equipe=val('jornada_equipe'),ponto=val('jornada_ponto');if(!equipe||!ponto)return alert('Escolha equipe e ponto.');const {data,error}=await db.from('jornadas_captacao').insert({user_email:usuarioEmail,captador_nome:captadorNome,equipe,ponto_captacao:ponto,latitude_inicio:latitude,longitude_inicio:longitude,ativo:true}).select().single();if(error)return alert('Erro ao iniciar jornada. Rode o SQL da jornada.');jornada=data;document.getElementById('jornadaStatus').innerHTML=`<b class="ok">Jornada iniciada:</b> ${ponto} • ${new Date(data.inicio_meeting).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;}
 function toggleRendaEmpresa(){const p1=val('profissao_1'),p2=val('profissao_2');document.getElementById('boxRendaEmpresa').classList.toggle('hidden',!(p1==='Empresário'||p1==='Comerciante'||p2==='Empresária'||p2==='Comerciante'||p2==='Empresário'||p1==='Empresária'))}
 function moneyNumber(s){return Number(String(s||'').replace(/[^0-9,\.]/g,'').replace(',','.'))||0}
 function tempoUniaoOk(tempo,minAnos){const mapa={'Menos de 1 ano':0,'1 ano':1,'2 anos':2,'3 a 5 anos':3,'6 a 10 anos':6,'Mais de 10 anos':11};return (mapa[tempo]||0)>=Number(minAnos||2)}
 function profissaoNaoDefinida(p){return !p||p==='Outro'}
 function calcularQualificacao(){let motivos=[],itens=0;const idadeH=Number(val('idade_1')),idadeM=Number(val('idade_2')),ano=Number(val('ano_veiculo'));let renda=moneyNumber(val('renda_casal'));if(!document.getElementById('boxRendaEmpresa').classList.contains('hidden')&&moneyNumber(val('renda_liquida'))>0)renda=moneyNumber(val('renda_liquida'));const civil=val('estado_civil'),tempo=val('tempo_juntos'),prof1=val('profissao_1'),prof2=val('profissao_2');const rendaOk=renda>=Number(cfg.renda_minima||15000),temCarro=val('veiculo')==='Sim',carroAnoOk=temCarro&&ano>=Number(cfg.ano_carro_minimo||2011),casaOk=val('casa_propria')==='Sim',cartaoOk=val('cartao_credito')==='Sim';const profBlock=profBloq.includes(prof1)||profBloq.includes(prof2),profDefOk=!(cfg.profissoes_definidas_obrigatorio===true)||(!profissaoNaoDefinida(prof1)&&!profissaoNaoDefinida(prof2));const idadeMin=Number(cfg.idade_minima_casal||25),idadeMax=Number(cfg.idade_maxima||64),idadeSolo=Number(cfg.idade_minima_solo||30);if(profBlock)motivos.push('Profissão bloqueada pelo CEO');if(!profDefOk){motivos.push('Profissão não definida');itens++}if(idadeH<idadeMin)motivos.push('Homem abaixo da idade mínima');if(idadeH>idadeMax||idadeM>idadeMax)motivos.push('Acima do limite de idade');let relOk=false;if(civil==='Casados')relOk=true;if(civil==='União estável'&&tempoUniaoOk(tempo,cfg.uniao_estavel_minima_anos))relOk=true;if(['Solteiro','Divorciado','Viúvo'].includes(civil)){relOk=idadeH>=idadeSolo&&rendaOk&&carroAnoOk&&casaOk&&cartaoOk;if(!relOk)motivos.push('Perfil individual/solo fora da regra')}if(['Namorados','Noivos'].includes(civil)){relOk=rendaOk&&carroAnoOk&&casaOk;if(!relOk)motivos.push('Namorados/noivos precisam de perfil individual')}if(!relOk&&!['Solteiro','Divorciado','Viúvo','Namorados','Noivos'].includes(civil)){motivos.push('Relacionamento fora da regra');itens++}if(!rendaOk){motivos.push('Renda abaixo da regra');itens++}if(!temCarro){motivos.push('Sem carro');itens+=(cfg.q1_sem_carro===false?2:1)}else if(!carroAnoOk){motivos.push('Carro abaixo do ano mínimo');itens+=(cfg.q1_carro_antigo===false?2:1)}if(cfg.casa_propria_obrigatoria!==false&&!casaOk){motivos.push('Sem casa própria');itens+=(cfg.q1_sem_casa===false?2:1)}if(cfg.cartao_credito_obrigatorio!==false&&!cartaoOk){motivos.push('Sem cartão de crédito');itens++}if(profBlock||idadeH<idadeMin||idadeH>idadeMax||idadeM>idadeMax||itens>=2)qualificacao='NQ';else if(itens===1)qualificacao='Q 1 ITEM / LÍDER DECIDE';else qualificacao='Q';motivoQualificacao=motivos.length?motivos.join(' | '):'Perfil dentro da regra do CEO';const box=document.getElementById('resultadoQualificacao');box.className='result '+(qualificacao==='Q'?'q':qualificacao.includes('1 ITEM')?'nq1':'nq');box.innerHTML=`${qualificacao}<br><span class="mini">${motivoQualificacao}</span>`;return qualificacao;}
-async function salvarPesquisa(){if(!jornada)return alert('Inicie a jornada/meeting primeiro.');calcularQualificacao();gps();const inicio=new Date(jornada.inicio_meeting);const tempo=Math.max(0,Math.round((new Date()-inicio)/60000));const p={user_email:usuarioEmail,captador_nome:captadorNome,equipe:jornada.equipe,ponto_captacao:jornada.ponto_captacao,jornada_id:jornada.id,inicio_meeting:jornada.inicio_meeting,tempo_no_ponto_minutos:tempo,convidado_1:val('convidado_1'),idade_1:num('idade_1'),profissao_1:val('profissao_1'),convidado_2:val('convidado_2'),idade_2:num('idade_2'),profissao_2:val('profissao_2'),estado_civil:val('estado_civil'),tempo_juntos:val('tempo_juntos'),renda_casal:val('renda_casal'),renda_bruta:val('renda_bruta'),renda_liquida:val('renda_liquida'),veiculo:val('veiculo'),ano_veiculo:val('ano_veiculo'),marca_carro:val('marca_carro'),modelo_carro:val('modelo_carro'),cartao_credito:val('cartao_credito'),casa_propria:val('casa_propria'),multipropriedade:val('multipropriedade'),onde_multipropriedade:val('onde_multipropriedade'),programacao_casal:val('programacao_casal'),brinde:val('brinde'),levou_sala:val('levou_sala'),contato:val('contato'),observacoes:val('observacoes'),status:qualificacao,qualificacao_automatica:qualificacao,motivo_qualificacao:motivoQualificacao,latitude,longitude,horario_local:String(new Date().getHours()).padStart(2,'0')+':00'};const {error}=await db.from('pesquisas').insert(p);if(error){console.log(error);return msg('formMsg','Erro ao salvar. Rode o SQL completo no Supabase.','erro')}msg('formMsg',`Pesquisa salva! Tempo no ponto: ${tempo} min`,'ok');}
+
+function renderFichaSalva(p){
+  const qClass = String(p.qualificacao_automatica||p.status||'').startsWith('NQ') ? 'nq' : (String(p.qualificacao_automatica||p.status||'').includes('1 ITEM') ? 'nq1' : 'q');
+  const htmlFicha = `
+    <div class="result ${qClass}">
+      ${p.qualificacao_automatica || p.status || '-'}<br>
+      <span class="mini">${p.motivo_qualificacao || ''}</span>
+    </div>
+    <table>
+      <tr><th>Profissional</th><td>${p.captador_nome || '-'}</td></tr>
+      <tr><th>Equipe / Ponto</th><td>${p.equipe || '-'} • ${p.ponto_captacao || '-'}</td></tr>
+      <tr><th>Senhor</th><td>${p.convidado_1 || '-'} • ${p.idade_1 || '-'} anos • ${p.profissao_1 || '-'}</td></tr>
+      <tr><th>Senhora</th><td>${p.convidado_2 || '-'} • ${p.idade_2 || '-'} anos • ${p.profissao_2 || '-'}</td></tr>
+      <tr><th>Relacionamento</th><td>${p.estado_civil || '-'} • ${p.tempo_juntos || '-'}</td></tr>
+      <tr><th>Renda</th><td>${p.renda_casal || '-'} ${p.renda_liquida ? ' | Líquida: '+p.renda_liquida : ''} ${p.renda_bruta ? ' | Bruta: '+p.renda_bruta : ''}</td></tr>
+      <tr><th>Carro</th><td>${p.veiculo || '-'} • ${p.marca_carro || '-'} ${p.modelo_carro || ''} • Ano ${p.ano_veiculo || '-'}</td></tr>
+      <tr><th>Casa / Cartão</th><td>Casa própria: ${p.casa_propria || '-'} • Cartão: ${p.cartao_credito || '-'}</td></tr>
+      <tr><th>Multipropriedade</th><td>${p.multipropriedade || '-'} ${p.onde_multipropriedade ? ' • '+p.onde_multipropriedade : ''}</td></tr>
+      <tr><th>Brinde</th><td><b>${p.brinde || '-'}</b></td></tr>
+      <tr><th>Levou em sala?</th><td>${p.levou_sala || '-'}</td></tr>
+      <tr><th>Contato</th><td>${p.contato || '-'}</td></tr>
+      <tr><th>Tempo no ponto</th><td>${p.tempo_no_ponto_minutos || 0} min</td></tr>
+      <tr><th>Observações</th><td>${p.observacoes || '-'}</td></tr>
+    </table>
+  `;
+  const box=document.getElementById('fichaSalvaBox');
+  const conteudo=document.getElementById('fichaSalvaConteudo');
+  if(box && conteudo){
+    conteudo.innerHTML=htmlFicha;
+    box.classList.remove('hidden');
+    box.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+async function salvarPesquisa(){if(!jornada){await iniciarJornadaAutomatica();}calcularQualificacao();gps();if(!jornada){jornada={id:null,equipe:'PARK',ponto_captacao:'Operação',inicio_meeting:new Date().toISOString()};}const inicio=new Date(jornada.inicio_meeting);const tempo=Math.max(0,Math.round((new Date()-inicio)/60000));const p={user_email:usuarioEmail,captador_nome:captadorNome,equipe:jornada.equipe,ponto_captacao:jornada.ponto_captacao,jornada_id:jornada.id,inicio_meeting:jornada.inicio_meeting,tempo_no_ponto_minutos:tempo,convidado_1:val('convidado_1'),idade_1:num('idade_1'),profissao_1:val('profissao_1'),convidado_2:val('convidado_2'),idade_2:num('idade_2'),profissao_2:val('profissao_2'),estado_civil:val('estado_civil'),tempo_juntos:val('tempo_juntos'),renda_casal:val('renda_casal'),renda_bruta:val('renda_bruta'),renda_liquida:val('renda_liquida'),veiculo:val('veiculo'),ano_veiculo:val('ano_veiculo'),marca_carro:val('marca_carro'),modelo_carro:val('modelo_carro'),cartao_credito:val('cartao_credito'),casa_propria:val('casa_propria'),multipropriedade:val('multipropriedade'),onde_multipropriedade:val('onde_multipropriedade'),brinde:val('brinde'),levou_sala:val('levou_sala'),contato:val('contato'),observacoes:val('observacoes'),status:qualificacao,qualificacao_automatica:qualificacao,motivo_qualificacao:motivoQualificacao,latitude,longitude,horario_local:String(new Date().getHours()).padStart(2,'0')+':00'};const {error}=await db.from('pesquisas').insert(p);if(error){console.log(error);return msg('formMsg','Erro ao salvar. Rode o SQL completo no Supabase.','erro')}msg('formMsg',`Pesquisa salva com sucesso!`,'ok');renderFichaSalva(p);document.getElementById('brindesDisponiveis').classList.remove('hidden');}
 async function carregarDashboard(){const data=await getPesquisas();const total=data.length,q=data.filter(x=>(x.qualificacao_automatica||x.status)==='Q').length,nq=data.filter(x=>String(x.qualificacao_automatica||x.status).startsWith('NQ')).length,sala=data.filter(x=>x.levou_sala==='Sim').length;set('kTotal',total);set('kQ',q);set('kNQ',nq);set('kSala',sala);set('kConv',total?Math.round(sala/total*100)+'%':'0%');chart('chartPontos',agrupar(data,'ponto_captacao'),'bar',chartPontos,c=>chartPontos=c);chart('chartHoras',agruparHoras(data),'line',chartHoras,c=>chartHoras=c)}
 async function carregarMapa(){const data=(await getPesquisas()).filter(x=>x.latitude&&x.longitude);if(!map){map=L.map('map').setView([-22.7386,-45.5926],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map)}map.eachLayer(l=>{if(l instanceof L.Circle||l instanceof L.Marker)map.removeLayer(l)});data.forEach(p=>{L.circle([p.latitude,p.longitude],{radius:45,color:'#f3131f',fillColor:'#ff3030',fillOpacity:.32}).addTo(map).bindPopup(`<b>${p.captador_nome||''}</b><br>${p.ponto_captacao||''}<br>${p.qualificacao_automatica||p.status||''}<br>Tempo: ${p.tempo_no_ponto_minutos||0} min<br>Brinde: ${p.brinde||''}`)});if(data[0])map.setView([data[0].latitude,data[0].longitude],15)}
 async function carregarCalor(){const data=await getPesquisas();let rows='<table><tr><th>Horário</th><th>Pesquisas</th><th>Q</th><th>Sala</th></tr>';for(let h=10;h<=20;h++){const hr=String(h).padStart(2,'0')+':00';const arr=data.filter(x=>x.horario_local===hr);rows+=`<tr><td>${hr}</td><td>${arr.length}</td><td>${arr.filter(x=>(x.qualificacao_automatica||x.status)==='Q').length}</td><td>${arr.filter(x=>x.levou_sala==='Sim').length}</td></tr>`}document.getElementById('heatTable').innerHTML=rows+'</table>'}
