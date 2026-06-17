@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro Elite 4.4</title>
+<title>CaptaPro Elite 4.6</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -137,7 +137,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 }
 
 
-/* Versão 4.4 */
+/* Versão 4.5 */
 .loggedPromoter{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 12px;padding:11px 13px;border-radius:12px;background:#0b1510;border:1px solid #1e5f3b;color:#d9ffe8}
 .loggedPromoter b{color:#00e676}
 .salaActions{display:flex;gap:7px;flex-wrap:wrap}
@@ -165,6 +165,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .adminResearchMeta{color:#aaa;font-size:12px;margin-top:4px}
 @media(max-width:900px){.modalGrid{grid-template-columns:1fr}.modalGrid .full{grid-column:auto}.loggedPromoter{align-items:flex-start;flex-direction:column}}
 
+
+/* Versão 4.5 */
+.estadoCidadeGroup{display:grid;grid-template-columns:105px 1fr;gap:8px}
+.estadoCidadeGroup select,.estadoCidadeGroup input{min-width:0}
+@media(max-width:900px){.estadoCidadeGroup{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 <body>
@@ -188,12 +194,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 4.4 • Atualizado em 17/06/2026</div>
-    <p>Sistema Inteligente de Captação</p>
+    <div class="version">CaptaPro Elite 4.6 • Atualizado em 17/06/2026</div>
+    <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Criado por Raphael Bueno</p>
   </div>
 
   <div id="loginBox" class="card">
-    <h2>Entrada</h2><div class="warningBox"><b>Versão 4.4:</b> declaração de sala pelo promotor, aprovação do ADM, consultor/anotações, edição e exclusão de pesquisas, metas para todos e mapa de locais visitados.</div>
+    <h2>Entrada</h2><div class="readonlyInfo" style="margin-bottom:10px;text-align:center;font-weight:800;color:#fff">Criado por <span style="color:#00e676">Raphael Bueno</span></div>
     <div class="grid2"><input id="email" type="email" placeholder="Seu e-mail"><input id="captadorNome" placeholder="Seu nome completo"></div>
     <button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button>
     <p id="loginMsg"></p>
@@ -225,7 +231,10 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       <div class="grid compact">
         <select id="equipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select>
         <select id="ponto_captacao"><option value="">Ponto</option><option>Porta dentro do Park</option><option>Corredor</option><option>Spinassi Avenida</option><option>Fábrica Spinassi</option><option>Baden Baden</option><option>Guarda-chuvas</option><option>Igreja</option><option>Djalma</option><option>Renner</option><option>Rua Roda Gigante</option></select>
-        <select id="tipo_abordagem"><option value="">Abordagem</option><option>Brinde</option><option>Indicação</option><option>Curiosidade</option><option>Espontânea</option></select>
+        <div class="estadoCidadeGroup">
+          <select id="estado_origem"><option value="">Estado</option><option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option></select>
+          <input id="cidade_origem" placeholder="Cidade">
+        </div>
 
         <input id="convidado_1" placeholder="Nome 1"><select id="idade_1"><option value="">Idade 1</option></select><select id="profissao_1" onchange="toggleRendaEmpresa();toggleOutraProfissao()"><option value="">Profissão 1</option></select>
         <input id="outra_profissao_1" class="hidden" placeholder="Outra profissão 1">
@@ -235,14 +244,6 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
         <select id="estado_civil"><option value="">Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option><option>Divorciado</option><option>Viúvo</option></select>
         <select id="tempo_juntos"><option value="">Tempo juntos</option><option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option><option>3 a 5 anos</option><option>6 a 10 anos</option><option>Mais de 10 anos</option></select>
-        <input id="renda_casal" inputmode="numeric" placeholder="Renda mensal. Ex: R$ 15.000,00">
-
-        <div id="boxRendaEmpresa" class="grid hidden" style="grid-column:1/-1">
-          <input id="renda_bruta" inputmode="numeric" placeholder="Renda bruta. Ex: R$ 30.000,00">
-          <input id="renda_liquida" inputmode="numeric" placeholder="Renda líquida. Ex: R$ 15.000,00">
-          <span class="mini">Empresário/comerciante: o sistema usa a renda líquida.</span>
-        </div>
-
         <select id="veiculo" onchange="toggleVeiculo()"><option value="">Possui carro?</option><option>Sim</option><option>Não</option></select>
         <select id="marca_carro" onchange="carregarModelosFipe()" disabled><option value="">Carregando marcas...</option></select>
         <select id="modelo_carro" onchange="carregarAnosFipe()" disabled><option value="">Selecione primeiro a marca</option></select>
@@ -251,7 +252,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
         <select id="cartao_credito"><option value="">Cartão?</option><option>Sim</option><option>Não</option></select>
         <select id="casa_propria"><option value="">Casa própria?</option><option>Sim</option><option>Não</option></select>
         <select id="multipropriedade"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
-        <input id="onde_multipropriedade" placeholder="Onde conheceu?">
+        <input id="renda_casal" inputmode="numeric" placeholder="Renda mensal. Ex: R$ 15.000,00">
+        <div id="boxRendaEmpresa" class="grid hidden" style="grid-column:1/-1">
+          <input id="renda_bruta" inputmode="numeric" placeholder="Renda bruta. Ex: R$ 30.000,00">
+          <input id="renda_liquida" inputmode="numeric" placeholder="Renda líquida. Ex: R$ 15.000,00">
+          <span class="mini">Empresário/comerciante: o sistema usa a renda líquida.</span>
+        </div>
         <select id="brinde" disabled><option value="">Calcule Q/NQ para liberar o brinde</option></select>
         <div id="brindeRegra" class="readonlyInfo">O sistema libera os brindes conforme a qualificação.</div>
         <input id="contato" placeholder="WhatsApp / contato">
@@ -420,7 +426,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
         <label class="filterLabel">&nbsp;<button class="secondary" onclick="centralizarMapa()">Centralizar pings</button></label>
       </div>
       <div id="mapStatus" class="statusLine"><span class="statusDot offline"></span><span class="mini">Selecione um promotor e um dia para ver todos os horários e locais.</span></div>
-      <div class="warningBox">A rota é formada pelos registros enviados pelo celular durante o dia. Cada ping mostra horário, local e precisão aproximada. O histórico começa a ser registrado após executar o SQL da versão 4.4.</div>
+      <div class="warningBox">A rota é formada pelos registros enviados pelo celular durante o dia. Cada ping mostra horário, local e precisão aproximada. O histórico começa a ser registrado após executar o SQL da versão 4.5.</div>
       <div class="mapLegend"><span><i class="statusDot live"></i>posição atual</span><span><i class="statusDot recent"></i>trajeto do dia</span><span><i class="statusDot offline"></i>sem atualização recente</span></div>
       <div id="map"></div>
       <div id="mapaLocaisResumo" class="card"><h2>Locais visitados</h2><div id="mapaLocaisConteudo" class="tableScroll"><p class="mini">Selecione um promotor e um dia.</p></div></div>
@@ -490,7 +496,9 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
         <label>Promotor responsável<input id="adm_edit_captador_nome"></label>
         <label>Equipe<select id="adm_edit_equipe"><option value="">Sem equipe</option><option>PARK</option><option>EXTERNA</option></select></label>
         <label>Ponto de captação<input id="adm_edit_ponto"></label>
-        <label>Tipo de abordagem<input id="adm_edit_tipo"></label>
+        <label>Estado<select id="adm_edit_estado_origem">
+          <option value="">Sem estado</option><option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option></select></label>
+        <label>Cidade<input id="adm_edit_cidade_origem"></label>
         <label>Horário local<input id="adm_edit_horario"></label>
 
         <label>Nome 1<input id="adm_edit_convidado_1"></label>
@@ -515,7 +523,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
         <label>Cartão de crédito<input id="adm_edit_cartao"></label>
         <label>Casa própria<input id="adm_edit_casa"></label>
         <label>Multipropriedade<input id="adm_edit_multipropriedade"></label>
-        <label>Onde conheceu<input id="adm_edit_onde_multi"></label>
+        
 
         <label>Brinde<input id="adm_edit_brinde"></label>
         <label>Custo do brinde<input id="adm_edit_custo_brinde" inputmode="decimal"></label>
@@ -541,7 +549,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
     </div>
   </div>
 
-  <div class="footer">CaptaPro Elite 4.4 • Atualizado em 17/06/2026 • Operação de Captação</div>
+  <div class="footer">CaptaPro Elite 4.6 • Criado por Raphael Bueno • Operação de Captação</div>
 </div>
 
 <script>
@@ -1026,14 +1034,15 @@ async function salvarPesquisa(){
   if(val('veiculo')==='Sim'&&(!val('marca_carro')||!val('modelo_carro')||!val('ano_veiculo')))return msg('formMsg','Selecione marca, modelo e ano do carro.','erro');
   const inicio=new Date(jornada?.inicio_meeting||new Date()),tempo=Math.max(0,Math.round((new Date()-inicio)/60000));
   const p={
-    user_email:usuarioEmail,captador_nome:String(captadorNome).trim(),equipe:val('equipe'),ponto_captacao:val('ponto_captacao'),tipo_abordagem:val('tipo_abordagem'),
+    user_email:usuarioEmail,captador_nome:String(captadorNome).trim(),equipe:val('equipe'),ponto_captacao:val('ponto_captacao'),
+    tipo_abordagem:null,estado_origem:val('estado_origem'),cidade_origem:val('cidade_origem'),
     jornada_id:jornada?.id||null,inicio_meeting:jornada?.inicio_meeting||new Date().toISOString(),tempo_no_ponto_minutos:tempo,
     convidado_1:val('convidado_1'),idade_1:num('idade_1'),profissao_1:profissaoFinal('profissao_1','outra_profissao_1'),
     convidado_2:val('convidado_2'),idade_2:num('idade_2'),profissao_2:profissaoFinal('profissao_2','outra_profissao_2'),
     estado_civil:val('estado_civil'),tempo_juntos:val('tempo_juntos'),
     renda_casal:numericOrNull(val('renda_casal')),renda_bruta:numericOrNull(val('renda_bruta')),renda_liquida:numericOrNull(val('renda_liquida')),
     veiculo:val('veiculo'),ano_veiculo:selectedText('ano_veiculo'),marca_carro:selectedText('marca_carro'),modelo_carro:selectedText('modelo_carro'),valor_fipe:numericOrNull(val('valor_fipe_preview')),
-    cartao_credito:val('cartao_credito'),casa_propria:val('casa_propria'),multipropriedade:val('multipropriedade'),onde_multipropriedade:val('onde_multipropriedade'),
+    cartao_credito:val('cartao_credito'),casa_propria:val('casa_propria'),multipropriedade:val('multipropriedade'),onde_multipropriedade:null,
     brinde:val('brinde'),custo_brinde:valorBrindeEstimado(val('brinde')),
     levou_sala:'Pendente',sala_declarada_promotor:'Pendente',sala_status_aprovacao:'Aguardando declaração',
     consultor_nome:null,anotacao_sala:null,sala_solicitada_em:null,sala_solicitada_por:null,
@@ -1080,7 +1089,7 @@ function renderFichaSalva(p){
           <div class="fichaIcone">CP</div>
           <div>
             <div class="fichaTitulo">Ficha Completa do Casal</div>
-            <div class="fichaSubtitulo">CaptaPro Elite 4.4 • ${escapeHtml(dataFicha)}</div>
+            <div class="fichaSubtitulo">CaptaPro Elite 4.6 • ${escapeHtml(dataFicha)}</div>
           </div>
         </div>
         <div class="fichaStatus ${cls}">${escapeHtml(status)}</div>
@@ -1098,12 +1107,13 @@ function renderFichaSalva(p){
         ${fichaCampo('Veículo / Valor médio',carro,true)}
         ${fichaCampo('Cartão de crédito',p.cartao_credito||'-')}
         ${fichaCampo('Casa própria',p.casa_propria||'-')}
-        ${fichaCampo('Multipropriedade',[p.multipropriedade,p.onde_multipropriedade?`Onde: ${p.onde_multipropriedade}`:''].filter(Boolean).join(' • ')||'-',true)}
+        ${fichaCampo('Estado / Cidade',[p.estado_origem,p.cidade_origem].filter(Boolean).join(' • ')||'-')}
+        ${fichaCampo('Multipropriedade',p.multipropriedade||'-')}
         ${fichaCampo('Brinde entregue',[p.brinde,`Custo estimado: ${moedaBR(p.custo_brinde)}`].filter(Boolean).join(' • ')||'-',true)}
         ${fichaCampo('WhatsApp / Contato',p.contato||'-')}
         ${fichaCampo('Entrada em sala',p.levou_sala==='Sim'?'Aprovada pelo administrador':p.sala_declarada_promotor==='Sim'?'Enviada e aguardando aprovação':p.sala_declarada_promotor==='Não'?'Promotor informou que não foi':'Aguardando informação do promotor')}
         ${fichaCampo('Equipe / Ponto',[p.equipe,p.ponto_captacao].filter(Boolean).join(' • ')||'-')}
-        ${fichaCampo('Tipo de abordagem',p.tipo_abordagem||'-')}
+        ${fichaCampo('Origem do casal',[p.estado_origem,p.cidade_origem].filter(Boolean).join(' • ')||'-')}
         ${fichaCampo('Profissional responsável',p.captador_nome||'-')}
         ${fichaCampo('Tempo no ponto',`${Number(p.tempo_no_ponto_minutos||0)} min`)}
         ${fichaCampo('Observações',p.observacoes||'Sem observações',true)}
@@ -1829,13 +1839,14 @@ function abrirEdicaoPesquisaAdmin(id){
   if(!isAdminRole())return;
   const p=salaAdminDados.find(x=>String(x.id)===String(id));if(!p)return;
   setAdminEdit('adm_edit_id',p.id);setAdminEdit('adm_edit_user_email',p.user_email);setAdminEdit('adm_edit_captador_nome',p.captador_nome);
-  setAdminEdit('adm_edit_equipe',p.equipe);setAdminEdit('adm_edit_ponto',p.ponto_captacao);setAdminEdit('adm_edit_tipo',p.tipo_abordagem);setAdminEdit('adm_edit_horario',p.horario_local);
+  setAdminEdit('adm_edit_equipe',p.equipe);setAdminEdit('adm_edit_ponto',p.ponto_captacao);
+  setAdminEdit('adm_edit_estado_origem',p.estado_origem);setAdminEdit('adm_edit_cidade_origem',p.cidade_origem);setAdminEdit('adm_edit_horario',p.horario_local);
   setAdminEdit('adm_edit_convidado_1',p.convidado_1);setAdminEdit('adm_edit_idade_1',p.idade_1);setAdminEdit('adm_edit_profissao_1',p.profissao_1);
   setAdminEdit('adm_edit_convidado_2',p.convidado_2);setAdminEdit('adm_edit_idade_2',p.idade_2);setAdminEdit('adm_edit_profissao_2',p.profissao_2);
   setAdminEdit('adm_edit_estado_civil',p.estado_civil);setAdminEdit('adm_edit_tempo_juntos',p.tempo_juntos);setAdminEdit('adm_edit_contato',p.contato);
   setAdminEdit('adm_edit_renda_casal',p.renda_casal);setAdminEdit('adm_edit_renda_bruta',p.renda_bruta);setAdminEdit('adm_edit_renda_liquida',p.renda_liquida);
   setAdminEdit('adm_edit_veiculo',p.veiculo);setAdminEdit('adm_edit_marca',p.marca_carro);setAdminEdit('adm_edit_modelo',p.modelo_carro);setAdminEdit('adm_edit_ano',p.ano_veiculo);setAdminEdit('adm_edit_valor_fipe',p.valor_fipe);
-  setAdminEdit('adm_edit_cartao',p.cartao_credito);setAdminEdit('adm_edit_casa',p.casa_propria);setAdminEdit('adm_edit_multipropriedade',p.multipropriedade);setAdminEdit('adm_edit_onde_multi',p.onde_multipropriedade);
+  setAdminEdit('adm_edit_cartao',p.cartao_credito);setAdminEdit('adm_edit_casa',p.casa_propria);setAdminEdit('adm_edit_multipropriedade',p.multipropriedade);
   setAdminEdit('adm_edit_brinde',p.brinde);setAdminEdit('adm_edit_custo_brinde',p.custo_brinde);setAdminEdit('adm_edit_qualificacao',p.qualificacao_automatica||p.status);setAdminEdit('adm_edit_motivo',p.motivo_qualificacao);
   setAdminEdit('adm_edit_sala_declarada',p.sala_declarada_promotor||'Pendente');setAdminEdit('adm_edit_sala_status',p.sala_status_aprovacao||'Aguardando declaração');setAdminEdit('adm_edit_levou_sala',p.levou_sala||'Pendente');
   setAdminEdit('adm_edit_consultor',p.consultor_nome);setAdminEdit('adm_edit_anotacao_sala',p.anotacao_sala);
@@ -1858,13 +1869,14 @@ async function salvarEdicaoPesquisaAdmin(){
   const qualificacao=val('adm_edit_qualificacao').trim();
   const payload={
     user_email:textoOuNulo(val('adm_edit_user_email')),captador_nome:val('adm_edit_captador_nome').trim(),
-    equipe:textoOuNulo(val('adm_edit_equipe')),ponto_captacao:textoOuNulo(val('adm_edit_ponto')),tipo_abordagem:textoOuNulo(val('adm_edit_tipo')),horario_local:textoOuNulo(val('adm_edit_horario')),
+    equipe:textoOuNulo(val('adm_edit_equipe')),ponto_captacao:textoOuNulo(val('adm_edit_ponto')),
+    tipo_abordagem:null,estado_origem:textoOuNulo(val('adm_edit_estado_origem')),cidade_origem:textoOuNulo(val('adm_edit_cidade_origem')),horario_local:textoOuNulo(val('adm_edit_horario')),
     convidado_1:textoOuNulo(val('adm_edit_convidado_1')),idade_1:inteiroOuNulo(val('adm_edit_idade_1')),profissao_1:textoOuNulo(val('adm_edit_profissao_1')),
     convidado_2:textoOuNulo(val('adm_edit_convidado_2')),idade_2:inteiroOuNulo(val('adm_edit_idade_2')),profissao_2:textoOuNulo(val('adm_edit_profissao_2')),
     estado_civil:textoOuNulo(val('adm_edit_estado_civil')),tempo_juntos:textoOuNulo(val('adm_edit_tempo_juntos')),contato:textoOuNulo(val('adm_edit_contato')),
     renda_casal:decimalOuNulo(val('adm_edit_renda_casal')),renda_bruta:decimalOuNulo(val('adm_edit_renda_bruta')),renda_liquida:decimalOuNulo(val('adm_edit_renda_liquida')),
     veiculo:textoOuNulo(val('adm_edit_veiculo')),marca_carro:textoOuNulo(val('adm_edit_marca')),modelo_carro:textoOuNulo(val('adm_edit_modelo')),ano_veiculo:textoOuNulo(val('adm_edit_ano')),valor_fipe:decimalOuNulo(val('adm_edit_valor_fipe')),
-    cartao_credito:textoOuNulo(val('adm_edit_cartao')),casa_propria:textoOuNulo(val('adm_edit_casa')),multipropriedade:textoOuNulo(val('adm_edit_multipropriedade')),onde_multipropriedade:textoOuNulo(val('adm_edit_onde_multi')),
+    cartao_credito:textoOuNulo(val('adm_edit_cartao')),casa_propria:textoOuNulo(val('adm_edit_casa')),multipropriedade:textoOuNulo(val('adm_edit_multipropriedade')),onde_multipropriedade:null,
     brinde:textoOuNulo(val('adm_edit_brinde')),custo_brinde:decimalOuNulo(val('adm_edit_custo_brinde')),
     status:qualificacao||null,qualificacao_automatica:qualificacao||null,motivo_qualificacao:textoOuNulo(val('adm_edit_motivo')),
     sala_declarada_promotor:val('adm_edit_sala_declarada'),sala_status_aprovacao:val('adm_edit_sala_status'),levou_sala:val('adm_edit_levou_sala'),
@@ -1917,7 +1929,7 @@ async function salvarMetas(){
     meta_abordagens:metaAbordagens,meta_sala:metaSala,updated_by:usuarioEmail,updated_at:agora
   }));
   const {error}=await db.from('metas_diarias').upsert(payload,{onConflict:'data,user_email'});
-  if(error)return msg('metasMsg','Erro ao salvar meta. Execute o SQL da versão 4.4: '+escapeHtml(error.message),'erro');
+  if(error)return msg('metasMsg','Erro ao salvar meta. Execute o SQL da versão 4.5: '+escapeHtml(error.message),'erro');
   msg('metasMsg',valorProf==='__TODOS__'?`Meta aplicada a ${payload.length} promotor(es).`:'Meta diária salva com sucesso.','ok');
   carregarMetas();
 }
@@ -1929,7 +1941,7 @@ async function carregarMetas(){
   if(de)query=query.gte('data',de);if(ate)query=query.lte('data',ate);
   const [{data:metas=[],error},pesquisas]=await Promise.all([query,getPesquisas()]);
   if(error){
-    document.getElementById('metasBox').innerHTML='<div class="warningBox">Execute o SQL da versão 4.4 para criar a tabela metas_diarias.</div>';
+    document.getElementById('metasBox').innerHTML='<div class="warningBox">Execute o SQL da versão 4.5 para criar a tabela metas_diarias.</div>';
     return;
   }
   const rows=metas.map(m=>{
