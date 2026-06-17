@@ -4,716 +4,201 @@
 <meta charset="UTF-8">
 <title>CaptaPro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 <style>
-:root{
-  --bg:#050505;
-  --card:#111;
-  --card2:#181818;
-  --red:#e50914;
-  --red2:#ff3131;
-  --text:#fff;
-  --muted:#aaa;
-  --line:#292929;
-  --green:#00e676;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:linear-gradient(180deg,#050505,#160000);
-  color:white;
-}
-.container{max-width:980px;margin:auto;padding:14px}
-.logo{text-align:center;margin:10px 0 16px}
-.logo h1{margin:0;font-size:34px}
-.logo span{color:var(--red2)}
-.sub{color:#bbb;font-size:14px;margin-top:4px}
-.card{
-  background:rgba(17,17,17,.97);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 0 28px rgba(229,9,20,.12);
-}
-h2{margin-top:0;border-left:4px solid var(--red);padding-left:10px;font-size:20px}
-h3{margin-bottom:8px}
-input,select,textarea,button{
-  width:100%;
-  margin-top:10px;
-  padding:14px;
-  border-radius:12px;
-  border:1px solid #333;
-  background:#070707;
-  color:white;
-  font-size:15px;
-}
-textarea{min-height:90px}
-button{
-  background:linear-gradient(135deg,var(--red),var(--red2));
-  border:none;
-  font-weight:bold;
-  cursor:pointer;
-}
-button.secondary{background:#222;border:1px solid #444}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.hidden{display:none}
-.ok{color:var(--green);text-align:center;font-weight:bold}
-.erro{color:#ff5252;text-align:center;font-weight:bold}
-.info{color:var(--muted);font-size:13px;text-align:center}
-.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:14px}
-.tabs button{min-width:130px;background:#171717;border:1px solid #333}
-.tabs button.active{background:linear-gradient(135deg,var(--red),var(--red2))}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.kpi{background:var(--card2);border:1px solid #2b2b2b;border-radius:14px;padding:12px;text-align:center}
-.kpi b{display:block;font-size:24px;color:var(--red2);margin-top:5px}
-#map{height:420px;border-radius:16px;border:1px solid #333}
-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
-th,td{padding:9px;border-bottom:1px solid #2a2a2a;text-align:left}
-th{color:var(--red2)}
-.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#260000;color:#ff7777;font-size:12px;border:1px solid #5a1111}
-@media(max-width:700px){
-  .grid,.kpis{grid-template-columns:1fr}
-  .container{padding:12px}
-}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#050505,#170000);color:#fff}
+.container{max-width:760px;margin:auto;padding:14px}
+.logo{text-align:center;margin:18px 0}.logo h1{margin:0;font-size:34px}.logo span{color:#ff3131}.sub{color:#bbb}
+.card{background:#111;border:1px solid #292929;border-radius:18px;padding:16px;margin-bottom:16px;box-shadow:0 0 25px rgba(229,9,20,.15)}
+h2{border-left:4px solid #e50914;padding-left:10px}
+input,select,textarea,button{width:100%;box-sizing:border-box;margin-top:10px;padding:14px;border-radius:12px;border:1px solid #333;background:#050505;color:#fff;font-size:15px}
+textarea{min-height:90px}button{background:linear-gradient(135deg,#e50914,#ff3131);border:none;font-weight:bold}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hidden{display:none}.ok{color:#00e676;font-weight:bold}.erro{color:#ff5252;font-weight:bold}
+.resultado{font-size:22px;text-align:center;padding:16px;border-radius:16px;margin-top:12px}.q{background:#063d1f;color:#00e676}.nq{background:#3d0606;color:#ff5252}.item{background:#3d3006;color:#ffd54f}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
-
 <body>
 <div class="container">
-
-<div class="logo">
-  <h1>Capta<span>Pro</span></h1>
-  <div class="sub">Pesquisa inteligente de captação, GPS, mapa e conversão</div>
-</div>
+<div class="logo"><h1>Capta<span>Pro</span></h1><div class="sub">Pesquisa com qualificação automática</div></div>
 
 <div id="loginBox" class="card">
-  <h2>Entrada do Profissional</h2>
-  <p class="info">Digite seu e-mail. O gestor precisa aprovar o acesso.</p>
-  <input id="email" type="email" placeholder="Seu e-mail">
-  <input id="captadorNome" placeholder="Seu nome completo">
-  <button onclick="entrar()">Entrar</button>
-  <p id="loginMsg"></p>
+<h2>Entrada</h2>
+<input id="email" type="email" placeholder="Seu e-mail">
+<input id="captadorNome" placeholder="Seu nome">
+<button onclick="entrar()">Entrar</button>
+<p id="loginMsg"></p>
 </div>
 
 <div id="aguardandoBox" class="card hidden">
-  <h2>Aguardando aprovação</h2>
-  <p class="erro">Seu e-mail ainda não foi aprovado pelo gestor.</p>
-  <button class="secondary" onclick="location.reload()">Voltar</button>
+<h2>Aguardando aprovação</h2>
+<p class="erro">Seu e-mail ainda não foi aprovado pelo gestor.</p>
+<button onclick="location.reload()">Voltar</button>
 </div>
 
-<div id="appBox" class="hidden">
-
-<div class="tabs">
-  <button class="active" onclick="abrirAba('pesquisa',this)">Pesquisa</button>
-  <button onclick="abrirAba('dashboard',this)">Dashboard</button>
-  <button onclick="abrirAba('mapa',this)">Mapa</button>
-  <button onclick="abrirAba('usuarios',this)">Usuários</button>
-</div>
-
-<div id="abaPesquisa" class="card">
+<div id="formBox" class="card hidden">
 <h2>Nova Pesquisa</h2>
 
 <div class="grid">
-<select id="equipe">
-  <option value="">Equipe</option>
-  <option>PARK</option>
-  <option>EXTERNA</option>
-</select>
-
+<select id="equipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select>
 <select id="ponto_captacao">
-  <option value="">Ponto de captação</option>
-  <option>Porta dentro do Park</option>
-  <option>Spinassi Avenida</option>
-  <option>Fábrica Spinassi</option>
-  <option>Corredor</option>
-  <option>Baden Baden</option>
-  <option>Guarda-chuvas</option>
-  <option>Igreja</option>
-  <option>Djalma</option>
-  <option>Renner</option>
-  <option>Rua Roda Gigante</option>
+<option value="">Ponto de captação</option><option>Porta dentro do Park</option><option>Spinassi Avenida</option><option>Fábrica Spinassi</option><option>Corredor</option><option>Baden Baden</option><option>Guarda-chuvas</option><option>Igreja</option><option>Djalma</option><option>Renner</option><option>Rua Roda Gigante</option>
 </select>
 </div>
 
-<div class="grid">
-<select id="tipo_abordagem">
-  <option value="">Tipo de abordagem</option>
-  <option>Abordagem fria</option>
-  <option>Indicação</option>
-  <option>Curiosidade</option>
-  <option>Brinde</option>
-  <option>Espontânea</option>
-</select>
-
-<select id="temperatura_cliente">
-  <option value="">Temperatura do casal</option>
-  <option>Frio</option>
-  <option>Morno</option>
-  <option>Quente</option>
-  <option>Muito quente</option>
-</select>
-</div>
-
-<div class="grid">
 <input id="convidado_1" placeholder="Nome do senhor">
-<input id="convidado_2" placeholder="Nome da senhora">
-</div>
-
-<div class="grid">
 <select id="idade_1"><option value="">Idade do senhor</option></select>
-<select id="idade_2"><option value="">Idade da senhora</option></select>
-</div>
 
-<div class="grid">
 <select id="profissao_1">
 <option value="">Profissão do senhor</option>
-<option>Empresário</option><option>Comerciante</option><option>Autônomo</option>
-<option>Servidor público</option><option>Médico / Saúde</option><option>Engenheiro / Técnico</option>
-<option>Advogado / Jurídico</option><option>Professor / Educação</option><option>Gerente / Coordenador</option>
-<option>Aposentado</option><option>Motorista / Transporte</option><option>Vendedor / Comercial</option><option>Outro</option>
+<option>Empresário</option><option>Comerciante</option><option>Autônomo</option><option>Servidor público</option><option>Médico</option><option>Dentista</option><option>Advogado</option><option>Engenheiro</option><option>Arquiteto</option><option>Administrador</option><option>Gerente</option><option>Diretor</option><option>Consultor</option><option>Representante comercial</option><option>Professor</option><option>Contador</option><option>Policial</option><option>Militar</option><option>Aposentado</option><option>Produtor rural</option><option>Investidor</option>
+<option>Operador de caixa</option><option>Zelador</option><option>Secretária</option><option>Auxiliar</option><option>Assistente</option><option>Avon/Natura/Multinível</option><option>Gari</option><option>Vendedor ambulante</option><option>Motoboy</option><option>Do lar</option><option>Estoquista</option><option>Eletricista</option><option>Diarista</option><option>Doméstica</option><option>Garçom</option><option>Manicure</option><option>Pedreiro</option><option>Atendente</option><option>Balconista</option><option>Babá</option><option>Porteiro</option><option>Frentista</option><option>Estudante</option><option>Uber/App/Freelancer</option><option>Outro</option>
 </select>
+
+<input id="convidado_2" placeholder="Nome da senhora">
+<select id="idade_2"><option value="">Idade da senhora</option></select>
 
 <select id="profissao_2">
 <option value="">Profissão da senhora</option>
-<option>Empresária</option><option>Comerciante</option><option>Autônoma</option>
-<option>Servidora pública</option><option>Médica / Saúde</option><option>Engenheira / Técnica</option>
-<option>Advogada / Jurídico</option><option>Professora / Educação</option><option>Gerente / Coordenadora</option>
-<option>Aposentada</option><option>Vendedora / Comercial</option><option>Do lar</option><option>Outro</option>
-</select>
-</div>
-
-<select id="profissao_definida">
-<option value="">Profissões definidas?</option>
-<option>Sim</option><option>Não</option>
+<option>Empresária</option><option>Comerciante</option><option>Autônoma</option><option>Servidora pública</option><option>Médica</option><option>Dentista</option><option>Advogada</option><option>Engenheira</option><option>Arquiteta</option><option>Administradora</option><option>Gerente</option><option>Diretora</option><option>Consultora</option><option>Representante comercial</option><option>Professora</option><option>Contadora</option><option>Policial</option><option>Militar</option><option>Aposentada</option><option>Produtora rural</option><option>Investidora</option>
+<option>Operador de caixa</option><option>Zelador</option><option>Secretária</option><option>Auxiliar</option><option>Assistente</option><option>Avon/Natura/Multinível</option><option>Gari</option><option>Vendedor ambulante</option><option>Motoboy</option><option>Do lar</option><option>Estoquista</option><option>Eletricista</option><option>Diarista</option><option>Doméstica</option><option>Garçom</option><option>Manicure</option><option>Pedreiro</option><option>Atendente</option><option>Balconista</option><option>Babá</option><option>Porteiro</option><option>Frentista</option><option>Estudante</option><option>Uber/App/Freelancer</option><option>Outro</option>
 </select>
 
 <div class="grid">
-<select id="veiculo">
-<option value="">Possui veículo?</option>
-<option>Sim, próprio</option><option>Sim, alugado</option><option>Não possui</option>
-</select>
-
-<select id="ano_veiculo">
-<option value="">Ano do veículo</option>
-<option>2026</option><option>2025</option><option>2024</option><option>2023</option>
-<option>2022</option><option>2021</option><option>2020</option><option>2019</option>
-<option>2018</option><option>2017</option><option>2016</option><option>2015 ou menor</option>
-</select>
-</div>
-
-<select id="outro_veiculo">
-<option value="">Possui outro veículo?</option>
-<option>Sim</option><option>Não</option>
-</select>
-
-<div class="grid">
-<select id="estado_civil">
-<option value="">Estado civil</option>
-<option>Casados</option><option>União estável</option><option>Namorados</option>
-<option>Solteiro</option><option>Divorciado</option><option>Viúvo</option>
-</select>
-
-<select id="tempo_juntos">
-<option value="">Tempo juntos</option>
-<option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option>
-<option>3 a 5 anos</option><option>6 a 10 anos</option><option>Mais de 10 anos</option>
-</select>
-</div>
-
-<input id="cidade" placeholder="Cidade onde moram">
-
-<div class="grid">
-<select id="filhos">
-<option value="">Possuem filhos?</option>
-<option>Sim, com filhos presentes</option>
-<option>Sim, mas não estão presentes</option>
-<option>Não</option>
-</select>
-
-<select id="quantidade_pessoas">
-<option value="">Quantidade de pessoas</option>
-<option value="1">1 pessoa</option><option value="2">2 pessoas</option>
-<option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 ou mais</option>
-</select>
+<select id="estado_civil"><option value="">Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option><option>Divorciado</option><option>Viúvo</option></select>
+<select id="tempo_juntos"><option value="">Tempo juntos</option><option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option><option>3 a 5 anos</option><option>6 a 10 anos</option><option>Mais de 10 anos</option></select>
 </div>
 
 <div class="grid">
-<select id="casa_propria">
-<option value="">Casa própria?</option>
-<option>Sim</option><option>Não</option>
-</select>
-
-<select id="cartao_credito">
-<option value="">Cartão de crédito?</option>
-<option>Sim</option><option>Não</option>
-</select>
+<select id="veiculo"><option value="">Possui carro?</option><option>Sim</option><option>Não</option></select>
+<select id="ano_veiculo"><option value="">Ano do carro</option></select>
 </div>
 
-<select id="cheque">
-<option value="">Cheque?</option>
-<option>Sim</option><option>Não</option><option>Banco sem retirada de cheque</option>
-</select>
+<div class="grid">
+<select id="marca_carro"><option value="">Marca do carro</option><option>Chevrolet</option><option>Fiat</option><option>Volkswagen</option><option>Toyota</option><option>Honda</option><option>Hyundai</option><option>Jeep</option><option>Renault</option><option>Nissan</option><option>Ford</option><option>BMW</option><option>Mercedes-Benz</option><option>Audi</option><option>Volvo</option><option>BYD</option><option>Caoa Chery</option><option>Peugeot</option><option>Citroën</option><option>Mitsubishi</option><option>Kia</option><option>Land Rover</option><option>Outro</option></select>
+<input id="modelo_carro" placeholder="Modelo do carro">
+</div>
+
+<div class="grid">
+<select id="cartao_credito"><option value="">Cartão de crédito?</option><option>Sim</option><option>Não</option></select>
+<select id="casa_propria"><option value="">Casa própria?</option><option>Sim</option><option>Não</option></select>
+</div>
 
 <select id="renda_casal">
-<option value="">Renda mensal do casal</option>
-<option>Até R$ 5.000</option>
-<option>R$ 5.001 a R$ 8.000</option>
-<option>R$ 8.001 a R$ 10.999</option>
-<option>R$ 11.000</option>
-<option>R$ 12.000 a R$ 14.999</option>
-<option>R$ 15.000 ou mais</option>
+<option value="">Renda mensal</option><option>Até R$ 5.000</option><option>R$ 5.001 a R$ 8.000</option><option>R$ 8.001 a R$ 10.999</option><option>R$ 11.000 a R$ 14.999</option><option>R$ 15.000 ou mais</option>
 </select>
 
 <input id="contato" placeholder="Contato / WhatsApp">
-
-<select id="investimento_lazer">
-<option value="">Possui imóvel ou investimento em lazer?</option>
-<option>Sim, imóvel na praia</option><option>Sim, imóvel no campo</option>
-<option>Sim, imóvel em cidade turística</option><option>Sim, outro investimento</option><option>Não</option>
-</select>
-
-<select id="sonho_viagem">
-<option value="">Sonho de viagem em família</option>
-<option>Praia</option><option>Serra</option><option>Resort</option><option>Internacional</option>
-<option>Disney / Orlando</option><option>Europa</option><option>Cruzeiro</option><option>Nordeste</option><option>Outro</option>
-</select>
+<input id="familia_falou" placeholder="O que a família falou?">
 
 <div class="grid">
-<select id="tipo_brinde">
-<option value="">Tipo de brinde</option>
-<option>Almoço</option><option>Jantar</option><option>Voucher</option>
-<option>Ingresso</option><option>Desconto</option><option>Experiência</option><option>Outro</option>
-</select>
-
-<input id="brinde" placeholder="Brinde entregue / negociado">
+<select id="multipropriedade"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
+<input id="onde_multipropriedade" placeholder="Onde conheceu?">
 </div>
+
+<textarea id="programacao_casal" placeholder="Programação do casal"></textarea>
 
 <div class="grid">
-<select id="status">
-<option value="">Status perfil</option>
-<option>Q</option><option>NQ</option>
-</select>
-
-<select id="levou_sala">
-<option value="">Levou em sala?</option>
-<option>Sim</option><option>Não</option>
-</select>
+<select id="possui_investimento_lazer"><option value="">Investimento em lazer?</option><option>Sim</option><option>Não</option></select>
+<input id="investimento_lazer_onde" placeholder="Onde?">
 </div>
 
-<select id="motivo_nq">
-<option value="">Motivo NQ / não levou</option>
-<option>Renda abaixo</option><option>Sem casa própria</option><option>Sem cartão de crédito</option>
-<option>Idade fora do perfil</option><option>Carro abaixo do perfil</option><option>Não era casal</option>
-<option>Sem tempo</option><option>Não teve interesse</option><option>Objeção forte</option><option>Outro</option>
-</select>
+<input id="brinde" placeholder="Brinde entregue">
+<select id="levou_sala"><option value="">Levou em sala?</option><option>Sim</option><option>Não</option></select>
+<textarea id="observacoes" placeholder="Observações"></textarea>
 
-<select id="apresentou_objeção">
-<option value="">Apresentou objeção?</option>
-<option>Não</option><option>Sim - tempo</option><option>Sim - venda</option>
-<option>Sim - já conhece</option><option>Sim - brinde</option><option>Sim - filhos</option>
-<option>Sim - desconfiança</option><option>Sim - outro</option>
-</select>
-
-<textarea id="observacoes" placeholder="Observações importantes"></textarea>
+<button onclick="calcularQualificacao()">Calcular Q/NQ</button>
+<div id="resultadoQualificacao"></div>
 
 <button onclick="salvarPesquisa()">Salvar Pesquisa</button>
 <p id="formMsg"></p>
 </div>
-
-<div id="abaDashboard" class="card hidden">
-<h2>Dashboard Gestor</h2>
-<button onclick="carregarDashboard()">Atualizar Dashboard</button>
-
-<div class="kpis">
-<div class="kpi">Abordagens <b id="kpiAbordagens">0</b></div>
-<div class="kpi">Levou em sala <b id="kpiSala">0</b></div>
-<div class="kpi">Conversão <b id="kpiConversao">0%</b></div>
-<div class="kpi">Q <b id="kpiQ">0</b></div>
-</div>
-
-<div class="card"><h3>Abordagens por ponto</h3><canvas id="graficoPontos"></canvas></div>
-<div class="card"><h3>Mapa de calor por horário</h3><canvas id="graficoHorarios"></canvas></div>
-<div class="card"><h3>Últimas pesquisas</h3><div id="listaPesquisas"></div></div>
-</div>
-
-<div id="abaMapa" class="card hidden">
-<h2>Mapa de Localização</h2>
-<button onclick="carregarMapa()">Atualizar mapa</button>
-<p class="info">Cada ponto mostra onde a pesquisa foi salva pelo GPS do celular.</p>
-<div id="map"></div>
-</div>
-
-<div id="abaUsuarios" class="card hidden">
-<h2>Aprovação de Usuários</h2>
-<button onclick="carregarUsuarios()">Carregar usuários</button>
-<div id="listaUsuarios"></div>
-</div>
-
-</div>
 </div>
 
 <script>
-const SUPABASE_URL = "https://veznreiamwstlulkpocz.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlem5yZWlhbXdzdGx1bGtwb2N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODc1NDksImV4cCI6MjA5NzI2MzU0OX0.MeSqJZTZnk3zDKWgD920ccV2KUheH0W_BGD3TvhPXdM";
+const SUPABASE_URL="https://veznreiamwstlulkpocz.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlem5yZWlhbXdzdGx1bGtwb2N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODc1NDksImV4cCI6MjA5NzI2MzU0OX0.MeSqJZTZnk3zDKWgD920ccV2KUheH0W_BGD3TvhPXdM";
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+let usuarioEmail="",captadorNome="",latitude=null,longitude=null,qualificacao="NQ",motivoQualificacao="";
 
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+for(let i=18;i<=80;i++){addOpt("idade_1",i,i+" anos");addOpt("idade_2",i,i+" anos")}
+for(let a=2026;a>=1995;a--) addOpt("ano_veiculo",a,a);
 
-let usuarioEmail = "";
-let captadorNome = "";
-let latitude = null;
-let longitude = null;
-let mapa = null;
-let graficoPontos = null;
-let graficoHorarios = null;
-
-for(let i=18;i<=80;i++){
-  let op1=document.createElement("option");
-  op1.value=i;
-  op1.textContent=i+" anos";
-  document.getElementById("idade_1").appendChild(op1);
-
-  let op2=document.createElement("option");
-  op2.value=i;
-  op2.textContent=i+" anos";
-  document.getElementById("idade_2").appendChild(op2);
-}
+const profissoesBloqueadas=["Operador de caixa","Zelador","Secretária","Auxiliar","Assistente","Avon/Natura/Multinível","Gari","Vendedor ambulante","Motoboy","Do lar","Estoquista","Eletricista","Diarista","Doméstica","Garçom","Manicure","Pedreiro","Atendente","Balconista","Babá","Porteiro","Frentista","Estudante","Uber/App/Freelancer"];
 
 async function entrar(){
-  const email = campo("email").trim().toLowerCase();
-  const nome = campo("captadorNome").trim();
-
-  if(!email || !nome){
-    msg("loginMsg","Preencha e-mail e nome.","erro");
-    return;
-  }
-
-  usuarioEmail = email;
-  captadorNome = nome;
-
-  let { data } = await db
-    .from("approved_users")
-    .select("*")
-    .eq("email", email)
-    .maybeSingle();
-
-  if(!data){
-    await db.from("approved_users").insert({email:email,name:nome,approved:false});
-    document.getElementById("loginBox").classList.add("hidden");
-    document.getElementById("aguardandoBox").classList.remove("hidden");
-    return;
-  }
-
-  if(data.approved !== true){
-    document.getElementById("loginBox").classList.add("hidden");
-    document.getElementById("aguardandoBox").classList.remove("hidden");
-    return;
-  }
-
-  document.getElementById("loginBox").classList.add("hidden");
-  document.getElementById("appBox").classList.remove("hidden");
-  pegarLocalizacao();
+ const email=campo("email").trim().toLowerCase(), nome=campo("captadorNome").trim();
+ if(!email||!nome){msg("loginMsg","Preencha e-mail e nome.","erro");return}
+ usuarioEmail=email;captadorNome=nome;
+ const {data}=await db.from("approved_users").select("*").eq("email",email).maybeSingle();
+ if(!data){await db.from("approved_users").insert({email,name:nome,approved:false});show("aguardandoBox");return}
+ if(data.approved!==true){show("aguardandoBox");return}
+ document.getElementById("loginBox").classList.add("hidden");document.getElementById("formBox").classList.remove("hidden");gps();
 }
 
-function pegarLocalizacao(){
-  if(!navigator.geolocation){
-    alert("GPS não disponível.");
-    return;
-  }
+function calcularQualificacao(){
+ let motivos=[], itensNQ=0;
+ const idadeH=Number(campo("idade_1")), idadeM=Number(campo("idade_2")), ano=Number(campo("ano_veiculo"));
+ const rendaOk=campo("renda_casal")==="R$ 15.000 ou mais";
+ const carroOk=campo("veiculo")==="Sim" && ano>=2011;
+ const casaOk=campo("casa_propria")==="Sim";
+ const cartaoOk=campo("cartao_credito")==="Sim";
+ const civil=campo("estado_civil"), tempo=campo("tempo_juntos");
+ const profissaoBloqueada=profissoesBloqueadas.includes(campo("profissao_1"))||profissoesBloqueadas.includes(campo("profissao_2"));
 
-  navigator.geolocation.getCurrentPosition(
-    pos=>{
-      latitude = pos.coords.latitude;
-      longitude = pos.coords.longitude;
-    },
-    ()=>{
-      alert("Permita a localização para registrar o ponto da abordagem.");
-    },
-    {enableHighAccuracy:true}
-  );
+ if(profissaoBloqueada) motivos.push("Profissão bloqueada pela tabela");
+ if(idadeH<25) motivos.push("Homem abaixo de 25 desqualifica");
+ if(idadeH>64||idadeM>64) motivos.push("Acima do limite de 64 anos");
+ if(!rendaOk){motivos.push("Renda abaixo de R$ 15.000");itensNQ++}
+ if(!carroOk){motivos.push("Carro ausente ou anterior a 2011");itensNQ++}
+ if(!casaOk){motivos.push("Sem casa própria");itensNQ++}
+ if(!cartaoOk){motivos.push("Sem cartão de crédito");itensNQ++}
+
+ let relacionamentoOk=false;
+ if(civil==="Casados") relacionamentoOk=true;
+ if(civil==="União estável" && ["2 anos","3 a 5 anos","6 a 10 anos","Mais de 10 anos"].includes(tempo)) relacionamentoOk=true;
+ if(!relacionamentoOk){motivos.push("Relacionamento fora da regra");itensNQ++}
+
+ if(profissaoBloqueada || idadeH<25 || idadeH>64 || idadeM>64 || itensNQ>=2){
+   qualificacao="NQ";
+ }else if(itensNQ===1){
+   qualificacao="NQ 1 ITEM / LÍDER DECIDE";
+ }else{
+   qualificacao="Q";
+ }
+
+ motivoQualificacao=motivos.length?motivos.join(" | "):"Perfil dentro da regra";
+ const div=document.getElementById("resultadoQualificacao");
+ div.className="resultado "+(qualificacao==="Q"?"q":qualificacao.includes("1 ITEM")?"item":"nq");
+ div.innerHTML="<b>"+qualificacao+"</b><br><small>"+motivoQualificacao+"</small>";
+ return qualificacao;
 }
 
 async function salvarPesquisa(){
-  if(!campo("equipe") || !campo("ponto_captacao") || !campo("brinde")){
-    msg("formMsg","Preencha equipe, ponto de captação e brinde.","erro");
-    return;
-  }
-
-  const agora = new Date();
-  const horario = String(agora.getHours()).padStart(2,"0") + ":00";
-
-  const pesquisa = {
-    user_email: usuarioEmail,
-    captador_nome: captadorNome,
-    equipe: campo("equipe"),
-    ponto_captacao: campo("ponto_captacao"),
-    tipo_abordagem: campo("tipo_abordagem"),
-    temperatura_cliente: campo("temperatura_cliente"),
-    convidado_1: campo("convidado_1"),
-    idade_1: numero("idade_1"),
-    profissao_1: campo("profissao_1"),
-    convidado_2: campo("convidado_2"),
-    idade_2: numero("idade_2"),
-    profissao_2: campo("profissao_2"),
-    profissao_definida: campo("profissao_definida"),
-    veiculo: campo("veiculo"),
-    ano_veiculo: campo("ano_veiculo"),
-    outro_veiculo: campo("outro_veiculo"),
-    estado_civil: campo("estado_civil"),
-    tempo_juntos: campo("tempo_juntos"),
-    cidade: campo("cidade"),
-    filhos: campo("filhos"),
-    quantidade_pessoas: numero("quantidade_pessoas"),
-    casa_propria: campo("casa_propria"),
-    cartao_credito: campo("cartao_credito"),
-    cheque: campo("cheque"),
-    renda_casal: campo("renda_casal"),
-    contato: campo("contato"),
-    investimento_lazer: campo("investimento_lazer"),
-    sonho_viagem: campo("sonho_viagem"),
-    tipo_brinde: campo("tipo_brinde"),
-    brinde: campo("brinde"),
-    status: campo("status"),
-    levou_sala: campo("levou_sala"),
-    motivo_nq: campo("motivo_nq"),
-    apresentou_objeção: campo("apresentou_objeção"),
-    observacoes: campo("observacoes"),
-    horario_local: horario,
-    latitude: latitude,
-    longitude: longitude
-  };
-
-  const { error } = await db.from("pesquisas").insert(pesquisa);
-
-  if(error){
-    console.log(error);
-    msg("formMsg","Erro ao salvar. Rode o SQL da versão 2 no Supabase.","erro");
-    return;
-  }
-
-  msg("formMsg","Pesquisa salva com sucesso!","ok");
-
-  document.querySelectorAll("#abaPesquisa input,#abaPesquisa textarea,#abaPesquisa select")
-    .forEach(e=>e.value="");
-
-  pegarLocalizacao();
+ calcularQualificacao();
+ const p={
+ user_email:usuarioEmail,captador_nome:captadorNome,equipe:campo("equipe"),ponto_captacao:campo("ponto_captacao"),
+ convidado_1:campo("convidado_1"),idade_1:num("idade_1"),profissao_1:campo("profissao_1"),
+ convidado_2:campo("convidado_2"),idade_2:num("idade_2"),profissao_2:campo("profissao_2"),
+ estado_civil:campo("estado_civil"),tempo_juntos:campo("tempo_juntos"),veiculo:campo("veiculo"),ano_veiculo:campo("ano_veiculo"),
+ marca_carro:campo("marca_carro"),modelo_carro:campo("modelo_carro"),cartao_credito:campo("cartao_credito"),casa_propria:campo("casa_propria"),
+ renda_casal:campo("renda_casal"),contato:campo("contato"),observacoes:campo("observacoes")+" | Família falou: "+campo("familia_falou"),
+ multipropriedade:campo("multipropriedade"),onde_multipropriedade:campo("onde_multipropriedade"),programacao_casal:campo("programacao_casal"),
+ possui_investimento_lazer:campo("possui_investimento_lazer"),investimento_lazer_onde:campo("investimento_lazer_onde"),
+ brinde:campo("brinde"),levou_sala:campo("levou_sala"),status:qualificacao,qualificacao_automatica:qualificacao,motivo_qualificacao:motivoQualificacao,
+ latitude,longitude,horario_local:new Date().getHours()+":00"
+ };
+ const {error}=await db.from("pesquisas").insert(p);
+ if(error){console.log(error);msg("formMsg","Erro ao salvar. Falta coluna no Supabase.","erro");return}
+ msg("formMsg","Pesquisa salva com sucesso!","ok");
 }
 
-function abrirAba(aba, btn){
-  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-
-  document.getElementById("abaPesquisa").classList.add("hidden");
-  document.getElementById("abaDashboard").classList.add("hidden");
-  document.getElementById("abaMapa").classList.add("hidden");
-  document.getElementById("abaUsuarios").classList.add("hidden");
-
-  if(aba==="pesquisa") document.getElementById("abaPesquisa").classList.remove("hidden");
-
-  if(aba==="dashboard"){
-    document.getElementById("abaDashboard").classList.remove("hidden");
-    carregarDashboard();
-  }
-
-  if(aba==="mapa"){
-    document.getElementById("abaMapa").classList.remove("hidden");
-    setTimeout(carregarMapa,300);
-  }
-
-  if(aba==="usuarios"){
-    document.getElementById("abaUsuarios").classList.remove("hidden");
-    carregarUsuarios();
-  }
-}
-
-async function carregarDashboard(){
-  const { data, error } = await db
-    .from("pesquisas")
-    .select("*")
-    .order("created_at",{ascending:false})
-    .limit(500);
-
-  if(error){
-    console.log(error);
-    return;
-  }
-
-  const total = data.length;
-  const sala = data.filter(p=>p.levou_sala==="Sim").length;
-  const q = data.filter(p=>p.status==="Q").length;
-  const conversao = total ? Math.round((sala/total)*100) : 0;
-
-  document.getElementById("kpiAbordagens").innerText = total;
-  document.getElementById("kpiSala").innerText = sala;
-  document.getElementById("kpiConversao").innerText = conversao + "%";
-  document.getElementById("kpiQ").innerText = q;
-
-  criarGraficoPontos(agrupar(data,"ponto_captacao"));
-  criarGraficoHorarios(agrupar(data,"horario_local"));
-
-  let html = "<table><tr><th>Hora</th><th>Captador</th><th>Ponto</th><th>Status</th><th>Sala</th></tr>";
-  data.slice(0,20).forEach(p=>{
-    html += `<tr>
-      <td>${formatarData(p.created_at)}</td>
-      <td>${p.captador_nome || "-"}</td>
-      <td>${p.ponto_captacao || "-"}</td>
-      <td><span class="badge">${p.status || "-"}</span></td>
-      <td>${p.levou_sala || "-"}</td>
-    </tr>`;
-  });
-  html += "</table>";
-  document.getElementById("listaPesquisas").innerHTML = html;
-}
-
-function criarGraficoPontos(obj){
-  const labels = Object.keys(obj);
-  const valores = Object.values(obj);
-
-  if(graficoPontos) graficoPontos.destroy();
-
-  graficoPontos = new Chart(document.getElementById("graficoPontos"),{
-    type:"bar",
-    data:{
-      labels:labels,
-      datasets:[{
-        label:"Abordagens",
-        data:valores,
-        backgroundColor:"#e50914",
-        borderColor:"#ff3131",
-        borderWidth:1
-      }]
-    },
-    options:{
-      responsive:true,
-      plugins:{legend:{labels:{color:"#fff"}}},
-      scales:{x:{ticks:{color:"#fff"}},y:{ticks:{color:"#fff"}}}
-    }
-  });
-}
-
-function criarGraficoHorarios(obj){
-  const labels = Object.keys(obj).sort();
-  const valores = labels.map(l=>obj[l]);
-
-  if(graficoHorarios) graficoHorarios.destroy();
-
-  graficoHorarios = new Chart(document.getElementById("graficoHorarios"),{
-    type:"line",
-    data:{
-      labels:labels,
-      datasets:[{
-        label:"Abordagens por horário",
-        data:valores,
-        borderColor:"#ff3131",
-        backgroundColor:"#e50914",
-        tension:.35
-      }]
-    },
-    options:{
-      responsive:true,
-      plugins:{legend:{labels:{color:"#fff"}}},
-      scales:{x:{ticks:{color:"#fff"}},y:{ticks:{color:"#fff"}}}
-    }
-  });
-}
-
-async function carregarMapa(){
-  const { data, error } = await db
-    .from("pesquisas")
-    .select("*")
-    .not("latitude","is",null)
-    .not("longitude","is",null)
-    .order("created_at",{ascending:false})
-    .limit(500);
-
-  if(error){
-    console.log(error);
-    return;
-  }
-
-  if(!mapa){
-    mapa = L.map("map").setView([-22.7386,-45.5926],14);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-      maxZoom:19,
-      attribution:"© OpenStreetMap"
-    }).addTo(mapa);
-  }
-
-  mapa.eachLayer(layer=>{
-    if(layer instanceof L.Marker || layer instanceof L.Circle){
-      mapa.removeLayer(layer);
-    }
-  });
-
-  data.forEach(p=>{
-    L.circle([p.latitude,p.longitude],{
-      radius:45,
-      color:"#e50914",
-      fillColor:"#ff3131",
-      fillOpacity:.35
-    }).addTo(mapa).bindPopup(`
-      <b>${p.captador_nome || "Captador"}</b><br>
-      ${p.ponto_captacao || "-"}<br>
-      Status: ${p.status || "-"}<br>
-      Sala: ${p.levou_sala || "-"}<br>
-      Brinde: ${p.brinde || "-"}
-    `);
-  });
-
-  if(data.length){
-    mapa.setView([data[0].latitude,data[0].longitude],15);
-  }
-}
-
-async function carregarUsuarios(){
-  const { data, error } = await db
-    .from("approved_users")
-    .select("*")
-    .order("created_at",{ascending:false});
-
-  if(error){
-    console.log(error);
-    return;
-  }
-
-  let html = "<table><tr><th>Nome</th><th>E-mail</th><th>Aprovado</th></tr>";
-  data.forEach(u=>{
-    html += `<tr>
-      <td>${u.name || "-"}</td>
-      <td>${u.email}</td>
-      <td>${u.approved ? "Sim" : "Não"}</td>
-    </tr>`;
-  });
-  html += "</table>";
-
-  document.getElementById("listaUsuarios").innerHTML = html;
-}
-
-function agrupar(lista,campo){
-  const obj = {};
-  lista.forEach(item=>{
-    const chave = item[campo] || "Não informado";
-    obj[chave] = (obj[chave] || 0) + 1;
-  });
-  return obj;
-}
-
+function gps(){navigator.geolocation&&navigator.geolocation.getCurrentPosition(p=>{latitude=p.coords.latitude;longitude=p.coords.longitude},()=>alert("Permita localização."))}
 function campo(id){return document.getElementById(id).value}
-function numero(id){const v=document.getElementById(id).value;return v ? parseInt(v) : null}
-function msg(id,text,classe){document.getElementById(id).innerHTML = `<span class="${classe}">${text}</span>`}
-function formatarData(dt){
-  if(!dt) return "-";
-  const d = new Date(dt);
-  return d.toLocaleString("pt-BR",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"});
-}
+function num(id){return campo(id)?parseInt(campo(id)):null}
+function addOpt(id,v,t){let o=document.createElement("option");o.value=v;o.textContent=t;document.getElementById(id).appendChild(o)}
+function msg(id,t,c){document.getElementById(id).innerHTML=`<span class="${c}">${t}</span>`}
+function show(id){document.getElementById("loginBox").classList.add("hidden");document.getElementById(id).classList.remove("hidden")}
 </script>
-
 </body>
 </html>
