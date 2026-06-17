@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>CaptaPro v1.0</title>
+<title>CaptaPro Elite v2.0</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-:root{--bg:#050505;--card:#111;--line:#2b2b2b;--red:#f3131f;--red2:#ff3030;--muted:#a8a8a8;--ok:#00e676;--warn:#ffd54f;--bad:#ff5252}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#050505,#180000);color:#fff}.wrap{max-width:1180px;margin:auto;padding:10px}.top{text-align:center;margin:10px 0 12px}.top h1{margin:0;font-size:32px}.top span{color:var(--red2)}.top p{margin:4px;color:#ccc;font-size:13px}.tabs{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin:12px 0}.tabs button{padding:13px 8px;border:0;border-radius:12px;background:#181818;color:#fff;font-weight:700}.tabs button.active{background:linear-gradient(135deg,var(--red),var(--red2))}.card{background:rgba(17,17,17,.96);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 0 18px rgba(243,19,31,.12)}h2{margin:0 0 10px;border-left:4px solid var(--red);padding-left:10px;font-size:22px}.hint{color:#ccc;font-size:13px;margin:4px 0 10px}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}input,select,textarea,button{width:100%;padding:11px 12px;border-radius:11px;border:1px solid #333;background:#050505;color:#fff;font-size:14px}textarea{min-height:62px;resize:vertical}button.main{background:linear-gradient(135deg,var(--red),var(--red2));border:0;font-weight:800;cursor:pointer}.rowbtn{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hidden{display:none}.ok{color:var(--ok);font-weight:800}.erro{color:var(--bad);font-weight:800}.result{padding:12px;border-radius:12px;text-align:center;font-weight:800}.q{background:#05381f;color:var(--ok)}.nq1{background:#3a2f03;color:var(--warn)}.nq{background:#3b0505;color:var(--bad)}.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.kpi{background:#181818;border:1px solid #2d2d2d;border-radius:13px;padding:12px;text-align:center}.kpi b{display:block;color:var(--red2);font-size:24px;margin-top:4px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #2b2b2b;padding:8px;text-align:left}th{color:#ff7777}.pill{display:inline-block;background:#260000;border:1px solid #5b1111;color:#ff8585;border-radius:999px;padding:4px 8px;font-size:12px}#map{height:420px;border-radius:14px;border:1px solid #333}.mini{font-size:12px;color:#bbb}.jornadaBox{border:1px solid #3a1111;background:#180606;border-radius:14px;padding:10px;margin-bottom:10px}.compactForm input,.compactForm select,.compactForm textarea{margin:0}@media(max-width:800px){.tabs{grid-template-columns:repeat(2,1fr)}.grid,.grid2,.kpis,.rowbtn{grid-template-columns:1fr}.wrap{padding:8px}input,select,textarea,button{padding:10px;font-size:13px}.top h1{font-size:28px}}
+:root{--bg:#050505;--card:#111;--line:#2b2b2b;--red:#f3131f;--red2:#ff3030;--muted:#a8a8a8;--ok:#00e676;--warn:#ffd54f;--bad:#ff5252}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#050505,#180000);color:#fff}.wrap{max-width:1180px;margin:auto;padding:10px}.top{text-align:center;margin:10px 0 12px}.top h1{margin:0;font-size:32px}.top span{color:var(--red2)}.top p{margin:4px;color:#ccc;font-size:13px}.tabs{display:grid;grid-template-columns:repeat(11,1fr);gap:8px;margin:12px 0}.tabs button{padding:13px 8px;border:0;border-radius:12px;background:#181818;color:#fff;font-weight:700}.tabs button.active{background:linear-gradient(135deg,var(--red),var(--red2))}.card{background:rgba(17,17,17,.96);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 0 18px rgba(243,19,31,.12)}h2{margin:0 0 10px;border-left:4px solid var(--red);padding-left:10px;font-size:22px}.hint{color:#ccc;font-size:13px;margin:4px 0 10px}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}input,select,textarea,button{width:100%;padding:11px 12px;border-radius:11px;border:1px solid #333;background:#050505;color:#fff;font-size:14px}textarea{min-height:62px;resize:vertical}button.main{background:linear-gradient(135deg,var(--red),var(--red2));border:0;font-weight:800;cursor:pointer}.rowbtn{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hidden{display:none}.ok{color:var(--ok);font-weight:800}.erro{color:var(--bad);font-weight:800}.result{padding:12px;border-radius:12px;text-align:center;font-weight:800}.q{background:#05381f;color:var(--ok)}.nq1{background:#3a2f03;color:var(--warn)}.nq{background:#3b0505;color:var(--bad)}.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.kpi{background:#181818;border:1px solid #2d2d2d;border-radius:13px;padding:12px;text-align:center}.kpi b{display:block;color:var(--red2);font-size:24px;margin-top:4px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #2b2b2b;padding:8px;text-align:left}th{color:#ff7777}.pill{display:inline-block;background:#260000;border:1px solid #5b1111;color:#ff8585;border-radius:999px;padding:4px 8px;font-size:12px}#map{height:420px;border-radius:14px;border:1px solid #333}.mini{font-size:12px;color:#bbb}.jornadaBox{border:1px solid #3a1111;background:#180606;border-radius:14px;padding:10px;margin-bottom:10px}.compactForm input,.compactForm select,.compactForm textarea{margin:0}@media(max-width:800px){.tabs{grid-template-columns:repeat(2,1fr)}.grid,.grid2,.kpis,.rowbtn{grid-template-columns:1fr}.wrap{padding:8px}input,select,textarea,button{padding:10px;font-size:13px}.top h1{font-size:28px}}
 
 .brandMark{width:118px;height:86px;margin:0 auto 6px;display:block;filter:drop-shadow(0 0 18px rgba(255,48,48,.42))}.brandMark svg{width:100%;height:100%}.brandMark .wing{fill:url(#g1)}.brandMark .cut{fill:#050505}.brandMark .eye{fill:#fff}.brandMark .beak{fill:#ff3030}.brandLine{width:150px;height:2px;margin:6px auto 0;background:linear-gradient(90deg,transparent,#ff3030,transparent)}.version{display:inline-block;margin-top:5px;padding:4px 10px;border-radius:999px;background:#1b0505;border:1px solid #5b1111;color:#ff7777;font-weight:800;font-size:12px}.loginFooter{text-align:center;color:#777;font-size:12px;margin-top:18px;padding:16px}.loginFooter b{color:#ff7777}.pulseBtn{animation:pulseRed 1.8s infinite}@keyframes pulseRed{0%{box-shadow:0 0 0 0 rgba(255,48,48,.55)}70%{box-shadow:0 0 0 12px rgba(255,48,48,0)}100%{box-shadow:0 0 0 0 rgba(255,48,48,0)}}
 .admOnly{display:none}
@@ -38,7 +38,7 @@
     </div>
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">Versão 1.0</div>
+    <div class="version">CaptaPro Elite v2.0</div>
     <p>Sistema Inteligente de Captação<br>GPS • Pesquisa • Conversão • Dashboard</p>
   </div>
 
@@ -52,7 +52,7 @@
 
   <div id="appBox" class="hidden">
     <div class="tabs">
-      <button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('dash',this)">Dashboard</button><button onclick="aba('mapa',this)">Mapa</button><button onclick="aba('calor',this)">Calor Horários</button><button onclick="aba('rel',this)">Relatórios</button><button onclick="aba('profissionais',this)">Profissionais</button><button onclick="aba('users',this)">Usuários</button><button onclick="aba('ceo',this)">CEO</button>
+      <button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('dash',this)">Dashboard</button><button onclick="aba('ranking',this)">Ranking</button><button onclick="aba('brindesDash',this)">Brindes</button><button onclick="aba('ceoAnalytics',this)">CEO Analytics</button><button onclick="aba('mapa',this)">Mapa</button><button onclick="aba('calor',this)">Calor Horários</button><button onclick="aba('rel',this)">Relatórios</button><button onclick="aba('profissionais',this)">Profissionais</button><button onclick="aba('users',this)">Usuários</button><button onclick="aba('ceo',this)">CEO</button>
     </div>
 
     <section id="pesquisa" class="card">
@@ -110,6 +110,49 @@
     </section>
 
     <section id="dash" class="card hidden"><h2>Dashboard</h2><button class="main" onclick="carregarDashboard()">Atualizar</button><div class="kpis" style="margin-top:8px"><div class="kpi">Pesquisas<b id="kTotal">0</b></div><div class="kpi">Q<b id="kQ">0</b></div><div class="kpi">NQ<b id="kNQ">0</b></div><div class="kpi">Sala<b id="kSala">0</b></div><div class="kpi">Conversão<b id="kConv">0%</b></div></div><div class="grid2"><div class="card"><h2>Pontos</h2><canvas id="chartPontos"></canvas></div><div class="card"><h2>Horários</h2><canvas id="chartHoras"></canvas></div></div></section>
+
+
+    <section id="ranking" class="card hidden">
+      <h2>Ranking Geral</h2>
+      <button class="main" onclick="carregarRanking()">Atualizar Ranking</button>
+      <div class="grid2" style="margin-top:8px">
+        <div class="card"><h2>Top Captadores</h2><div id="rankingCaptadores"></div></div>
+        <div class="card"><h2>Ranking por Pontos</h2><div id="rankingPontos"></div></div>
+      </div>
+      <div class="card"><h2>Ranking por Equipe</h2><div id="rankingEquipes"></div></div>
+    </section>
+
+    <section id="brindesDash" class="card hidden">
+      <h2>Controle de Brindes</h2>
+      <button class="main" onclick="carregarBrindes()">Atualizar Brindes</button>
+      <div class="kpis" style="margin-top:8px">
+        <div class="kpi">Total Brindes<b id="kBrindesTotal">0</b></div>
+        <div class="kpi">Com Sala<b id="kBrindesSala">0</b></div>
+        <div class="kpi">Q com Brinde<b id="kBrindesQ">0</b></div>
+        <div class="kpi">Pontos<b id="kBrindesPontos">0</b></div>
+        <div class="kpi">Captadores<b id="kBrindesCaptadores">0</b></div>
+      </div>
+      <div class="grid2" style="margin-top:8px">
+        <div class="card"><h2>Brindes por tipo</h2><div id="brindesTipo"></div></div>
+        <div class="card"><h2>Brindes por profissional</h2><div id="brindesProfissional"></div></div>
+      </div>
+    </section>
+
+    <section id="ceoAnalytics" class="card hidden">
+      <h2>CEO Analytics</h2>
+      <button class="main" onclick="carregarCEOAnalytics()">Atualizar CEO Analytics</button>
+      <div class="kpis" style="margin-top:8px">
+        <div class="kpi">Conversão Geral<b id="ceoConv">0%</b></div>
+        <div class="kpi">Melhor Ponto<b id="ceoMelhorPonto">-</b></div>
+        <div class="kpi">Melhor Profissional<b id="ceoMelhorProf">-</b></div>
+        <div class="kpi">Tempo Médio<b id="ceoTempoMedio">0 min</b></div>
+        <div class="kpi">Q %<b id="ceoQperc">0%</b></div>
+      </div>
+      <div class="grid2" style="margin-top:8px">
+        <div class="card"><h2>Pontos mais produtivos</h2><div id="ceoPontos"></div></div>
+        <div class="card"><h2>Profissionais mais produtivos</h2><div id="ceoProfissionais"></div></div>
+      </div>
+    </section>
 
     <section id="mapa" class="card hidden"><h2>Mapa</h2><button class="main" onclick="carregarMapa()">Atualizar mapa</button><p class="hint">Mostra pesquisas e tempo desde o início da jornada/meeting.</p><div id="map"></div></section>
 
@@ -178,7 +221,7 @@ function init(){for(let i=18;i<=80;i++){opt('idade_1',i,i+' anos');opt('idade_2'
 init();
 async function entrar(){const email=val('email').toLowerCase().trim(),nome=val('captadorNome').trim();if(!email||!nome)return msg('loginMsg','Preencha e-mail e nome','erro');usuarioEmail=email;captadorNome=nome;const {data}=await db.from('approved_users').select('*').eq('email',email).maybeSingle();if(!data){await db.from('approved_users').insert({email,name:nome,approved:false});showOnlyLogin('aguardandoBox');return}if(!data.approved){showOnlyLogin('aguardandoBox');return}userRole=data.role||'captador';document.getElementById('loginBox').classList.add('hidden');document.getElementById('appBox').classList.remove('hidden');gps();carregarConfig();aplicarPermissaoVisual();iniciarJornadaAutomatica();}
 function showOnlyLogin(id){document.getElementById('loginBox').classList.add('hidden');document.getElementById(id).classList.remove('hidden')}
-function aba(id,b){['pesquisa','dash','mapa','calor','rel','profissionais','users','ceo'].forEach(x=>document.getElementById(x).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(id==='dash')carregarDashboard();if(id==='mapa')setTimeout(carregarMapa,250);if(id==='calor')carregarCalor();if(id==='rel')carregarRelatorios();if(id==='profissionais')carregarProfissionais();if(id==='users')carregarUsuarios();if(id==='ceo')carregarConfig();}
+function aba(id,b){['pesquisa','dash','ranking','brindesDash','ceoAnalytics','mapa','calor','rel','profissionais','users','ceo'].forEach(x=>document.getElementById(x).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(id==='dash')carregarDashboard();if(id==='ranking')carregarRanking();if(id==='brindesDash')carregarBrindes();if(id==='ceoAnalytics')carregarCEOAnalytics();if(id==='mapa')setTimeout(carregarMapa,250);if(id==='calor')carregarCalor();if(id==='rel')carregarRelatorios();if(id==='profissionais')carregarProfissionais();if(id==='users')carregarUsuarios();if(id==='ceo')carregarConfig();}
 function gps(){navigator.geolocation&&navigator.geolocation.getCurrentPosition(p=>{latitude=p.coords.latitude;longitude=p.coords.longitude},()=>{}, {enableHighAccuracy:true})}
 
 async function iniciarJornadaAutomatica(){
@@ -267,6 +310,85 @@ async function carregarProfissionais(){
   document.getElementById('profissionaisBox').innerHTML=rows+'</table>';
 }
 function editarProfissional(nome,email,equipe,ponto,cargo,ativo){setVal('prof_nome',nome);setVal('prof_email',email);setVal('prof_equipe',equipe);setVal('prof_ponto',ponto);setVal('prof_cargo',cargo);setVal('prof_ativo',ativo);window.scrollTo({top:0,behavior:'smooth'});}
+
+
+function criarTabelaRanking(rows, cols){
+  if(!rows.length) return '<p class="mini">Sem dados ainda.</p>';
+  let html='<table><tr>'+cols.map(c=>`<th>${c.label}</th>`).join('')+'</tr>';
+  rows.forEach(r=>{
+    html+='<tr>'+cols.map(c=>`<td>${r[c.key] ?? '-'}</td>`).join('')+'</tr>';
+  });
+  return html+'</table>';
+}
+function agruparMetricas(data,campo){
+  const obj={};
+  data.forEach(p=>{
+    const k=p[campo]||'Não informado';
+    if(!obj[k]) obj[k]={nome:k,total:0,q:0,nq:0,sala:0,brindes:0,tempo:0};
+    obj[k].total++;
+    if((p.qualificacao_automatica||p.status)==='Q') obj[k].q++;
+    if(String(p.qualificacao_automatica||p.status).startsWith('NQ')) obj[k].nq++;
+    if(p.levou_sala==='Sim') obj[k].sala++;
+    if(p.brinde) obj[k].brindes++;
+    obj[k].tempo += Number(p.tempo_no_ponto_minutos||0);
+  });
+  return Object.values(obj).map(x=>({
+    ...x,
+    conversao:x.total?Math.round(x.sala/x.total*100)+'%':'0%',
+    qperc:x.total?Math.round(x.q/x.total*100)+'%':'0%',
+    tempoMedio:x.total?Math.round(x.tempo/x.total)+' min':'0 min'
+  })).sort((a,b)=>b.sala-a.sala || b.q-a.q || b.total-a.total);
+}
+async function carregarRanking(){
+  const data=await getPesquisas();
+  const cols=[
+    {key:'nome',label:'Nome'},
+    {key:'total',label:'Pesquisas'},
+    {key:'q',label:'Q'},
+    {key:'nq',label:'NQ'},
+    {key:'sala',label:'Sala'},
+    {key:'conversao',label:'Conv.'}
+  ];
+  document.getElementById('rankingCaptadores').innerHTML=criarTabelaRanking(agruparMetricas(data,'captador_nome').slice(0,20),cols);
+  document.getElementById('rankingPontos').innerHTML=criarTabelaRanking(agruparMetricas(data,'ponto_captacao').slice(0,20),cols);
+  document.getElementById('rankingEquipes').innerHTML=criarTabelaRanking(agruparMetricas(data,'equipe'),cols);
+}
+async function carregarBrindes(){
+  const data=await getPesquisas();
+  const comBrinde=data.filter(p=>p.brinde);
+  set('kBrindesTotal',comBrinde.length);
+  set('kBrindesSala',comBrinde.filter(p=>p.levou_sala==='Sim').length);
+  set('kBrindesQ',comBrinde.filter(p=>(p.qualificacao_automatica||p.status)==='Q').length);
+  set('kBrindesPontos',new Set(comBrinde.map(p=>p.ponto_captacao).filter(Boolean)).size);
+  set('kBrindesCaptadores',new Set(comBrinde.map(p=>p.captador_nome).filter(Boolean)).size);
+  document.getElementById('brindesTipo').innerHTML=criarTabelaRanking(agruparMetricas(comBrinde,'brinde').slice(0,30),[
+    {key:'nome',label:'Brinde'},{key:'total',label:'Qtd'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'conversao',label:'Conv.'}
+  ]);
+  document.getElementById('brindesProfissional').innerHTML=criarTabelaRanking(agruparMetricas(comBrinde,'captador_nome').slice(0,30),[
+    {key:'nome',label:'Profissional'},{key:'brindes',label:'Brindes'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'conversao',label:'Conv.'}
+  ]);
+}
+async function carregarCEOAnalytics(){
+  const data=await getPesquisas();
+  const total=data.length;
+  const sala=data.filter(p=>p.levou_sala==='Sim').length;
+  const q=data.filter(p=>(p.qualificacao_automatica||p.status)==='Q').length;
+  const pontos=agruparMetricas(data,'ponto_captacao');
+  const profs=agruparMetricas(data,'captador_nome');
+  const tempoTotal=data.reduce((s,p)=>s+Number(p.tempo_no_ponto_minutos||0),0);
+  set('ceoConv',total?Math.round(sala/total*100)+'%':'0%');
+  set('ceoQperc',total?Math.round(q/total*100)+'%':'0%');
+  set('ceoMelhorPonto',pontos[0]?.nome||'-');
+  set('ceoMelhorProf',profs[0]?.nome||'-');
+  set('ceoTempoMedio',total?Math.round(tempoTotal/total)+' min':'0 min');
+  document.getElementById('ceoPontos').innerHTML=criarTabelaRanking(pontos.slice(0,15),[
+    {key:'nome',label:'Ponto'},{key:'total',label:'Pesquisas'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'conversao',label:'Conv.'},{key:'tempoMedio',label:'Tempo médio'}
+  ]);
+  document.getElementById('ceoProfissionais').innerHTML=criarTabelaRanking(profs.slice(0,15),[
+    {key:'nome',label:'Profissional'},{key:'total',label:'Pesquisas'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'conversao',label:'Conv.'},{key:'brindes',label:'Brindes'}
+  ]);
+}
+
 
 async function carregarUsuarios(){const {data=[]}=await db.from('approved_users').select('*').order('created_at',{ascending:false});let rows='<table><tr><th>Nome</th><th>E-mail</th><th>Role</th><th>Aprovado</th></tr>';data.forEach(u=>rows+=`<tr><td>${u.name||''}</td><td>${u.email}</td><td>${u.role||''}</td><td>${u.approved?'Sim':'Não'}</td></tr>`);document.getElementById('usersBox').innerHTML=rows+'</table>'}
 async function carregarConfig(){const {data}=await db.from('configuracao_qualificacao').select('*').eq('id',1).maybeSingle();if(data){cfg={...cfg,...data};profBloq=data.profissoes_bloqueadas||profBloqDefault;setVal('cfg_renda',data.renda_minima||15000);setVal('cfg_ano',data.ano_carro_minimo||2011);setVal('cfg_idmin',data.idade_minima_casal||25);setVal('cfg_idsolo',data.idade_minima_solo||30);setVal('cfg_idmax',data.idade_maxima||64);setVal('cfg_uniao',data.uniao_estavel_minima_anos||2);setVal('cfg_casa',String(data.casa_propria_obrigatoria!==false));setVal('cfg_cartao',String(data.cartao_credito_obrigatorio!==false));setVal('cfg_prof_def',String(data.profissoes_definidas_obrigatorio!==false));setVal('cfg_q1_sem_carro',String(data.q1_sem_carro!==false));setVal('cfg_q1_sem_casa',String(data.q1_sem_casa!==false));setVal('cfg_q1_carro_antigo',String(data.q1_carro_antigo!==false));setVal('cfg_q1_uniao',String(data.q1_uniao!==false));setVal('cfg_renda_individual',data.renda_individual_minima||data.renda_minima||15000);setVal('cfg_ano_individual',data.ano_carro_individual_minimo||data.ano_carro_minimo||2011);setVal('cfg_casa_individual',String(data.casa_individual_obrigatoria!==false));setVal('cfg_brinde_individual',String(data.brinde_individual!==false));setVal('cfg_prof',profBloq.join(', '));setVal('cfg_prof_fortes',data.profissoes_fortes||'Empresário, Comerciante, Médico, Advogado, Engenheiro, Servidor público, Diretor, Gerente, Investidor, Produtor rural');setVal('cfg_obs',data.observacoes||'')}}
