@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro Elite 4.3</title>
+<title>CaptaPro Elite 4.4</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -136,6 +136,35 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
   #map{height:430px}
 }
 
+
+/* Versão 4.4 */
+.loggedPromoter{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 12px;padding:11px 13px;border-radius:12px;background:#0b1510;border:1px solid #1e5f3b;color:#d9ffe8}
+.loggedPromoter b{color:#00e676}
+.salaActions{display:flex;gap:7px;flex-wrap:wrap}
+.salaActions button{width:auto;min-width:110px}
+.btnRoom{background:#075a32!important;border-color:#0e9f57!important}
+.btnPending{background:#503800!important;border-color:#8d6b00!important;color:#ffe08a!important}
+.btnEdit{background:#12314a!important;border-color:#245c85!important}
+.btnDanger{background:#4a0c0c!important;border-color:#991f1f!important}
+.btnNeutral{background:#252525!important;border-color:#555!important}
+.modalBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;display:flex;align-items:center;justify-content:center;padding:14px}
+.modalCard{width:min(1100px,100%);max-height:92vh;overflow:auto;background:#101010;border:1px solid #5d1b1b;border-radius:18px;padding:16px;box-shadow:0 0 35px rgba(239,27,36,.25)}
+.modalCard.small{width:min(620px,100%)}
+.modalHeader{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;position:sticky;top:-16px;background:#101010;z-index:2;padding:10px 0}
+.modalHeader h2{margin:0}.modalClose{width:auto;padding:8px 12px;background:#252525}
+.modalGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.modalGrid .full{grid-column:1/-1}
+.modalGrid label{display:flex;flex-direction:column;gap:5px;color:#bbb;font-size:11px;font-weight:800}
+.roomStatus{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:900}
+.roomWaiting{background:#493600;color:#ffe08a}.roomApproved{background:#063d24;color:#00e676}.roomRejected{background:#3b0505;color:#ff7777}.roomNo{background:#252525;color:#ccc}
+#mapaLocaisResumo{margin-top:10px}
+.mapResearchPin{width:18px;height:18px;border-radius:5px 5px 5px 0;background:#1976d2;border:2px solid #fff;transform:rotate(-45deg);box-shadow:0 0 12px rgba(25,118,210,.9)}
+.mapResearchPin span{display:block;width:5px;height:5px;border-radius:50%;background:#fff;margin:4px;transform:rotate(45deg)}
+.adminResearchCard{border:1px solid #303030;border-radius:13px;padding:11px;margin:8px 0;background:#121212}
+.adminResearchCardHeader{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.adminResearchMeta{color:#aaa;font-size:12px;margin-top:4px}
+@media(max-width:900px){.modalGrid{grid-template-columns:1fr}.modalGrid .full{grid-column:auto}.loggedPromoter{align-items:flex-start;flex-direction:column}}
+
 </style>
 </head>
 <body>
@@ -159,12 +188,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 4.3 • Atualizado em 17/06/2026</div>
+    <div class="version">CaptaPro Elite 4.4 • Atualizado em 17/06/2026</div>
     <p>Sistema Inteligente de Captação</p>
   </div>
 
   <div id="loginBox" class="card">
-    <h2>Entrada</h2><div class="warningBox"><b>Versão 4.3:</b> filtros por período, comparativos, Pulsador, metas diárias, rota por promotor e painel individual com projeções.</div>
+    <h2>Entrada</h2><div class="warningBox"><b>Versão 4.4:</b> declaração de sala pelo promotor, aprovação do ADM, consultor/anotações, edição e exclusão de pesquisas, metas para todos e mapa de locais visitados.</div>
     <div class="grid2"><input id="email" type="email" placeholder="Seu e-mail"><input id="captadorNome" placeholder="Seu nome completo"></div>
     <button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button>
     <p id="loginMsg"></p>
@@ -187,12 +216,11 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       <button class="admOnly" onclick="aba('ceo',this)">CEO</button>
     </div>
 
-    <section id="pesquisa"
-
     <section id="pesquisa" class="card">
       <h2>Pesquisa Rápida</h2>
       <p class="hint">A jornada é automática e oculta para a equipe. O ADM vê os dados no Dashboard/Mapa.</p>
       <div id="jornadaStatus" class="mini admOnly">Jornada automática ainda não iniciada.</div>
+      <div class="loggedPromoter"><span>Pesquisa registrada automaticamente em nome de:</span><b id="promotorLogadoNome">Aguardando entrada</b></div>
 
       <div class="grid compact">
         <select id="equipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select>
@@ -335,13 +363,23 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       </div>
       <div class="kpis">
         <div class="kpi">Pesquisas<b id="meuPesquisas">0</b></div>
-        <div class="kpi">Sala<b id="meuSala">0</b></div>
-        <div class="kpi">Eficiência<b id="meuEficiencia">0%</b></div>
+        <div class="kpi">Enviados para sala<b id="meuSalaEnviada">0</b></div>
+        <div class="kpi">Sala aprovada<b id="meuSala">0</b></div>
+        <div class="kpi">Aguardando ADM<b id="meuSalaPendente">0</b></div>
+        <div class="kpi">Eficiência aprovada<b id="meuEficiencia">0%</b></div>
         <div class="kpi">Q<b id="meuQ">0</b></div>
         <div class="kpi projCard">Projeção pesquisas no mês<b id="meuProjPesq">0</b></div>
         <div class="kpi projCard">Projeção sala no mês<b id="meuProjSala">0</b></div>
       </div>
       <div class="card chartBox"><h2>Minha evolução diária</h2><canvas id="chartMeuPeriodo"></canvas></div>
+
+      <div class="card">
+        <h2>Minhas pesquisas • Atendimento em sala</h2>
+        <p class="hint">Marque se o casal foi ou não para sala. Quando marcar “Foi em sala”, informe o consultor e envie ao administrador para aprovação.</p>
+        <p id="meuSalaMsg"></p>
+        <div id="minhasPesquisasSalaBox" class="tableScroll"></div>
+      </div>
+
       <div class="card">
         <h2>Comparar meus períodos</h2>
         <div class="periodCompare">
@@ -354,12 +392,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       </div>
     </section>
 
-    <section id="metas" class="card hidden admOnly">
+        <section id="metas" class="card hidden admOnly">
       <h2>Metas Diárias por Promotor</h2>
-      <p class="hint">Defina a meta de abordagens e de casais em sala para cada promotor em cada dia. O realizado e a eficiência são calculados automaticamente.</p>
+      <p class="hint">Defina a meta de abordagens e de casais em sala por dia. Selecione “Todos os promotores” para aplicar a mesma meta de uma vez.</p>
       <div class="filterBar">
         <label class="filterLabel">Data da meta<input id="metaData" type="date"></label>
-        <label class="filterLabel">Promotor<select id="metaPromotor"><option value="">Selecione o promotor</option></select></label>
+        <label class="filterLabel">Promotor<select id="metaPromotor"><option value="">Selecione o promotor</option><option value="__TODOS__">Todos os promotores</option></select></label>
         <label class="filterLabel">Meta de abordagens<input id="metaAbordagens" type="number" min="0" placeholder="Ex.: 20"></label>
         <label class="filterLabel">Meta de sala<input id="metaSala" type="number" min="0" placeholder="Ex.: 5"></label>
         <label class="filterLabel">&nbsp;<button class="main" onclick="salvarMetas()">Salvar meta diária</button></label>
@@ -382,25 +420,33 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
         <label class="filterLabel">&nbsp;<button class="secondary" onclick="centralizarMapa()">Centralizar pings</button></label>
       </div>
       <div id="mapStatus" class="statusLine"><span class="statusDot offline"></span><span class="mini">Selecione um promotor e um dia para ver todos os horários e locais.</span></div>
-      <div class="warningBox">A rota é formada pelos registros enviados pelo celular durante o dia. Cada ping mostra horário, local e precisão aproximada. O histórico começa a ser registrado após executar o SQL da versão 4.3.</div>
+      <div class="warningBox">A rota é formada pelos registros enviados pelo celular durante o dia. Cada ping mostra horário, local e precisão aproximada. O histórico começa a ser registrado após executar o SQL da versão 4.4.</div>
       <div class="mapLegend"><span><i class="statusDot live"></i>posição atual</span><span><i class="statusDot recent"></i>trajeto do dia</span><span><i class="statusDot offline"></i>sem atualização recente</span></div>
       <div id="map"></div>
+      <div id="mapaLocaisResumo" class="card"><h2>Locais visitados</h2><div id="mapaLocaisConteudo" class="tableScroll"><p class="mini">Selecione um promotor e um dia.</p></div></div>
       <div id="mapaLista" class="tableScroll" style="margin-top:10px"></div>
     </section>
 
-    <section id="salaAdmin"<section id="salaAdmin" class="card hidden admOnly">
-      <h2>Confirmação de Entrada em Sala</h2>
-      <p class="hint">Depois que o captador salva a pesquisa, somente o administrador confirma se o cliente entrou ou não em sala.</p>
+    <section id="salaAdmin" class="card hidden admOnly">
+      <h2>Gestão de Pesquisas e Aprovação de Sala</h2>
+      <p class="hint">Aprove ou rejeite os casais enviados para sala. O administrador também pode editar qualquer informação ou excluir a pesquisa.</p>
       <div class="grid compact">
-        <input id="salaBusca" placeholder="Buscar cliente, captador ou ponto" oninput="renderSalaAdmin()">
-        <select id="salaFiltro" onchange="renderSalaAdmin()"><option value="pendente">Pendentes</option><option value="todos">Todos</option><option value="Sim">Entraram em sala</option><option value="Não">Não entraram</option></select>
+        <input id="salaBusca" placeholder="Buscar cliente, promotor, consultor ou ponto" oninput="renderSalaAdmin()">
+        <select id="salaFiltro" onchange="renderSalaAdmin()">
+          <option value="solicitadas">Aguardando aprovação</option>
+          <option value="todos">Todas as pesquisas</option>
+          <option value="aprovadas">Salas aprovadas</option>
+          <option value="rejeitadas">Salas rejeitadas</option>
+          <option value="nao">Não foram para sala</option>
+          <option value="sem_declaracao">Promotor ainda não informou</option>
+        </select>
         <button class="main" onclick="carregarSalaAdmin()">Atualizar lista</button>
       </div>
       <p id="salaMsg"></p>
-      <div id="salaAdminBox" class="tableScroll"></div>
+      <div id="salaAdminBox"></div>
     </section>
 
-    <section id="historico" class="card hidden admOnly"><h2>Histórico Completo</h2><button class="main" onclick="carregarHistorico()">Atualizar Histórico</button><div id="historicoBox"></div></section>
+        <section id="historico" class="card hidden admOnly"><h2>Histórico Completo</h2><button class="main" onclick="carregarHistorico()">Atualizar Histórico</button><div id="historicoBox"></div></section>
 
     <section id="profissionais" class="card hidden admOnly">
       <h2>Profissionais</h2>
@@ -420,7 +466,82 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       <button class="main" style="margin-top:8px" onclick="salvarCEO()">Salvar CEO</button><p id="ceoMsg"></p>
     </section>
   </div>
-  <div class="footer">CaptaPro Elite 4.3 • Atualizado em 17/06/2026 • Operação de Captação</div>
+
+  <div id="salaPromotorModal" class="modalBackdrop hidden" onclick="fecharModalFundo(event,'salaPromotorModal')">
+    <div class="modalCard small">
+      <div class="modalHeader"><h2>Enviar casal para aprovação de sala</h2><button class="modalClose" onclick="fecharModal('salaPromotorModal')">Fechar</button></div>
+      <input id="salaPromotorPesquisaId" type="hidden">
+      <div id="salaPromotorCasal" class="readonlyInfo"></div>
+      <label class="filterLabel" style="margin-top:10px">Consultor responsável<input id="salaPromotorConsultor" placeholder="Nome do consultor"></label>
+      <label class="filterLabel" style="margin-top:8px">Anotação da venda ou do atendimento<textarea id="salaPromotorAnotacao" placeholder="Ex.: venda realizada, casal não comprou, pediu retorno, aconteceu algum imprevisto..."></textarea></label>
+      <div class="rowbtn" style="margin-top:10px">
+        <button class="main btnRoom" onclick="enviarSalaParaAprovacao()">Enviar para o ADM aprovar</button>
+        <button class="secondary" onclick="fecharModal('salaPromotorModal')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="editarPesquisaModal" class="modalBackdrop hidden" onclick="fecharModalFundo(event,'editarPesquisaModal')">
+    <div class="modalCard">
+      <div class="modalHeader"><h2>Editar pesquisa completa</h2><button class="modalClose" onclick="fecharModal('editarPesquisaModal')">Fechar</button></div>
+      <input id="adm_edit_id" type="hidden">
+      <div class="modalGrid">
+        <label>E-mail do usuário<input id="adm_edit_user_email"></label>
+        <label>Promotor responsável<input id="adm_edit_captador_nome"></label>
+        <label>Equipe<select id="adm_edit_equipe"><option value="">Sem equipe</option><option>PARK</option><option>EXTERNA</option></select></label>
+        <label>Ponto de captação<input id="adm_edit_ponto"></label>
+        <label>Tipo de abordagem<input id="adm_edit_tipo"></label>
+        <label>Horário local<input id="adm_edit_horario"></label>
+
+        <label>Nome 1<input id="adm_edit_convidado_1"></label>
+        <label>Idade 1<input id="adm_edit_idade_1" type="number"></label>
+        <label>Profissão 1<input id="adm_edit_profissao_1"></label>
+        <label>Nome 2<input id="adm_edit_convidado_2"></label>
+        <label>Idade 2<input id="adm_edit_idade_2" type="number"></label>
+        <label>Profissão 2<input id="adm_edit_profissao_2"></label>
+
+        <label>Relacionamento<input id="adm_edit_estado_civil"></label>
+        <label>Tempo juntos<input id="adm_edit_tempo_juntos"></label>
+        <label>Contato<input id="adm_edit_contato"></label>
+        <label>Renda do casal<input id="adm_edit_renda_casal" inputmode="decimal"></label>
+        <label>Renda bruta<input id="adm_edit_renda_bruta" inputmode="decimal"></label>
+        <label>Renda líquida<input id="adm_edit_renda_liquida" inputmode="decimal"></label>
+
+        <label>Possui veículo<input id="adm_edit_veiculo"></label>
+        <label>Marca<input id="adm_edit_marca"></label>
+        <label>Modelo<input id="adm_edit_modelo"></label>
+        <label>Ano<input id="adm_edit_ano"></label>
+        <label>Valor médio<input id="adm_edit_valor_fipe" inputmode="decimal"></label>
+        <label>Cartão de crédito<input id="adm_edit_cartao"></label>
+        <label>Casa própria<input id="adm_edit_casa"></label>
+        <label>Multipropriedade<input id="adm_edit_multipropriedade"></label>
+        <label>Onde conheceu<input id="adm_edit_onde_multi"></label>
+
+        <label>Brinde<input id="adm_edit_brinde"></label>
+        <label>Custo do brinde<input id="adm_edit_custo_brinde" inputmode="decimal"></label>
+        <label>Qualificação<input id="adm_edit_qualificacao"></label>
+        <label class="full">Motivo da qualificação<textarea id="adm_edit_motivo"></textarea></label>
+
+        <label>Declaração do promotor<select id="adm_edit_sala_declarada"><option>Pendente</option><option>Sim</option><option>Não</option></select></label>
+        <label>Status da aprovação<select id="adm_edit_sala_status"><option>Aguardando declaração</option><option>Pendente</option><option>Aprovado</option><option>Rejeitado</option><option>Não se aplica</option></select></label>
+        <label>Sala final<select id="adm_edit_levou_sala"><option>Pendente</option><option>Sim</option><option>Não</option></select></label>
+        <label>Consultor<input id="adm_edit_consultor"></label>
+        <label class="full">Anotação de sala/venda<textarea id="adm_edit_anotacao_sala"></textarea></label>
+
+        <label>Latitude<input id="adm_edit_latitude" inputmode="decimal"></label>
+        <label>Longitude<input id="adm_edit_longitude" inputmode="decimal"></label>
+        <label>Tempo no ponto (min)<input id="adm_edit_tempo_ponto" type="number"></label>
+        <label class="full">Observações gerais<textarea id="adm_edit_observacoes"></textarea></label>
+      </div>
+      <p id="admEditMsg"></p>
+      <div class="rowbtn" style="margin-top:10px">
+        <button class="main" onclick="salvarEdicaoPesquisaAdmin()">Salvar todas as alterações</button>
+        <button class="secondary" onclick="fecharModal('editarPesquisaModal')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">CaptaPro Elite 4.4 • Atualizado em 17/06/2026 • Operação de Captação</div>
 </div>
 
 <script>
@@ -435,7 +556,7 @@ let chPontos=null,chHoras=null,chEquipes=null,chQNQ=null,chComparativo=null,chPu
 let gpsWatchId=null,gpsUltimoEnvio=0,gpsHeartbeat=null,mapRefreshTimer=null,locationChannel=null;
 let gpsUltimoHistorico=0,gpsUltimaLatHist=null,gpsUltimaLngHist=null,historicoGpsDisponivel=true;
 let fipePrecosAtuais=[],salaAdminDados=[],veiculoProvider='parallelum';
-let profissionaisCache=[],pesquisasCache=[];
+let profissionaisCache=[],pesquisasCache=[],minhasPesquisasSalaDados=[],ultimaPesquisaSalva=null;
 let cfg={renda_minima:15000,ano_carro_minimo:2011,idade_minima_casal:25,idade_minima_solo:30,idade_maxima:64,uniao_estavel_minima_anos:2,casa_propria_obrigatoria:true,cartao_credito_obrigatorio:true,profissoes_definidas_obrigatorio:true};
 let profBloq=['Operador de caixa','Zelador','Secretária','Auxiliar','Assistente','Avon/Natura/Multinível','Gari','Vendedor ambulante','Motoboy','Do lar','Estoquista','Eletricista','Diarista','Doméstica','Garçom','Manicure','Pedreiro','Atendente','Balconista','Babá','Porteiro','Frentista','Estudante','Uber/App/Freelancer'];
 
@@ -477,7 +598,8 @@ async function entrar(){
     showOnlyLogin('aguardandoBox');return;
   }
   if(!data.approved){showOnlyLogin('aguardandoBox');return}
-  userRole=data.role||'captador';captadorNome=data.name||nome;
+  userRole=data.role||'captador';captadorNome=String(data.name||nome).trim();
+  set('promotorLogadoNome',captadorNome);
   document.getElementById('loginBox').classList.add('hidden');
   document.getElementById('appBox').classList.remove('hidden');
   aplicarPermissaoVisual();
@@ -904,7 +1026,7 @@ async function salvarPesquisa(){
   if(val('veiculo')==='Sim'&&(!val('marca_carro')||!val('modelo_carro')||!val('ano_veiculo')))return msg('formMsg','Selecione marca, modelo e ano do carro.','erro');
   const inicio=new Date(jornada?.inicio_meeting||new Date()),tempo=Math.max(0,Math.round((new Date()-inicio)/60000));
   const p={
-    user_email:usuarioEmail,captador_nome:captadorNome,equipe:val('equipe'),ponto_captacao:val('ponto_captacao'),tipo_abordagem:val('tipo_abordagem'),
+    user_email:usuarioEmail,captador_nome:String(captadorNome).trim(),equipe:val('equipe'),ponto_captacao:val('ponto_captacao'),tipo_abordagem:val('tipo_abordagem'),
     jornada_id:jornada?.id||null,inicio_meeting:jornada?.inicio_meeting||new Date().toISOString(),tempo_no_ponto_minutos:tempo,
     convidado_1:val('convidado_1'),idade_1:num('idade_1'),profissao_1:profissaoFinal('profissao_1','outra_profissao_1'),
     convidado_2:val('convidado_2'),idade_2:num('idade_2'),profissao_2:profissaoFinal('profissao_2','outra_profissao_2'),
@@ -912,14 +1034,18 @@ async function salvarPesquisa(){
     renda_casal:numericOrNull(val('renda_casal')),renda_bruta:numericOrNull(val('renda_bruta')),renda_liquida:numericOrNull(val('renda_liquida')),
     veiculo:val('veiculo'),ano_veiculo:selectedText('ano_veiculo'),marca_carro:selectedText('marca_carro'),modelo_carro:selectedText('modelo_carro'),valor_fipe:numericOrNull(val('valor_fipe_preview')),
     cartao_credito:val('cartao_credito'),casa_propria:val('casa_propria'),multipropriedade:val('multipropriedade'),onde_multipropriedade:val('onde_multipropriedade'),
-    brinde:val('brinde'),custo_brinde:valorBrindeEstimado(val('brinde')),levou_sala:'Pendente',contato:val('contato'),observacoes:val('observacoes'),
+    brinde:val('brinde'),custo_brinde:valorBrindeEstimado(val('brinde')),
+    levou_sala:'Pendente',sala_declarada_promotor:'Pendente',sala_status_aprovacao:'Aguardando declaração',
+    consultor_nome:null,anotacao_sala:null,sala_solicitada_em:null,sala_solicitada_por:null,
+    contato:val('contato'),observacoes:val('observacoes'),
     status:qualificacao,qualificacao_automatica:qualificacao,motivo_qualificacao:motivoQualificacao,latitude,longitude,
     horario_local:String(new Date().getHours()).padStart(2,'0')+':00'
   };
   const {data,error}=await db.from('pesquisas').insert(p).select().single();
   if(error){console.error(error);return msg('formMsg','Erro ao salvar: '+escapeHtml(error.message),'erro')}
-  msg('formMsg','Pesquisa salva com sucesso. A entrada em sala ficou pendente para o administrador.','ok');
-  renderFichaSalva(data||p);enviarLocalizacaoTempoReal(true);
+  ultimaPesquisaSalva=data||p;
+  msg('formMsg','Pesquisa salva com sucesso. Agora informe se o casal foi ou não para sala.','ok');
+  renderFichaSalva(ultimaPesquisaSalva);enviarLocalizacaoTempoReal(true);
 }
 
 function valorExibicaoVeiculo(v){
@@ -954,7 +1080,7 @@ function renderFichaSalva(p){
           <div class="fichaIcone">CP</div>
           <div>
             <div class="fichaTitulo">Ficha Completa do Casal</div>
-            <div class="fichaSubtitulo">CaptaPro Elite 4.3 • ${escapeHtml(dataFicha)}</div>
+            <div class="fichaSubtitulo">CaptaPro Elite 4.4 • ${escapeHtml(dataFicha)}</div>
           </div>
         </div>
         <div class="fichaStatus ${cls}">${escapeHtml(status)}</div>
@@ -975,7 +1101,7 @@ function renderFichaSalva(p){
         ${fichaCampo('Multipropriedade',[p.multipropriedade,p.onde_multipropriedade?`Onde: ${p.onde_multipropriedade}`:''].filter(Boolean).join(' • ')||'-',true)}
         ${fichaCampo('Brinde entregue',[p.brinde,`Custo estimado: ${moedaBR(p.custo_brinde)}`].filter(Boolean).join(' • ')||'-',true)}
         ${fichaCampo('WhatsApp / Contato',p.contato||'-')}
-        ${fichaCampo('Entrada em sala','Pendente de confirmação do administrador')}
+        ${fichaCampo('Entrada em sala',p.levou_sala==='Sim'?'Aprovada pelo administrador':p.sala_declarada_promotor==='Sim'?'Enviada e aguardando aprovação':p.sala_declarada_promotor==='Não'?'Promotor informou que não foi':'Aguardando informação do promotor')}
         ${fichaCampo('Equipe / Ponto',[p.equipe,p.ponto_captacao].filter(Boolean).join(' • ')||'-')}
         ${fichaCampo('Tipo de abordagem',p.tipo_abordagem||'-')}
         ${fichaCampo('Profissional responsável',p.captador_nome||'-')}
@@ -989,6 +1115,10 @@ function renderFichaSalva(p){
       </div>
     </div>
 
+    ${!isAdminRole()&&p.id?`<div class="shareActions">
+      <button class="main btnRoom" onclick="abrirSalaPromotor('${escapeAttr(p.id)}')">Foi em sala</button>
+      <button class="secondary btnNeutral" onclick="marcarNaoFoiSala('${escapeAttr(p.id)}')">Não foi em sala</button>
+    </div>`:''}
     <div class="shareActions">
       <button id="btnCompartilharFicha" class="main btnWhatsApp" onclick="compartilharFichaWhatsApp()">Compartilhar imagem pelo WhatsApp</button>
       <button class="secondary" onclick="baixarImagemFicha()">Baixar imagem da ficha</button>
@@ -1128,8 +1258,10 @@ function dadosResumo(data){
   const q=data.filter(x=>(x.qualificacao_automatica||x.status)==='Q').length;
   const nq=data.filter(x=>String(x.qualificacao_automatica||x.status).startsWith('NQ')).length;
   const sala=data.filter(x=>x.levou_sala==='Sim').length;
+  const salaEnviada=data.filter(x=>x.sala_declarada_promotor==='Sim'||x.levou_sala==='Sim').length;
+  const salaPendenteAprovacao=data.filter(x=>x.sala_declarada_promotor==='Sim'&&x.sala_status_aprovacao==='Pendente').length;
   const pendentes=data.filter(x=>!['Sim','Não'].includes(x.levou_sala)).length;
-  return{total,q,nq,sala,pendentes,eficiencia:total?sala/total*100:0};
+  return{total,q,nq,sala,salaEnviada,salaPendenteAprovacao,pendentes,eficiencia:total?sala/total*100:0};
 }
 
 function normalizarNome(v){return String(v||'').trim().toLocaleLowerCase('pt-BR')}
@@ -1177,6 +1309,11 @@ async function carregarListasFiltros(){
   preencherSelect('rankingCaptadorFiltro',profissionaisCache,'Todos os captadores');
   preencherSelect('mapaPromotor',profissionaisCache,'Todos • localização atual','email');
   preencherSelect('metaPromotor',profissionaisCache,'Selecione o promotor','email');
+  const metaSel=document.getElementById('metaPromotor');
+  if(metaSel){
+    const todos=document.createElement('option');todos.value='__TODOS__';todos.textContent='TODOS OS PROMOTORES';
+    metaSel.insertBefore(todos,metaSel.options[1]||null);
+  }
   atualizarAlvosComparativo();
 }
 
@@ -1196,7 +1333,7 @@ function formatarPeriodo(de,ate){
 
 function agruparPorDia(data){
   const o={};
-  data.forEach(x=>{const d=new Date(x.created_at),k=dataLocalInput(d);if(!o[k])o[k]={pesquisas:0,sala:0,q:0};o[k].pesquisas++;if(x.levou_sala==='Sim')o[k].sala++;if((x.qualificacao_automatica||x.status)==='Q')o[k].q++});
+  data.forEach(x=>{const d=new Date(x.created_at),k=dataLocalInput(d);if(!o[k])o[k]={pesquisas:0,sala:0,enviados:0,pendentes:0,q:0};o[k].pesquisas++;if(x.levou_sala==='Sim')o[k].sala++;if(x.sala_declarada_promotor==='Sim'||x.levou_sala==='Sim')o[k].enviados++;if(x.sala_declarada_promotor==='Sim'&&x.sala_status_aprovacao==='Pendente')o[k].pendentes++;if((x.qualificacao_automatica||x.status)==='Q')o[k].q++});
   return o;
 }
 
@@ -1342,19 +1479,131 @@ async function carregarPulsador(){
 async function carregarMeuDesempenho(){
   const meus=dadosDoUsuario(await getPesquisas());
   const periodo=filtrarPorPeriodo(meus,val('meuDe'),val('meuAte')),r=dadosResumo(periodo);
-  set('meuPesquisas',r.total);set('meuSala',r.sala);set('meuEficiencia',r.eficiencia.toFixed(1)+'%');set('meuQ',r.q);
+  set('meuPesquisas',r.total);
+  set('meuSalaEnviada',r.salaEnviada);
+  set('meuSala',r.sala);
+  set('meuSalaPendente',r.salaPendenteAprovacao);
+  set('meuEficiencia',r.eficiencia.toFixed(1)+'%');
+  set('meuQ',r.q);
+
   const hoje=new Date(),inicioMes=dataLocalInput(new Date(hoje.getFullYear(),hoje.getMonth(),1)),fimHoje=dataLocalInput(hoje);
   const mesAtual=filtrarPorPeriodo(meus,inicioMes,fimHoje),rm=dadosResumo(mesAtual);
   const diasDecorridos=Math.max(1,hoje.getDate()),diasMes=new Date(hoje.getFullYear(),hoje.getMonth()+1,0).getDate();
   set('meuProjPesq',Math.round(rm.total/diasDecorridos*diasMes));
   set('meuProjSala',Math.round(rm.sala/diasDecorridos*diasMes));
+
   const diario=agruparPorDia(periodo),datas=Object.keys(diario).sort();
   renderBarChartMultiplo('chartMeuPeriodo',datas.map(d=>d.slice(8,10)+'/'+d.slice(5,7)),[
     {label:'Pesquisas',data:datas.map(d=>diario[d].pesquisas),backgroundColor:'#ef1b24'},
-    {label:'Sala',data:datas.map(d=>diario[d].sala),backgroundColor:'#00a857'}
+    {label:'Enviados para sala',data:datas.map(d=>diario[d].enviados),backgroundColor:'#ffd54f'},
+    {label:'Sala aprovada',data:datas.map(d=>diario[d].sala),backgroundColor:'#00a857'}
   ],chMeuPeriodo,c=>chMeuPeriodo=c);
+
+  minhasPesquisasSalaDados=periodo;
+  renderMinhasPesquisasSala();
   await compararMeuDesempenho(false);
 }
+
+
+function statusSalaPromotor(p){
+  if(p.levou_sala==='Sim'||p.sala_status_aprovacao==='Aprovado')return{texto:'Sala aprovada',classe:'roomApproved'};
+  if(p.sala_status_aprovacao==='Rejeitado')return{texto:'Não aprovado pelo ADM',classe:'roomRejected'};
+  if(p.sala_declarada_promotor==='Sim')return{texto:'Aguardando aprovação do ADM',classe:'roomWaiting'};
+  if(p.sala_declarada_promotor==='Não'||p.levou_sala==='Não')return{texto:'Não foi para sala',classe:'roomNo'};
+  return{texto:'Ainda não informado',classe:'roomWaiting'};
+}
+
+function renderMinhasPesquisasSala(){
+  const box=document.getElementById('minhasPesquisasSalaBox');if(!box)return;
+  const rows=[...minhasPesquisasSalaDados].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  if(!rows.length){box.innerHTML='<p class="mini">Nenhuma pesquisa encontrada no período.</p>';return}
+  box.innerHTML='<table><tr><th>Data</th><th>Casal</th><th>Ponto</th><th>Consultor</th><th>Anotação</th><th>Status de sala</th><th>Ação</th></tr>'+
+    rows.map(p=>{
+      const st=statusSalaPromotor(p);
+      let acoes='';
+      if(st.texto==='Sala aprovada'){
+        acoes='<span class="roomStatus roomApproved">Confirmado</span>';
+      }else if(p.sala_declarada_promotor==='Sim'){
+        acoes=`<button class="btnEdit" data-promotor-sala="${escapeAttr(p.id)}">Editar envio</button>`;
+      }else{
+        acoes=`<div class="salaActions"><button class="btnRoom" data-promotor-sala="${escapeAttr(p.id)}">Foi em sala</button><button class="btnNeutral" data-promotor-nao="${escapeAttr(p.id)}">Não foi</button></div>`;
+      }
+      return `<tr>
+        <td>${escapeHtml(fmt(p.created_at))}</td>
+        <td>${escapeHtml([p.convidado_1,p.convidado_2].filter(Boolean).join(' e ')||'-')}</td>
+        <td>${escapeHtml(p.ponto_captacao||'-')}</td>
+        <td>${escapeHtml(p.consultor_nome||'-')}</td>
+        <td>${escapeHtml(p.anotacao_sala||'-')}</td>
+        <td><span class="roomStatus ${st.classe}">${escapeHtml(st.texto)}</span></td>
+        <td>${acoes}</td>
+      </tr>`;
+    }).join('')+'</table>';
+  box.querySelectorAll('[data-promotor-sala]').forEach(btn=>btn.addEventListener('click',()=>abrirSalaPromotor(btn.dataset.promotorSala)));
+  box.querySelectorAll('[data-promotor-nao]').forEach(btn=>btn.addEventListener('click',()=>marcarNaoFoiSala(btn.dataset.promotorNao)));
+}
+
+async function localizarPesquisaDoPromotor(id){
+  let p=minhasPesquisasSalaDados.find(x=>String(x.id)===String(id));
+  if(!p&&ultimaPesquisaSalva&&String(ultimaPesquisaSalva.id)===String(id))p=ultimaPesquisaSalva;
+  if(p)return p;
+  const {data,error}=await db.from('pesquisas').select('*').eq('id',id).eq('user_email',usuarioEmail).maybeSingle();
+  if(error)throw error;
+  return data;
+}
+
+async function abrirSalaPromotor(id){
+  if(isAdminRole())return;
+  try{
+    const p=await localizarPesquisaDoPromotor(id);
+    if(!p)return msg('meuSalaMsg','Pesquisa não encontrada para este usuário.','erro');
+    setVal('salaPromotorPesquisaId',p.id);
+    setVal('salaPromotorConsultor',p.consultor_nome||'');
+    setVal('salaPromotorAnotacao',p.anotacao_sala||'');
+    document.getElementById('salaPromotorCasal').innerHTML=`<b>${escapeHtml([p.convidado_1,p.convidado_2].filter(Boolean).join(' e ')||'Casal')}</b><br>${escapeHtml(p.ponto_captacao||'-')} • ${escapeHtml(fmt(p.created_at))}`;
+    abrirModal('salaPromotorModal');
+  }catch(e){
+    msg('meuSalaMsg','Erro ao abrir pesquisa: '+escapeHtml(e.message||e),'erro');
+  }
+}
+
+async function enviarSalaParaAprovacao(){
+  if(isAdminRole())return;
+  const id=val('salaPromotorPesquisaId'),consultor=val('salaPromotorConsultor').trim(),anotacao=val('salaPromotorAnotacao').trim();
+  if(!id)return;
+  if(!consultor)return alert('Informe o nome do consultor responsável.');
+  const payload={
+    sala_declarada_promotor:'Sim',sala_status_aprovacao:'Pendente',levou_sala:'Pendente',
+    consultor_nome:consultor,anotacao_sala:anotacao||null,
+    sala_solicitada_em:new Date().toISOString(),sala_solicitada_por:usuarioEmail,updated_at:new Date().toISOString()
+  };
+  const {data,error}=await db.from('pesquisas').update(payload).eq('id',id).eq('user_email',usuarioEmail).select().maybeSingle();
+  if(error)return msg('meuSalaMsg','Erro ao enviar para aprovação: '+escapeHtml(error.message),'erro');
+  if(!data)return msg('meuSalaMsg','A pesquisa não pertence ao usuário conectado.','erro');
+  fecharModal('salaPromotorModal');
+  msg('meuSalaMsg','Casal enviado ao administrador para aprovação de sala.','ok');
+  if(ultimaPesquisaSalva&&String(ultimaPesquisaSalva.id)===String(id)){ultimaPesquisaSalva={...ultimaPesquisaSalva,...payload};renderFichaSalva(ultimaPesquisaSalva)}
+  await carregarMeuDesempenho();
+}
+
+async function marcarNaoFoiSala(id){
+  if(isAdminRole())return;
+  if(!confirm('Confirmar que este casal não foi atendido em sala?'))return;
+  const payload={
+    sala_declarada_promotor:'Não',sala_status_aprovacao:'Não se aplica',levou_sala:'Não',
+    consultor_nome:null,anotacao_sala:null,sala_solicitada_em:new Date().toISOString(),
+    sala_solicitada_por:usuarioEmail,updated_at:new Date().toISOString()
+  };
+  const {data,error}=await db.from('pesquisas').update(payload).eq('id',id).eq('user_email',usuarioEmail).select().maybeSingle();
+  if(error)return msg('meuSalaMsg','Erro ao registrar sala: '+escapeHtml(error.message),'erro');
+  if(!data)return msg('meuSalaMsg','A pesquisa não pertence ao usuário conectado.','erro');
+  msg('meuSalaMsg','Pesquisa marcada como “não foi para sala”.','ok');
+  if(ultimaPesquisaSalva&&String(ultimaPesquisaSalva.id)===String(id)){ultimaPesquisaSalva={...ultimaPesquisaSalva,...payload};renderFichaSalva(ultimaPesquisaSalva)}
+  await carregarMeuDesempenho();
+}
+
+function abrirModal(id){document.getElementById(id)?.classList.remove('hidden');document.body.style.overflow='hidden'}
+function fecharModal(id){document.getElementById(id)?.classList.add('hidden');document.body.style.overflow=''}
+function fecharModalFundo(event,id){if(event.target?.id===id)fecharModal(id)}
 
 async function compararMeuDesempenho(recarregar=true){
   const meus=dadosDoUsuario(await getPesquisas());
@@ -1400,23 +1649,24 @@ async function carregarMapa(ajustar=true){
     document.getElementById('mapaLista').innerHTML=criarTabela(validas.map(l=>({nome:l.captador_nome||l.user_email,status:statusLocalizacao(l.updated_at).texto,horario:new Date(l.updated_at).toLocaleString('pt-BR')})),[
       {key:'nome',label:'Profissional'},{key:'status',label:'Status'},{key:'horario',label:'Última atualização'}
     ]);
+    document.getElementById('mapaLocaisConteudo').innerHTML='<p class="mini">Selecione um promotor e um dia para listar todos os locais visitados.</p>';
     document.getElementById('mapStatus').innerHTML=`<span class="statusDot ${validas.some(l=>statusLocalizacao(l.updated_at).classe==='live')?'live':'offline'}"></span><span class="mini">${validas.length} profissional(is) com localização cadastrada.</span>`;
     if(ajustar)centralizarMapa();setTimeout(()=>map.invalidateSize(),100);return;
   }
 
   const dataEscolhida=val('mapaData')||dataLocalInput(new Date()),{inicio,fim}=limitesData(dataEscolhida,dataEscolhida);
+  const pesquisasDoDia=filtrarPorPeriodo(await getPesquisas(),dataEscolhida,dataEscolhida).filter(p=>{
+    const mesmo=prof?.email?(String(p.user_email||'').toLowerCase()===prof.email.toLowerCase()):normalizarNome(p.captador_nome)===normalizarNome(prof?.nome);
+    return mesmo;
+  });
   let query=db.from('localizacoes_historico').select('*').gte('created_at',inicio.toISOString()).lte('created_at',fim.toISOString()).order('created_at',{ascending:true}).limit(5000);
   if(prof?.email)query=query.eq('user_email',prof.email);else query=query.eq('captador_nome',prof?.nome||valorPromotor.replace(/^nome:/,''));
   let {data:historico=[],error}=await query;
   let fonte='Histórico GPS';
 
   if(error){
-    const pesquisas=filtrarPorPeriodo(await getPesquisas(),dataEscolhida,dataEscolhida).filter(p=>{
-      const mesmo=prof?.email?(String(p.user_email||'').toLowerCase()===prof.email.toLowerCase()):normalizarNome(p.captador_nome)===normalizarNome(prof?.nome);
-      return mesmo&&p.latitude&&p.longitude;
-    });
-    historico=pesquisas.map(p=>({captador_nome:p.captador_nome,user_email:p.user_email,latitude:p.latitude,longitude:p.longitude,accuracy:null,created_at:p.created_at,ponto_captacao:p.ponto_captacao}));
-    fonte='Pesquisas com GPS • execute o SQL 4.3 para registrar a rota completa';
+    historico=pesquisasDoDia.filter(p=>p.latitude&&p.longitude).map(p=>({captador_nome:p.captador_nome,user_email:p.user_email,latitude:p.latitude,longitude:p.longitude,accuracy:null,created_at:p.created_at,ponto_captacao:p.ponto_captacao}));
+    fonte='Pesquisas com GPS • execute o SQL 4.4 para registrar a rota completa';
   }
 
   historico=historico.filter(p=>Number.isFinite(Number(p.latitude))&&Number.isFinite(Number(p.longitude))).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
@@ -1429,6 +1679,41 @@ async function carregarMapa(ajustar=true){
     marker.bindPopup(`<b>${escapeHtml(prof?.nome||p.captador_nome||'Promotor')}</b><br>Ping ${i+1} de ${historico.length}<br>${escapeHtml(new Date(p.created_at).toLocaleString('pt-BR'))}${p.ponto_captacao?`<br>${escapeHtml(p.ponto_captacao)}`:''}${p.accuracy?`<br>Precisão: ${Math.round(Number(p.accuracy))} m`:''}`);
     mapBounds.push([lat,lng]);
   });
+
+
+  pesquisasDoDia.filter(p=>p.latitude&&p.longitude).forEach(p=>{
+    const lat=Number(p.latitude),lng=Number(p.longitude);
+    if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
+    const icon=L.divIcon({className:'',html:'<div class="mapResearchPin"><span></span></div>',iconSize:[20,20],iconAnchor:[10,18]});
+    L.marker([lat,lng],{icon}).addTo(mapMarkerLayer).bindPopup(
+      `<b>Pesquisa realizada</b><br>${escapeHtml([p.convidado_1,p.convidado_2].filter(Boolean).join(' e ')||'Casal')}<br>${escapeHtml(p.ponto_captacao||'Local não informado')}<br>${escapeHtml(fmt(p.created_at))}`
+    );
+    mapBounds.push([lat,lng]);
+  });
+
+  const locais={};
+  historico.forEach(p=>{
+    const nome=String(p.ponto_captacao||'Deslocamento / local sem nome').trim();
+    if(!locais[nome])locais[nome]={local:nome,pings:0,pesquisas:0,primeiro:p.created_at,ultimo:p.created_at};
+    locais[nome].pings++;
+    if(new Date(p.created_at)<new Date(locais[nome].primeiro))locais[nome].primeiro=p.created_at;
+    if(new Date(p.created_at)>new Date(locais[nome].ultimo))locais[nome].ultimo=p.created_at;
+  });
+  pesquisasDoDia.forEach(p=>{
+    const nome=String(p.ponto_captacao||'Local não informado').trim();
+    if(!locais[nome])locais[nome]={local:nome,pings:0,pesquisas:0,primeiro:p.created_at,ultimo:p.created_at};
+    locais[nome].pesquisas++;
+    if(new Date(p.created_at)<new Date(locais[nome].primeiro))locais[nome].primeiro=p.created_at;
+    if(new Date(p.created_at)>new Date(locais[nome].ultimo))locais[nome].ultimo=p.created_at;
+  });
+  const locaisRows=Object.values(locais).sort((a,b)=>new Date(a.primeiro)-new Date(b.primeiro)).map(x=>({
+    local:x.local,primeiro:new Date(x.primeiro).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+    ultimo:new Date(x.ultimo).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+    pings:x.pings,pesquisas:x.pesquisas
+  }));
+  document.getElementById('mapaLocaisConteudo').innerHTML=criarTabela(locaisRows,[
+    {key:'local',label:'Local visitado'},{key:'primeiro',label:'Primeiro registro'},{key:'ultimo',label:'Último registro'},{key:'pings',label:'Pings'},{key:'pesquisas',label:'Pesquisas'}
+  ]);
 
   const hoje=dataLocalInput(new Date())===dataEscolhida;
   if(hoje){
@@ -1445,7 +1730,7 @@ async function carregarMapa(ajustar=true){
   }
 
   const nome=prof?.nome||valorPromotor.replace(/^nome:/,'');
-  document.getElementById('mapStatus').innerHTML=`<span class="statusDot ${historico.length?'recent':'offline'}"></span><span class="mini">${escapeHtml(nome)} • ${escapeHtml(dataEscolhida.split('-').reverse().join('/'))} • ${historico.length} ping(s) • ${escapeHtml(fonte)}</span>`;
+  document.getElementById('mapStatus').innerHTML=`<span class="statusDot ${historico.length?'recent':'offline'}"></span><span class="mini">${escapeHtml(nome)} • ${escapeHtml(dataEscolhida.split('-').reverse().join('/'))} • ${historico.length} ping(s) • ${pesquisasDoDia.length} pesquisa(s) • ${escapeHtml(fonte)}</span>`;
   document.getElementById('mapaLista').innerHTML=criarTabela(historico.map((p,i)=>({
     ping:i+1,horario:new Date(p.created_at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}),
     local:p.ponto_captacao||'-',latitude:Number(p.latitude).toFixed(6),longitude:Number(p.longitude).toFixed(6),precisao:p.accuracy?Math.round(Number(p.accuracy))+' m':'-'
@@ -1466,55 +1751,175 @@ function pararAtualizacaoMapa(){if(mapRefreshTimer){clearInterval(mapRefreshTime
 
 async function carregarSalaAdmin(){
   if(!isAdminRole())return;
-  const {data=[],error}=await db.from('pesquisas').select('*').order('created_at',{ascending:false}).limit(500);
+  const {data=[],error}=await db.from('pesquisas').select('*').order('created_at',{ascending:false}).limit(1000);
   if(error){msg('salaMsg','Erro ao carregar: '+escapeHtml(error.message),'erro');return}
   salaAdminDados=data;msg('salaMsg',`${data.length} pesquisa(s) carregada(s).`,'ok');renderSalaAdmin();
 }
 
+function filtroSalaAdmin(p,filtro){
+  const status=String(p.sala_status_aprovacao||'');
+  const declarada=String(p.sala_declarada_promotor||'Pendente');
+  if(filtro==='todos')return true;
+  if(filtro==='solicitadas')return declarada==='Sim'&&status==='Pendente';
+  if(filtro==='aprovadas')return p.levou_sala==='Sim'||status==='Aprovado';
+  if(filtro==='rejeitadas')return status==='Rejeitado';
+  if(filtro==='nao')return declarada==='Não'||(p.levou_sala==='Não'&&status!=='Rejeitado');
+  if(filtro==='sem_declaracao')return !['Sim','Não'].includes(declarada);
+  return true;
+}
+
 function renderSalaAdmin(){
   const box=document.getElementById('salaAdminBox');if(!box)return;
-  const busca=val('salaBusca').toLowerCase().trim(),filtro=val('salaFiltro')||'pendente';
+  const busca=val('salaBusca').toLowerCase().trim(),filtro=val('salaFiltro')||'solicitadas';
   const rows=salaAdminDados.filter(p=>{
-    const status=['Sim','Não'].includes(p.levou_sala)?p.levou_sala:'Pendente';
-    const texto=[p.convidado_1,p.convidado_2,p.captador_nome,p.ponto_captacao].join(' ').toLowerCase();
-    const okBusca=!busca||texto.includes(busca),okFiltro=filtro==='todos'||(filtro==='pendente'&&status==='Pendente')||status===filtro;
-    return okBusca&&okFiltro;
+    const texto=[p.convidado_1,p.convidado_2,p.captador_nome,p.ponto_captacao,p.consultor_nome,p.anotacao_sala].join(' ').toLowerCase();
+    return (!busca||texto.includes(busca))&&filtroSalaAdmin(p,filtro);
   });
-  if(!rows.length){box.innerHTML='<p class="mini">Nenhuma pesquisa encontrada.</p>';return}
-  box.innerHTML='<table><tr><th>Data</th><th>Cliente(s)</th><th>Captador</th><th>Ponto</th><th>Q/NQ</th><th>Sala</th><th>Ação</th></tr>'+rows.map(p=>{
-    const status=['Sim','Não'].includes(p.levou_sala)?p.levou_sala:'Pendente',cls=status==='Sim'?'salaSim':status==='Não'?'salaNao':'salaPendente';
-    return `<tr><td>${escapeHtml(fmt(p.created_at))}</td><td>${escapeHtml([p.convidado_1,p.convidado_2].filter(Boolean).join(' e ')||'-')}</td><td>${escapeHtml(p.captador_nome||'-')}</td><td>${escapeHtml(p.ponto_captacao||'-')}</td><td>${escapeHtml(p.qualificacao_automatica||p.status||'-')}</td><td class="${cls}">${escapeHtml(status)}</td><td><div class="inlineActions"><button class="btnYes" data-sala-id="${escapeAttr(p.id)}" data-sala-valor="Sim">Sim</button><button class="btnNo" data-sala-id="${escapeAttr(p.id)}" data-sala-valor="Não">Não</button></div></td></tr>`;
-  }).join('')+'</table>';
-  box.querySelectorAll('[data-sala-id]').forEach(btn=>btn.addEventListener('click',()=>marcarSalaPesquisa(btn.dataset.salaId,btn.dataset.salaValor)));
+  if(!rows.length){box.innerHTML='<p class="mini">Nenhuma pesquisa encontrada para este filtro.</p>';return}
+
+  box.innerHTML=rows.map(p=>{
+    const st=statusSalaPromotor(p);
+    const podeAprovar=p.sala_declarada_promotor==='Sim'&&p.sala_status_aprovacao!=='Aprovado';
+    return `<div class="adminResearchCard">
+      <div class="adminResearchCardHeader">
+        <div>
+          <b>${escapeHtml([p.convidado_1,p.convidado_2].filter(Boolean).join(' e ')||'Sem nome')}</b>
+          <div class="adminResearchMeta">${escapeHtml(fmt(p.created_at))} • ${escapeHtml(p.captador_nome||'-')} • ${escapeHtml(p.ponto_captacao||'-')}</div>
+        </div>
+        <span class="roomStatus ${st.classe}">${escapeHtml(st.texto)}</span>
+      </div>
+      <div class="grid" style="margin-top:9px">
+        <div class="readonlyInfo"><b>Consultor</b><br>${escapeHtml(p.consultor_nome||'-')}</div>
+        <div class="readonlyInfo"><b>Qualificação</b><br>${escapeHtml(p.qualificacao_automatica||p.status||'-')}</div>
+        <div class="readonlyInfo"><b>Anotação</b><br>${escapeHtml(p.anotacao_sala||'-')}</div>
+      </div>
+      <div class="salaActions" style="margin-top:9px">
+        ${podeAprovar?`<button class="btnYes" data-admin-aprovar="${escapeAttr(p.id)}">Aprovar sala</button><button class="btnNo" data-admin-rejeitar="${escapeAttr(p.id)}">Rejeitar sala</button>`:''}
+        <button class="btnEdit" data-admin-editar="${escapeAttr(p.id)}">Editar pesquisa</button>
+        <button class="btnDanger" data-admin-excluir="${escapeAttr(p.id)}">Excluir pesquisa</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  box.querySelectorAll('[data-admin-aprovar]').forEach(btn=>btn.addEventListener('click',()=>marcarSalaPesquisa(btn.dataset.adminAprovar,'Sim')));
+  box.querySelectorAll('[data-admin-rejeitar]').forEach(btn=>btn.addEventListener('click',()=>marcarSalaPesquisa(btn.dataset.adminRejeitar,'Não')));
+  box.querySelectorAll('[data-admin-editar]').forEach(btn=>btn.addEventListener('click',()=>abrirEdicaoPesquisaAdmin(btn.dataset.adminEditar)));
+  box.querySelectorAll('[data-admin-excluir]').forEach(btn=>btn.addEventListener('click',()=>excluirPesquisaAdmin(btn.dataset.adminExcluir)));
 }
 
 async function marcarSalaPesquisa(id,valor){
   if(!isAdminRole())return msg('salaMsg','Ação permitida apenas ao administrador.','erro');
-  const completo={levou_sala:valor,sala_marcada_por:usuarioEmail,sala_marcada_em:new Date().toISOString()};
-  let {error}=await db.from('pesquisas').update(completo).eq('id',id);
-  if(error&&/sala_marcada_por|sala_marcada_em|column/i.test(error.message||''))({error}=await db.from('pesquisas').update({levou_sala:valor}).eq('id',id));
+  const payload={
+    levou_sala:valor,
+    sala_status_aprovacao:valor==='Sim'?'Aprovado':'Rejeitado',
+    sala_aprovada_por:usuarioEmail,sala_aprovada_em:new Date().toISOString(),
+    sala_marcada_por:usuarioEmail,sala_marcada_em:new Date().toISOString(),
+    updated_at:new Date().toISOString()
+  };
+  const {error}=await db.from('pesquisas').update(payload).eq('id',id);
   if(error)return msg('salaMsg','Erro ao confirmar sala: '+escapeHtml(error.message),'erro');
-  const item=salaAdminDados.find(x=>String(x.id)===String(id));if(item)item.levou_sala=valor;
-  msg('salaMsg',`Sala marcada como “${valor}”.`,'ok');renderSalaAdmin();
+  const item=salaAdminDados.find(x=>String(x.id)===String(id));if(item)Object.assign(item,payload);
+  msg('salaMsg',valor==='Sim'?'Sala aprovada e contabilizada nos gráficos.':'Solicitação de sala rejeitada.','ok');
+  renderSalaAdmin();
+}
+
+function setAdminEdit(id,v){setVal(id,v??'')}
+
+function abrirEdicaoPesquisaAdmin(id){
+  if(!isAdminRole())return;
+  const p=salaAdminDados.find(x=>String(x.id)===String(id));if(!p)return;
+  setAdminEdit('adm_edit_id',p.id);setAdminEdit('adm_edit_user_email',p.user_email);setAdminEdit('adm_edit_captador_nome',p.captador_nome);
+  setAdminEdit('adm_edit_equipe',p.equipe);setAdminEdit('adm_edit_ponto',p.ponto_captacao);setAdminEdit('adm_edit_tipo',p.tipo_abordagem);setAdminEdit('adm_edit_horario',p.horario_local);
+  setAdminEdit('adm_edit_convidado_1',p.convidado_1);setAdminEdit('adm_edit_idade_1',p.idade_1);setAdminEdit('adm_edit_profissao_1',p.profissao_1);
+  setAdminEdit('adm_edit_convidado_2',p.convidado_2);setAdminEdit('adm_edit_idade_2',p.idade_2);setAdminEdit('adm_edit_profissao_2',p.profissao_2);
+  setAdminEdit('adm_edit_estado_civil',p.estado_civil);setAdminEdit('adm_edit_tempo_juntos',p.tempo_juntos);setAdminEdit('adm_edit_contato',p.contato);
+  setAdminEdit('adm_edit_renda_casal',p.renda_casal);setAdminEdit('adm_edit_renda_bruta',p.renda_bruta);setAdminEdit('adm_edit_renda_liquida',p.renda_liquida);
+  setAdminEdit('adm_edit_veiculo',p.veiculo);setAdminEdit('adm_edit_marca',p.marca_carro);setAdminEdit('adm_edit_modelo',p.modelo_carro);setAdminEdit('adm_edit_ano',p.ano_veiculo);setAdminEdit('adm_edit_valor_fipe',p.valor_fipe);
+  setAdminEdit('adm_edit_cartao',p.cartao_credito);setAdminEdit('adm_edit_casa',p.casa_propria);setAdminEdit('adm_edit_multipropriedade',p.multipropriedade);setAdminEdit('adm_edit_onde_multi',p.onde_multipropriedade);
+  setAdminEdit('adm_edit_brinde',p.brinde);setAdminEdit('adm_edit_custo_brinde',p.custo_brinde);setAdminEdit('adm_edit_qualificacao',p.qualificacao_automatica||p.status);setAdminEdit('adm_edit_motivo',p.motivo_qualificacao);
+  setAdminEdit('adm_edit_sala_declarada',p.sala_declarada_promotor||'Pendente');setAdminEdit('adm_edit_sala_status',p.sala_status_aprovacao||'Aguardando declaração');setAdminEdit('adm_edit_levou_sala',p.levou_sala||'Pendente');
+  setAdminEdit('adm_edit_consultor',p.consultor_nome);setAdminEdit('adm_edit_anotacao_sala',p.anotacao_sala);
+  setAdminEdit('adm_edit_latitude',p.latitude);setAdminEdit('adm_edit_longitude',p.longitude);setAdminEdit('adm_edit_tempo_ponto',p.tempo_no_ponto_minutos);setAdminEdit('adm_edit_observacoes',p.observacoes);
+  msg('admEditMsg','','ok');abrirModal('editarPesquisaModal');
+}
+
+function inteiroOuNulo(v){const n=parseInt(String(v||''),10);return Number.isFinite(n)?n:null}
+function decimalOuNulo(v){if(v===null||v===undefined||String(v).trim()==='')return null;const n=moneyNumber(v);return Number.isFinite(n)?n:null}
+function coordenadaOuNula(v){
+  if(v===null||v===undefined||String(v).trim()==='')return null;
+  const n=Number(String(v).trim().replace(',','.'));
+  return Number.isFinite(n)?n:null;
+}
+function textoOuNulo(v){const s=String(v??'').trim();return s||null}
+
+async function salvarEdicaoPesquisaAdmin(){
+  if(!isAdminRole())return;
+  const id=val('adm_edit_id');if(!id)return;
+  const qualificacao=val('adm_edit_qualificacao').trim();
+  const payload={
+    user_email:textoOuNulo(val('adm_edit_user_email')),captador_nome:val('adm_edit_captador_nome').trim(),
+    equipe:textoOuNulo(val('adm_edit_equipe')),ponto_captacao:textoOuNulo(val('adm_edit_ponto')),tipo_abordagem:textoOuNulo(val('adm_edit_tipo')),horario_local:textoOuNulo(val('adm_edit_horario')),
+    convidado_1:textoOuNulo(val('adm_edit_convidado_1')),idade_1:inteiroOuNulo(val('adm_edit_idade_1')),profissao_1:textoOuNulo(val('adm_edit_profissao_1')),
+    convidado_2:textoOuNulo(val('adm_edit_convidado_2')),idade_2:inteiroOuNulo(val('adm_edit_idade_2')),profissao_2:textoOuNulo(val('adm_edit_profissao_2')),
+    estado_civil:textoOuNulo(val('adm_edit_estado_civil')),tempo_juntos:textoOuNulo(val('adm_edit_tempo_juntos')),contato:textoOuNulo(val('adm_edit_contato')),
+    renda_casal:decimalOuNulo(val('adm_edit_renda_casal')),renda_bruta:decimalOuNulo(val('adm_edit_renda_bruta')),renda_liquida:decimalOuNulo(val('adm_edit_renda_liquida')),
+    veiculo:textoOuNulo(val('adm_edit_veiculo')),marca_carro:textoOuNulo(val('adm_edit_marca')),modelo_carro:textoOuNulo(val('adm_edit_modelo')),ano_veiculo:textoOuNulo(val('adm_edit_ano')),valor_fipe:decimalOuNulo(val('adm_edit_valor_fipe')),
+    cartao_credito:textoOuNulo(val('adm_edit_cartao')),casa_propria:textoOuNulo(val('adm_edit_casa')),multipropriedade:textoOuNulo(val('adm_edit_multipropriedade')),onde_multipropriedade:textoOuNulo(val('adm_edit_onde_multi')),
+    brinde:textoOuNulo(val('adm_edit_brinde')),custo_brinde:decimalOuNulo(val('adm_edit_custo_brinde')),
+    status:qualificacao||null,qualificacao_automatica:qualificacao||null,motivo_qualificacao:textoOuNulo(val('adm_edit_motivo')),
+    sala_declarada_promotor:val('adm_edit_sala_declarada'),sala_status_aprovacao:val('adm_edit_sala_status'),levou_sala:val('adm_edit_levou_sala'),
+    consultor_nome:textoOuNulo(val('adm_edit_consultor')),anotacao_sala:textoOuNulo(val('adm_edit_anotacao_sala')),
+    latitude:coordenadaOuNula(val('adm_edit_latitude')),longitude:coordenadaOuNula(val('adm_edit_longitude')),tempo_no_ponto_minutos:inteiroOuNulo(val('adm_edit_tempo_ponto')),
+    observacoes:textoOuNulo(val('adm_edit_observacoes')),updated_at:new Date().toISOString()
+  };
+  if(!payload.captador_nome)return msg('admEditMsg','Informe o nome do promotor.','erro');
+  const {data,error}=await db.from('pesquisas').update(payload).eq('id',id).select().single();
+  if(error)return msg('admEditMsg','Erro ao salvar: '+escapeHtml(error.message),'erro');
+  const idx=salaAdminDados.findIndex(x=>String(x.id)===String(id));if(idx>=0)salaAdminDados[idx]=data;
+  msg('admEditMsg','Pesquisa atualizada com sucesso.','ok');fecharModal('editarPesquisaModal');renderSalaAdmin();
+}
+
+async function excluirPesquisaAdmin(id){
+  if(!isAdminRole())return;
+  const p=salaAdminDados.find(x=>String(x.id)===String(id));
+  if(!confirm(`Excluir definitivamente a pesquisa de ${[p?.convidado_1,p?.convidado_2].filter(Boolean).join(' e ')||'este casal'}?`))return;
+  const {error}=await db.from('pesquisas').delete().eq('id',id);
+  if(error)return msg('salaMsg','Erro ao excluir: '+escapeHtml(error.message),'erro');
+  salaAdminDados=salaAdminDados.filter(x=>String(x.id)!==String(id));
+  msg('salaMsg','Pesquisa excluída definitivamente.','ok');renderSalaAdmin();
 }
 
 async function carregarHistorico(){
-  const d=await getPesquisas();document.getElementById('historicoBox').innerHTML=criarTabela(d.slice(0,200).map(p=>({hora:fmt(p.created_at),prof:p.captador_nome,ponto:p.ponto_captacao,q:p.qualificacao_automatica||p.status,sala:['Sim','Não'].includes(p.levou_sala)?p.levou_sala:'Pendente',brinde:p.brinde,custo:moedaBR(p.custo_brinde||valorBrindeEstimado(p.brinde)),tempo:(p.tempo_no_ponto_minutos||0)+' min'})),[{key:'hora',label:'Hora'},{key:'prof',label:'Profissional'},{key:'ponto',label:'Ponto'},{key:'q',label:'Q/NQ'},{key:'sala',label:'Sala'},{key:'brinde',label:'Brinde'},{key:'custo',label:'Custo'},{key:'tempo',label:'Tempo'}]);
+  const d=await getPesquisas();document.getElementById('historicoBox').innerHTML=criarTabela(d.slice(0,300).map(p=>({
+    hora:fmt(p.created_at),prof:p.captador_nome,ponto:p.ponto_captacao,q:p.qualificacao_automatica||p.status,
+    declarada:p.sala_declarada_promotor||'Pendente',sala:['Sim','Não'].includes(p.levou_sala)?p.levou_sala:'Pendente',
+    consultor:p.consultor_nome||'-',anotacao:p.anotacao_sala||'-',brinde:p.brinde,custo:moedaBR(p.custo_brinde||valorBrindeEstimado(p.brinde)),tempo:(p.tempo_no_ponto_minutos||0)+' min'
+  })),[
+    {key:'hora',label:'Hora'},{key:'prof',label:'Profissional'},{key:'ponto',label:'Ponto'},{key:'q',label:'Q/NQ'},
+    {key:'declarada',label:'Promotor informou'},{key:'sala',label:'Sala aprovada'},{key:'consultor',label:'Consultor'},
+    {key:'anotacao',label:'Anotação'},{key:'brinde',label:'Brinde'},{key:'custo',label:'Custo'},{key:'tempo',label:'Tempo'}
+  ]);
 }
 
 async function salvarMetas(){
   if(!isAdminRole())return;
-  const data=val('metaData'),valorProf=val('metaPromotor'),prof=resolverProfissional(valorProf);
+  const data=val('metaData'),valorProf=val('metaPromotor');
   const metaAbordagens=Number(val('metaAbordagens')),metaSala=Number(val('metaSala'));
-  if(!data||!prof)return msg('metasMsg','Selecione a data e o promotor.','erro');
+  if(!data||!valorProf)return msg('metasMsg','Selecione a data e o promotor, ou escolha “Todos os promotores”.','erro');
   if(!Number.isFinite(metaAbordagens)||metaAbordagens<0||!Number.isFinite(metaSala)||metaSala<0)return msg('metasMsg','Informe metas válidas.','erro');
-  const payload={
+
+  const selecionados=valorProf==='__TODOS__'?profissionaisCache:[resolverProfissional(valorProf)].filter(Boolean);
+  if(!selecionados.length)return msg('metasMsg','Nenhum promotor ativo encontrado.','erro');
+
+  const agora=new Date().toISOString();
+  const payload=selecionados.map(prof=>({
     data,user_email:prof.email||`nome:${prof.nome}`,captador_nome:prof.nome,equipe:prof.equipe||null,
-    meta_abordagens:metaAbordagens,meta_sala:metaSala,updated_by:usuarioEmail,updated_at:new Date().toISOString()
-  };
+    meta_abordagens:metaAbordagens,meta_sala:metaSala,updated_by:usuarioEmail,updated_at:agora
+  }));
   const {error}=await db.from('metas_diarias').upsert(payload,{onConflict:'data,user_email'});
-  if(error)return msg('metasMsg','Erro ao salvar meta. Execute o SQL da versão 4.3: '+escapeHtml(error.message),'erro');
-  msg('metasMsg','Meta diária salva com sucesso.','ok');carregarMetas();
+  if(error)return msg('metasMsg','Erro ao salvar meta. Execute o SQL da versão 4.4: '+escapeHtml(error.message),'erro');
+  msg('metasMsg',valorProf==='__TODOS__'?`Meta aplicada a ${payload.length} promotor(es).`:'Meta diária salva com sucesso.','ok');
+  carregarMetas();
 }
 
 async function carregarMetas(){
@@ -1524,7 +1929,7 @@ async function carregarMetas(){
   if(de)query=query.gte('data',de);if(ate)query=query.lte('data',ate);
   const [{data:metas=[],error},pesquisas]=await Promise.all([query,getPesquisas()]);
   if(error){
-    document.getElementById('metasBox').innerHTML='<div class="warningBox">Execute o SQL da versão 4.3 para criar a tabela metas_diarias.</div>';
+    document.getElementById('metasBox').innerHTML='<div class="warningBox">Execute o SQL da versão 4.4 para criar a tabela metas_diarias.</div>';
     return;
   }
   const rows=metas.map(m=>{
