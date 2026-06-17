@@ -1,108 +1,38 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>CaptaPro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #050505;
-      color: white;
-    }
-
-    .container {
-      max-width: 520px;
-      margin: auto;
-      padding: 18px;
-    }
-
-    .card {
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 18px;
-      padding: 18px;
-      margin-top: 16px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.04);
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 4px;
-    }
-
-    .sub {
-      text-align: center;
-      color: #aaa;
-      margin-bottom: 20px;
-    }
-
-    input, select, textarea, button {
-      width: 100%;
-      box-sizing: border-box;
-      margin-top: 10px;
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid #333;
-      background: #050505;
-      color: white;
-      font-size: 15px;
-    }
-
-    textarea {
-      min-height: 90px;
-    }
-
-    button {
-      background: linear-gradient(135deg, #00c853, #00e676);
-      color: #000;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .ok {
-      color: #00e676;
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .erro {
-      color: #ff5252;
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .info {
-      color: #bbb;
-      font-size: 13px;
-      text-align: center;
-    }
+    body{margin:0;font-family:Arial,sans-serif;background:#050505;color:#fff}
+    .container{max-width:560px;margin:auto;padding:18px}
+    .card{background:#111;border:1px solid #222;border-radius:18px;padding:18px;margin-top:16px}
+    h1{text-align:center;margin-bottom:5px}
+    .sub{text-align:center;color:#aaa;margin-bottom:18px}
+    input,select,textarea,button{width:100%;box-sizing:border-box;margin-top:10px;padding:14px;border-radius:12px;border:1px solid #333;background:#050505;color:white;font-size:15px}
+    textarea{min-height:90px}
+    button{background:#00e676;color:#000;font-weight:bold;border:none}
+    .hidden{display:none}
+    .ok{color:#00e676;font-weight:bold;text-align:center}
+    .erro{color:#ff5252;font-weight:bold;text-align:center}
+    .info{color:#bbb;font-size:13px;text-align:center}
   </style>
 </head>
 
 <body>
 <div class="container">
-
   <h1>CaptaPro</h1>
   <div class="sub">Pesquisa Inteligente de Captação</div>
 
   <div id="loginBox" class="card">
-    <h2>Entrada do Captador</h2>
+    <h2>Entrada</h2>
     <p class="info">Digite seu e-mail. O gestor precisa aprovar seu acesso.</p>
-
     <input id="email" type="email" placeholder="Seu e-mail">
     <input id="captadorNome" type="text" placeholder="Seu nome">
     <button onclick="entrar()">Entrar</button>
-
     <p id="loginMsg"></p>
   </div>
 
@@ -124,7 +54,7 @@
 
     <input id="veiculo" placeholder="Veículo">
     <input id="ano_veiculo" placeholder="Ano do veículo">
-    <input id="outro_veiculo" placeholder="Possui outro veículo?">
+    <input id="outro_veiculo" placeholder="Outro veículo">
 
     <select id="estado_civil">
       <option value="">Estado civil</option>
@@ -136,37 +66,36 @@
       <option>Viúvo</option>
     </select>
 
-    <input id="tempo_juntos" placeholder="Há quanto tempo juntos?">
-    <input id="cidade" placeholder="Cidade onde moram">
+    <input id="tempo_juntos" placeholder="Tempo juntos">
+    <input id="cidade" placeholder="Cidade">
     <input id="filhos" placeholder="Filhos / idade / nomes">
-    
+
     <select id="casa_propria">
-      <option value="">Possui casa própria?</option>
+      <option value="">Casa própria?</option>
       <option>Sim</option>
       <option>Não</option>
     </select>
 
     <select id="cartao_credito">
-      <option value="">Usa cartão de crédito?</option>
+      <option value="">Cartão de crédito?</option>
       <option>Sim</option>
       <option>Não</option>
     </select>
 
     <select id="cheque">
-      <option value="">Usa cheque?</option>
+      <option value="">Cheque?</option>
       <option>Sim</option>
       <option>Não</option>
     </select>
 
     <input id="renda_casal" placeholder="Renda mensal do casal">
     <input id="contato" placeholder="Contato">
-    <input id="investimento_lazer" placeholder="Imóvel ou investimento em lazer">
+    <input id="investimento_lazer" placeholder="Investimento em lazer">
     <input id="sonho_viagem" placeholder="Sonho de viagem">
-
     <input id="brinde" placeholder="Brinde entregue">
 
     <select id="status">
-      <option value="">Status da pesquisa</option>
+      <option value="">Status</option>
       <option>Q</option>
       <option>NQ</option>
     </select>
@@ -176,130 +105,114 @@
     <button onclick="salvarPesquisa()">Salvar Pesquisa</button>
     <p id="formMsg"></p>
   </div>
-
 </div>
 
 <script>
-  const SUPABASE_URL = "COLE_AQUI_SUA_URL_DO_SUPABASE";
-  const SUPABASE_ANON_KEY = "COLE_AQUI_SUA_ANON_KEY";
+const SUPABASE_URL = "https://veznreiamwstlulkpocz.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlem5yZWlhbXdzdGx1bGtwb2N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODc1NDksImV4cCI6MjA5NzI2MzU0OX0.MeSqJZTZnk3zDKWgD920ccV2KUheH0W_BGD3TvhPXdM";
 
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  let usuarioEmail = "";
-  let captadorNome = "";
-  let latitude = null;
-  let longitude = null;
+let usuarioEmail = "";
+let captadorNome = "";
+let latitude = null;
+let longitude = null;
 
-  async function entrar() {
-    const email = document.getElementById("email").value.trim().toLowerCase();
-    const nome = document.getElementById("captadorNome").value.trim();
+async function entrar() {
+  const email = document.getElementById("email").value.trim().toLowerCase();
+  const nome = document.getElementById("captadorNome").value.trim();
 
-    if (!email || !nome) {
-      document.getElementById("loginMsg").innerHTML = "<span class='erro'>Preencha e-mail e nome.</span>";
-      return;
-    }
+  if (!email || !nome) {
+    msg("loginMsg", "Preencha e-mail e nome.", "erro");
+    return;
+  }
 
-    usuarioEmail = email;
-    captadorNome = nome;
+  usuarioEmail = email;
+  captadorNome = nome;
 
-    const { data, error } = await supabaseClient
-      .from("approved_users")
-      .select("*")
-      .eq("email", email)
-      .eq("approved", true)
-      .maybeSingle();
+  let { data } = await db
+    .from("approved_users")
+    .select("*")
+    .eq("email", email)
+    .maybeSingle();
 
-    if (error || !data) {
-      document.getElementById("loginBox").classList.add("hidden");
-      document.getElementById("aguardandoBox").classList.remove("hidden");
-
-      await supabaseClient.from("approved_users").insert({
-        email: email,
-        name: nome,
-        approved: false
-      });
-
-      return;
-    }
-
+  if (!data) {
+    await db.from("approved_users").insert({ email, name:nome, approved:false });
     document.getElementById("loginBox").classList.add("hidden");
-    document.getElementById("formBox").classList.remove("hidden");
-
-    pegarLocalizacao();
+    document.getElementById("aguardandoBox").classList.remove("hidden");
+    return;
   }
 
-  function pegarLocalizacao() {
-    if (!navigator.geolocation) {
-      alert("GPS não disponível neste aparelho.");
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      function(pos) {
-        latitude = pos.coords.latitude;
-        longitude = pos.coords.longitude;
-      },
-      function() {
-        alert("Permita a localização para salvar o ponto da abordagem.");
-      }
-    );
+  if (data.approved !== true) {
+    document.getElementById("loginBox").classList.add("hidden");
+    document.getElementById("aguardandoBox").classList.remove("hidden");
+    return;
   }
 
-  async function salvarPesquisa() {
-    const pesquisa = {
-      user_email: usuarioEmail,
-      captador_nome: captadorNome,
-      convidado_1: campo("convidado_1"),
-      idade_1: numero("idade_1"),
-      profissao_1: campo("profissao_1"),
-      convidado_2: campo("convidado_2"),
-      idade_2: numero("idade_2"),
-      profissao_2: campo("profissao_2"),
-      veiculo: campo("veiculo"),
-      ano_veiculo: campo("ano_veiculo"),
-      outro_veiculo: campo("outro_veiculo"),
-      estado_civil: campo("estado_civil"),
-      tempo_juntos: campo("tempo_juntos"),
-      cidade: campo("cidade"),
-      filhos: campo("filhos"),
-      casa_propria: campo("casa_propria"),
-      cartao_credito: campo("cartao_credito"),
-      cheque: campo("cheque"),
-      renda_casal: campo("renda_casal"),
-      contato: campo("contato"),
-      investimento_lazer: campo("investimento_lazer"),
-      sonho_viagem: campo("sonho_viagem"),
-      brinde: campo("brinde"),
-      status: campo("status"),
-      observacoes: campo("observacoes"),
-      latitude: latitude,
-      longitude: longitude
-    };
+  document.getElementById("loginBox").classList.add("hidden");
+  document.getElementById("formBox").classList.remove("hidden");
+  pegarLocalizacao();
+}
 
-    const { error } = await supabaseClient
-      .from("pesquisas")
-      .insert(pesquisa);
+function pegarLocalizacao() {
+  if (!navigator.geolocation) return;
 
-    if (error) {
-      document.getElementById("formMsg").innerHTML = "<span class='erro'>Erro ao salvar. Verifique Supabase.</span>";
-      console.log(error);
-      return;
-    }
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      latitude = pos.coords.latitude;
+      longitude = pos.coords.longitude;
+    },
+    () => alert("Permita a localização para salvar o ponto da abordagem.")
+  );
+}
 
-    document.getElementById("formMsg").innerHTML = "<span class='ok'>Pesquisa salva com sucesso!</span>";
-    document.querySelectorAll("#formBox input, #formBox textarea, #formBox select").forEach(el => el.value = "");
-    pegarLocalizacao();
+async function salvarPesquisa() {
+  const pesquisa = {
+    user_email: usuarioEmail,
+    captador_nome: captadorNome,
+    convidado_1: campo("convidado_1"),
+    idade_1: numero("idade_1"),
+    profissao_1: campo("profissao_1"),
+    convidado_2: campo("convidado_2"),
+    idade_2: numero("idade_2"),
+    profissao_2: campo("profissao_2"),
+    veiculo: campo("veiculo"),
+    ano_veiculo: campo("ano_veiculo"),
+    outro_veiculo: campo("outro_veiculo"),
+    estado_civil: campo("estado_civil"),
+    tempo_juntos: campo("tempo_juntos"),
+    cidade: campo("cidade"),
+    filhos: campo("filhos"),
+    casa_propria: campo("casa_propria"),
+    cartao_credito: campo("cartao_credito"),
+    cheque: campo("cheque"),
+    renda_casal: campo("renda_casal"),
+    contato: campo("contato"),
+    investimento_lazer: campo("investimento_lazer"),
+    sonho_viagem: campo("sonho_viagem"),
+    brinde: campo("brinde"),
+    status: campo("status"),
+    observacoes: campo("observacoes"),
+    latitude,
+    longitude
+  };
+
+  const { error } = await db.from("pesquisas").insert(pesquisa);
+
+  if (error) {
+    console.log(error);
+    msg("formMsg", "Erro ao salvar. Veja se rodou o SQL.", "erro");
+    return;
   }
 
-  function campo(id) {
-    return document.getElementById(id).value;
-  }
+  msg("formMsg", "Pesquisa salva com sucesso!", "ok");
+  document.querySelectorAll("#formBox input,#formBox textarea,#formBox select").forEach(e => e.value = "");
+  pegarLocalizacao();
+}
 
-  function numero(id) {
-    const valor = document.getElementById(id).value;
-    return valor ? parseInt(valor) : null;
-  }
+function campo(id){ return document.getElementById(id).value; }
+function numero(id){ return document.getElementById(id).value ? parseInt(document.getElementById(id).value) : null; }
+function msg(id,text,classe){ document.getElementById(id).innerHTML = `<span class="${classe}">${text}</span>`; }
 </script>
-
 </body>
 </html>
