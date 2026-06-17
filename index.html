@@ -30,7 +30,7 @@ body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#05
 h2{margin:0 0 10px;border-left:4px solid var(--red);padding-left:10px;font-size:21px}
 h3{margin:8px 0;color:#fff}
 .hint,.mini{color:#bbb;font-size:12px}
-.tabs{display:grid;grid-template-columns:repeat(12,1fr);gap:7px;margin:12px 0}
+.tabs{display:grid;grid-template-columns:repeat(11,1fr);gap:7px;margin:12px 0}
 .tabs button{padding:12px 7px;border:0;border-radius:12px;background:#181818;color:#fff;font-weight:800;font-size:13px}
 .tabs button.active{background:linear-gradient(135deg,var(--red),var(--red2))}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
@@ -116,7 +116,6 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       <button onclick="aba('heat',this)">Heatmap</button>
       <button onclick="aba('ranking',this)">Rankings</button>
       <button onclick="aba('brindesDash',this)">Brindes</button>
-      <button onclick="aba('fipe',this)">FIPE</button>
       <button onclick="aba('metas',this)">Metas</button>
       <button class="admOnly" onclick="aba('mapa',this)">Mapa</button>
       <button class="admOnly" onclick="aba('salaAdmin',this)">Sala ADM</button>
@@ -152,10 +151,10 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
         </div>
 
         <select id="veiculo" onchange="toggleVeiculo()"><option value="">Possui carro?</option><option>Sim</option><option>Não</option></select>
-        <select id="marca_carro" onchange="carregarModelosFipe()" disabled><option value="">Carregando marcas FIPE...</option></select>
+        <select id="marca_carro" onchange="carregarModelosFipe()" disabled><option value="">Carregando marcas...</option></select>
         <select id="modelo_carro" onchange="carregarAnosFipe()" disabled><option value="">Selecione primeiro a marca</option></select>
         <select id="ano_veiculo" onchange="exibirPrecoFipe()" disabled><option value="">Selecione primeiro o modelo</option></select>
-        <div class="fipeValue"><input id="valor_fipe_preview" placeholder="Valor FIPE atual" readonly><div id="fipeReferencia" class="mini" style="margin-top:4px"></div></div>
+        <div class="fipeValue"><input id="valor_fipe_preview" placeholder="Valor médio do veículo" readonly><div id="fipeReferencia" class="mini" style="margin-top:4px"></div></div>
         <select id="cartao_credito"><option value="">Cartão?</option><option>Sim</option><option>Não</option></select>
         <select id="casa_propria"><option value="">Casa própria?</option><option>Sim</option><option>Não</option></select>
         <select id="multipropriedade"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
@@ -215,14 +214,6 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       </div>
       <div class="grid2"><div class="card"><h2>Por Brinde</h2><div id="brindesTipo"></div></div><div class="card"><h2>Por Profissional</h2><div id="brindesProfissional"></div></div></div>
       <div class="card"><h2>Por Ponto</h2><div id="brindesPonto"></div></div>
-    </section>
-
-    <section id="fipe" class="card hidden">
-      <h2>FIPE Automática</h2>
-      <p class="hint">A consulta usa BrasilAPI/FIPE. Se a API externa ficar indisponível, o campo avisa sem travar a pesquisa.</p>
-      <button class="main" onclick="carregarFipe()">Atualizar FIPE</button>
-      <div class="kpis"><div class="kpi">Marcas<b id="fipeMarcas">0</b></div><div class="kpi">Modelos<b id="fipeModelos">0</b></div><div class="kpi">Carros Q<b id="fipeQ">0</b></div><div class="kpi">Carros NQ<b id="fipeNQ">0</b></div><div class="kpi">Ano Mínimo<b id="fipeAnoMin">2011</b></div><div class="kpi">Consultas<b id="fipeConsultas">0</b></div></div>
-      <div class="card"><h2>Resumo por marca</h2><div id="fipeResumo"></div></div>
     </section>
 
     <section id="metas" class="card hidden">
@@ -290,7 +281,7 @@ let jornada=null,qualificacao="NQ",motivoQualificacao="",qualificacaoCalculada=f
 let map=null,mapMarkerLayer=null,mapBounds=null,heatMap=null,heatLayer=null;
 let chPontos=null,chHoras=null,chEquipes=null,chQNQ=null,fipeConsultas=0;
 let gpsWatchId=null,gpsUltimoEnvio=0,gpsHeartbeat=null,mapRefreshTimer=null,locationChannel=null;
-let fipePrecosAtuais=[],salaAdminDados=[];
+let fipePrecosAtuais=[],salaAdminDados=[],veiculoProvider='parallelum';
 let cfg={renda_minima:15000,ano_carro_minimo:2011,idade_minima_casal:25,idade_minima_solo:30,idade_maxima:64,uniao_estavel_minima_anos:2,casa_propria_obrigatoria:true,cartao_credito_obrigatorio:true,profissoes_definidas_obrigatorio:true};
 let profBloq=['Operador de caixa','Zelador','Secretária','Auxiliar','Assistente','Avon/Natura/Multinível','Gari','Vendedor ambulante','Motoboy','Do lar','Estoquista','Eletricista','Diarista','Doméstica','Garçom','Manicure','Pedreiro','Atendente','Balconista','Babá','Porteiro','Frentista','Estudante','Uber/App/Freelancer'];
 
@@ -350,7 +341,7 @@ function aplicarPermissaoVisual(){
 
 function aba(id,b){
   if(['mapa','salaAdmin'].includes(id)&&!isAdminRole())return;
-  const ids=['pesquisa','dash','heat','ranking','brindesDash','fipe','metas','mapa','salaAdmin','historico','profissionais','ceo'];
+  const ids=['pesquisa','dash','heat','ranking','brindesDash','metas','mapa','salaAdmin','historico','profissionais','ceo'];
   ids.forEach(x=>document.getElementById(x)?.classList.add('hidden'));
   document.getElementById(id)?.classList.remove('hidden');
   document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
@@ -359,7 +350,6 @@ function aba(id,b){
   if(id==='heat')setTimeout(carregarHeatmap,150);
   if(id==='ranking')carregarRanking();
   if(id==='brindesDash')carregarBrindes();
-  if(id==='fipe')carregarFipe();
   if(id==='metas')carregarMetas();
   if(id==='mapa')setTimeout(()=>{carregarMapa(true);iniciarAtualizacaoMapa()},180);else pararAtualizacaoMapa();
   if(id==='salaAdmin')carregarSalaAdmin();
@@ -463,15 +453,52 @@ async function fetchJson(url,timeout=16000){
   }finally{clearTimeout(timer)}
 }
 
-async function carregarMarcasFipe(){
-  const sel=document.getElementById('marca_carro');
-  limparSelect('marca_carro','Carregando marcas FIPE...',true);
+const VEICULO_API_PARALELUM='https://parallelum.com.br/fipe/api/v1/carros';
+const VEICULO_API_BRASIL='https://brasilapi.com.br/api/fipe';
+
+function cacheVeiculoGet(chave,maxAgeMs){
   try{
-    const marcas=await fetchJson('https://brasilapi.com.br/api/fipe/marcas/v1/carros');
+    const raw=localStorage.getItem('captapro_veiculo_'+chave);
+    if(!raw)return null;
+    const item=JSON.parse(raw);
+    if(!item||!item.data||Date.now()-Number(item.savedAt||0)>maxAgeMs)return null;
+    return item.data;
+  }catch(e){return null}
+}
+
+function cacheVeiculoSet(chave,data){
+  try{localStorage.setItem('captapro_veiculo_'+chave,JSON.stringify({savedAt:Date.now(),data}))}catch(e){}
+}
+
+async function obterJsonComCache(url,chave,maxAgeMs=45*24*60*60*1000){
+  try{
+    const data=await fetchJson(url,18000);
+    cacheVeiculoSet(chave,data);
+    return data;
+  }catch(e){
+    const cached=cacheVeiculoGet(chave,maxAgeMs);
+    if(cached)return cached;
+    throw e;
+  }
+}
+
+async function carregarMarcasFipe(){
+  limparSelect('marca_carro','Carregando marcas...',true);
+  try{
+    const marcas=await obterJsonComCache(`${VEICULO_API_PARALELUM}/marcas`,'parallelum_marcas',30*24*60*60*1000);
+    veiculoProvider='parallelum';
+    limparSelect('marca_carro','Marca do carro',val('veiculo')!=='Sim');
+    [...marcas].sort((a,b)=>String(a.nome).localeCompare(String(b.nome),'pt-BR')).forEach(m=>opt('marca_carro',m.codigo,m.nome));
+    return;
+  }catch(e){}
+
+  try{
+    const marcas=await obterJsonComCache(`${VEICULO_API_BRASIL}/marcas/v1/carros`,'brasilapi_marcas',30*24*60*60*1000);
+    veiculoProvider='brasilapi';
     limparSelect('marca_carro','Marca do carro',val('veiculo')!=='Sim');
     [...marcas].sort((a,b)=>String(a.nome).localeCompare(String(b.nome),'pt-BR')).forEach(m=>opt('marca_carro',m.valor,m.nome));
   }catch(e){
-    limparSelect('marca_carro','FIPE indisponível — tente recarregar',true);
+    limparSelect('marca_carro','Não foi possível carregar as marcas',true);
   }
 }
 
@@ -482,45 +509,136 @@ async function carregarModelosFipe(){
   limparSelect('ano_veiculo','Selecione primeiro o modelo',true);
   setVal('valor_fipe_preview','');set('fipeReferencia','');fipePrecosAtuais=[];
   if(!codigoMarca)return;
+
   try{
-    const modelos=await fetchJson(`https://brasilapi.com.br/api/fipe/veiculos/v1/carros/${encodeURIComponent(codigoMarca)}`);
-    limparSelect('modelo_carro','Modelo do carro',false);
-    const unicos=new Map();
-    modelos.forEach(m=>{const key=`${m.codigoFipe}|${m.modelo}`;if(!unicos.has(key))unicos.set(key,m)});
-    [...unicos.values()].sort((a,b)=>String(a.modelo).localeCompare(String(b.modelo),'pt-BR')).forEach(m=>opt('modelo_carro',m.codigoFipe,m.modelo));
+    let modelos=[];
+    if(veiculoProvider==='parallelum'){
+      const resposta=await obterJsonComCache(
+        `${VEICULO_API_PARALELUM}/marcas/${encodeURIComponent(codigoMarca)}/modelos`,
+        `parallelum_modelos_${codigoMarca}`,
+        30*24*60*60*1000
+      );
+      modelos=Array.isArray(resposta?.modelos)?resposta.modelos:[];
+      limparSelect('modelo_carro','Modelo do carro',false);
+      modelos.sort((a,b)=>String(a.nome).localeCompare(String(b.nome),'pt-BR')).forEach(m=>opt('modelo_carro',m.codigo,m.nome));
+    }else{
+      const resposta=await obterJsonComCache(
+        `${VEICULO_API_BRASIL}/veiculos/v1/carros/${encodeURIComponent(codigoMarca)}`,
+        `brasilapi_modelos_${codigoMarca}`,
+        30*24*60*60*1000
+      );
+      const unicos=new Map();
+      (Array.isArray(resposta)?resposta:[]).forEach(m=>{
+        const key=`${m.codigoFipe}|${m.modelo}`;
+        if(!unicos.has(key))unicos.set(key,m);
+      });
+      modelos=[...unicos.values()];
+      limparSelect('modelo_carro','Modelo do carro',false);
+      modelos.sort((a,b)=>String(a.modelo).localeCompare(String(b.modelo),'pt-BR')).forEach(m=>opt('modelo_carro',m.codigoFipe,m.modelo));
+    }
+    if(!modelos.length)throw new Error('Nenhum modelo encontrado');
   }catch(e){
-    limparSelect('modelo_carro','Não foi possível carregar modelos',true);
+    limparSelect('modelo_carro','Não foi possível carregar os modelos',true);
   }
 }
 
 async function carregarAnosFipe(){
   invalidarQualificacao();
-  const codigoFipe=val('modelo_carro');
-  limparSelect('ano_veiculo',codigoFipe?'Carregando anos...':'Selecione primeiro o modelo',true);
+  const codigoMarca=val('marca_carro'),codigoModelo=val('modelo_carro');
+  limparSelect('ano_veiculo',codigoModelo?'Carregando anos...':'Selecione primeiro o modelo',true);
   setVal('valor_fipe_preview','');set('fipeReferencia','');fipePrecosAtuais=[];
-  if(!codigoFipe)return;
+  if(!codigoMarca||!codigoModelo)return;
+
   try{
-    fipeConsultas++;
-    const precos=await fetchJson(`https://brasilapi.com.br/api/fipe/preco/v1/${encodeURIComponent(codigoFipe)}`);
-    fipePrecosAtuais=Array.isArray(precos)?precos:[];
-    const anos=[...new Set(fipePrecosAtuais.map(x=>Number(x.anoModelo)).filter(Boolean))].sort((a,b)=>b-a);
-    limparSelect('ano_veiculo','Ano do carro',false);
-    anos.forEach(a=>opt('ano_veiculo',a,a===32000?'Zero KM':String(a)));
+    if(veiculoProvider==='parallelum'){
+      const anos=await obterJsonComCache(
+        `${VEICULO_API_PARALELUM}/marcas/${encodeURIComponent(codigoMarca)}/modelos/${encodeURIComponent(codigoModelo)}/anos`,
+        `parallelum_anos_${codigoMarca}_${codigoModelo}`,
+        30*24*60*60*1000
+      );
+      fipePrecosAtuais=Array.isArray(anos)?anos:[];
+      limparSelect('ano_veiculo','Ano do carro',false);
+      fipePrecosAtuais.forEach(a=>{
+        const nome=String(a.nome||'').replace(/^32000\b/,'Zero KM');
+        opt('ano_veiculo',a.codigo,nome);
+      });
+    }else{
+      fipeConsultas++;
+      const precos=await obterJsonComCache(
+        `${VEICULO_API_BRASIL}/preco/v1/${encodeURIComponent(codigoModelo)}`,
+        `brasilapi_precos_${codigoModelo}`,
+        45*24*60*60*1000
+      );
+      fipePrecosAtuais=Array.isArray(precos)?precos:[];
+      const unicos=new Map();
+      fipePrecosAtuais.forEach(item=>{
+        const combustivel=item.siglaCombustivel||item.combustivel||'';
+        const chave=`${item.anoModelo}|${combustivel}`;
+        if(!unicos.has(chave))unicos.set(chave,item);
+      });
+      limparSelect('ano_veiculo','Ano do carro',false);
+      [...unicos.entries()]
+        .sort((a,b)=>Number(b[1].anoModelo)-Number(a[1].anoModelo))
+        .forEach(([chave,item])=>{
+          const ano=Number(item.anoModelo)===32000?'Zero KM':String(item.anoModelo);
+          const combustivel=item.combustivel||item.siglaCombustivel||'';
+          opt('ano_veiculo',chave,[ano,combustivel].filter(Boolean).join(' • '));
+        });
+    }
+    if(!fipePrecosAtuais.length)throw new Error('Nenhum ano encontrado');
   }catch(e){
-    limparSelect('ano_veiculo','Não foi possível carregar anos',true);
+    limparSelect('ano_veiculo','Não foi possível carregar os anos',true);
   }
 }
 
-function exibirPrecoFipe(){
+async function exibirPrecoFipe(){
   invalidarQualificacao();
-  const ano=Number(val('ano_veiculo'));
-  const item=fipePrecosAtuais.find(x=>Number(x.anoModelo)===ano);
-  if(!item){setVal('valor_fipe_preview','FIPE não disponível');set('fipeReferencia','');return}
-  setVal('valor_fipe_preview',item.valor||'FIPE não disponível');
-  set('fipeReferencia',[item.mesReferencia,item.combustivel,item.siglaCombustivel].filter(Boolean).join(' • '));
+  const codigoMarca=val('marca_carro'),codigoModelo=val('modelo_carro'),codigoAno=val('ano_veiculo');
+  if(!codigoMarca||!codigoModelo||!codigoAno){
+    setVal('valor_fipe_preview','');set('fipeReferencia','');return;
+  }
+
+  setVal('valor_fipe_preview','Consultando valor médio...');
+  set('fipeReferencia','');
+
+  try{
+    let valor='',referencia='',combustivel='';
+    if(veiculoProvider==='parallelum'){
+      fipeConsultas++;
+      const item=await obterJsonComCache(
+        `${VEICULO_API_PARALELUM}/marcas/${encodeURIComponent(codigoMarca)}/modelos/${encodeURIComponent(codigoModelo)}/anos/${encodeURIComponent(codigoAno)}`,
+        `parallelum_valor_${codigoMarca}_${codigoModelo}_${codigoAno}`,
+        45*24*60*60*1000
+      );
+      valor=item?.Valor||item?.valor||'';
+      referencia=item?.MesReferencia||item?.mesReferencia||'';
+      combustivel=item?.Combustivel||item?.combustivel||item?.SiglaCombustivel||'';
+    }else{
+      const item=fipePrecosAtuais.find(x=>{
+        const combustivel=x.siglaCombustivel||x.combustivel||'';
+        return `${x.anoModelo}|${combustivel}`===codigoAno;
+      });
+      valor=item?.valor||'';
+      referencia=item?.mesReferencia||'';
+      combustivel=item?.combustivel||item?.siglaCombustivel||'';
+    }
+
+    if(!valor)throw new Error('Valor não encontrado');
+    setVal('valor_fipe_preview',valor);
+    set('fipeReferencia',[referencia,combustivel,'Valor médio de mercado'].filter(Boolean).join(' • '));
+  }catch(e){
+    setVal('valor_fipe_preview','Valor não disponível para este ano');
+    set('fipeReferencia','Tente novamente em alguns instantes.');
+  }
 }
 
-function anoVeiculoNumerico(){const a=Number(val('ano_veiculo'));return a===32000?new Date().getFullYear():a}
+function anoVeiculoNumerico(){
+  const texto=selectedText('ano_veiculo');
+  if(/zero\s*km/i.test(texto))return new Date().getFullYear();
+  const ano=Number((String(texto).match(/\d{4}/)||[])[0]);
+  return ano||null;
+}
+
 
 function calcularQualificacao(){
   let motivos=[],itens=0,severo=false;
@@ -608,7 +726,7 @@ function renderFichaSalva(p){
     <tr><th>Equipe/Ponto</th><td>${escapeHtml(p.equipe)} • ${escapeHtml(p.ponto_captacao)}</td></tr>
     <tr><th>Cliente(s)</th><td>${escapeHtml(p.convidado_1||'-')} (${escapeHtml(p.idade_1||'-')} / ${escapeHtml(p.profissao_1||'-')}) • ${escapeHtml(p.convidado_2||'-')} (${escapeHtml(p.idade_2||'-')} / ${escapeHtml(p.profissao_2||'-')})</td></tr>
     <tr><th>Renda</th><td>${escapeHtml(p.renda_casal||'-')}${p.renda_liquida?' | Líquida: '+escapeHtml(p.renda_liquida):''}</td></tr>
-    <tr><th>Carro/FIPE</th><td>${escapeHtml(p.marca_carro||'-')} ${escapeHtml(p.modelo_carro||'')} ${escapeHtml(p.ano_veiculo||'')} • ${escapeHtml(p.valor_fipe||'-')}</td></tr>
+    <tr><th>Carro/Valor médio</th><td>${escapeHtml(p.marca_carro||'-')} ${escapeHtml(p.modelo_carro||'')} ${escapeHtml(p.ano_veiculo||'')} • ${escapeHtml(p.valor_fipe||'-')}</td></tr>
     <tr><th>Casa/Cartão</th><td>${escapeHtml(p.casa_propria||'-')} / ${escapeHtml(p.cartao_credito||'-')}</td></tr>
     <tr><th>Brinde</th><td>${escapeHtml(p.brinde||'-')} • Custo estimado: ${moedaBR(p.custo_brinde)}</td></tr>
     <tr><th>Sala</th><td class="salaPendente">Pendente de confirmação do administrador</td></tr>
