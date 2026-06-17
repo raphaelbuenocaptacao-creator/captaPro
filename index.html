@@ -1,204 +1,88 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>CaptaPro</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#050505,#170000);color:#fff}
-.container{max-width:760px;margin:auto;padding:14px}
-.logo{text-align:center;margin:18px 0}.logo h1{margin:0;font-size:34px}.logo span{color:#ff3131}.sub{color:#bbb}
-.card{background:#111;border:1px solid #292929;border-radius:18px;padding:16px;margin-bottom:16px;box-shadow:0 0 25px rgba(229,9,20,.15)}
-h2{border-left:4px solid #e50914;padding-left:10px}
-input,select,textarea,button{width:100%;box-sizing:border-box;margin-top:10px;padding:14px;border-radius:12px;border:1px solid #333;background:#050505;color:#fff;font-size:15px}
-textarea{min-height:90px}button{background:linear-gradient(135deg,#e50914,#ff3131);border:none;font-weight:bold}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hidden{display:none}.ok{color:#00e676;font-weight:bold}.erro{color:#ff5252;font-weight:bold}
-.resultado{font-size:22px;text-align:center;padding:16px;border-radius:16px;margin-top:12px}.q{background:#063d1f;color:#00e676}.nq{background:#3d0606;color:#ff5252}.item{background:#3d3006;color:#ffd54f}
-@media(max-width:700px){.grid{grid-template-columns:1fr}}
+:root{--bg:#050505;--panel:#101010;--panel2:#171717;--red:#e50914;--red2:#ff3131;--line:#303030;--txt:#fff;--muted:#aaa;--green:#00e676;--yellow:#ffd54f;--blue:#40c4ff}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#030303,#180000);color:#fff} .wrap{max-width:1180px;margin:auto;padding:14px}.logo{text-align:center;margin:12px 0 14px}.logo h1{font-size:36px;margin:0}.logo span{color:var(--red2)}.sub{color:#bbb;font-size:14px}.card{background:rgba(16,16,16,.97);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 0 24px rgba(229,9,20,.11)}h2{border-left:4px solid var(--red);padding-left:10px;margin-top:0}h3{margin:10px 0;color:#fff}.menu{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-bottom:14px}.menu button,.btn{background:#181818;border:1px solid #333;border-radius:12px;color:white;padding:13px;font-weight:bold;cursor:pointer}.menu button.active,.btn.primary,button[type=submit]{background:linear-gradient(135deg,var(--red),var(--red2));border:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi{background:#171717;border:1px solid #2b2b2b;border-radius:16px;padding:13px;text-align:center;color:#ccc}.kpi b{display:block;color:var(--red2);font-size:26px;margin-top:5px}input,select,textarea,button{width:100%;margin-top:10px;padding:14px;border-radius:12px;border:1px solid #333;background:#050505;color:#fff;font-size:15px}textarea{min-height:86px}.hidden{display:none!important}.ok{color:var(--green);font-weight:bold}.erro{color:#ff5252;font-weight:bold}.warn{color:var(--yellow);font-weight:bold}.small{font-size:12px;color:#aaa;text-align:center}.result{padding:14px;border-radius:16px;margin-top:12px;text-align:center;font-size:20px}.q{background:#063d1f;color:#00e676}.nq{background:#3d0606;color:#ff5252}.q1{background:#3d3006;color:#ffd54f}table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}th,td{padding:9px;border-bottom:1px solid #2d2d2d;text-align:left}th{color:#ff5555}.badge{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid #5a1111;background:#260000;color:#ff8888;font-size:12px}#map{height:460px;border-radius:16px;border:1px solid #333}.ceoOnly{display:none}.rowActions{display:flex;gap:6px}.rowActions button{padding:8px;margin:0}.topbar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.pill{border:1px solid #444;padding:7px 10px;border-radius:999px;color:#ddd;background:#111}@media(max-width:850px){.menu{grid-template-columns:repeat(2,1fr)}.grid,.grid3,.kpis{grid-template-columns:1fr}.wrap{padding:10px}.logo h1{font-size:32px}}
 </style>
 </head>
 <body>
-<div class="container">
-<div class="logo"><h1>Capta<span>Pro</span></h1><div class="sub">Pesquisa com qualificação automática</div></div>
+<div class="wrap">
+  <div class="logo"><h1>Capta<span>Pro</span></h1><div class="sub">Pesquisa, Dashboard, Relatórios, Mapa, Heatmap e Gestão CEO</div></div>
 
-<div id="loginBox" class="card">
-<h2>Entrada</h2>
-<input id="email" type="email" placeholder="Seu e-mail">
-<input id="captadorNome" placeholder="Seu nome">
-<button onclick="entrar()">Entrar</button>
-<p id="loginMsg"></p>
+  <div id="loginBox" class="card">
+    <h2>Entrada</h2>
+    <input id="email" type="email" placeholder="Seu e-mail" />
+    <input id="captadorNome" placeholder="Seu nome completo" />
+    <button class="btn primary" onclick="entrar()">Entrar</button>
+    <p id="loginMsg"></p>
+  </div>
+
+  <div id="aguardandoBox" class="card hidden"><h2>Aguardando aprovação</h2><p class="erro">Seu e-mail ainda não foi aprovado pelo gestor.</p><button onclick="location.reload()">Voltar</button></div>
+
+  <div id="app" class="hidden">
+    <div class="topbar card"><div><b id="usuarioLogado"></b><br><span class="small" id="roleLogado"></span></div><button style="max-width:180px" onclick="location.reload()">Sair</button></div>
+    <div class="menu">
+      <button class="active" onclick="aba('dashboard',this)">🏠 Dashboard</button><button onclick="aba('pesquisa',this)">📝 Pesquisa</button><button onclick="aba('meeting',this)">🚀 Meeting</button><button onclick="aba('mapa',this)">📍 Mapa</button><button onclick="aba('heatmap',this)">🔥 Heatmap</button><button onclick="aba('relatorios',this)">📊 Relatórios</button><button onclick="aba('usuarios',this)" class="ceoOnly">👥 Usuários</button><button onclick="aba('ceo',this)" class="ceoOnly">⚙️ CEO</button>
+    </div>
+
+    <section id="secDashboard" class="card"><h2>Dashboard Geral</h2><button onclick="carregarTudo()">Atualizar</button><div class="kpis"><div class="kpi">Pesquisas <b id="kTotal">0</b></div><div class="kpi">Q <b id="kQ">0</b></div><div class="kpi">Sala <b id="kSala">0</b></div><div class="kpi">Conversão <b id="kConv">0%</b></div></div><div class="grid"><div class="card"><h3>Abordagens por ponto</h3><canvas id="chartPontos"></canvas></div><div class="card"><h3>Ranking captadores</h3><canvas id="chartCaptadores"></canvas></div></div></section>
+
+    <section id="secMeeting" class="card hidden"><h2>Iniciar Meeting / Entrada no Ponto</h2><div class="grid"><select id="mEquipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select><select id="mPonto"><option value="">Ponto de captação</option><option>Porta dentro do Park</option><option>Spinassi Avenida</option><option>Fábrica Spinassi</option><option>Corredor</option><option>Baden Baden</option><option>Guarda-chuvas</option><option>Igreja</option><option>Djalma</option><option>Renner</option><option>Rua Roda Gigante</option></select></div><button class="btn primary" onclick="iniciarMeeting()">🚀 Iniciar minha jornada</button><p id="meetingMsg"></p><div id="jornadaAtual" class="card hidden"></div></section>
+
+    <section id="secPesquisa" class="card hidden"><h2>Nova Pesquisa</h2><p class="small">Pesquisa reduzida + Q/NQ automático pela tabela de qualificação.</p><div class="grid"><select id="equipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select><select id="ponto_captacao"><option value="">Ponto de captação</option><option>Porta dentro do Park</option><option>Spinassi Avenida</option><option>Fábrica Spinassi</option><option>Corredor</option><option>Baden Baden</option><option>Guarda-chuvas</option><option>Igreja</option><option>Djalma</option><option>Renner</option><option>Rua Roda Gigante</option></select></div><div class="grid"><input id="convidado_1" placeholder="Nome do senhor"/><select id="idade_1"><option value="">Idade do senhor</option></select></div><select id="profissao_1" onchange="verificaEmpresario()"><option value="">Profissão do senhor</option></select><div class="grid"><input id="convidado_2" placeholder="Nome da senhora"/><select id="idade_2"><option value="">Idade da senhora</option></select></div><select id="profissao_2" onchange="verificaEmpresario()"><option value="">Profissão da senhora</option></select><div class="grid"><select id="estado_civil"><option value="">Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option><option>Divorciado</option><option>Viúvo</option></select><select id="tempo_juntos"><option value="">Tempo juntos</option><option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option><option>3 a 5 anos</option><option>6 a 10 anos</option><option>Mais de 10 anos</option></select></div><div class="grid"><select id="veiculo"><option value="">Possui carro?</option><option>Sim</option><option>Não</option></select><select id="ano_veiculo"><option value="">Ano do carro</option></select></div><div class="grid"><select id="marca_carro"><option value="">Marca do carro</option></select><select id="modelo_carro"><option value="">Modelo do carro</option></select></div><input id="modelo_carro_outro" placeholder="Modelo do carro se não encontrou na lista"/><div class="grid"><select id="cartao_credito"><option value="">Cartão de crédito?</option><option>Sim</option><option>Não</option></select><select id="casa_propria"><option value="">Casa própria?</option><option>Sim</option><option>Não</option></select></div><input id="renda_casal" type="number" inputmode="decimal" placeholder="Renda do casal: escreva o valor que a família falar"/><div id="boxRendasEmpresa" class="card hidden"><h3>Empresário / Comerciante</h3><input id="renda_bruta" type="number" inputmode="decimal" placeholder="Renda bruta"><input id="renda_liquida" type="number" inputmode="decimal" placeholder="Renda líquida"></div><input id="contato" placeholder="Contato / WhatsApp"/><input id="familia_falou" placeholder="O que a família falou?"/><div class="grid"><select id="multipropriedade"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select><input id="onde_multipropriedade" placeholder="Onde conheceu?"/></div><textarea id="programacao_casal" placeholder="Programação do casal"></textarea><div class="grid"><select id="possui_investimento_lazer"><option value="">Investimento em lazer?</option><option>Sim</option><option>Não</option></select><input id="onde_investimento_lazer" placeholder="Onde?"/></div><div class="grid"><input id="brinde" placeholder="Brinde entregue"/><select id="levou_sala"><option value="">Levou em sala?</option><option>Sim</option><option>Não</option></select></div><textarea id="observacoes" placeholder="Observações"></textarea><button onclick="calcularQualificacao()">Calcular Q/NQ</button><div id="resultadoQualificacao"></div><button class="btn primary" onclick="salvarPesquisa()">Salvar Pesquisa</button><p id="formMsg"></p></section>
+
+    <section id="secMapa" class="card hidden"><h2>Mapa de Localização</h2><button onclick="carregarMapa()">Atualizar mapa</button><p class="small">Mostra pesquisas por GPS e tempo desde o meeting até a pesquisa.</p><div id="map"></div></section>
+
+    <section id="secHeatmap" class="card hidden"><h2>Mapa de Calor por Horário</h2><button onclick="carregarHeatmap()">Atualizar heatmap</button><div class="card"><canvas id="chartHeat"></canvas></div></section>
+
+    <section id="secRelatorios" class="card hidden"><h2>Relatórios</h2><div class="grid"><input id="filtroData" type="date"/><select id="filtroEquipe"><option value="">Todas equipes</option><option>PARK</option><option>EXTERNA</option></select></div><button onclick="carregarRelatorios()">Filtrar</button><button onclick="exportarCSV()">Exportar CSV</button><div id="tabelaRelatorios"></div></section>
+
+    <section id="secUsuarios" class="card hidden"><h2>Usuários</h2><button onclick="carregarUsuarios()">Atualizar usuários</button><div id="listaUsuarios"></div></section>
+
+    <section id="secCeo" class="card hidden"><h2>CEO — Tabela de Qualificação</h2><div class="grid"><input id="cfgRenda" type="number" placeholder="Renda mínima"><input id="cfgAno" type="number" placeholder="Ano mínimo do carro"></div><div class="grid"><input id="cfgIdadeMin" type="number" placeholder="Idade mínima casal"><input id="cfgIdadeMax" type="number" placeholder="Idade máxima"></div><textarea id="cfgProfBloq" placeholder="Profissões bloqueadas separadas por vírgula"></textarea><button onclick="salvarConfig()">Salvar tabela de qualificação</button><p id="ceoMsg"></p></section>
+  </div>
 </div>
-
-<div id="aguardandoBox" class="card hidden">
-<h2>Aguardando aprovação</h2>
-<p class="erro">Seu e-mail ainda não foi aprovado pelo gestor.</p>
-<button onclick="location.reload()">Voltar</button>
-</div>
-
-<div id="formBox" class="card hidden">
-<h2>Nova Pesquisa</h2>
-
-<div class="grid">
-<select id="equipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select>
-<select id="ponto_captacao">
-<option value="">Ponto de captação</option><option>Porta dentro do Park</option><option>Spinassi Avenida</option><option>Fábrica Spinassi</option><option>Corredor</option><option>Baden Baden</option><option>Guarda-chuvas</option><option>Igreja</option><option>Djalma</option><option>Renner</option><option>Rua Roda Gigante</option>
-</select>
-</div>
-
-<input id="convidado_1" placeholder="Nome do senhor">
-<select id="idade_1"><option value="">Idade do senhor</option></select>
-
-<select id="profissao_1">
-<option value="">Profissão do senhor</option>
-<option>Empresário</option><option>Comerciante</option><option>Autônomo</option><option>Servidor público</option><option>Médico</option><option>Dentista</option><option>Advogado</option><option>Engenheiro</option><option>Arquiteto</option><option>Administrador</option><option>Gerente</option><option>Diretor</option><option>Consultor</option><option>Representante comercial</option><option>Professor</option><option>Contador</option><option>Policial</option><option>Militar</option><option>Aposentado</option><option>Produtor rural</option><option>Investidor</option>
-<option>Operador de caixa</option><option>Zelador</option><option>Secretária</option><option>Auxiliar</option><option>Assistente</option><option>Avon/Natura/Multinível</option><option>Gari</option><option>Vendedor ambulante</option><option>Motoboy</option><option>Do lar</option><option>Estoquista</option><option>Eletricista</option><option>Diarista</option><option>Doméstica</option><option>Garçom</option><option>Manicure</option><option>Pedreiro</option><option>Atendente</option><option>Balconista</option><option>Babá</option><option>Porteiro</option><option>Frentista</option><option>Estudante</option><option>Uber/App/Freelancer</option><option>Outro</option>
-</select>
-
-<input id="convidado_2" placeholder="Nome da senhora">
-<select id="idade_2"><option value="">Idade da senhora</option></select>
-
-<select id="profissao_2">
-<option value="">Profissão da senhora</option>
-<option>Empresária</option><option>Comerciante</option><option>Autônoma</option><option>Servidora pública</option><option>Médica</option><option>Dentista</option><option>Advogada</option><option>Engenheira</option><option>Arquiteta</option><option>Administradora</option><option>Gerente</option><option>Diretora</option><option>Consultora</option><option>Representante comercial</option><option>Professora</option><option>Contadora</option><option>Policial</option><option>Militar</option><option>Aposentada</option><option>Produtora rural</option><option>Investidora</option>
-<option>Operador de caixa</option><option>Zelador</option><option>Secretária</option><option>Auxiliar</option><option>Assistente</option><option>Avon/Natura/Multinível</option><option>Gari</option><option>Vendedor ambulante</option><option>Motoboy</option><option>Do lar</option><option>Estoquista</option><option>Eletricista</option><option>Diarista</option><option>Doméstica</option><option>Garçom</option><option>Manicure</option><option>Pedreiro</option><option>Atendente</option><option>Balconista</option><option>Babá</option><option>Porteiro</option><option>Frentista</option><option>Estudante</option><option>Uber/App/Freelancer</option><option>Outro</option>
-</select>
-
-<div class="grid">
-<select id="estado_civil"><option value="">Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option><option>Divorciado</option><option>Viúvo</option></select>
-<select id="tempo_juntos"><option value="">Tempo juntos</option><option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option><option>3 a 5 anos</option><option>6 a 10 anos</option><option>Mais de 10 anos</option></select>
-</div>
-
-<div class="grid">
-<select id="veiculo"><option value="">Possui carro?</option><option>Sim</option><option>Não</option></select>
-<select id="ano_veiculo"><option value="">Ano do carro</option></select>
-</div>
-
-<div class="grid">
-<select id="marca_carro"><option value="">Marca do carro</option><option>Chevrolet</option><option>Fiat</option><option>Volkswagen</option><option>Toyota</option><option>Honda</option><option>Hyundai</option><option>Jeep</option><option>Renault</option><option>Nissan</option><option>Ford</option><option>BMW</option><option>Mercedes-Benz</option><option>Audi</option><option>Volvo</option><option>BYD</option><option>Caoa Chery</option><option>Peugeot</option><option>Citroën</option><option>Mitsubishi</option><option>Kia</option><option>Land Rover</option><option>Outro</option></select>
-<input id="modelo_carro" placeholder="Modelo do carro">
-</div>
-
-<div class="grid">
-<select id="cartao_credito"><option value="">Cartão de crédito?</option><option>Sim</option><option>Não</option></select>
-<select id="casa_propria"><option value="">Casa própria?</option><option>Sim</option><option>Não</option></select>
-</div>
-
-<select id="renda_casal">
-<option value="">Renda mensal</option><option>Até R$ 5.000</option><option>R$ 5.001 a R$ 8.000</option><option>R$ 8.001 a R$ 10.999</option><option>R$ 11.000 a R$ 14.999</option><option>R$ 15.000 ou mais</option>
-</select>
-
-<input id="contato" placeholder="Contato / WhatsApp">
-<input id="familia_falou" placeholder="O que a família falou?">
-
-<div class="grid">
-<select id="multipropriedade"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
-<input id="onde_multipropriedade" placeholder="Onde conheceu?">
-</div>
-
-<textarea id="programacao_casal" placeholder="Programação do casal"></textarea>
-
-<div class="grid">
-<select id="possui_investimento_lazer"><option value="">Investimento em lazer?</option><option>Sim</option><option>Não</option></select>
-<input id="investimento_lazer_onde" placeholder="Onde?">
-</div>
-
-<input id="brinde" placeholder="Brinde entregue">
-<select id="levou_sala"><option value="">Levou em sala?</option><option>Sim</option><option>Não</option></select>
-<textarea id="observacoes" placeholder="Observações"></textarea>
-
-<button onclick="calcularQualificacao()">Calcular Q/NQ</button>
-<div id="resultadoQualificacao"></div>
-
-<button onclick="salvarPesquisa()">Salvar Pesquisa</button>
-<p id="formMsg"></p>
-</div>
-</div>
-
 <script>
-const SUPABASE_URL="https://veznreiamwstlulkpocz.supabase.co";
-const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlem5yZWlhbXdzdGx1bGtwb2N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODc1NDksImV4cCI6MjA5NzI2MzU0OX0.MeSqJZTZnk3zDKWgD920ccV2KUheH0W_BGD3TvhPXdM";
+const SUPABASE_URL='https://veznreiamwstlulkpocz.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlem5yZWlhbXdzdGx1bGtwb2N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODc1NDksImV4cCI6MjA5NzI2MzU0OX0.MeSqJZTZnk3zDKWgD920ccV2KUheH0W_BGD3TvhPXdM';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-let usuarioEmail="",captadorNome="",latitude=null,longitude=null,qualificacao="NQ",motivoQualificacao="";
-
-for(let i=18;i<=80;i++){addOpt("idade_1",i,i+" anos");addOpt("idade_2",i,i+" anos")}
-for(let a=2026;a>=1995;a--) addOpt("ano_veiculo",a,a);
-
-const profissoesBloqueadas=["Operador de caixa","Zelador","Secretária","Auxiliar","Assistente","Avon/Natura/Multinível","Gari","Vendedor ambulante","Motoboy","Do lar","Estoquista","Eletricista","Diarista","Doméstica","Garçom","Manicure","Pedreiro","Atendente","Balconista","Babá","Porteiro","Frentista","Estudante","Uber/App/Freelancer"];
-
-async function entrar(){
- const email=campo("email").trim().toLowerCase(), nome=campo("captadorNome").trim();
- if(!email||!nome){msg("loginMsg","Preencha e-mail e nome.","erro");return}
- usuarioEmail=email;captadorNome=nome;
- const {data}=await db.from("approved_users").select("*").eq("email",email).maybeSingle();
- if(!data){await db.from("approved_users").insert({email,name:nome,approved:false});show("aguardandoBox");return}
- if(data.approved!==true){show("aguardandoBox");return}
- document.getElementById("loginBox").classList.add("hidden");document.getElementById("formBox").classList.remove("hidden");gps();
-}
-
-function calcularQualificacao(){
- let motivos=[], itensNQ=0;
- const idadeH=Number(campo("idade_1")), idadeM=Number(campo("idade_2")), ano=Number(campo("ano_veiculo"));
- const rendaOk=campo("renda_casal")==="R$ 15.000 ou mais";
- const carroOk=campo("veiculo")==="Sim" && ano>=2011;
- const casaOk=campo("casa_propria")==="Sim";
- const cartaoOk=campo("cartao_credito")==="Sim";
- const civil=campo("estado_civil"), tempo=campo("tempo_juntos");
- const profissaoBloqueada=profissoesBloqueadas.includes(campo("profissao_1"))||profissoesBloqueadas.includes(campo("profissao_2"));
-
- if(profissaoBloqueada) motivos.push("Profissão bloqueada pela tabela");
- if(idadeH<25) motivos.push("Homem abaixo de 25 desqualifica");
- if(idadeH>64||idadeM>64) motivos.push("Acima do limite de 64 anos");
- if(!rendaOk){motivos.push("Renda abaixo de R$ 15.000");itensNQ++}
- if(!carroOk){motivos.push("Carro ausente ou anterior a 2011");itensNQ++}
- if(!casaOk){motivos.push("Sem casa própria");itensNQ++}
- if(!cartaoOk){motivos.push("Sem cartão de crédito");itensNQ++}
-
- let relacionamentoOk=false;
- if(civil==="Casados") relacionamentoOk=true;
- if(civil==="União estável" && ["2 anos","3 a 5 anos","6 a 10 anos","Mais de 10 anos"].includes(tempo)) relacionamentoOk=true;
- if(!relacionamentoOk){motivos.push("Relacionamento fora da regra");itensNQ++}
-
- if(profissaoBloqueada || idadeH<25 || idadeH>64 || idadeM>64 || itensNQ>=2){
-   qualificacao="NQ";
- }else if(itensNQ===1){
-   qualificacao="NQ 1 ITEM / LÍDER DECIDE";
- }else{
-   qualificacao="Q";
- }
-
- motivoQualificacao=motivos.length?motivos.join(" | "):"Perfil dentro da regra";
- const div=document.getElementById("resultadoQualificacao");
- div.className="resultado "+(qualificacao==="Q"?"q":qualificacao.includes("1 ITEM")?"item":"nq");
- div.innerHTML="<b>"+qualificacao+"</b><br><small>"+motivoQualificacao+"</small>";
- return qualificacao;
-}
-
-async function salvarPesquisa(){
- calcularQualificacao();
- const p={
- user_email:usuarioEmail,captador_nome:captadorNome,equipe:campo("equipe"),ponto_captacao:campo("ponto_captacao"),
- convidado_1:campo("convidado_1"),idade_1:num("idade_1"),profissao_1:campo("profissao_1"),
- convidado_2:campo("convidado_2"),idade_2:num("idade_2"),profissao_2:campo("profissao_2"),
- estado_civil:campo("estado_civil"),tempo_juntos:campo("tempo_juntos"),veiculo:campo("veiculo"),ano_veiculo:campo("ano_veiculo"),
- marca_carro:campo("marca_carro"),modelo_carro:campo("modelo_carro"),cartao_credito:campo("cartao_credito"),casa_propria:campo("casa_propria"),
- renda_casal:campo("renda_casal"),contato:campo("contato"),observacoes:campo("observacoes")+" | Família falou: "+campo("familia_falou"),
- multipropriedade:campo("multipropriedade"),onde_multipropriedade:campo("onde_multipropriedade"),programacao_casal:campo("programacao_casal"),
- possui_investimento_lazer:campo("possui_investimento_lazer"),investimento_lazer_onde:campo("investimento_lazer_onde"),
- brinde:campo("brinde"),levou_sala:campo("levou_sala"),status:qualificacao,qualificacao_automatica:qualificacao,motivo_qualificacao:motivoQualificacao,
- latitude,longitude,horario_local:new Date().getHours()+":00"
- };
- const {error}=await db.from("pesquisas").insert(p);
- if(error){console.log(error);msg("formMsg","Erro ao salvar. Falta coluna no Supabase.","erro");return}
- msg("formMsg","Pesquisa salva com sucesso!","ok");
-}
-
-function gps(){navigator.geolocation&&navigator.geolocation.getCurrentPosition(p=>{latitude=p.coords.latitude;longitude=p.coords.longitude},()=>alert("Permita localização."))}
-function campo(id){return document.getElementById(id).value}
-function num(id){return campo(id)?parseInt(campo(id)):null}
-function addOpt(id,v,t){let o=document.createElement("option");o.value=v;o.textContent=t;document.getElementById(id).appendChild(o)}
-function msg(id,t,c){document.getElementById(id).innerHTML=`<span class="${c}">${t}</span>`}
-function show(id){document.getElementById("loginBox").classList.add("hidden");document.getElementById(id).classList.remove("hidden")}
+let usuarioEmail='',captadorNome='',role='captador',latitude=null,longitude=null,jornada=null,qualificacao='NQ',motivoQualificacao='',mapa=null,allPesquisas=[],cfg={renda_minima:15000,ano_carro_minimo:2011,idade_minima_casal:25,idade_maxima:64,uniao_estavel_minima_anos:2,profissoes_bloqueadas:['Operador de caixa','Zelador','Secretária','Auxiliar','Assistente','Avon/Natura/Multinível','Gari','Vendedor ambulante','Motoboy','Do lar','Estoquista','Eletricista','Diarista','Doméstica','Garçom','Manicure','Pedreiro','Atendente','Balconista','Babá','Porteiro','Frentista','Estudante','Uber/App/Freelancer']};
+let charts={};
+const profs=['Empresário','Comerciante','Autônomo','Servidor público','Médico','Dentista','Advogado','Engenheiro','Arquiteto','Administrador','Gerente','Diretor','Consultor','Representante comercial','Professor','Contador','Policial','Militar','Aposentado','Produtor rural','Investidor','Psicólogo','Fisioterapeuta','Farmacêutico','Veterinário','Analista','Programador','Técnico','Corretor de imóveis','Bancário','Piloto','Empresária','Comerciante','Autônoma','Servidora pública','Médica','Dentista','Advogada','Engenheira','Arquiteta','Administradora','Gerente','Diretora','Consultora','Representante comercial','Professora','Contadora','Policial','Militar','Aposentada','Produtora rural','Investidora','Operador de caixa','Zelador','Secretária','Auxiliar','Assistente','Avon/Natura/Multinível','Gari','Vendedor ambulante','Motoboy','Do lar','Estoquista','Eletricista','Diarista','Doméstica','Garçom','Manicure','Pedreiro','Atendente','Balconista','Babá','Porteiro','Frentista','Estudante','Uber/App/Freelancer','Outro'];
+const marcas=['Chevrolet','Fiat','Volkswagen','Toyota','Honda','Hyundai','Jeep','Renault','Nissan','Ford','BMW','Mercedes-Benz','Audi','Volvo','BYD','Caoa Chery','Peugeot','Citroën','Mitsubishi','Kia','Land Rover','Porsche','Ram','Subaru','Suzuki','Lexus','Mini','Jac','GWM','Outro'];
+const modelos=['Onix','Onix Plus','Tracker','Cruze','S10','Spin','Montana','Cobalt','Prisma','Celta','Corsa','Classic','Astra','Vectra','Agile','Mobi','Argo','Cronos','Pulse','Fastback','Strada','Toro','Uno','Palio','Siena','Grand Siena','Idea','Punto','Bravo','Doblò','Fiorino','Gol','Polo','Virtus','T-Cross','Nivus','Taos','Jetta','Golf','Fox','Voyage','Saveiro','Amarok','Corolla','Corolla Cross','Hilux','SW4','Yaris','Etios','RAV4','Camry','Civic','City','Fit','HR-V','WR-V','CR-V','Accord','Creta','HB20','HB20S','Tucson','ix35','Santa Fe','Compass','Renegade','Commander','Wrangler','Duster','Sandero','Logan','Captur','Kwid','Oroch','Kicks','Versa','Sentra','Frontier','March','Ka','Fiesta','Focus','EcoSport','Ranger','Fusion','Territory','320i','X1','X3','X5','C180','GLA','GLC','A3','A4','Q3','Q5','XC40','XC60','Dolphin','Song Plus','Tiggo 5X','Tiggo 7','Tiggo 8','208','2008','C3','C4 Cactus','ASX','Eclipse Cross','L200','Sportage','Sorento','Range Rover Evoque','Discovery Sport','Macan','Cayenne','Outro'];
+function init(){for(let i=18;i<=80;i++){addOpt('idade_1',i,i+' anos');addOpt('idade_2',i,i+' anos')}for(let a=2026;a>=1995;a--)addOpt('ano_veiculo',a,a);profs.forEach(p=>{addOpt('profissao_1',p,p);addOpt('profissao_2',p,p)});marcas.forEach(m=>addOpt('marca_carro',m,m));modelos.forEach(m=>addOpt('modelo_carro',m,m));gps();}init();
+async function entrar(){let email=campo('email').trim().toLowerCase(),nome=campo('captadorNome').trim();if(!email||!nome){msg('loginMsg','Preencha e-mail e nome.','erro');return}usuarioEmail=email;captadorNome=nome;let {data}=await db.from('approved_users').select('*').eq('email',email).maybeSingle();if(!data){await db.from('approved_users').insert({email,name:nome,approved:false});showWait();return}if(!data.approved){showWait();return}role=data.role||'captador';document.getElementById('loginBox').classList.add('hidden');document.getElementById('app').classList.remove('hidden');document.getElementById('usuarioLogado').innerText=nome;document.getElementById('roleLogado').innerText='Perfil: '+role;if(['ceo','gestor','admin'].includes(role))document.querySelectorAll('.ceoOnly').forEach(e=>e.style.display='block');await carregarConfig();await carregarJornada();carregarTudo();}
+function showWait(){document.getElementById('loginBox').classList.add('hidden');document.getElementById('aguardandoBox').classList.remove('hidden')}
+function aba(nome,btn){document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');['Dashboard','Pesquisa','Meeting','Mapa','Heatmap','Relatorios','Usuarios','Ceo'].forEach(s=>document.getElementById('sec'+s).classList.add('hidden'));document.getElementById('sec'+cap(nome)).classList.remove('hidden');if(nome==='mapa')setTimeout(carregarMapa,250);if(nome==='heatmap')carregarHeatmap();if(nome==='relatorios')carregarRelatorios();if(nome==='usuarios')carregarUsuarios();}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+function gps(){if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>{latitude=p.coords.latitude;longitude=p.coords.longitude},()=>{}, {enableHighAccuracy:true});}
+async function carregarConfig(){let {data}=await db.from('configuracao_qualificacao').select('*').eq('id',1).maybeSingle();if(data){cfg=data;document.getElementById('cfgRenda').value=data.renda_minima||15000;document.getElementById('cfgAno').value=data.ano_carro_minimo||2011;document.getElementById('cfgIdadeMin').value=data.idade_minima_casal||25;document.getElementById('cfgIdadeMax').value=data.idade_maxima||64;document.getElementById('cfgProfBloq').value=(data.profissoes_bloqueadas||[]).join(', ')}}
+async function salvarConfig(){let p={id:1,renda_minima:num('cfgRenda')||15000,ano_carro_minimo:num('cfgAno')||2011,idade_minima_casal:num('cfgIdadeMin')||25,idade_maxima:num('cfgIdadeMax')||64,profissoes_bloqueadas:campo('cfgProfBloq').split(',').map(x=>x.trim()).filter(Boolean),updated_by:usuarioEmail,updated_at:new Date().toISOString()};let {error}=await db.from('configuracao_qualificacao').upsert(p);msg('ceoMsg',error?'Erro ao salvar.':'Tabela atualizada.',error?'erro':'ok');await carregarConfig();}
+function verificaEmpresario(){let a=campo('profissao_1'),b=campo('profissao_2');let ok=['Empresário','Empresária','Comerciante'].includes(a)||['Empresário','Empresária','Comerciante'].includes(b);document.getElementById('boxRendasEmpresa').classList.toggle('hidden',!ok)}
+async function iniciarMeeting(){if(!campo('mEquipe')||!campo('mPonto')){msg('meetingMsg','Escolha equipe e ponto.','erro');return}gps();let p={user_email:usuarioEmail,captador_nome:captadorNome,equipe:campo('mEquipe'),ponto_captacao:campo('mPonto'),latitude_inicio:latitude,longitude_inicio:longitude,ativo:true};let {data,error}=await db.from('jornadas_captacao').insert(p).select('*').single();if(error){console.log(error);msg('meetingMsg','Erro ao iniciar. Veja SQL.','erro');return}jornada=data;document.getElementById('equipe').value=p.equipe;document.getElementById('ponto_captacao').value=p.ponto_captacao;msg('meetingMsg','Jornada iniciada com sucesso.','ok');renderJornada();}
+async function carregarJornada(){let {data}=await db.from('jornadas_captacao').select('*').eq('user_email',usuarioEmail).eq('ativo',true).order('inicio_meeting',{ascending:false}).limit(1).maybeSingle();if(data){jornada=data;document.getElementById('equipe').value=data.equipe;document.getElementById('ponto_captacao').value=data.ponto_captacao;renderJornada();}}
+function renderJornada(){if(!jornada)return;let min=Math.floor((new Date()-new Date(jornada.inicio_meeting))/60000);let box=document.getElementById('jornadaAtual');box.classList.remove('hidden');box.innerHTML=`<b>Jornada ativa:</b><br>${jornada.equipe} • ${jornada.ponto_captacao}<br>Início: ${fmt(jornada.inicio_meeting)}<br>Tempo: ${min} min`;}
+function calcularQualificacao(){let motivos=[],itens=0;let idadeH=num('idade_1'),idadeM=num('idade_2'),ano=num('ano_veiculo');let renda=Number(campo('renda_liquida')||campo('renda_casal')||0);let carroOk=campo('veiculo')==='Sim'&&ano>=(cfg.ano_carro_minimo||2011);let casaOk=campo('casa_propria')==='Sim';let cartaoOk=campo('cartao_credito')==='Sim';let civil=campo('estado_civil'),tempo=campo('tempo_juntos');let bloqueada=(cfg.profissoes_bloqueadas||[]).includes(campo('profissao_1'))||(cfg.profissoes_bloqueadas||[]).includes(campo('profissao_2'));if(bloqueada)motivos.push('Profissão bloqueada');if(idadeH&&idadeH<(cfg.idade_minima_casal||25))motivos.push('Homem abaixo da idade mínima');if((idadeH&&idadeH>(cfg.idade_maxima||64))||(idadeM&&idadeM>(cfg.idade_maxima||64)))motivos.push('Acima da idade máxima');if(renda<(cfg.renda_minima||15000)){motivos.push('Renda abaixo da tabela');itens++}if(!carroOk){motivos.push('Sem carro ou ano abaixo da tabela');itens++}if(!casaOk){motivos.push('Sem casa própria');itens++}if(!cartaoOk){motivos.push('Sem cartão de crédito');itens++}let relOk=civil==='Casados'||(civil==='União estável'&&['2 anos','3 a 5 anos','6 a 10 anos','Mais de 10 anos'].includes(tempo));if(!relOk){motivos.push('Relacionamento fora da regra');itens++}if(bloqueada||motivos.some(m=>m.includes('idade'))||itens>=2)qualificacao='NQ';else if(itens===1)qualificacao='Q 1 ITEM / LÍDER DECIDE';else qualificacao='Q';motivoQualificacao=motivos.length?motivos.join(' | '):'Perfil dentro da regra';let el=document.getElementById('resultadoQualificacao');el.className='result '+(qualificacao==='Q'?'q':qualificacao.includes('1 ITEM')?'q1':'nq');el.innerHTML=`<b>${qualificacao}</b><br><small>${motivoQualificacao}</small>`;return qualificacao;}
+async function salvarPesquisa(){calcularQualificacao();gps();let inicio=jornada?jornada.inicio_meeting:null;let tempo=inicio?Math.floor((new Date()-new Date(inicio))/60000):null;let modelo=campo('modelo_carro')==='Outro'?(campo('modelo_carro_outro')||'Outro'):campo('modelo_carro');let p={user_email:usuarioEmail,captador_nome:captadorNome,equipe:campo('equipe'),ponto_captacao:campo('ponto_captacao'),convidado_1:campo('convidado_1'),idade_1:num('idade_1'),profissao_1:campo('profissao_1'),convidado_2:campo('convidado_2'),idade_2:num('idade_2'),profissao_2:campo('profissao_2'),estado_civil:campo('estado_civil'),tempo_juntos:campo('tempo_juntos'),veiculo:campo('veiculo'),ano_veiculo:campo('ano_veiculo'),marca_carro:campo('marca_carro'),modelo_carro:modelo,cartao_credito:campo('cartao_credito'),casa_propria:campo('casa_propria'),renda_casal:campo('renda_casal'),renda_bruta:campo('renda_bruta'),renda_liquida:campo('renda_liquida'),contato:campo('contato'),familia_falou:campo('familia_falou'),multipropriedade:campo('multipropriedade'),onde_multipropriedade:campo('onde_multipropriedade'),programacao_casal:campo('programacao_casal'),possui_investimento_lazer:campo('possui_investimento_lazer'),onde_investimento_lazer:campo('onde_investimento_lazer'),brinde:campo('brinde'),levou_sala:campo('levou_sala'),observacoes:campo('observacoes'),status:qualificacao,qualificacao_automatica:qualificacao,motivo_qualificacao:motivoQualificacao,latitude,longitude,horario_local:String(new Date().getHours()).padStart(2,'0')+':00',jornada_id:jornada?jornada.id:null,inicio_meeting:inicio,tempo_no_ponto_minutos:tempo};let {error}=await db.from('pesquisas').insert(p);if(error){console.log(error);msg('formMsg','Erro ao salvar. Falta SQL/coluna no Supabase.','erro');return}msg('formMsg','Pesquisa salva com sucesso!','ok');carregarTudo();}
+async function carregarTudo(){let {data}=await db.from('pesquisas').select('*').order('created_at',{ascending:false}).limit(1000);allPesquisas=data||[];let t=allPesquisas.length,q=allPesquisas.filter(x=>(x.status||'').startsWith('Q')).length,s=allPesquisas.filter(x=>x.levou_sala==='Sim').length;document.getElementById('kTotal').innerText=t;document.getElementById('kQ').innerText=q;document.getElementById('kSala').innerText=s;document.getElementById('kConv').innerText=t?Math.round(s/t*100)+'%':'0%';chart('chartPontos','bar',group(allPesquisas,'ponto_captacao'),'Abordagens');chart('chartCaptadores','bar',group(allPesquisas,'captador_nome'),'Pesquisas');}
+function chart(id,type,obj,label){let labels=Object.keys(obj),vals=Object.values(obj);if(charts[id])charts[id].destroy();charts[id]=new Chart(document.getElementById(id),{type,data:{labels,datasets:[{label,data:vals,backgroundColor:'#e50914',borderColor:'#ff3131'}]},options:{responsive:true,plugins:{legend:{labels:{color:'#fff'}}},scales:{x:{ticks:{color:'#fff'}},y:{ticks:{color:'#fff'}}}}});}
+async function carregarMapa(){await carregarTudo();if(!mapa){mapa=L.map('map').setView([-22.7386,-45.5926],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(mapa)}mapa.eachLayer(l=>{if(l instanceof L.Circle)mapa.removeLayer(l)});allPesquisas.filter(p=>p.latitude&&p.longitude).forEach(p=>{L.circle([p.latitude,p.longitude],{radius:45,color:'#e50914',fillColor:'#ff3131',fillOpacity:.35}).addTo(mapa).bindPopup(`<b>${p.captador_nome||'-'}</b><br>${p.ponto_captacao||'-'}<br>Tempo no ponto: ${p.tempo_no_ponto_minutos||0} min<br>Status: ${p.status||'-'}<br>Sala: ${p.levou_sala||'-'}`)})}
+async function carregarHeatmap(){await carregarTudo();let obj={};for(let h=10;h<=20;h++)obj[String(h).padStart(2,'0')+':00']=0;allPesquisas.forEach(p=>{if(obj[p.horario_local]!==undefined)obj[p.horario_local]++});chart('chartHeat','bar',obj,'Abordagens por horário')}
+async function carregarRelatorios(){await carregarTudo();let data=campo('filtroData'),eq=campo('filtroEquipe');let arr=allPesquisas.filter(p=>(!eq||p.equipe===eq)&&(!data||(p.created_at||'').startsWith(data)));renderTabela(arr)}
+function renderTabela(arr){let html='<table><tr><th>Hora</th><th>Captador</th><th>Equipe</th><th>Ponto</th><th>Status</th><th>Sala</th><th>Tempo</th></tr>';arr.forEach(p=>html+=`<tr><td>${fmt(p.created_at)}</td><td>${p.captador_nome||'-'}</td><td>${p.equipe||'-'}</td><td>${p.ponto_captacao||'-'}</td><td><span class="badge">${p.status||'-'}</span></td><td>${p.levou_sala||'-'}</td><td>${p.tempo_no_ponto_minutos||0} min</td></tr>`);document.getElementById('tabelaRelatorios').innerHTML=html+'</table>'}
+function exportarCSV(){let rows=[['Data','Captador','Equipe','Ponto','Status','Sala','Tempo min']].concat(allPesquisas.map(p=>[p.created_at,p.captador_nome,p.equipe,p.ponto_captacao,p.status,p.levou_sala,p.tempo_no_ponto_minutos]));let csv=rows.map(r=>r.map(v=>'"'+String(v||'').replaceAll('"','""')+'"').join(';')).join('\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='captapro_relatorio.csv';a.click();}
+async function carregarUsuarios(){let {data}=await db.from('approved_users').select('*').order('created_at',{ascending:false});let html='<table><tr><th>Nome</th><th>Email</th><th>Role</th><th>Aprovado</th><th>Ação</th></tr>';(data||[]).forEach(u=>html+=`<tr><td>${u.name||'-'}</td><td>${u.email}</td><td>${u.role||'captador'}</td><td>${u.approved?'Sim':'Não'}</td><td><button onclick="aprovarUsuario('${u.email}')">Aprovar</button></td></tr>`);document.getElementById('listaUsuarios').innerHTML=html+'</table>'}
+async function aprovarUsuario(email){await db.from('approved_users').update({approved:true}).eq('email',email);carregarUsuarios()}
+function group(arr,key){let o={};arr.forEach(x=>{let k=x[key]||'Não informado';o[k]=(o[k]||0)+1});return o}function campo(id){return document.getElementById(id)?.value||''}function num(id){let v=campo(id);return v?parseInt(v):null}function addOpt(id,v,t){let o=document.createElement('option');o.value=v;o.textContent=t;document.getElementById(id).appendChild(o)}function msg(id,t,c){document.getElementById(id).innerHTML=`<span class="${c}">${t}</span>`}function fmt(dt){return dt?new Date(dt).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'-'}
 </script>
 </body>
 </html>
