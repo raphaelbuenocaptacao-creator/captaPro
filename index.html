@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>CaptaPro Elite 4.0</title>
+<title>CaptaPro Elite 4.1</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -30,7 +30,7 @@ body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#05
 h2{margin:0 0 10px;border-left:4px solid var(--red);padding-left:10px;font-size:21px}
 h3{margin:8px 0;color:#fff}
 .hint,.mini{color:#bbb;font-size:12px}
-.tabs{display:grid;grid-template-columns:repeat(11,1fr);gap:7px;margin:12px 0}
+.tabs{display:grid;grid-template-columns:repeat(12,1fr);gap:7px;margin:12px 0}
 .tabs button{padding:12px 7px;border:0;border-radius:12px;background:#181818;color:#fff;font-weight:800;font-size:13px}
 .tabs button.active{background:linear-gradient(135deg,var(--red),var(--red2))}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
@@ -57,6 +57,23 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
   .grid,.grid2,.kpis,.rowbtn{grid-template-columns:1fr}
   .wrap{padding:8px}input,select,textarea,button{font-size:13px;padding:10px}.top h1{font-size:29px}.eagleLogo{width:126px}
 }
+
+.fipeWrap{display:grid;grid-template-columns:1fr 1fr;gap:8px;grid-column:1/-1}
+.fipeValue{position:relative}.fipeValue input{font-weight:900;color:var(--ok);border-color:#185c38}
+.statusLine{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:9px 0}
+.statusDot{width:10px;height:10px;border-radius:50%;display:inline-block}.live{background:#00e676;box-shadow:0 0 10px #00e676}.recent{background:#ffd54f}.offline{background:#777}
+.mapLegend{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0;color:#ccc;font-size:12px}
+.mapLegend span{display:flex;align-items:center;gap:6px}
+.mapMarker{width:20px;height:20px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 14px rgba(0,0,0,.8)}
+.mapMarker.live{background:#00e676}.mapMarker.recent{background:#ffd54f}.mapMarker.offline{background:#777}
+.inlineActions{display:flex;gap:6px;flex-wrap:wrap}.inlineActions button{width:auto;padding:7px 10px;font-size:12px}
+.btnYes{background:#073a21!important;border-color:#0a7b43!important}.btnNo{background:#3a0808!important;border-color:#8a1818!important}
+.tableScroll{overflow:auto;max-width:100%}
+.readonlyInfo{padding:10px 12px;border-radius:11px;border:1px solid #333;background:#0a0a0a;color:#bbb}
+.salaPendente{color:var(--warn);font-weight:800}.salaSim{color:var(--ok);font-weight:800}.salaNao{color:var(--bad);font-weight:800}
+.warningBox{padding:10px 12px;border-radius:12px;background:#301f00;border:1px solid #795900;color:#ffd978;font-size:12px;margin:8px 0}
+@media(max-width:900px){.fipeWrap{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -80,7 +97,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 4.0</div>
+    <div class="version">CaptaPro Elite 4.1</div>
     <p>Sistema Inteligente de Captação</p>
   </div>
 
@@ -101,7 +118,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       <button onclick="aba('brindesDash',this)">Brindes</button>
       <button onclick="aba('fipe',this)">FIPE</button>
       <button onclick="aba('metas',this)">Metas</button>
-      <button onclick="aba('mapa',this)">Mapa</button>
+      <button class="admOnly" onclick="aba('mapa',this)">Mapa</button>
+      <button class="admOnly" onclick="aba('salaAdmin',this)">Sala ADM</button>
       <button onclick="aba('historico',this)">Histórico</button>
       <button onclick="aba('profissionais',this)">Profissionais</button>
       <button onclick="aba('ceo',this)">CEO</button>
@@ -115,13 +133,13 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       <div class="grid compact">
         <select id="equipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select>
         <select id="ponto_captacao"><option value="">Ponto</option><option>Porta dentro do Park</option><option>Corredor</option><option>Spinassi Avenida</option><option>Fábrica Spinassi</option><option>Baden Baden</option><option>Guarda-chuvas</option><option>Igreja</option><option>Djalma</option><option>Renner</option><option>Rua Roda Gigante</option></select>
-        <select id="tipo_abordagem"><option value="">Abordagem</option><option>Fria</option><option>Brinde</option><option>Indicação</option><option>Curiosidade</option><option>Espontânea</option></select>
+        <select id="tipo_abordagem"><option value="">Abordagem</option><option>Brinde</option><option>Indicação</option><option>Curiosidade</option><option>Espontânea</option></select>
 
-        <input id="convidado_1" placeholder="Nome do senhor"><select id="idade_1"><option value="">Idade senhor</option></select><select id="profissao_1" onchange="toggleRendaEmpresa();toggleOutraProfissao()"><option value="">Profissão senhor</option></select>
-        <input id="outra_profissao_1" class="hidden" placeholder="Outra profissão senhor">
+        <input id="convidado_1" placeholder="Nome 1"><select id="idade_1"><option value="">Idade 1</option></select><select id="profissao_1" onchange="toggleRendaEmpresa();toggleOutraProfissao()"><option value="">Profissão 1</option></select>
+        <input id="outra_profissao_1" class="hidden" placeholder="Outra profissão 1">
 
-        <input id="convidado_2" placeholder="Nome da senhora"><select id="idade_2"><option value="">Idade senhora</option></select><select id="profissao_2" onchange="toggleRendaEmpresa();toggleOutraProfissao()"><option value="">Profissão senhora</option></select>
-        <input id="outra_profissao_2" class="hidden" placeholder="Outra profissão senhora">
+        <input id="convidado_2" placeholder="Nome 2"><select id="idade_2"><option value="">Idade 2</option></select><select id="profissao_2" onchange="toggleRendaEmpresa();toggleOutraProfissao()"><option value="">Profissão 2</option></select>
+        <input id="outra_profissao_2" class="hidden" placeholder="Outra profissão 2">
 
         <select id="estado_civil"><option value="">Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option><option>Divorciado</option><option>Viúvo</option></select>
         <select id="tempo_juntos"><option value="">Tempo juntos</option><option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option><option>3 a 5 anos</option><option>6 a 10 anos</option><option>Mais de 10 anos</option></select>
@@ -133,17 +151,17 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
           <span class="mini">Empresário/comerciante: o sistema usa a renda líquida.</span>
         </div>
 
-        <select id="veiculo"><option value="">Possui carro?</option><option>Sim</option><option>Não</option></select>
-        <select id="ano_veiculo" onchange="consultarFipeAutomatica()"><option value="">Ano carro</option></select>
-        <select id="marca_carro" onchange="consultarFipeAutomatica()"><option value="">Marca carro</option></select>
-        <select id="modelo_carro" onchange="consultarFipeAutomatica()"><option value="">Modelo carro</option></select>
-        <input id="valor_fipe_preview" placeholder="FIPE automática" readonly>
+        <select id="veiculo" onchange="toggleVeiculo()"><option value="">Possui carro?</option><option>Sim</option><option>Não</option></select>
+        <select id="marca_carro" onchange="carregarModelosFipe()" disabled><option value="">Carregando marcas FIPE...</option></select>
+        <select id="modelo_carro" onchange="carregarAnosFipe()" disabled><option value="">Selecione primeiro a marca</option></select>
+        <select id="ano_veiculo" onchange="exibirPrecoFipe()" disabled><option value="">Selecione primeiro o modelo</option></select>
+        <div class="fipeValue"><input id="valor_fipe_preview" placeholder="Valor FIPE atual" readonly><div id="fipeReferencia" class="mini" style="margin-top:4px"></div></div>
         <select id="cartao_credito"><option value="">Cartão?</option><option>Sim</option><option>Não</option></select>
         <select id="casa_propria"><option value="">Casa própria?</option><option>Sim</option><option>Não</option></select>
         <select id="multipropriedade"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
         <input id="onde_multipropriedade" placeholder="Onde conheceu?">
-        <select id="brinde"><option value="">Brinde entregue</option><option>2 Museu de Cera</option><option>1 Museu de Cera</option><option>2 Terror</option><option>1 Terror</option><option>2 Minimundo</option><option>1 Minimundo</option><option>2 Vale dos Dinossauros</option><option>1 Vale dos Dinossauros</option><option>R$ 100 Museu/Terror/Minimundo/Vale</option><option>R$ 100 Rostie</option><option>R$ 100 Vemaguet</option><option>R$ 100 Kankurus Boliche</option><option>R$ 100 Combustível</option><option>Spinassi Chocolate</option><option>Suvinis 150</option><option>Espelho do Jordão</option><option>Outro</option></select>
-        <select id="levou_sala"><option value="">Levou em sala?</option><option>Sim</option><option>Não</option></select>
+        <select id="brinde" disabled><option value="">Calcule Q/NQ para liberar o brinde</option></select>
+        <div id="brindeRegra" class="readonlyInfo">O sistema libera os brindes conforme a qualificação.</div>
         <input id="contato" placeholder="WhatsApp / contato">
       </div>
 
@@ -217,7 +235,28 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       <div id="metasBox" style="margin-top:10px"></div>
     </section>
 
-    <section id="mapa" class="card hidden"><h2>Mapa e Tempo Real</h2><button class="main" onclick="carregarMapa()">Atualizar Mapa</button><p class="hint">Mostra pesquisas e última localização enviada por profissional.</p><div id="map"></div></section>
+    <section id="mapa" class="card hidden admOnly">
+      <h2>Mapa e Tempo Real</h2>
+      <div class="rowbtn"><button class="main" onclick="carregarMapa(true)">Atualizar Mapa</button><button class="secondary" onclick="centralizarMapa()">Centralizar profissionais</button></div>
+      <div id="mapStatus" class="statusLine"><span class="statusDot offline"></span><span class="mini">Aguardando atualização.</span></div>
+      <div class="warningBox">O mapa atualiza continuamente enquanto o aplicativo está aberto e autorizado no celular. Com o navegador totalmente fechado, um site não consegue coletar GPS em segundo plano; nesse caso aparece a última posição e há quanto tempo ela foi enviada.</div>
+      <div class="mapLegend"><span><i class="statusDot live"></i>até 2 min</span><span><i class="statusDot recent"></i>2 a 10 min</span><span><i class="statusDot offline"></i>mais de 10 min</span></div>
+      <div id="map"></div>
+      <div id="mapaLista" class="tableScroll" style="margin-top:10px"></div>
+    </section>
+
+    <section id="salaAdmin" class="card hidden admOnly">
+      <h2>Confirmação de Entrada em Sala</h2>
+      <p class="hint">Depois que o captador salva a pesquisa, somente o administrador confirma se o cliente entrou ou não em sala.</p>
+      <div class="grid compact">
+        <input id="salaBusca" placeholder="Buscar cliente, captador ou ponto" oninput="renderSalaAdmin()">
+        <select id="salaFiltro" onchange="renderSalaAdmin()"><option value="pendente">Pendentes</option><option value="todos">Todos</option><option value="Sim">Entraram em sala</option><option value="Não">Não entraram</option></select>
+        <button class="main" onclick="carregarSalaAdmin()">Atualizar lista</button>
+      </div>
+      <p id="salaMsg"></p>
+      <div id="salaAdminBox" class="tableScroll"></div>
+    </section>
+
     <section id="historico" class="card hidden"><h2>Histórico Completo</h2><button class="main" onclick="carregarHistorico()">Atualizar Histórico</button><div id="historicoBox"></div></section>
 
     <section id="profissionais" class="card hidden">
@@ -238,7 +277,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       <button class="main" style="margin-top:8px" onclick="salvarCEO()">Salvar CEO</button><p id="ceoMsg"></p>
     </section>
   </div>
-  <div class="footer">CaptaPro Elite 4.0 • Operação de Captação</div>
+  <div class="footer">CaptaPro Elite 4.1 • Operação de Captação</div>
 </div>
 
 <script>
@@ -246,138 +285,515 @@ const SUPABASE_URL="https://veznreiamwstlulkpocz.supabase.co";
 const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlem5yZWlhbXdzdGx1bGtwb2N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODc1NDksImV4cCI6MjA5NzI2MzU0OX0.MeSqJZTZnk3zDKWgD920ccV2KUheH0W_BGD3TvhPXdM";
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
-let usuarioEmail="",captadorNome="",userRole="captador",latitude=null,longitude=null,jornada=null,qualificacao="NQ",motivoQualificacao="";
-let map=null,heatMap=null,heatLayer=null,chPontos=null,chHoras=null,chEquipes=null,chQNQ=null,fipeConsultas=0;
+let usuarioEmail="",captadorNome="",userRole="captador",latitude=null,longitude=null,precisaoGps=null,velocidadeGps=null,direcaoGps=null;
+let jornada=null,qualificacao="NQ",motivoQualificacao="",qualificacaoCalculada=false;
+let map=null,mapMarkerLayer=null,mapBounds=null,heatMap=null,heatLayer=null;
+let chPontos=null,chHoras=null,chEquipes=null,chQNQ=null,fipeConsultas=0;
+let gpsWatchId=null,gpsUltimoEnvio=0,gpsHeartbeat=null,mapRefreshTimer=null,locationChannel=null;
+let fipePrecosAtuais=[],salaAdminDados=[];
 let cfg={renda_minima:15000,ano_carro_minimo:2011,idade_minima_casal:25,idade_minima_solo:30,idade_maxima:64,uniao_estavel_minima_anos:2,casa_propria_obrigatoria:true,cartao_credito_obrigatorio:true,profissoes_definidas_obrigatorio:true};
 let profBloq=['Operador de caixa','Zelador','Secretária','Auxiliar','Assistente','Avon/Natura/Multinível','Gari','Vendedor ambulante','Motoboy','Do lar','Estoquista','Eletricista','Diarista','Doméstica','Garçom','Manicure','Pedreiro','Atendente','Balconista','Babá','Porteiro','Frentista','Estudante','Uber/App/Freelancer'];
 
-const profs=['Empresário','Comerciante','Autônomo','Servidor público','Médico','Dentista','Advogado','Engenheiro','Arquiteto','Administrador','Gerente','Diretor','Consultor','Representante comercial','Professor','Contador','Policial','Militar','Aposentado','Produtor rural','Investidor','Vendedor','Corretor','Técnico','Operador de caixa','Zelador','Secretária','Auxiliar','Assistente','Avon/Natura/Multinível','Gari','Vendedor ambulante','Motoboy','Do lar','Estoquista','Eletricista','Diarista','Doméstica','Garçom','Manicure','Pedreiro','Atendente','Balconista','Babá','Porteiro','Frentista','Estudante','Uber/App/Freelancer','Outro'];
-const marcas=['Chevrolet','Fiat','Volkswagen','Toyota','Honda','Hyundai','Jeep','Renault','Nissan','Ford','BMW','Mercedes-Benz','Audi','Volvo','BYD','GWM','Caoa Chery','Peugeot','Citroën','Mitsubishi','Kia','Land Rover','Ram','Porsche','Lexus','Subaru','Suzuki','Mini','JAC','Troller','Iveco','Scania','Volvo Caminhões','MAN','Agrale','Outro'];
-const modelos=['Onix','Onix Plus','Tracker','Cruze','Spin','S10','Montana','Equinox','Trailblazer','Cobalt','Prisma','Celta','Classic','Astra','Vectra','Zafira','Meriva','Captiva','Strada','Toro','Argo','Cronos','Mobi','Pulse','Fastback','Uno','Palio','Siena','Grand Siena','Idea','Bravo','Linea','Punto','Doblò','Fiorino','Gol','Polo','Virtus','T-Cross','Nivus','Taos','Saveiro','Voyage','Fox','Golf','Jetta','Passat','Tiguan','Amarok','Corolla','Corolla Cross','Hilux','SW4','Yaris','Etios','RAV4','Camry','Prius','Civic','City','HR-V','Fit','WR-V','CR-V','Accord','HB20','HB20S','Creta','Tucson','Santa Fe','ix35','Azera','Elantra','Compass','Renegade','Commander','Cherokee','Wrangler','Kwid','Sandero','Logan','Duster','Oroch','Captur','Kicks','Versa','Sentra','Frontier','March','Ka','EcoSport','Ranger','Fusion','Fiesta','Focus','Edge','Territory','Bronco','Maverick','X1','X2','X3','X4','X5','X6','118i','120i','320i','330i','530i','C180','C200','C300','A200','CLA200','GLA200','GLB200','GLC','GLE','A3','A4','A5','A6','Q3','Q5','Q7','Q8','XC40','XC60','XC90','S60','V40','EX30','Dolphin','Dolphin Mini','Song Plus','Song Pro','Yuan Plus','Seal','Tan','Han','King','Shark','Haval H6','Ora 03','Poer','Tank 300','Tiggo 2','Tiggo 3X','Tiggo 5X','Tiggo 7','Tiggo 8','Arrizo 5','Arrizo 6','208','2008','3008','5008','C3','C4 Cactus','L200','Pajero','Outlander','ASX','Eclipse Cross','Sportage','Sorento','Cerato','Picanto','Evoque','Discovery','Defender','Range Rover','Ram 1500','Ram 2500','Ram 3500','Macan','Cayenne','Panamera','911','ES','NX','RX','Forester','Outback','XV','Jimny','Vitara','S-Cross','Cooper','Countryman','Outro'];
+const profs=['Empresário','Empresária','Comerciante','Autônomo','Autônoma','Servidor público','Servidora pública','Médico','Médica','Dentista','Advogado','Advogada','Engenheiro','Engenheira','Arquiteto','Arquiteta','Administrador','Administradora','Gerente','Diretor','Diretora','Consultor','Consultora','Representante comercial','Professor','Professora','Contador','Contadora','Policial','Militar','Aposentado','Aposentada','Produtor rural','Produtora rural','Investidor','Investidora','Vendedor','Vendedora','Corretor','Corretora','Técnico','Técnica','Operador de caixa','Zelador','Secretária','Auxiliar','Assistente','Avon/Natura/Multinível','Gari','Vendedor ambulante','Motoboy','Do lar','Estoquista','Eletricista','Diarista','Doméstica','Garçom','Manicure','Pedreiro','Atendente','Balconista','Babá','Porteiro','Frentista','Estudante','Uber/App/Freelancer','Outro'];
 
 const brindesPadrao=[
- ['2 Museu de Cera',120],['1 Museu de Cera',60],['2 Terror',120],['1 Terror',60],['2 Minimundo',120],['1 Minimundo',60],['2 Vale dos Dinossauros',120],['1 Vale dos Dinossauros',60],['R$ 100 Museu/Terror/Minimundo/Vale',100],['R$ 100 Rostie',100],['R$ 100 Vemaguet',100],['R$ 100 Kankurus Boliche',100],['R$ 100 Combustível',100],['Spinassi Chocolate',80],['Suvinis 150',150],['Espelho do Jordão',120],['Outro',100]
+ ['2 Museu de Cera',120],['1 Museu de Cera',60],['2 Terror',120],['1 Terror',60],
+ ['2 Minimundo',120],['1 Minimundo',60],['2 Vale dos Dinossauros',120],['1 Vale dos Dinossauros',60],
+ ['R$ 100 Museu/Terror/Minimundo/Vale',100],['R$ 100 Rostie',100],['R$ 100 Vemaguet',100],
+ ['R$ 100 Kankurus Boliche',100],['R$ 100 Combustível',100],['Spinassi Chocolate',80],
+ ['Suvinis 150',150],['Espelho do Jordão',120],['Outro',100],['Combo de Experiência',0]
 ];
 
 function init(){
   for(let i=18;i<=80;i++){opt('idade_1',i,i+' anos');opt('idade_2',i,i+' anos')}
-  for(let a=2026;a>=1995;a--)opt('ano_veiculo',a,a);
   profs.forEach(p=>{opt('profissao_1',p,p);opt('profissao_2',p,p)});
-  marcas.forEach(m=>opt('marca_carro',m,m));modelos.forEach(m=>opt('modelo_carro',m,m));
-  renderBrindesDisponiveis();
-  ['renda_casal','renda_bruta','renda_liquida','cfg_renda'].forEach(id=>{setTimeout(()=>{const el=document.getElementById(id);if(el)el.addEventListener('input',()=>formatBRLInput(el))},0)});
+  document.querySelectorAll('input[data-money],#renda_casal,#renda_bruta,#renda_liquida,#cfg_renda').forEach(el=>el.addEventListener('input',()=>formatBRLInput(el)));
+  document.querySelectorAll('#pesquisa input,#pesquisa select').forEach(el=>{
+    if(!['brinde'].includes(el.id))el.addEventListener(el.tagName==='SELECT'?'change':'input',invalidarQualificacao);
+  });
+  atualizarBrindesPorQualificacao();
+  carregarMarcasFipe();
 }
-init();
+
+document.addEventListener('DOMContentLoaded',init);
+
+function isAdminRole(){return ['ceo','gestor','lider','líder','admin'].includes(String(userRole).toLowerCase())}
 
 async function entrar(){
   const email=val('email').toLowerCase().trim(),nome=val('captadorNome').trim();
-  if(!email||!nome)return msg('loginMsg','Preencha e-mail e nome','erro');
+  if(!email||!nome)return msg('loginMsg','Preencha e-mail e nome.','erro');
   usuarioEmail=email;captadorNome=nome;
-  const {data}=await db.from('approved_users').select('*').eq('email',email).maybeSingle();
-  if(!data){await db.from('approved_users').insert({email,name:nome,approved:false,role:'captador'});showOnlyLogin('aguardandoBox');return}
+  const {data,error}=await db.from('approved_users').select('*').eq('email',email).maybeSingle();
+  if(error)return msg('loginMsg','Não foi possível consultar o acesso: '+escapeHtml(error.message),'erro');
+  if(!data){
+    const {error:insertError}=await db.from('approved_users').insert({email,name:nome,approved:false,role:'captador'});
+    if(insertError)return msg('loginMsg','Erro ao solicitar acesso: '+escapeHtml(insertError.message),'erro');
+    showOnlyLogin('aguardandoBox');return;
+  }
   if(!data.approved){showOnlyLogin('aguardandoBox');return}
-  userRole=data.role||'captador';
-  document.getElementById('loginBox').classList.add('hidden');document.getElementById('appBox').classList.remove('hidden');
-  aplicarPermissaoVisual();gps();carregarConfig();iniciarJornadaAutomatica();setInterval(enviarLocalizacaoTempoReal,60000);
+  userRole=data.role||'captador';captadorNome=data.name||nome;
+  document.getElementById('loginBox').classList.add('hidden');
+  document.getElementById('appBox').classList.remove('hidden');
+  aplicarPermissaoVisual();
+  await carregarConfig();
+  iniciarRastreamentoGps();
+  iniciarJornadaAutomatica();
+  iniciarRealtimeLocalizacoes();
 }
+
 function showOnlyLogin(id){document.getElementById('loginBox').classList.add('hidden');document.getElementById(id).classList.remove('hidden')}
-function aplicarPermissaoVisual(){const isAdm=['ceo','gestor','lider','líder','admin'].includes(String(userRole).toLowerCase());document.querySelectorAll('.admOnly').forEach(el=>el.style.display=isAdm?'block':'none')}
+
+function aplicarPermissaoVisual(){
+  const adm=isAdminRole();
+  document.querySelectorAll('.admOnly').forEach(el=>{el.style.display=adm?'block':'none'});
+}
 
 function aba(id,b){
-  ['pesquisa','dash','heat','ranking','brindesDash','fipe','metas','mapa','historico','profissionais','ceo'].forEach(x=>document.getElementById(x).classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');
-  if(id==='dash')carregarDashboard();if(id==='heat')carregarHeatmap();if(id==='ranking')carregarRanking();if(id==='brindesDash')carregarBrindes();if(id==='fipe')carregarFipe();if(id==='metas')carregarMetas();if(id==='mapa')setTimeout(carregarMapa,250);if(id==='historico')carregarHistorico();if(id==='profissionais')carregarProfissionais();if(id==='ceo')carregarConfig();
+  if(['mapa','salaAdmin'].includes(id)&&!isAdminRole())return;
+  const ids=['pesquisa','dash','heat','ranking','brindesDash','fipe','metas','mapa','salaAdmin','historico','profissionais','ceo'];
+  ids.forEach(x=>document.getElementById(x)?.classList.add('hidden'));
+  document.getElementById(id)?.classList.remove('hidden');
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+  b?.classList.add('active');
+  if(id==='dash')carregarDashboard();
+  if(id==='heat')setTimeout(carregarHeatmap,150);
+  if(id==='ranking')carregarRanking();
+  if(id==='brindesDash')carregarBrindes();
+  if(id==='fipe')carregarFipe();
+  if(id==='metas')carregarMetas();
+  if(id==='mapa')setTimeout(()=>{carregarMapa(true);iniciarAtualizacaoMapa()},180);else pararAtualizacaoMapa();
+  if(id==='salaAdmin')carregarSalaAdmin();
+  if(id==='historico')carregarHistorico();
+  if(id==='profissionais')carregarProfissionais();
+  if(id==='ceo')carregarConfig();
 }
 
-function gps(){navigator.geolocation&&navigator.geolocation.getCurrentPosition(p=>{latitude=p.coords.latitude;longitude=p.coords.longitude},()=>{}, {enableHighAccuracy:true})}
-async function enviarLocalizacaoTempoReal(){gps();if(!usuarioEmail)return;await db.from('localizacoes_tempo_real').upsert({user_email:usuarioEmail,captador_nome:captadorNome,latitude,longitude,updated_at:new Date().toISOString()},{onConflict:'user_email'})}
-async function iniciarJornadaAutomatica(){if(jornada)return;gps();const equipe=val('equipe')||'PARK',ponto=val('ponto_captacao')||'Operação';const {data}=await db.from('jornadas_captacao').insert({user_email:usuarioEmail,captador_nome:captadorNome,equipe,ponto_captacao:ponto,latitude_inicio:latitude,longitude_inicio:longitude,ativo:true}).select().single();if(data)jornada=data}
+function invalidarQualificacao(){
+  qualificacaoCalculada=false;
+  const box=document.getElementById('resultadoQualificacao');
+  if(box){box.className='';box.innerHTML=''}
+  atualizarBrindesPorQualificacao();
+}
 
-function formatBRLInput(el){let v=String(el.value||'').replace(/\D/g,'');if(!v){el.value='';return}el.value=(Number(v)/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-function moneyNumber(s){return Number(String(s||'').replace(/[^\d,\.]/g,'').replace(/\./g,'').replace(',','.'))||0}
+function iniciarRastreamentoGps(){
+  if(!navigator.geolocation){msg('formMsg','Este aparelho não oferece geolocalização.','erro');return}
+  if(gpsWatchId!==null)navigator.geolocation.clearWatch(gpsWatchId);
+  gpsWatchId=navigator.geolocation.watchPosition(
+    pos=>{
+      latitude=pos.coords.latitude;longitude=pos.coords.longitude;precisaoGps=pos.coords.accuracy;
+      velocidadeGps=pos.coords.speed;direcaoGps=pos.coords.heading;
+      const agora=Date.now();
+      if(agora-gpsUltimoEnvio>=15000){gpsUltimoEnvio=agora;enviarLocalizacaoTempoReal(true)}
+    },
+    err=>{
+      const textos={1:'Permissão de localização negada.',2:'Localização indisponível.',3:'Tempo esgotado ao obter localização.'};
+      const el=document.getElementById('mapStatus');
+      if(el)el.innerHTML=`<span class="statusDot offline"></span><span class="mini">${textos[err.code]||'Erro no GPS.'}</span>`;
+    },
+    {enableHighAccuracy:true,maximumAge:10000,timeout:20000}
+  );
+  clearInterval(gpsHeartbeat);
+  gpsHeartbeat=setInterval(()=>enviarLocalizacaoTempoReal(true),30000);
+}
+
+async function enviarLocalizacaoTempoReal(isOnline=true){
+  if(!usuarioEmail||latitude===null||longitude===null)return;
+  const base={user_email:usuarioEmail,captador_nome:captadorNome,latitude,longitude,updated_at:new Date().toISOString()};
+  const completo={...base,accuracy:precisaoGps,speed:velocidadeGps,heading:direcaoGps,is_online:isOnline,last_seen:new Date().toISOString()};
+  let {error}=await db.from('localizacoes_tempo_real').upsert(completo,{onConflict:'user_email'});
+  if(error&&/accuracy|speed|heading|is_online|last_seen|column/i.test(error.message||'')){
+    ({error}=await db.from('localizacoes_tempo_real').upsert(base,{onConflict:'user_email'}));
+  }
+  if(error)console.warn('Falha ao enviar localização:',error.message);
+}
+
+window.addEventListener('pagehide',()=>{enviarLocalizacaoTempoReal(false)});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')enviarLocalizacaoTempoReal(true)});
+
+function iniciarRealtimeLocalizacoes(){
+  if(locationChannel)db.removeChannel(locationChannel);
+  locationChannel=db.channel('captapro-localizacoes').on('postgres_changes',{event:'*',schema:'public',table:'localizacoes_tempo_real'},()=>{
+    if(!document.getElementById('mapa')?.classList.contains('hidden'))carregarMapa(false);
+  }).subscribe();
+}
+
+async function iniciarJornadaAutomatica(){
+  if(jornada||!usuarioEmail)return;
+  const equipe=val('equipe')||'PARK',ponto=val('ponto_captacao')||'Operação';
+  const payload={user_email:usuarioEmail,captador_nome:captadorNome,equipe,ponto_captacao:ponto,latitude_inicio:latitude,longitude_inicio:longitude,ativo:true};
+  const {data,error}=await db.from('jornadas_captacao').insert(payload).select().single();
+  if(!error&&data)jornada=data;
+}
+
+function formatBRLInput(el){
+  const digits=String(el.value||'').replace(/\D/g,'');
+  if(!digits){el.value='';return}
+  el.value=(Number(digits)/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+}
+function moneyNumber(s){return Number(String(s||'').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.'))||0}
 function moedaBR(v){return (Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-function toggleOutraProfissao(){document.getElementById('outra_profissao_1').classList.toggle('hidden',val('profissao_1')!=='Outro');document.getElementById('outra_profissao_2').classList.toggle('hidden',val('profissao_2')!=='Outro')}
+
+function toggleOutraProfissao(){
+  document.getElementById('outra_profissao_1').classList.toggle('hidden',val('profissao_1')!=='Outro');
+  document.getElementById('outra_profissao_2').classList.toggle('hidden',val('profissao_2')!=='Outro');
+}
 function profissaoFinal(id,outro){return val(id)==='Outro'&&val(outro).trim()?('Outro: '+val(outro).trim()):val(id)}
-function toggleRendaEmpresa(){const p1=val('profissao_1'),p2=val('profissao_2');document.getElementById('boxRendaEmpresa').classList.toggle('hidden',!(p1==='Empresário'||p1==='Comerciante'||p2==='Empresário'||p2==='Empresária'||p2==='Comerciante'))}
+function toggleRendaEmpresa(){
+  const p1=val('profissao_1'),p2=val('profissao_2');
+  const empresa=['Empresário','Empresária','Comerciante'].includes(p1)||['Empresário','Empresária','Comerciante'].includes(p2);
+  document.getElementById('boxRendaEmpresa').classList.toggle('hidden',!empresa);
+}
 function tempoUniaoOk(t,min){return ({'Menos de 1 ano':0,'1 ano':1,'2 anos':2,'3 a 5 anos':3,'6 a 10 anos':6,'Mais de 10 anos':11}[t]||0)>=Number(min||2)}
 
-function calcularQualificacao(){
-  let motivos=[],itens=0;const idadeH=Number(val('idade_1')),idadeM=Number(val('idade_2')),ano=Number(val('ano_veiculo'));let renda=moneyNumber(val('renda_casal'));
-  if(!document.getElementById('boxRendaEmpresa').classList.contains('hidden')&&moneyNumber(val('renda_liquida'))>0)renda=moneyNumber(val('renda_liquida'));
-  const civil=val('estado_civil'),tempo=val('tempo_juntos'),prof1=val('profissao_1'),prof2=val('profissao_2');
-  const rendaOk=renda>=Number(cfg.renda_minima||15000),temCarro=val('veiculo')==='Sim',carroOk=temCarro&&ano>=Number(cfg.ano_carro_minimo||2011),casaOk=val('casa_propria')==='Sim',cartaoOk=val('cartao_credito')==='Sim';
-  if(profBloq.includes(prof1)||profBloq.includes(prof2))motivos.push('Profissão bloqueada');
-  if(idadeH<Number(cfg.idade_minima_casal||25))motivos.push('Homem abaixo da idade mínima');
-  if(idadeH>Number(cfg.idade_maxima||64)||idadeM>Number(cfg.idade_maxima||64))motivos.push('Acima do limite de idade');
-  let relOk=(civil==='Casados')||(civil==='União estável'&&tempoUniaoOk(tempo,cfg.uniao_estavel_minima_anos));
-  if(['Solteiro','Divorciado','Viúvo'].includes(civil))relOk=idadeH>=Number(cfg.idade_minima_solo||30)&&rendaOk&&carroOk&&casaOk&&cartaoOk;
-  if(['Namorados','Noivos'].includes(civil))relOk=rendaOk&&carroOk&&casaOk;
-  if(!relOk){motivos.push('Relacionamento fora da regra');itens++}
-  if(!rendaOk){motivos.push('Renda abaixo');itens++} if(!temCarro){motivos.push('Sem carro');itens++} else if(!carroOk){motivos.push('Carro abaixo do ano mínimo');itens++}
-  if(cfg.casa_propria_obrigatoria!==false&&!casaOk){motivos.push('Sem casa própria');itens++} if(cfg.cartao_credito_obrigatorio!==false&&!cartaoOk){motivos.push('Sem cartão');itens++}
-  if(motivos.some(m=>m.includes('bloqueada'))||motivos.some(m=>m.includes('Homem abaixo'))||motivos.some(m=>m.includes('limite'))||itens>=2)qualificacao='NQ';else if(itens===1)qualificacao='Q 1 ITEM / LÍDER DECIDE';else qualificacao='Q';
-  motivoQualificacao=motivos.length?motivos.join(' | '):'Perfil dentro da regra';
-  const box=document.getElementById('resultadoQualificacao');box.className='result '+(qualificacao==='Q'?'q':qualificacao.includes('1 ITEM')?'nq1':'nq');box.innerHTML=`${qualificacao}<br><span class="mini">${motivoQualificacao}</span>`;return qualificacao;
+function toggleVeiculo(){
+  const tem=val('veiculo')==='Sim';
+  document.getElementById('marca_carro').disabled=!tem;
+  if(!tem){
+    setVal('marca_carro','');limparSelect('modelo_carro','Selecione primeiro a marca',true);
+    limparSelect('ano_veiculo','Selecione primeiro o modelo',true);setVal('valor_fipe_preview','');set('fipeReferencia','');fipePrecosAtuais=[];
+  }
 }
 
-async function consultarFipeAutomatica(){
-  const marca=val('marca_carro'),modelo=val('modelo_carro'),ano=val('ano_veiculo'),out=document.getElementById('valor_fipe_preview');
-  if(!marca||!modelo||!ano||!out)return;out.value='Consultando FIPE...';
+async function fetchJson(url,timeout=16000){
+  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),timeout);
+  try{
+    const r=await fetch(url,{signal:controller.signal,headers:{'Accept':'application/json'}});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    return await r.json();
+  }finally{clearTimeout(timer)}
+}
+
+async function carregarMarcasFipe(){
+  const sel=document.getElementById('marca_carro');
+  limparSelect('marca_carro','Carregando marcas FIPE...',true);
+  try{
+    const marcas=await fetchJson('https://brasilapi.com.br/api/fipe/marcas/v1/carros');
+    limparSelect('marca_carro','Marca do carro',val('veiculo')!=='Sim');
+    [...marcas].sort((a,b)=>String(a.nome).localeCompare(String(b.nome),'pt-BR')).forEach(m=>opt('marca_carro',m.valor,m.nome));
+  }catch(e){
+    limparSelect('marca_carro','FIPE indisponível — tente recarregar',true);
+  }
+}
+
+async function carregarModelosFipe(){
+  invalidarQualificacao();
+  const codigoMarca=val('marca_carro');
+  limparSelect('modelo_carro',codigoMarca?'Carregando modelos...':'Selecione primeiro a marca',true);
+  limparSelect('ano_veiculo','Selecione primeiro o modelo',true);
+  setVal('valor_fipe_preview','');set('fipeReferencia','');fipePrecosAtuais=[];
+  if(!codigoMarca)return;
+  try{
+    const modelos=await fetchJson(`https://brasilapi.com.br/api/fipe/veiculos/v1/carros/${encodeURIComponent(codigoMarca)}`);
+    limparSelect('modelo_carro','Modelo do carro',false);
+    const unicos=new Map();
+    modelos.forEach(m=>{const key=`${m.codigoFipe}|${m.modelo}`;if(!unicos.has(key))unicos.set(key,m)});
+    [...unicos.values()].sort((a,b)=>String(a.modelo).localeCompare(String(b.modelo),'pt-BR')).forEach(m=>opt('modelo_carro',m.codigoFipe,m.modelo));
+  }catch(e){
+    limparSelect('modelo_carro','Não foi possível carregar modelos',true);
+  }
+}
+
+async function carregarAnosFipe(){
+  invalidarQualificacao();
+  const codigoFipe=val('modelo_carro');
+  limparSelect('ano_veiculo',codigoFipe?'Carregando anos...':'Selecione primeiro o modelo',true);
+  setVal('valor_fipe_preview','');set('fipeReferencia','');fipePrecosAtuais=[];
+  if(!codigoFipe)return;
   try{
     fipeConsultas++;
-    const marcasResp=await fetch('https://brasilapi.com.br/api/fipe/marcas/v1/carros').then(r=>r.json());
-    const marcaObj=marcasResp.find(m=>String(m.nome).toLowerCase().includes(marca.toLowerCase())||marca.toLowerCase().includes(String(m.nome).toLowerCase()));
-    if(!marcaObj){out.value='FIPE: marca não encontrada';return}
-    const modelosResp=await fetch(`https://brasilapi.com.br/api/fipe/veiculos/v1/carros/${marcaObj.valor}`).then(r=>r.json());
-    const modeloObj=modelosResp.find(m=>String(m.modelo).toLowerCase().includes(modelo.toLowerCase())||modelo.toLowerCase().includes(String(m.modelo).toLowerCase()));
-    if(!modeloObj){out.value='FIPE: modelo não encontrado';return}
-    const precos=await fetch(`https://brasilapi.com.br/api/fipe/preco/v1/${modeloObj.codigoFipe}`).then(r=>r.json());
-    const r=precos.find(x=>String(x.anoModelo)===String(ano))||precos[0];out.value=r?.valor||'FIPE não disponível';
-  }catch(e){out.value='FIPE indisponível no momento'}
+    const precos=await fetchJson(`https://brasilapi.com.br/api/fipe/preco/v1/${encodeURIComponent(codigoFipe)}`);
+    fipePrecosAtuais=Array.isArray(precos)?precos:[];
+    const anos=[...new Set(fipePrecosAtuais.map(x=>Number(x.anoModelo)).filter(Boolean))].sort((a,b)=>b-a);
+    limparSelect('ano_veiculo','Ano do carro',false);
+    anos.forEach(a=>opt('ano_veiculo',a,a===32000?'Zero KM':String(a)));
+  }catch(e){
+    limparSelect('ano_veiculo','Não foi possível carregar anos',true);
+  }
+}
+
+function exibirPrecoFipe(){
+  invalidarQualificacao();
+  const ano=Number(val('ano_veiculo'));
+  const item=fipePrecosAtuais.find(x=>Number(x.anoModelo)===ano);
+  if(!item){setVal('valor_fipe_preview','FIPE não disponível');set('fipeReferencia','');return}
+  setVal('valor_fipe_preview',item.valor||'FIPE não disponível');
+  set('fipeReferencia',[item.mesReferencia,item.combustivel,item.siglaCombustivel].filter(Boolean).join(' • '));
+}
+
+function anoVeiculoNumerico(){const a=Number(val('ano_veiculo'));return a===32000?new Date().getFullYear():a}
+
+function calcularQualificacao(){
+  let motivos=[],itens=0,severo=false;
+  const idade1=Number(val('idade_1')),idade2=Number(val('idade_2')),ano=anoVeiculoNumerico();
+  let renda=moneyNumber(val('renda_casal'));
+  if(!document.getElementById('boxRendaEmpresa').classList.contains('hidden')&&moneyNumber(val('renda_liquida'))>0)renda=moneyNumber(val('renda_liquida'));
+  const civil=val('estado_civil'),tempo=val('tempo_juntos'),prof1=val('profissao_1'),prof2=val('profissao_2');
+  const rendaOk=renda>=Number(cfg.renda_minima||15000),temCarro=val('veiculo')==='Sim',carroOk=temCarro&&ano>=Number(cfg.ano_carro_minimo||2011);
+  const casaOk=val('casa_propria')==='Sim',cartaoOk=val('cartao_credito')==='Sim';
+  if(profBloq.includes(prof1)||profBloq.includes(prof2)){motivos.push('Profissão bloqueada');severo=true}
+  if(idade1&&idade1<Number(cfg.idade_minima_casal||25)){motivos.push('Idade 1 abaixo da mínima');severo=true}
+  if((idade1&&idade1>Number(cfg.idade_maxima||64))||(idade2&&idade2>Number(cfg.idade_maxima||64))){motivos.push('Acima do limite de idade');severo=true}
+  let relOk=(civil==='Casados')||(civil==='União estável'&&tempoUniaoOk(tempo,cfg.uniao_estavel_minima_anos));
+  if(['Solteiro','Divorciado','Viúvo'].includes(civil))relOk=idade1>=Number(cfg.idade_minima_solo||30)&&rendaOk&&carroOk&&casaOk&&cartaoOk;
+  if(['Namorados','Noivos'].includes(civil))relOk=rendaOk&&carroOk&&casaOk;
+  if(!relOk){motivos.push('Relacionamento fora da regra');itens++}
+  if(!rendaOk){motivos.push('Renda abaixo');itens++}
+  if(!temCarro){motivos.push('Sem carro');itens++}else if(!carroOk){motivos.push('Carro abaixo do ano mínimo');itens++}
+  if(cfg.casa_propria_obrigatoria!==false&&!casaOk){motivos.push('Sem casa própria');itens++}
+  if(cfg.cartao_credito_obrigatorio!==false&&!cartaoOk){motivos.push('Sem cartão');itens++}
+  if(severo||itens>=2)qualificacao='NQ';
+  else if(itens===1)qualificacao='NQ 1 ITEM / DENTRO DO PERFIL';
+  else qualificacao='Q';
+  motivoQualificacao=motivos.length?motivos.join(' | '):'Perfil dentro da regra';
+  qualificacaoCalculada=true;
+  const box=document.getElementById('resultadoQualificacao');
+  box.className='result '+(qualificacao==='Q'?'q':qualificacao.includes('1 ITEM')?'nq1':'nq');
+  box.innerHTML=`${escapeHtml(qualificacao)}<br><span class="mini">${escapeHtml(motivoQualificacao)}</span>`;
+  atualizarBrindesPorQualificacao();
+  return qualificacao;
+}
+
+function brindesPermitidos(){
+  if(!qualificacaoCalculada)return [];
+  if(qualificacao==='Q')return brindesPadrao;
+  if(qualificacao.includes('1 ITEM'))return brindesPadrao.filter(([,custo])=>Number(custo)<=100);
+  return brindesPadrao.filter(([nome])=>nome==='Combo de Experiência');
+}
+
+function atualizarBrindesPorQualificacao(){
+  const sel=document.getElementById('brinde'),regra=document.getElementById('brindeRegra');if(!sel)return;
+  const anterior=sel.value,permitidos=brindesPermitidos();
+  sel.innerHTML='';
+  const first=document.createElement('option');first.value='';
+  if(!qualificacaoCalculada){first.textContent='Calcule Q/NQ para liberar o brinde';sel.disabled=true;regra.textContent='O sistema libera os brindes conforme a qualificação.'}
+  else if(qualificacao==='Q'){first.textContent='Brinde entregue — todas as opções';sel.disabled=false;regra.textContent='Q: todas as opções de brindes estão disponíveis.'}
+  else if(qualificacao.includes('1 ITEM')){first.textContent='Brinde entregue — até R$ 100';sel.disabled=false;regra.textContent='NQ de 1 item dentro do perfil: somente brindes com custo de até R$ 100,00.'}
+  else{first.textContent='Brinde entregue';sel.disabled=false;regra.textContent='NQ fora do perfil: somente Combo de Experiência.'}
+  sel.appendChild(first);
+  permitidos.forEach(([nome,custo])=>{const o=document.createElement('option');o.value=nome;o.textContent=custo?`${nome} — ${moedaBR(custo)}`:nome;sel.appendChild(o)});
+  if(permitidos.some(([nome])=>nome===anterior))sel.value=anterior;
+  renderBrindesDisponiveis(permitidos);
 }
 
 async function salvarPesquisa(){
-  if(!jornada)await iniciarJornadaAutomatica();calcularQualificacao();gps();
+  if(!jornada)await iniciarJornadaAutomatica();
+  calcularQualificacao();
   if(!val('equipe')||!val('ponto_captacao'))return msg('formMsg','Preencha equipe e ponto.','erro');
+  if(!val('convidado_1'))return msg('formMsg','Preencha o Nome 1.','erro');
+  if(!val('brinde'))return msg('formMsg','Selecione o brinde liberado para esta qualificação.','erro');
+  if(val('veiculo')==='Sim'&&(!val('marca_carro')||!val('modelo_carro')||!val('ano_veiculo')))return msg('formMsg','Selecione marca, modelo e ano do carro.','erro');
   const inicio=new Date(jornada?.inicio_meeting||new Date()),tempo=Math.max(0,Math.round((new Date()-inicio)/60000));
-  const p={user_email:usuarioEmail,captador_nome:captadorNome,equipe:val('equipe'),ponto_captacao:val('ponto_captacao'),tipo_abordagem:val('tipo_abordagem'),jornada_id:jornada?.id||null,inicio_meeting:jornada?.inicio_meeting||new Date().toISOString(),tempo_no_ponto_minutos:tempo,convidado_1:val('convidado_1'),idade_1:num('idade_1'),profissao_1:profissaoFinal('profissao_1','outra_profissao_1'),convidado_2:val('convidado_2'),idade_2:num('idade_2'),profissao_2:profissaoFinal('profissao_2','outra_profissao_2'),estado_civil:val('estado_civil'),tempo_juntos:val('tempo_juntos'),renda_casal:val('renda_casal'),renda_bruta:val('renda_bruta'),renda_liquida:val('renda_liquida'),veiculo:val('veiculo'),ano_veiculo:val('ano_veiculo'),marca_carro:val('marca_carro'),modelo_carro:val('modelo_carro'),valor_fipe:val('valor_fipe_preview'),cartao_credito:val('cartao_credito'),casa_propria:val('casa_propria'),multipropriedade:val('multipropriedade'),onde_multipropriedade:val('onde_multipropriedade'),brinde:val('brinde'),custo_brinde:valorBrindeEstimado(val('brinde')),levou_sala:val('levou_sala'),contato:val('contato'),observacoes:val('observacoes'),status:qualificacao,qualificacao_automatica:qualificacao,motivo_qualificacao:motivoQualificacao,latitude,longitude,horario_local:String(new Date().getHours()).padStart(2,'0')+':00'};
-  const {error}=await db.from('pesquisas').insert(p);if(error){console.log(error);return msg('formMsg','Erro ao salvar. Rode o SQL completo.','erro')}
-  msg('formMsg','Pesquisa salva com sucesso!','ok');renderFichaSalva(p);document.getElementById('brindesDisponiveis').classList.remove('hidden');enviarLocalizacaoTempoReal();
+  const p={
+    user_email:usuarioEmail,captador_nome:captadorNome,equipe:val('equipe'),ponto_captacao:val('ponto_captacao'),tipo_abordagem:val('tipo_abordagem'),
+    jornada_id:jornada?.id||null,inicio_meeting:jornada?.inicio_meeting||new Date().toISOString(),tempo_no_ponto_minutos:tempo,
+    convidado_1:val('convidado_1'),idade_1:num('idade_1'),profissao_1:profissaoFinal('profissao_1','outra_profissao_1'),
+    convidado_2:val('convidado_2'),idade_2:num('idade_2'),profissao_2:profissaoFinal('profissao_2','outra_profissao_2'),
+    estado_civil:val('estado_civil'),tempo_juntos:val('tempo_juntos'),renda_casal:val('renda_casal'),renda_bruta:val('renda_bruta'),renda_liquida:val('renda_liquida'),
+    veiculo:val('veiculo'),ano_veiculo:selectedText('ano_veiculo'),marca_carro:selectedText('marca_carro'),modelo_carro:selectedText('modelo_carro'),valor_fipe:val('valor_fipe_preview'),
+    cartao_credito:val('cartao_credito'),casa_propria:val('casa_propria'),multipropriedade:val('multipropriedade'),onde_multipropriedade:val('onde_multipropriedade'),
+    brinde:val('brinde'),custo_brinde:valorBrindeEstimado(val('brinde')),levou_sala:'Pendente',contato:val('contato'),observacoes:val('observacoes'),
+    status:qualificacao,qualificacao_automatica:qualificacao,motivo_qualificacao:motivoQualificacao,latitude,longitude,
+    horario_local:String(new Date().getHours()).padStart(2,'0')+':00'
+  };
+  const {data,error}=await db.from('pesquisas').insert(p).select().single();
+  if(error){console.error(error);return msg('formMsg','Erro ao salvar: '+escapeHtml(error.message),'erro')}
+  msg('formMsg','Pesquisa salva com sucesso. A entrada em sala ficou pendente para o administrador.','ok');
+  renderFichaSalva(data||p);enviarLocalizacaoTempoReal(true);
 }
 
-function renderFichaSalva(p){const cls=String(p.qualificacao_automatica).startsWith('NQ')?'nq':String(p.qualificacao_automatica).includes('1 ITEM')?'nq1':'q';document.getElementById('fichaSalvaConteudo').innerHTML=`<div class="result ${cls}">${p.qualificacao_automatica}<br><span class="mini">${p.motivo_qualificacao}</span></div><table><tr><th>Profissional</th><td>${p.captador_nome}</td></tr><tr><th>Equipe/Ponto</th><td>${p.equipe} • ${p.ponto_captacao}</td></tr><tr><th>Casal</th><td>${p.convidado_1||'-'} (${p.idade_1||'-'} / ${p.profissao_1||'-'}) • ${p.convidado_2||'-'} (${p.idade_2||'-'} / ${p.profissao_2||'-'})</td></tr><tr><th>Renda</th><td>${p.renda_casal||'-'} ${p.renda_liquida?' | Líquida: '+p.renda_liquida:''}</td></tr><tr><th>Carro/FIPE</th><td>${p.marca_carro||'-'} ${p.modelo_carro||''} ${p.ano_veiculo||''} • ${p.valor_fipe||'-'}</td></tr><tr><th>Casa/Cartão</th><td>${p.casa_propria||'-'} / ${p.cartao_credito||'-'}</td></tr><tr><th>Brinde</th><td>${p.brinde||'-'} • Custo estimado: ${moedaBR(p.custo_brinde)}</td></tr><tr><th>Sala</th><td>${p.levou_sala||'-'}</td></tr><tr><th>Tempo no ponto</th><td>${p.tempo_no_ponto_minutos} min</td></tr></table>`;document.getElementById('fichaSalvaBox').classList.remove('hidden');document.getElementById('fichaSalvaBox').scrollIntoView({behavior:'smooth'})}
+function renderFichaSalva(p){
+  const cls=String(p.qualificacao_automatica).includes('1 ITEM')?'nq1':String(p.qualificacao_automatica).startsWith('NQ')?'nq':'q';
+  document.getElementById('fichaSalvaConteudo').innerHTML=`<div class="result ${cls}">${escapeHtml(p.qualificacao_automatica)}<br><span class="mini">${escapeHtml(p.motivo_qualificacao)}</span></div><table>
+    <tr><th>Profissional</th><td>${escapeHtml(p.captador_nome)}</td></tr>
+    <tr><th>Equipe/Ponto</th><td>${escapeHtml(p.equipe)} • ${escapeHtml(p.ponto_captacao)}</td></tr>
+    <tr><th>Cliente(s)</th><td>${escapeHtml(p.convidado_1||'-')} (${escapeHtml(p.idade_1||'-')} / ${escapeHtml(p.profissao_1||'-')}) • ${escapeHtml(p.convidado_2||'-')} (${escapeHtml(p.idade_2||'-')} / ${escapeHtml(p.profissao_2||'-')})</td></tr>
+    <tr><th>Renda</th><td>${escapeHtml(p.renda_casal||'-')}${p.renda_liquida?' | Líquida: '+escapeHtml(p.renda_liquida):''}</td></tr>
+    <tr><th>Carro/FIPE</th><td>${escapeHtml(p.marca_carro||'-')} ${escapeHtml(p.modelo_carro||'')} ${escapeHtml(p.ano_veiculo||'')} • ${escapeHtml(p.valor_fipe||'-')}</td></tr>
+    <tr><th>Casa/Cartão</th><td>${escapeHtml(p.casa_propria||'-')} / ${escapeHtml(p.cartao_credito||'-')}</td></tr>
+    <tr><th>Brinde</th><td>${escapeHtml(p.brinde||'-')} • Custo estimado: ${moedaBR(p.custo_brinde)}</td></tr>
+    <tr><th>Sala</th><td class="salaPendente">Pendente de confirmação do administrador</td></tr>
+    <tr><th>Tempo no ponto</th><td>${Number(p.tempo_no_ponto_minutos||0)} min</td></tr></table>`;
+  document.getElementById('fichaSalvaBox').classList.remove('hidden');
+  document.getElementById('fichaSalvaBox').scrollIntoView({behavior:'smooth'});
+}
 
-async function getPesquisas(){const {data=[],error}=await db.from('pesquisas').select('*').order('created_at',{ascending:false}).limit(2000);if(error){console.log(error);return[]}return data}
-function periodoFiltro(data){const p=val('rankingPeriodo')||'todos',now=new Date();return data.filter(x=>{const d=new Date(x.created_at);if(p==='dia')return d.toDateString()===now.toDateString();if(p==='semana')return (now-d)<=7*864e5;if(p==='mes')return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();return true})}
-function agruparMetricas(data,campo){const o={};data.forEach(p=>{const k=p[campo]||'Não informado';if(!o[k])o[k]={nome:k,total:0,q:0,nq:0,sala:0,brindes:0,custo:0,tempo:0};o[k].total++;if((p.qualificacao_automatica||p.status)==='Q')o[k].q++;if(String(p.qualificacao_automatica||p.status).startsWith('NQ'))o[k].nq++;if(p.levou_sala==='Sim')o[k].sala++;if(p.brinde)o[k].brindes++;o[k].custo+=Number(p.custo_brinde||valorBrindeEstimado(p.brinde));o[k].tempo+=Number(p.tempo_no_ponto_minutos||0)});return Object.values(o).map(x=>({...x,conversao:x.total?Math.round(x.sala/x.total*100)+'%':'0%',qperc:x.total?Math.round(x.q/x.total*100)+'%':'0%',custoFmt:moedaBR(x.custo),custoCasal:moedaBR(x.custo/(x.total||1)),tempoMedio:Math.round(x.tempo/(x.total||1))+' min'})).sort((a,b)=>b.sala-a.sala||b.q-a.q||b.total-a.total)}
-function criarTabela(rows,cols){if(!rows.length)return'<p class="mini">Sem dados ainda.</p>';return'<table><tr>'+cols.map(c=>`<th>${c.label}</th>`).join('')+'</tr>'+rows.map(r=>'<tr>'+cols.map(c=>`<td>${r[c.key]??'-'}</td>`).join('')+'</tr>').join('')+'</table>'}
+async function getPesquisas(){
+  const {data=[],error}=await db.from('pesquisas').select('*').order('created_at',{ascending:false}).limit(2000);
+  if(error){console.error(error);return[]}
+  return data;
+}
+
+function periodoFiltro(data){
+  const p=val('rankingPeriodo')||'todos',now=new Date();
+  return data.filter(x=>{const d=new Date(x.created_at);if(p==='dia')return d.toDateString()===now.toDateString();if(p==='semana')return(now-d)<=7*864e5;if(p==='mes')return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();return true});
+}
+
+function agruparMetricas(data,campo){
+  const o={};
+  data.forEach(p=>{const k=p[campo]||'Não informado';if(!o[k])o[k]={nome:k,total:0,q:0,nq:0,sala:0,pendente:0,brindes:0,custo:0,tempo:0};o[k].total++;
+    if((p.qualificacao_automatica||p.status)==='Q')o[k].q++;if(String(p.qualificacao_automatica||p.status).startsWith('NQ'))o[k].nq++;
+    if(p.levou_sala==='Sim')o[k].sala++;if(!['Sim','Não'].includes(p.levou_sala))o[k].pendente++;if(p.brinde)o[k].brindes++;
+    o[k].custo+=Number(p.custo_brinde||valorBrindeEstimado(p.brinde));o[k].tempo+=Number(p.tempo_no_ponto_minutos||0)});
+  return Object.values(o).map(x=>({...x,conversao:x.total?Math.round(x.sala/x.total*100)+'%':'0%',qperc:x.total?Math.round(x.q/x.total*100)+'%':'0%',custoFmt:moedaBR(x.custo),custoCasal:moedaBR(x.custo/(x.total||1)),tempoMedio:Math.round(x.tempo/(x.total||1))+' min'})).sort((a,b)=>b.sala-a.sala||b.q-a.q||b.total-a.total);
+}
+function criarTabela(rows,cols){
+  if(!rows.length)return'<p class="mini">Sem dados ainda.</p>';
+  return'<table><tr>'+cols.map(c=>`<th>${escapeHtml(c.label)}</th>`).join('')+'</tr>'+rows.map(r=>'<tr>'+cols.map(c=>`<td>${escapeHtml(r[c.key]??'-')}</td>`).join('')+'</tr>').join('')+'</table>';
+}
 function agrupar(data,campo){const o={};data.forEach(x=>{const k=x[campo]||'Não informado';o[k]=(o[k]||0)+1});return o}
 function agruparHoras(data){const o={};for(let h=10;h<=20;h++)o[String(h).padStart(2,'0')+':00']=0;data.forEach(x=>{if(o[x.horario_local]!=null)o[x.horario_local]++});return o}
 
-async function carregarDashboard(){const d=await getPesquisas(),total=d.length,q=d.filter(x=>(x.qualificacao_automatica||x.status)==='Q').length,nq=d.filter(x=>String(x.qualificacao_automatica||x.status).startsWith('NQ')).length,sala=d.filter(x=>x.levou_sala==='Sim').length,custo=d.reduce((s,p)=>s+Number(p.custo_brinde||valorBrindeEstimado(p.brinde)),0);set('kTotal',total);set('kQ',q);set('kNQ',nq);set('kSala',sala);set('kConv',total?Math.round(sala/total*100)+'%':'0%');set('kCustoCasal',moedaBR(custo/(total||1)));draw('chartPontos',agrupar(d,'ponto_captacao'),'bar',chPontos,c=>chPontos=c);draw('chartHoras',agruparHoras(d),'line',chHoras,c=>chHoras=c);draw('chartEquipes',agrupar(d,'equipe'),'bar',chEquipes,c=>chEquipes=c);draw('chartQNQ',{'Q':q,'NQ':nq},'doughnut',chQNQ,c=>chQNQ=c)}
+async function carregarDashboard(){
+  const d=await getPesquisas(),total=d.length,q=d.filter(x=>(x.qualificacao_automatica||x.status)==='Q').length,nq=d.filter(x=>String(x.qualificacao_automatica||x.status).startsWith('NQ')).length;
+  const sala=d.filter(x=>x.levou_sala==='Sim').length,custo=d.reduce((s,p)=>s+Number(p.custo_brinde||valorBrindeEstimado(p.brinde)),0);
+  set('kTotal',total);set('kQ',q);set('kNQ',nq);set('kSala',sala);set('kConv',total?Math.round(sala/total*100)+'%':'0%');set('kCustoCasal',moedaBR(custo/(total||1)));
+  draw('chartPontos',agrupar(d,'ponto_captacao'),'bar',chPontos,c=>chPontos=c);draw('chartHoras',agruparHoras(d),'line',chHoras,c=>chHoras=c);draw('chartEquipes',agrupar(d,'equipe'),'bar',chEquipes,c=>chEquipes=c);draw('chartQNQ',{'Q':q,'NQ':nq},'doughnut',chQNQ,c=>chQNQ=c);
+}
 
-async function carregarHeatmap(){const d=(await getPesquisas()).filter(x=>x.latitude&&x.longitude);if(!heatMap){heatMap=L.map('heatMap').setView([-22.7386,-45.5926],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(heatMap)}if(heatLayer)heatMap.removeLayer(heatLayer);heatLayer=L.heatLayer(d.map(p=>[p.latitude,p.longitude,0.7]),{radius:28,blur:18,maxZoom:18}).addTo(heatMap);if(d[0])heatMap.setView([d[0].latitude,d[0].longitude],15);const horas=agruparHoras(d),max=Math.max(1,...Object.values(horas));document.getElementById('heatCards').innerHTML=Object.keys(horas).map(h=>`<div class="kpi" style="background:rgba(239,27,36,${.15+horas[h]/max*.75});border-color:#ff3333">${h}<b>${horas[h]}</b><span class="mini">pesquisas</span></div>`).join('')}
+async function carregarHeatmap(){
+  const d=(await getPesquisas()).filter(x=>x.latitude&&x.longitude);
+  if(!heatMap){heatMap=L.map('heatMap').setView([-22.7386,-45.5926],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(heatMap)}
+  if(heatLayer)heatMap.removeLayer(heatLayer);heatLayer=L.heatLayer(d.map(p=>[p.latitude,p.longitude,0.7]),{radius:28,blur:18,maxZoom:18}).addTo(heatMap);
+  if(d[0])heatMap.setView([d[0].latitude,d[0].longitude],15);setTimeout(()=>heatMap.invalidateSize(),100);
+  const horas=agruparHoras(d),max=Math.max(1,...Object.values(horas));document.getElementById('heatCards').innerHTML=Object.keys(horas).map(h=>`<div class="kpi" style="background:rgba(239,27,36,${.15+horas[h]/max*.75});border-color:#ff3333">${h}<b>${horas[h]}</b><span class="mini">pesquisas</span></div>`).join('');
+}
 
-async function carregarRanking(){const d=periodoFiltro(await getPesquisas()),cols=[{key:'nome',label:'Nome'},{key:'total',label:'Pesq.'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'conversao',label:'Conv.'},{key:'custoCasal',label:'Custo/Casal'}];document.getElementById('rankingCaptadores').innerHTML=criarTabela(agruparMetricas(d,'captador_nome').slice(0,30),cols);document.getElementById('rankingPontos').innerHTML=criarTabela(agruparMetricas(d,'ponto_captacao').slice(0,30),cols);document.getElementById('rankingEquipes').innerHTML=criarTabela(agruparMetricas(d,'equipe'),cols)}
-async function carregarBrindes(){const d=await getPesquisas(),b=d.filter(p=>p.brinde),custo=b.reduce((s,p)=>s+Number(p.custo_brinde||valorBrindeEstimado(p.brinde)),0),sala=d.filter(p=>p.levou_sala==='Sim').length;set('bTotal',b.length);set('bCusto',moedaBR(custo));set('bCustoCasal',moedaBR(custo/(d.length||1)));set('bCustoSala',moedaBR(custo/(sala||1)));set('bProf',new Set(b.map(p=>p.captador_nome)).size);set('bPontos',new Set(b.map(p=>p.ponto_captacao)).size);const cols=[{key:'nome',label:'Nome'},{key:'total',label:'Qtd'},{key:'custoFmt',label:'Custo'},{key:'custoCasal',label:'Custo/Casal'},{key:'sala',label:'Sala'}];document.getElementById('brindesTipo').innerHTML=criarTabela(agruparMetricas(b,'brinde'),cols);document.getElementById('brindesProfissional').innerHTML=criarTabela(agruparMetricas(b,'captador_nome'),cols);document.getElementById('brindesPonto').innerHTML=criarTabela(agruparMetricas(b,'ponto_captacao'),cols)}
-async function carregarFipe(){const d=await getPesquisas();set('fipeMarcas',new Set(d.map(p=>p.marca_carro).filter(Boolean)).size);set('fipeModelos',new Set(d.map(p=>p.modelo_carro).filter(Boolean)).size);set('fipeQ',d.filter(p=>(p.qualificacao_automatica||p.status)==='Q').length);set('fipeNQ',d.filter(p=>String(p.qualificacao_automatica||p.status).startsWith('NQ')).length);set('fipeAnoMin',cfg.ano_carro_minimo||2011);set('fipeConsultas',fipeConsultas);document.getElementById('fipeResumo').innerHTML=criarTabela(agruparMetricas(d,'marca_carro'),[{key:'nome',label:'Marca'},{key:'total',label:'Pesq.'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'conversao',label:'Conv.'}])}
-async function carregarMapa(){const d=(await getPesquisas()).filter(x=>x.latitude&&x.longitude);const {data:loc=[]}=await db.from('localizacoes_tempo_real').select('*');if(!map){map=L.map('map').setView([-22.7386,-45.5926],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map)}map.eachLayer(l=>{if(l instanceof L.Circle||l instanceof L.Marker)map.removeLayer(l)});d.forEach(p=>L.circle([p.latitude,p.longitude],{radius:45,color:'#ef1b24',fillColor:'#ff3333',fillOpacity:.28}).addTo(map).bindPopup(`<b>${p.captador_nome}</b><br>${p.ponto_captacao}<br>${p.qualificacao_automatica}<br>${p.tempo_no_ponto_minutos||0} min`));loc.filter(l=>l.latitude&&l.longitude).forEach(l=>L.marker([l.latitude,l.longitude]).addTo(map).bindPopup(`<b>Tempo real</b><br>${l.captador_nome}<br>${new Date(l.updated_at).toLocaleTimeString('pt-BR')}`));if(d[0])map.setView([d[0].latitude,d[0].longitude],15)}
-async function carregarHistorico(){const d=await getPesquisas();document.getElementById('historicoBox').innerHTML=criarTabela(d.slice(0,200).map(p=>({hora:fmt(p.created_at),prof:p.captador_nome,ponto:p.ponto_captacao,q:p.qualificacao_automatica||p.status,sala:p.levou_sala,brinde:p.brinde,custo:moedaBR(p.custo_brinde||valorBrindeEstimado(p.brinde)),tempo:(p.tempo_no_ponto_minutos||0)+' min'})),[{key:'hora',label:'Hora'},{key:'prof',label:'Profissional'},{key:'ponto',label:'Ponto'},{key:'q',label:'Q/NQ'},{key:'sala',label:'Sala'},{key:'brinde',label:'Brinde'},{key:'custo',label:'Custo'},{key:'tempo',label:'Tempo'}])}
+async function carregarRanking(){
+  const d=periodoFiltro(await getPesquisas()),cols=[{key:'nome',label:'Nome'},{key:'total',label:'Pesq.'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'pendente',label:'Pend.'},{key:'conversao',label:'Conv.'},{key:'custoCasal',label:'Custo/Casal'}];
+  document.getElementById('rankingCaptadores').innerHTML=criarTabela(agruparMetricas(d,'captador_nome').slice(0,30),cols);document.getElementById('rankingPontos').innerHTML=criarTabela(agruparMetricas(d,'ponto_captacao').slice(0,30),cols);document.getElementById('rankingEquipes').innerHTML=criarTabela(agruparMetricas(d,'equipe'),cols);
+}
+
+async function carregarBrindes(){
+  const d=await getPesquisas(),b=d.filter(p=>p.brinde),custo=b.reduce((s,p)=>s+Number(p.custo_brinde||valorBrindeEstimado(p.brinde)),0),sala=d.filter(p=>p.levou_sala==='Sim').length;
+  set('bTotal',b.length);set('bCusto',moedaBR(custo));set('bCustoCasal',moedaBR(custo/(d.length||1)));set('bCustoSala',moedaBR(custo/(sala||1)));set('bProf',new Set(b.map(p=>p.captador_nome)).size);set('bPontos',new Set(b.map(p=>p.ponto_captacao)).size);
+  const cols=[{key:'nome',label:'Nome'},{key:'total',label:'Qtd'},{key:'custoFmt',label:'Custo'},{key:'custoCasal',label:'Custo/Casal'},{key:'sala',label:'Sala'}];
+  document.getElementById('brindesTipo').innerHTML=criarTabela(agruparMetricas(b,'brinde'),cols);document.getElementById('brindesProfissional').innerHTML=criarTabela(agruparMetricas(b,'captador_nome'),cols);document.getElementById('brindesPonto').innerHTML=criarTabela(agruparMetricas(b,'ponto_captacao'),cols);
+}
+
+async function carregarFipe(){
+  const d=await getPesquisas();set('fipeMarcas',new Set(d.map(p=>p.marca_carro).filter(Boolean)).size);set('fipeModelos',new Set(d.map(p=>p.modelo_carro).filter(Boolean)).size);set('fipeQ',d.filter(p=>(p.qualificacao_automatica||p.status)==='Q').length);set('fipeNQ',d.filter(p=>String(p.qualificacao_automatica||p.status).startsWith('NQ')).length);set('fipeAnoMin',cfg.ano_carro_minimo||2011);set('fipeConsultas',fipeConsultas);document.getElementById('fipeResumo').innerHTML=criarTabela(agruparMetricas(d,'marca_carro'),[{key:'nome',label:'Marca'},{key:'total',label:'Pesq.'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'conversao',label:'Conv.'}]);
+}
+
+function statusLocalizacao(updatedAt){
+  const age=Math.max(0,(Date.now()-new Date(updatedAt).getTime())/1000);
+  if(age<=120)return{classe:'live',texto:'Agora',idade:age};
+  if(age<=600)return{classe:'recent',texto:`Há ${Math.max(2,Math.round(age/60))} min`,idade:age};
+  const horas=age/3600;return{classe:'offline',texto:horas<24?`Há ${Math.round(age/60)} min`:`Há ${Math.round(horas/24)} dia(s)`,idade:age};
+}
+
+async function carregarMapa(ajustar=true){
+  if(!isAdminRole())return;
+  const {data:loc=[],error}=await db.from('localizacoes_tempo_real').select('*').order('updated_at',{ascending:false});
+  if(error){document.getElementById('mapStatus').innerHTML=`<span class="statusDot offline"></span><span class="mini">Erro: ${escapeHtml(error.message)}</span>`;return}
+  if(!map){map=L.map('map').setView([-22.7386,-45.5926],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);mapMarkerLayer=L.layerGroup().addTo(map)}
+  mapMarkerLayer.clearLayers();mapBounds=[];
+  const validas=loc.filter(l=>Number.isFinite(Number(l.latitude))&&Number.isFinite(Number(l.longitude)));
+  validas.forEach(l=>{
+    const st=statusLocalizacao(l.updated_at),lat=Number(l.latitude),lng=Number(l.longitude);
+    const icon=L.divIcon({className:'',html:`<div class="mapMarker ${st.classe}"></div>`,iconSize:[20,20],iconAnchor:[10,10]});
+    const marker=L.marker([lat,lng],{icon}).addTo(mapMarkerLayer);
+    marker.bindPopup(`<b>${escapeHtml(l.captador_nome||l.user_email||'Profissional')}</b><br>${escapeHtml(st.texto)}<br>Atualizado: ${escapeHtml(new Date(l.updated_at).toLocaleString('pt-BR'))}${l.accuracy?`<br>Precisão aproximada: ${Math.round(Number(l.accuracy))} m`:''}`);
+    mapBounds.push([lat,lng]);
+  });
+  if(ajustar)centralizarMapa();
+  setTimeout(()=>map.invalidateSize(),100);
+  const live=validas.filter(l=>statusLocalizacao(l.updated_at).classe==='live').length;
+  document.getElementById('mapStatus').innerHTML=`<span class="statusDot ${live?'live':'offline'}"></span><span class="mini">${live} profissional(is) atualizando agora • ${validas.length} localização(ões) cadastrada(s)</span>`;
+  document.getElementById('mapaLista').innerHTML=criarTabela(validas.map(l=>{const st=statusLocalizacao(l.updated_at);return{nome:l.captador_nome||l.user_email,status:st.texto,atualizado:new Date(l.updated_at).toLocaleString('pt-BR'),precisao:l.accuracy?Math.round(Number(l.accuracy))+' m':'-'}}),[{key:'nome',label:'Profissional'},{key:'status',label:'Status'},{key:'atualizado',label:'Última atualização'},{key:'precisao',label:'Precisão'}]);
+}
+function centralizarMapa(){if(map&&mapBounds?.length){if(mapBounds.length===1)map.setView(mapBounds[0],16);else map.fitBounds(mapBounds,{padding:[30,30],maxZoom:16})}}
+function iniciarAtualizacaoMapa(){pararAtualizacaoMapa();mapRefreshTimer=setInterval(()=>carregarMapa(false),15000)}
+function pararAtualizacaoMapa(){if(mapRefreshTimer){clearInterval(mapRefreshTimer);mapRefreshTimer=null}}
+
+async function carregarSalaAdmin(){
+  if(!isAdminRole())return;
+  const {data=[],error}=await db.from('pesquisas').select('*').order('created_at',{ascending:false}).limit(500);
+  if(error){msg('salaMsg','Erro ao carregar: '+escapeHtml(error.message),'erro');return}
+  salaAdminDados=data;msg('salaMsg',`${data.length} pesquisa(s) carregada(s).`,'ok');renderSalaAdmin();
+}
+
+function renderSalaAdmin(){
+  const box=document.getElementById('salaAdminBox');if(!box)return;
+  const busca=val('salaBusca').toLowerCase().trim(),filtro=val('salaFiltro')||'pendente';
+  const rows=salaAdminDados.filter(p=>{
+    const status=['Sim','Não'].includes(p.levou_sala)?p.levou_sala:'Pendente';
+    const texto=[p.convidado_1,p.convidado_2,p.captador_nome,p.ponto_captacao].join(' ').toLowerCase();
+    const okBusca=!busca||texto.includes(busca),okFiltro=filtro==='todos'||(filtro==='pendente'&&status==='Pendente')||status===filtro;
+    return okBusca&&okFiltro;
+  });
+  if(!rows.length){box.innerHTML='<p class="mini">Nenhuma pesquisa encontrada.</p>';return}
+  box.innerHTML='<table><tr><th>Data</th><th>Cliente(s)</th><th>Captador</th><th>Ponto</th><th>Q/NQ</th><th>Sala</th><th>Ação</th></tr>'+rows.map(p=>{
+    const status=['Sim','Não'].includes(p.levou_sala)?p.levou_sala:'Pendente',cls=status==='Sim'?'salaSim':status==='Não'?'salaNao':'salaPendente';
+    return `<tr><td>${escapeHtml(fmt(p.created_at))}</td><td>${escapeHtml([p.convidado_1,p.convidado_2].filter(Boolean).join(' e ')||'-')}</td><td>${escapeHtml(p.captador_nome||'-')}</td><td>${escapeHtml(p.ponto_captacao||'-')}</td><td>${escapeHtml(p.qualificacao_automatica||p.status||'-')}</td><td class="${cls}">${escapeHtml(status)}</td><td><div class="inlineActions"><button class="btnYes" data-sala-id="${escapeAttr(p.id)}" data-sala-valor="Sim">Sim</button><button class="btnNo" data-sala-id="${escapeAttr(p.id)}" data-sala-valor="Não">Não</button></div></td></tr>`;
+  }).join('')+'</table>';
+  box.querySelectorAll('[data-sala-id]').forEach(btn=>btn.addEventListener('click',()=>marcarSalaPesquisa(btn.dataset.salaId,btn.dataset.salaValor)));
+}
+
+async function marcarSalaPesquisa(id,valor){
+  if(!isAdminRole())return msg('salaMsg','Ação permitida apenas ao administrador.','erro');
+  const completo={levou_sala:valor,sala_marcada_por:usuarioEmail,sala_marcada_em:new Date().toISOString()};
+  let {error}=await db.from('pesquisas').update(completo).eq('id',id);
+  if(error&&/sala_marcada_por|sala_marcada_em|column/i.test(error.message||''))({error}=await db.from('pesquisas').update({levou_sala:valor}).eq('id',id));
+  if(error)return msg('salaMsg','Erro ao confirmar sala: '+escapeHtml(error.message),'erro');
+  const item=salaAdminDados.find(x=>String(x.id)===String(id));if(item)item.levou_sala=valor;
+  msg('salaMsg',`Sala marcada como “${valor}”.`,'ok');renderSalaAdmin();
+}
+
+async function carregarHistorico(){
+  const d=await getPesquisas();document.getElementById('historicoBox').innerHTML=criarTabela(d.slice(0,200).map(p=>({hora:fmt(p.created_at),prof:p.captador_nome,ponto:p.ponto_captacao,q:p.qualificacao_automatica||p.status,sala:['Sim','Não'].includes(p.levou_sala)?p.levou_sala:'Pendente',brinde:p.brinde,custo:moedaBR(p.custo_brinde||valorBrindeEstimado(p.brinde)),tempo:(p.tempo_no_ponto_minutos||0)+' min'})),[{key:'hora',label:'Hora'},{key:'prof',label:'Profissional'},{key:'ponto',label:'Ponto'},{key:'q',label:'Q/NQ'},{key:'sala',label:'Sala'},{key:'brinde',label:'Brinde'},{key:'custo',label:'Custo'},{key:'tempo',label:'Tempo'}]);
+}
 
 function salvarMetas(){localStorage.setItem('captapro_metas_v4',JSON.stringify({parkP:val('meta_park_pesquisas'),parkS:val('meta_park_sala'),parkQ:val('meta_park_q'),extP:val('meta_externa_pesquisas'),extS:val('meta_externa_sala'),extQ:val('meta_externa_q')}));carregarMetas()}
-async function carregarMetas(){const m=JSON.parse(localStorage.getItem('captapro_metas_v4')||'{}');Object.entries({meta_park_pesquisas:m.parkP,meta_park_sala:m.parkS,meta_park_q:m.parkQ,meta_externa_pesquisas:m.extP,meta_externa_sala:m.extS,meta_externa_q:m.extQ}).forEach(([k,v])=>setVal(k,v||''));const d=await getPesquisas();function bloco(nome,arr,mp,ms,mq){const sala=arr.filter(p=>p.levou_sala==='Sim').length,q=arr.filter(p=>(p.qualificacao_automatica||p.status)==='Q').length;return{nome,total:arr.length,q,sala,metaP:mp||'-',realP:mp?Math.round(arr.length/Number(mp)*100)+'%':'-',metaQ:mq||'-',realQ:mq?Math.round(q/Number(mq)*100)+'%':'-',metaS:ms||'-',realS:ms?Math.round(sala/Number(ms)*100)+'%':'-'}}document.getElementById('metasBox').innerHTML=criarTabela([bloco('PARK',d.filter(p=>p.equipe==='PARK'),m.parkP,m.parkS,m.parkQ),bloco('EXTERNA',d.filter(p=>p.equipe==='EXTERNA'),m.extP,m.extS,m.extQ)],[{key:'nome',label:'Equipe'},{key:'total',label:'Pesq.'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'metaP',label:'Meta Pesq.'},{key:'realP',label:'% Pesq.'},{key:'metaQ',label:'Meta Q'},{key:'realQ',label:'% Q'},{key:'metaS',label:'Meta Sala'},{key:'realS',label:'% Sala'}])}
+async function carregarMetas(){
+  const m=JSON.parse(localStorage.getItem('captapro_metas_v4')||'{}');Object.entries({meta_park_pesquisas:m.parkP,meta_park_sala:m.parkS,meta_park_q:m.parkQ,meta_externa_pesquisas:m.extP,meta_externa_sala:m.extS,meta_externa_q:m.extQ}).forEach(([k,v])=>setVal(k,v||''));const d=await getPesquisas();
+  function bloco(nome,arr,mp,ms,mq){const sala=arr.filter(p=>p.levou_sala==='Sim').length,q=arr.filter(p=>(p.qualificacao_automatica||p.status)==='Q').length;return{nome,total:arr.length,q,sala,metaP:mp||'-',realP:mp?Math.round(arr.length/Number(mp)*100)+'%':'-',metaQ:mq||'-',realQ:mq?Math.round(q/Number(mq)*100)+'%':'-',metaS:ms||'-',realS:ms?Math.round(sala/Number(ms)*100)+'%':'-'}}
+  document.getElementById('metasBox').innerHTML=criarTabela([bloco('PARK',d.filter(p=>p.equipe==='PARK'),m.parkP,m.parkS,m.parkQ),bloco('EXTERNA',d.filter(p=>p.equipe==='EXTERNA'),m.extP,m.extS,m.extQ)],[{key:'nome',label:'Equipe'},{key:'total',label:'Pesq.'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'metaP',label:'Meta Pesq.'},{key:'realP',label:'% Pesq.'},{key:'metaQ',label:'Meta Q'},{key:'realQ',label:'% Q'},{key:'metaS',label:'Meta Sala'},{key:'realS',label:'% Sala'}]);
+}
 
-async function salvarProfissional(){const nome=val('prof_nome'),email=val('prof_email').toLowerCase(),equipe=val('prof_equipe'),ponto=val('prof_ponto'),cargo=val('prof_cargo'),ativo=val('prof_ativo')==='true';if(!nome||!email||!equipe)return msg('profMsg','Preencha nome, e-mail e equipe.','erro');await db.from('profissionais').upsert({nome,email,equipe,ponto_padrao:ponto,cargo,ativo},{onConflict:'email'});await db.from('approved_users').upsert({email,name:nome,role:cargo.toLowerCase().includes('ceo')?'ceo':cargo.toLowerCase().includes('gestor')?'gestor':'captador',approved:ativo},{onConflict:'email'});msg('profMsg','Profissional salvo.','ok');carregarProfissionais()}
-async function carregarProfissionais(){const {data=[]}=await db.from('profissionais').select('*').order('nome');document.getElementById('profissionaisBox').innerHTML=criarTabela(data,[{key:'nome',label:'Nome'},{key:'email',label:'E-mail'},{key:'equipe',label:'Equipe'},{key:'ponto_padrao',label:'Ponto'},{key:'cargo',label:'Cargo'},{key:'ativo',label:'Ativo'}])}
-async function carregarConfig(){const {data}=await db.from('configuracao_qualificacao').select('*').eq('id',1).maybeSingle();if(data){cfg={...cfg,...data};profBloq=data.profissoes_bloqueadas||profBloq;setVal('cfg_renda',moedaBR(data.renda_minima||15000));setVal('cfg_ano',data.ano_carro_minimo||2011);setVal('cfg_idmin',data.idade_minima_casal||25);setVal('cfg_idmax',data.idade_maxima||64);setVal('cfg_uniao',data.uniao_estavel_minima_anos||2);setVal('cfg_idsolo',data.idade_minima_solo||30);setVal('cfg_prof',profBloq.join(', '));setVal('cfg_obs',data.observacoes||'')}}
-async function salvarCEO(){const payload={id:1,renda_minima:moneyNumber(val('cfg_renda')),ano_carro_minimo:num('cfg_ano'),idade_minima_casal:num('cfg_idmin'),idade_maxima:num('cfg_idmax'),uniao_estavel_minima_anos:num('cfg_uniao'),idade_minima_solo:num('cfg_idsolo'),casa_propria_obrigatoria:val('cfg_casa')==='true',cartao_credito_obrigatorio:val('cfg_cartao')==='true',profissoes_definidas_obrigatorio:val('cfg_prof_def')==='true',profissoes_bloqueadas:val('cfg_prof').split(',').map(x=>x.trim()).filter(Boolean),observacoes:val('cfg_obs'),updated_by:usuarioEmail,updated_at:new Date().toISOString()};const {error}=await db.from('configuracao_qualificacao').upsert(payload);if(error){console.log(error);return msg('ceoMsg','Erro ao salvar CEO.','erro')}cfg={...cfg,...payload};profBloq=payload.profissoes_bloqueadas;msg('ceoMsg','CEO salvo.','ok')}
+async function salvarProfissional(){
+  if(!isAdminRole())return msg('profMsg','Ação permitida apenas ao administrador.','erro');
+  const nome=val('prof_nome'),email=val('prof_email').toLowerCase(),equipe=val('prof_equipe'),ponto=val('prof_ponto'),cargo=val('prof_cargo'),ativo=val('prof_ativo')==='true';
+  if(!nome||!email||!equipe)return msg('profMsg','Preencha nome, e-mail e equipe.','erro');
+  const {error}=await db.from('profissionais').upsert({nome,email,equipe,ponto_padrao:ponto,cargo,ativo},{onConflict:'email'});if(error)return msg('profMsg','Erro: '+escapeHtml(error.message),'erro');
+  const cargoLower=cargo.toLowerCase(),role=cargoLower.includes('ceo')?'ceo':cargoLower.includes('gestor')?'gestor':cargoLower.includes('líder')||cargoLower.includes('lider')?'lider':'captador';
+  const {error:e2}=await db.from('approved_users').upsert({email,name:nome,role,approved:ativo},{onConflict:'email'});if(e2)return msg('profMsg','Profissional salvo, mas o acesso falhou: '+escapeHtml(e2.message),'erro');
+  msg('profMsg','Profissional salvo.','ok');carregarProfissionais();
+}
+async function carregarProfissionais(){const {data=[],error}=await db.from('profissionais').select('*').order('nome');if(error)return;document.getElementById('profissionaisBox').innerHTML=criarTabela(data,[{key:'nome',label:'Nome'},{key:'email',label:'E-mail'},{key:'equipe',label:'Equipe'},{key:'ponto_padrao',label:'Ponto'},{key:'cargo',label:'Cargo'},{key:'ativo',label:'Ativo'}])}
 
-function renderBrindesDisponiveis(){document.getElementById('listaBrindesDisponiveis').innerHTML=brindesPadrao.map(b=>`<div class="pill">${b[0]} • ${moedaBR(b[1])}</div>`).join('')}
-function valorBrindeEstimado(nome){const found=brindesPadrao.find(b=>b[0]===nome);if(found)return found[1];const n=String(nome||'').toLowerCase();if(n.includes('100'))return 100;if(n.includes('suvinis'))return 150;if(n.includes('2 '))return 120;if(n.includes('1 '))return 60;return nome?100:0}
-function draw(id,obj,type,old,setOld){if(old)old.destroy();const ctx=document.getElementById(id);setOld(new Chart(ctx,{type,data:{labels:Object.keys(obj),datasets:[{label:'Quantidade',data:Object.values(obj),backgroundColor:'#ef1b24',borderColor:'#ff3333',borderWidth:2,tension:.35}]},options:{responsive:true,plugins:{legend:{labels:{color:'#fff'}}},scales:type==='doughnut'?{}:{x:{ticks:{color:'#fff'}},y:{ticks:{color:'#fff'}}}}}))}
-function opt(id,v,t){const o=document.createElement('option');o.value=v;o.textContent=t;document.getElementById(id).appendChild(o)}
-function val(id){return document.getElementById(id)?.value||''}function setVal(id,v){if(document.getElementById(id))document.getElementById(id).value=v}function num(id){return val(id)?parseInt(String(val(id)).replace(/\D/g,'')):null}
-function set(id,v){const el=document.getElementById(id);if(el)el.innerText=v}function msg(id,t,c){document.getElementById(id).innerHTML=`<span class="${c}">${t}</span>`}function fmt(d){return d?new Date(d).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):''}
+async function carregarConfig(){
+  const {data}=await db.from('configuracao_qualificacao').select('*').eq('id',1).maybeSingle();
+  if(data){cfg={...cfg,...data};profBloq=data.profissoes_bloqueadas||profBloq;setVal('cfg_renda',moedaBR(data.renda_minima||15000));setVal('cfg_ano',data.ano_carro_minimo||2011);setVal('cfg_idmin',data.idade_minima_casal||25);setVal('cfg_idmax',data.idade_maxima||64);setVal('cfg_uniao',data.uniao_estavel_minima_anos||2);setVal('cfg_idsolo',data.idade_minima_solo||30);setVal('cfg_casa',String(data.casa_propria_obrigatoria!==false));setVal('cfg_cartao',String(data.cartao_credito_obrigatorio!==false));setVal('cfg_prof_def',String(data.profissoes_definidas_obrigatorio!==false));setVal('cfg_prof',profBloq.join(', '));setVal('cfg_obs',data.observacoes||'')}
+}
+async function salvarCEO(){
+  if(!isAdminRole())return msg('ceoMsg','Ação permitida apenas ao administrador.','erro');
+  const payload={id:1,renda_minima:moneyNumber(val('cfg_renda')),ano_carro_minimo:num('cfg_ano'),idade_minima_casal:num('cfg_idmin'),idade_maxima:num('cfg_idmax'),uniao_estavel_minima_anos:num('cfg_uniao'),idade_minima_solo:num('cfg_idsolo'),casa_propria_obrigatoria:val('cfg_casa')==='true',cartao_credito_obrigatorio:val('cfg_cartao')==='true',profissoes_definidas_obrigatorio:val('cfg_prof_def')==='true',profissoes_bloqueadas:val('cfg_prof').split(',').map(x=>x.trim()).filter(Boolean),observacoes:val('cfg_obs'),updated_by:usuarioEmail,updated_at:new Date().toISOString()};
+  const {error}=await db.from('configuracao_qualificacao').upsert(payload);if(error)return msg('ceoMsg','Erro ao salvar CEO: '+escapeHtml(error.message),'erro');cfg={...cfg,...payload};profBloq=payload.profissoes_bloqueadas;msg('ceoMsg','CEO salvo.','ok');
+}
+
+function renderBrindesDisponiveis(lista=brindesPermitidos()){
+  const box=document.getElementById('listaBrindesDisponiveis');if(!box)return;
+  box.innerHTML=lista.length?lista.map(b=>`<div class="pill">${escapeHtml(b[0])} • ${b[1]?moedaBR(b[1]):'Sem custo informado'}</div>`).join(''):'<span class="mini">Calcule a qualificação para ver os brindes liberados.</span>';
+  document.getElementById('brindesDisponiveis').classList.toggle('hidden',!qualificacaoCalculada);
+}
+function valorBrindeEstimado(nome){const found=brindesPadrao.find(b=>b[0]===nome);return found?Number(found[1]):0}
+
+function draw(id,obj,type,old,setOld){
+  if(old)old.destroy();const ctx=document.getElementById(id);if(!ctx)return;
+  setOld(new Chart(ctx,{type,data:{labels:Object.keys(obj),datasets:[{label:'Quantidade',data:Object.values(obj),backgroundColor:'#ef1b24',borderColor:'#ff3333',borderWidth:2,tension:.35}]},options:{responsive:true,plugins:{legend:{labels:{color:'#fff'}}},scales:type==='doughnut'?{}:{x:{ticks:{color:'#fff'}},y:{ticks:{color:'#fff'}}}}}));
+}
+
+function limparSelect(id,placeholder,disabled=false){const el=document.getElementById(id);if(!el)return;el.innerHTML='';const o=document.createElement('option');o.value='';o.textContent=placeholder;el.appendChild(o);el.disabled=disabled}
+function opt(id,v,t){const el=document.getElementById(id);if(!el)return;const o=document.createElement('option');o.value=v;o.textContent=t;el.appendChild(o)}
+function val(id){return document.getElementById(id)?.value||''}
+function setVal(id,v){const el=document.getElementById(id);if(el)el.value=v??''}
+function selectedText(id){const el=document.getElementById(id);if(!el||!el.value)return'';return el.options[el.selectedIndex]?.text||''}
+function num(id){return val(id)?parseInt(String(val(id)).replace(/\D/g,''),10):null}
+function set(id,v){const el=document.getElementById(id);if(el)el.innerText=v??''}
+function msg(id,t,c){const el=document.getElementById(id);if(el)el.innerHTML=`<span class="${c}">${t}</span>`}
+function fmt(d){return d?new Date(d).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):''}
+function escapeHtml(value){return String(value??'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]))}
+function escapeAttr(value){return escapeHtml(value).replace(/`/g,'&#96;')}
 </script>
 </body>
 </html>
