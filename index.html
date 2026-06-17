@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro Elite 4.6</title>
+<title>CaptaPro Elite 4.7</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -194,7 +194,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 4.6 • Atualizado em 17/06/2026</div>
+    <div class="version">CaptaPro Elite 4.7 • Atualizado em 17/06/2026</div>
     <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Criado por Raphael Bueno</p>
   </div>
 
@@ -232,8 +232,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
         <select id="equipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select>
         <select id="ponto_captacao"><option value="">Ponto</option><option>Porta dentro do Park</option><option>Corredor</option><option>Spinassi Avenida</option><option>Fábrica Spinassi</option><option>Baden Baden</option><option>Guarda-chuvas</option><option>Igreja</option><option>Djalma</option><option>Renner</option><option>Rua Roda Gigante</option></select>
         <div class="estadoCidadeGroup">
-          <select id="estado_origem"><option value="">Estado</option><option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option></select>
-          <input id="cidade_origem" placeholder="Cidade">
+          <select id="estado_origem" onchange="carregarCidadesOrigem()"><option value="">Estado</option><option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option></select>
+          <select id="cidade_origem" disabled><option value="">Selecione primeiro o estado</option></select>
         </div>
 
         <input id="convidado_1" placeholder="Nome 1"><select id="idade_1"><option value="">Idade 1</option></select><select id="profissao_1" onchange="toggleRendaEmpresa();toggleOutraProfissao()"><option value="">Profissão 1</option></select>
@@ -496,9 +496,9 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
         <label>Promotor responsável<input id="adm_edit_captador_nome"></label>
         <label>Equipe<select id="adm_edit_equipe"><option value="">Sem equipe</option><option>PARK</option><option>EXTERNA</option></select></label>
         <label>Ponto de captação<input id="adm_edit_ponto"></label>
-        <label>Estado<select id="adm_edit_estado_origem">
+        <label>Estado<select id="adm_edit_estado_origem" onchange="carregarCidadesAdmin()">
           <option value="">Sem estado</option><option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option></select></label>
-        <label>Cidade<input id="adm_edit_cidade_origem"></label>
+        <label>Cidade<select id="adm_edit_cidade_origem" disabled><option value="">Selecione primeiro o estado</option></select></label>
         <label>Horário local<input id="adm_edit_horario"></label>
 
         <label>Nome 1<input id="adm_edit_convidado_1"></label>
@@ -549,7 +549,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
     </div>
   </div>
 
-  <div class="footer">CaptaPro Elite 4.6 • Criado por Raphael Bueno • Operação de Captação</div>
+  <div class="footer">CaptaPro Elite 4.7 • Criado por Raphael Bueno • Operação de Captação</div>
 </div>
 
 <script>
@@ -591,6 +591,88 @@ function init(){
 }
 
 document.addEventListener('DOMContentLoaded',init);
+
+const IBGE_CIDADES_API='https://servicodados.ibge.gov.br/api/v1/localidades/estados';
+
+function cidadesCacheGet(uf){
+  try{
+    const raw=localStorage.getItem('captapro_cidades_'+uf);
+    if(!raw)return null;
+    const item=JSON.parse(raw);
+    if(!item||!Array.isArray(item.data))return null;
+    if(Date.now()-Number(item.savedAt||0)>90*24*60*60*1000)return null;
+    return item.data;
+  }catch(e){return null}
+}
+
+function cidadesCacheSet(uf,cidades){
+  try{
+    localStorage.setItem('captapro_cidades_'+uf,JSON.stringify({
+      savedAt:Date.now(),
+      data:cidades
+    }));
+  }catch(e){}
+}
+
+async function carregarCidadesPorEstado(uf,selectId,cidadeSelecionada=''){
+  const select=document.getElementById(selectId);
+  if(!select)return;
+
+  if(!uf){
+    limparSelect(selectId,'Selecione primeiro o estado',true);
+    return;
+  }
+
+  limparSelect(selectId,'Carregando cidades...',true);
+
+  try{
+    let cidades=cidadesCacheGet(uf);
+
+    if(!cidades){
+      const resposta=await fetchJson(
+        `${IBGE_CIDADES_API}/${encodeURIComponent(uf)}/municipios?orderBy=nome`,
+        20000
+      );
+
+      cidades=(Array.isArray(resposta)?resposta:[])
+        .map(item=>String(item.nome||'').trim())
+        .filter(Boolean)
+        .sort((a,b)=>a.localeCompare(b,'pt-BR'));
+
+      if(!cidades.length)throw new Error('Nenhuma cidade encontrada');
+      cidadesCacheSet(uf,cidades);
+    }
+
+    limparSelect(selectId,'Cidade',false);
+    cidades.forEach(cidade=>opt(selectId,cidade,cidade));
+
+    if(cidadeSelecionada){
+      const existe=cidades.some(cidade=>cidade===cidadeSelecionada);
+      if(!existe)opt(selectId,cidadeSelecionada,cidadeSelecionada);
+      setVal(selectId,cidadeSelecionada);
+    }
+  }catch(e){
+    limparSelect(selectId,'Não foi possível carregar as cidades',true);
+    console.warn('Falha ao carregar cidades:',e);
+  }
+}
+
+async function carregarCidadesOrigem(cidadeSelecionada=''){
+  await carregarCidadesPorEstado(
+    val('estado_origem'),
+    'cidade_origem',
+    cidadeSelecionada
+  );
+}
+
+async function carregarCidadesAdmin(cidadeSelecionada=''){
+  await carregarCidadesPorEstado(
+    val('adm_edit_estado_origem'),
+    'adm_edit_cidade_origem',
+    cidadeSelecionada
+  );
+}
+
 
 function isAdminRole(){return ['ceo','gestor','lider','líder','admin'].includes(String(userRole).toLowerCase())}
 
@@ -1089,7 +1171,7 @@ function renderFichaSalva(p){
           <div class="fichaIcone">CP</div>
           <div>
             <div class="fichaTitulo">Ficha Completa do Casal</div>
-            <div class="fichaSubtitulo">CaptaPro Elite 4.6 • ${escapeHtml(dataFicha)}</div>
+            <div class="fichaSubtitulo">CaptaPro Elite 4.7 • ${escapeHtml(dataFicha)}</div>
           </div>
         </div>
         <div class="fichaStatus ${cls}">${escapeHtml(status)}</div>
@@ -1835,12 +1917,14 @@ async function marcarSalaPesquisa(id,valor){
 
 function setAdminEdit(id,v){setVal(id,v??'')}
 
-function abrirEdicaoPesquisaAdmin(id){
+async function abrirEdicaoPesquisaAdmin(id){
   if(!isAdminRole())return;
   const p=salaAdminDados.find(x=>String(x.id)===String(id));if(!p)return;
   setAdminEdit('adm_edit_id',p.id);setAdminEdit('adm_edit_user_email',p.user_email);setAdminEdit('adm_edit_captador_nome',p.captador_nome);
   setAdminEdit('adm_edit_equipe',p.equipe);setAdminEdit('adm_edit_ponto',p.ponto_captacao);
-  setAdminEdit('adm_edit_estado_origem',p.estado_origem);setAdminEdit('adm_edit_cidade_origem',p.cidade_origem);setAdminEdit('adm_edit_horario',p.horario_local);
+  setAdminEdit('adm_edit_estado_origem',p.estado_origem);
+  await carregarCidadesAdmin(p.cidade_origem||'');
+  setAdminEdit('adm_edit_horario',p.horario_local);
   setAdminEdit('adm_edit_convidado_1',p.convidado_1);setAdminEdit('adm_edit_idade_1',p.idade_1);setAdminEdit('adm_edit_profissao_1',p.profissao_1);
   setAdminEdit('adm_edit_convidado_2',p.convidado_2);setAdminEdit('adm_edit_idade_2',p.idade_2);setAdminEdit('adm_edit_profissao_2',p.profissao_2);
   setAdminEdit('adm_edit_estado_civil',p.estado_civil);setAdminEdit('adm_edit_tempo_juntos',p.tempo_juntos);setAdminEdit('adm_edit_contato',p.contato);
