@@ -6,10 +6,10 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro Elite 5.0</title>
+<title>CaptaPro Elite 5.1 Limpo</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2">
-/* ===== CaptaPro Elite 5.0 • Mapa Inteligente ===== */
+/* ===== CaptaPro Elite 5.1 • Mapa Inteligente ===== */
 const PONTOS_OFICIAIS_CAPTAPRO=[
   {nome:'Porta dentro do Park',apelido:'PORTA DREAM HOUSE',lat:-22.720958,lng:-45.572798,raio:25,tipo:'PARK'},
   {nome:'Park Dream House',apelido:'PARK DREAM HOUSE',lat:-22.720590,lng:-45.572894,raio:40,tipo:'PARK'},
@@ -316,7 +316,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:900px){.estadoCidadeGroup{grid-template-columns:1fr 1fr}}
 
 
-/* CaptaPro Elite 5.0 • Mapa Inteligente */
+/* CaptaPro Elite 5.1 • Mapa Inteligente */
 .pontoAutoBox{
   grid-column:1/-1;
   display:grid;
@@ -336,6 +336,14 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .autoPointWarn{color:#ffd54f;font-weight:900}
 @media(max-width:900px){
   .pontoAutoBox,.smartMapGrid{grid-template-columns:1fr}
+}
+
+
+/* CaptaPro 5.1 Limpo • esconder GPS técnico da tela da pesquisa */
+.pontoAutoBox,
+#pontoOficialMsg,
+#distancia_ponto_metros{
+  display:none !important;
 }
 
 </style>
@@ -361,7 +369,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 5.0 • Mapa Inteligente</div>
+    <div class="version">CaptaPro Elite 5.1 • Mapa Inteligente</div>
     <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Criado pela empresa Bueno Invest</p>
   </div>
 
@@ -735,7 +743,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
     </div>
   </div>
 
-  <div class="footer">CaptaPro Elite 5.0 • Criado pela empresa Bueno Invest • Mapa Inteligente</div>
+  <div class="footer">CaptaPro Elite 5.1 • Criado pela empresa Bueno Invest • Mapa Inteligente</div>
 </div>
 
 <script>
