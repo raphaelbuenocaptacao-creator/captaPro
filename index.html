@@ -6,9 +6,153 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro Elite 4.8</title>
+<title>CaptaPro Elite 5.0</title>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2">
+/* ===== CaptaPro Elite 5.0 • Mapa Inteligente ===== */
+const PONTOS_OFICIAIS_CAPTAPRO=[
+  {nome:'Porta dentro do Park',apelido:'PORTA DREAM HOUSE',lat:-22.720958,lng:-45.572798,raio:25,tipo:'PARK'},
+  {nome:'Park Dream House',apelido:'PARK DREAM HOUSE',lat:-22.720590,lng:-45.572894,raio:40,tipo:'PARK'},
+  {nome:'Fábrica Spinassi',apelido:'FÁBRICA SPINASSI',lat:-22.720071,lng:-45.573381,raio:40,tipo:'PARK'},
+  {nome:'Baden Baden',apelido:'BADEN BADEN',lat:-22.718923,lng:-45.567341,raio:30,tipo:'EXTERNA'},
+  {nome:'Corredor',apelido:'CORREDOR',lat:-22.718043,lng:-45.566152,raio:35,tipo:'EXTERNA'},
+  {nome:'Djalma',apelido:'DJALMA',lat:-22.719618,lng:-45.567070,raio:35,tipo:'EXTERNA'},
+  {nome:'Igreja',apelido:'IGREJA',lat:-22.718572,lng:-45.566336,raio:30,tipo:'EXTERNA'},
+  {nome:'Renner',apelido:'RENNER',lat:-22.718311,lng:-45.567251,raio:30,tipo:'EXTERNA'},
+  {nome:'Guarda-chuvas',apelido:'GUARDA-CHUVAS',lat:-22.718324,lng:-45.568330,raio:30,tipo:'EXTERNA'},
+  {nome:'Posto Shell',apelido:'POSTO SHELL',lat:-22.719382,lng:-45.569738,raio:40,tipo:'EXTERNA'},
+  {nome:'Rua Roda Gigante',apelido:'RODA GIGANTE',lat:-22.718012,lng:-45.566055,raio:30,tipo:'EXTERNA'}
+];
+
+function pontoOficialMaisProximo(lat,lng){
+  if(lat===null||lng===null||lat===undefined||lng===undefined)return null;
+  let melhor=null;
+  PONTOS_OFICIAIS_CAPTAPRO.forEach(p=>{
+    const d=distanciaMetros(Number(lat),Number(lng),p.lat,p.lng);
+    if(!melhor||d<melhor.distancia)melhor={...p,distancia:d,dentro:d<=Number(p.raio||30)};
+  });
+  return melhor;
+}
+
+function detectarPontoOficialAgora(){
+  if(latitude===null||longitude===null){
+    if(typeof msg==='function')msg('formMsg','GPS ainda não carregou. Permita localização e tente novamente.','erro');
+    return null;
+  }
+  const p=pontoOficialMaisProximo(latitude,longitude);
+  const campo=document.getElementById('ponto_oficial');
+  const dist=document.getElementById('distancia_ponto_metros');
+  const box=document.getElementById('pontoOficialMsg');
+  if(!p)return null;
+  if(campo)campo.value=p.dentro?p.nome:'Fora do raio oficial';
+  if(dist)dist.value=Math.round(p.distancia);
+  if(p.dentro){
+    setVal('ponto_captacao',p.nome);
+    if(box)box.innerHTML=`<span class="autoPointOk">Ponto oficial detectado:</span> ${p.apelido} • ${Math.round(p.distancia)}m de distância • raio ${p.raio}m`;
+  }else{
+    if(box)box.innerHTML=`<span class="autoPointWarn">Fora do raio oficial:</span> mais próximo é ${p.apelido}, a ${Math.round(p.distancia)}m.`;
+  }
+  return p;
+}
+
+function aplicarPontoOficialNoPayload(p){
+  const detectado=detectarPontoOficialAgora();
+  p.ponto_oficial=val('ponto_oficial')||p.ponto_captacao||'';
+  p.distancia_ponto_metros=Number(val('distancia_ponto_metros')||0)||null;
+  p.ponto_oficial_apelido=detectado?.apelido||p.ponto_oficial||'';
+  p.ponto_oficial_raio=detectado?.raio||null;
+  return p;
+}
+
+function normalizarPontoAnalytics(p){
+  return p.ponto_oficial||p.ponto_captacao||p.ponto||'Não informado';
+}
+
+function rankingPontosOficiais(data){
+  const o={};
+  (data||[]).forEach(p=>{
+    const k=normalizarPontoAnalytics(p);
+    if(!o[k])o[k]={nome:k,total:0,q:0,nq:0,sala:0,brindes:0,custo:0,tempo:0,horas:{}};
+    o[k].total++;
+    const status=String(p.qualificacao_automatica||p.status||'');
+    if(status==='Q')o[k].q++;
+    if(status.startsWith('NQ'))o[k].nq++;
+    const sala=String(p.sala_status||p.levou_sala||'');
+    if(sala==='Aprovado'||sala==='Sim')o[k].sala++;
+    if(p.brinde)o[k].brindes++;
+    o[k].custo+=Number(p.custo_brinde||valorBrindeEstimado?.(p.brinde)||0);
+    o[k].tempo+=Number(p.tempo_no_ponto_minutos||0);
+    const h=p.horario_local||((p.created_at?new Date(p.created_at):new Date()).getHours().toString().padStart(2,'0')+':00');
+    o[k].horas[h]=(o[k].horas[h]||0)+1;
+  });
+  return Object.values(o).map(x=>{
+    const horaTop=Object.entries(x.horas).sort((a,b)=>b[1]-a[1])[0];
+    return {...x,
+      conversao:x.total?Math.round(x.sala/x.total*100)+'%':'0%',
+      qperc:x.total?Math.round(x.q/x.total*100)+'%':'0%',
+      custoFmt:moedaBR(x.custo),
+      custoCasal:moedaBR(x.custo/(x.total||1)),
+      tempoMedio:Math.round(x.tempo/(x.total||1))+' min',
+      horarioForte:horaTop?`${horaTop[0]} (${horaTop[1]})`:'-'
+    }
+  }).sort((a,b)=>b.sala-a.sala||b.q-a.q||b.total-a.total);
+}
+
+async function carregarMapaInteligenteExtra(){
+  try{
+    const data=typeof getPesquisas==='function'?await getPesquisas():[];
+    const ranking=rankingPontosOficiais(data);
+    const melhor=ranking[0];
+    set('miPontos',PONTOS_OFICIAIS_CAPTAPRO.length);
+    set('miMelhorPonto',melhor?.nome||'-');
+    set('miMelhorConv',melhor?.conversao||'0%');
+    set('miMaisQ',ranking.slice().sort((a,b)=>b.q-a.q)[0]?.nome||'-');
+    set('miCustoPonto',melhor?.custoCasal||'R$ 0');
+    set('miHorarioForte',melhor?.horarioForte||'-');
+    const box=document.getElementById('mapaRankingPontos');
+    if(box){
+      box.innerHTML=criarTabela(ranking,[{key:'nome',label:'Ponto'},{key:'total',label:'Pesq.'},{key:'q',label:'Q'},{key:'nq',label:'NQ'},{key:'sala',label:'Sala'},{key:'conversao',label:'Conv.'},{key:'brindes',label:'Brindes'},{key:'custoCasal',label:'Custo/Casal'},{key:'tempoMedio',label:'Tempo médio'},{key:'horarioForte',label:'Horário forte'}]);
+    }
+  }catch(e){console.warn('Mapa inteligente extra:',e)}
+}
+
+function desenharPontosOficiaisNoMapa(){
+  if(!map||typeof L==='undefined')return;
+  if(window.__pontosOficiaisLayer){try{map.removeLayer(window.__pontosOficiaisLayer)}catch(e){}}
+  window.__pontosOficiaisLayer=L.layerGroup().addTo(map);
+  PONTOS_OFICIAIS_CAPTAPRO.forEach(p=>{
+    const icon=L.divIcon({className:'',html:'<div class="pointOfficialIcon"></div>',iconSize:[18,18],iconAnchor:[9,9]});
+    L.marker([p.lat,p.lng],{icon}).addTo(window.__pontosOficiaisLayer).bindPopup(`<b>${p.apelido}</b><br>${p.nome}<br>Raio: ${p.raio}m`);
+    L.circle([p.lat,p.lng],{radius:p.raio,color:'#ef1b24',fillColor:'#ef1b24',fillOpacity:.08,weight:1}).addTo(window.__pontosOficiaisLayer);
+  });
+}
+
+(function(){
+  const oldSalvar=window.salvarPesquisa;
+  window.salvarPesquisa=async function(){
+    detectarPontoOficialAgora();
+    return oldSalvar.apply(this,arguments);
+  };
+
+  const oldMapa=window.carregarMapa;
+  if(typeof oldMapa==='function'){
+    window.carregarMapa=async function(){
+      const r=await oldMapa.apply(this,arguments);
+      setTimeout(()=>{desenharPontosOficiaisNoMapa();carregarMapaInteligenteExtra();},350);
+      return r;
+    }
+  }
+
+  const oldGetPesquisas=window.getPesquisas;
+  if(typeof oldGetPesquisas==='function'){
+    window.getPesquisas=async function(){
+      const data=await oldGetPesquisas.apply(this,arguments);
+      return (data||[]).map(p=>({...p,ponto_oficial:p.ponto_oficial||p.ponto_captacao}));
+    }
+  }
+})();
+
+</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -171,6 +315,29 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .estadoCidadeGroup select,.estadoCidadeGroup input{min-width:0}
 @media(max-width:900px){.estadoCidadeGroup{grid-template-columns:1fr 1fr}}
 
+
+/* CaptaPro Elite 5.0 • Mapa Inteligente */
+.pontoAutoBox{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:1fr 140px;
+  gap:8px;
+}
+.pontoAutoBox input{font-weight:900;color:#00e676;border-color:#1e5f3b}
+.pontoAutoBox button{height:100%}
+.smartMapGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+.smartPointCard{background:#121212;border:1px solid #303030;border-radius:13px;padding:10px}
+.smartPointCard b{color:#ff7777}
+.pointOfficialIcon{
+  width:17px;height:17px;border-radius:50%;background:#ef1b24;border:3px solid #fff;
+  box-shadow:0 0 14px rgba(239,27,36,.9)
+}
+.autoPointOk{color:#00e676;font-weight:900}
+.autoPointWarn{color:#ffd54f;font-weight:900}
+@media(max-width:900px){
+  .pontoAutoBox,.smartMapGrid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -194,7 +361,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 4.8 • Atualizado em 17/06/2026</div>
+    <div class="version">CaptaPro Elite 5.0 • Mapa Inteligente</div>
     <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Criado pela empresa Bueno Invest</p>
   </div>
 
@@ -230,7 +397,13 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
       <div class="grid compact">
         <select id="equipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select>
-        <select id="ponto_captacao"><option value="">Ponto</option><option>Porta dentro do Park</option><option>Corredor</option><option>Spinassi Avenida</option><option>Fábrica Spinassi</option><option>Baden Baden</option><option>Guarda-chuvas</option><option>Igreja</option><option>Djalma</option><option>Renner</option><option>Rua Roda Gigante</option></select>
+        <select id="ponto_captacao"><option value="">Ponto</option><option>Porta dentro do Park</option><option>Corredor</option><option>Spinassi Avenida</option><option>Fábrica Spinassi</option><option>Baden Baden</option><option>Guarda-chuvas</option><option>Igreja</option><option>Djalma</option><option>Renner</option><option>Rua Roda Gigante</option><option>Posto Shell</option><option>Park Dream House</option></select>
+        <div class="pontoAutoBox">
+          <input id="ponto_oficial" placeholder="Ponto oficial automático pelo GPS" readonly>
+          <button class="secondary" onclick="detectarPontoOficialAgora()" type="button">Detectar ponto</button>
+        </div>
+        <div id="pontoOficialMsg" class="readonlyInfo" style="grid-column:1/-1">GPS ainda não identificou o ponto oficial.</div><input id="distancia_ponto_metros" class="hidden" readonly>
+
         <div class="estadoCidadeGroup">
           <select id="estado_origem" onchange="carregarCidadesOrigem()"><option value="">Estado</option><option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option></select>
           <select id="cidade_origem" disabled><option value="">Selecione primeiro o estado</option></select>
@@ -429,7 +602,20 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       <div class="warningBox">A rota é formada pelos registros enviados pelo celular durante o dia. Cada ping mostra horário, local e precisão aproximada. O histórico começa a ser registrado após executar o SQL da versão 4.5.</div>
       <div class="mapLegend"><span><i class="statusDot live"></i>posição atual</span><span><i class="statusDot recent"></i>trajeto do dia</span><span><i class="statusDot offline"></i>sem atualização recente</span></div>
       <div id="map"></div>
-      <div id="mapaLocaisResumo" class="card"><h2>Locais visitados</h2><div id="mapaLocaisConteudo" class="tableScroll"><p class="mini">Selecione um promotor e um dia.</p></div></div>
+      
+      <div id="mapaInteligenteResumo" class="card">
+        <h2>Mapa Inteligente • Pontos Oficiais</h2>
+        <div class="kpis">
+          <div class="kpi">Pontos oficiais<b id="miPontos">0</b></div>
+          <div class="kpi">Melhor ponto<b id="miMelhorPonto">-</b></div>
+          <div class="kpi">Maior conversão<b id="miMelhorConv">0%</b></div>
+          <div class="kpi">Mais Q<b id="miMaisQ">-</b></div>
+          <div class="kpi">Custo por ponto<b id="miCustoPonto">R$ 0</b></div>
+          <div class="kpi">Horário forte<b id="miHorarioForte">-</b></div>
+        </div>
+        <div id="mapaRankingPontos" class="tableScroll" style="margin-top:10px"></div>
+      </div>
+<div id="mapaLocaisResumo" class="card"><h2>Locais visitados</h2><div id="mapaLocaisConteudo" class="tableScroll"><p class="mini">Selecione um promotor e um dia.</p></div></div>
       <div id="mapaLista" class="tableScroll" style="margin-top:10px"></div>
     </section>
 
@@ -456,7 +642,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
     <section id="profissionais" class="card hidden admOnly">
       <h2>Profissionais</h2>
-      <div class="grid compact"><input id="prof_nome" placeholder="Nome"><input id="prof_email" type="email" placeholder="E-mail"><select id="prof_equipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select><select id="prof_ponto"><option value="">Ponto padrão</option><option>Porta dentro do Park</option><option>Corredor</option><option>Spinassi Avenida</option><option>Fábrica Spinassi</option><option>Baden Baden</option><option>Guarda-chuvas</option><option>Igreja</option><option>Djalma</option><option>Renner</option><option>Rua Roda Gigante</option></select><select id="prof_cargo"><option>Promotor de Marketing</option><option>Líder</option><option>Gestor</option><option>CEO</option></select><select id="prof_ativo"><option value="true">Ativo</option><option value="false">Inativo</option></select></div>
+      <div class="grid compact"><input id="prof_nome" placeholder="Nome"><input id="prof_email" type="email" placeholder="E-mail"><select id="prof_equipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select><select id="prof_ponto"><option value="">Ponto padrão</option><option>Porta dentro do Park</option><option>Corredor</option><option>Spinassi Avenida</option><option>Fábrica Spinassi</option><option>Baden Baden</option><option>Guarda-chuvas</option><option>Igreja</option><option>Djalma</option><option>Renner</option><option>Rua Roda Gigante</option><option>Posto Shell</option><option>Park Dream House</option></select><select id="prof_cargo"><option>Promotor de Marketing</option><option>Líder</option><option>Gestor</option><option>CEO</option></select><select id="prof_ativo"><option value="true">Ativo</option><option value="false">Inativo</option></select></div>
       <div class="rowbtn" style="margin-top:8px"><button class="main" onclick="salvarProfissional()">Salvar Profissional</button><button class="main" onclick="carregarProfissionais()">Carregar Profissionais</button></div><p id="profMsg"></p><div id="profissionaisBox"></div>
     </section>
 
@@ -549,7 +735,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
     </div>
   </div>
 
-  <div class="footer">CaptaPro Elite 4.8 • Criado pela empresa Bueno Invest • Operação de Captação</div>
+  <div class="footer">CaptaPro Elite 5.0 • Criado pela empresa Bueno Invest • Mapa Inteligente</div>
 </div>
 
 <script>
@@ -774,7 +960,7 @@ async function registrarHistoricoLocalizacao(force=false){
   if(!force&&agora-gpsUltimoHistorico<120000&&moveu<50)return;
   const payload={
     user_email:usuarioEmail,captador_nome:captadorNome,
-    equipe:val('equipe')||null,ponto_captacao:val('ponto_captacao')||null,
+    equipe:val('equipe')||null,ponto_captacao:val('ponto_captacao'),ponto_oficial:val('ponto_oficial')||val('ponto_captacao'),distancia_ponto_metros:moneyNumber(val('distancia_ponto_metros'))||null||null,
     latitude:Number(latitude),longitude:Number(longitude),
     accuracy:precisaoGps===null?null:Number(precisaoGps),
     speed:velocidadeGps===null?null:Number(velocidadeGps),
