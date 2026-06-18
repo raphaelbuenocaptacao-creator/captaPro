@@ -6,10 +6,10 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro Elite 5.1 Limpo</title>
+<title>CaptaPro Elite 5.2</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2">
-/* ===== CaptaPro Elite 5.1 • Mapa Inteligente ===== */
+/* ===== CaptaPro Elite 5.2 • Abordagens ===== */
 const PONTOS_OFICIAIS_CAPTAPRO=[
   {nome:'Porta dentro do Park',apelido:'PORTA DREAM HOUSE',lat:-22.720958,lng:-45.572798,raio:25,tipo:'PARK'},
   {nome:'Park Dream House',apelido:'PARK DREAM HOUSE',lat:-22.720590,lng:-45.572894,raio:40,tipo:'PARK'},
@@ -151,6 +151,98 @@ function desenharPontosOficiaisNoMapa(){
     }
   }
 })();
+
+
+/* ===== CaptaPro Elite 5.2 • Abordagem sem pesquisa + renda empresário ===== */
+function dataHojeISO(){
+  const d=new Date();
+  return d.toISOString().slice(0,10);
+}
+
+async function carregarContadorAbordagensHoje(){
+  if(!usuarioEmail)return;
+  try{
+    const de=dataHojeISO()+'T00:00:00';
+    const ate=dataHojeISO()+'T23:59:59';
+    const {count,error}=await db.from('abordagens').select('*',{count:'exact',head:true})
+      .eq('user_email',usuarioEmail)
+      .gte('created_at',de)
+      .lte('created_at',ate);
+    if(error)throw error;
+    set('abordagensHoje',count||0);
+  }catch(e){
+    const key='captapro_abordagens_'+usuarioEmail+'_'+dataHojeISO();
+    set('abordagensHoje',Number(localStorage.getItem(key)||0));
+    console.warn('Contador local de abordagens:',e.message||e);
+  }
+}
+
+async function registrarAbordagemSemPesquisa(){
+  if(!usuarioEmail){
+    msg('formMsg','Entre no app antes de registrar abordagem.','erro');
+    return;
+  }
+
+  if(latitude===null||longitude===null && typeof iniciarRastreamentoGps==='function'){
+    iniciarRastreamentoGps();
+  }
+
+  if(typeof detectarPontoOficialAgora==='function')detectarPontoOficialAgora();
+
+  const payload={
+    user_email:usuarioEmail,
+    captador_nome:captadorNome,
+    equipe:val('equipe')||null,
+    ponto_captacao:val('ponto_captacao')||null,
+    ponto_oficial:val('ponto_oficial')||val('ponto_captacao')||null,
+    distancia_ponto_metros:Number(val('distancia_ponto_metros')||0)||null,
+    latitude:latitude===null?null:Number(latitude),
+    longitude:longitude===null?null:Number(longitude),
+    horario_local:String(new Date().getHours()).padStart(2,'0')+':00',
+    observacao:'Abordagem registrada sem pesquisa'
+  };
+
+  const {error}=await db.from('abordagens').insert(payload);
+
+  if(error){
+    const key='captapro_abordagens_'+usuarioEmail+'_'+dataHojeISO();
+    localStorage.setItem(key,Number(localStorage.getItem(key)||0)+1);
+    set('abordagensHoje',Number(localStorage.getItem(key)||0));
+    msg('formMsg','Abordagem contada. Para salvar no Supabase, rode o SQL 5.2.','ok');
+    return;
+  }
+
+  await carregarContadorAbordagensHoje();
+  msg('formMsg','Abordagem registrada com sucesso.','ok');
+}
+
+function profissaoEhEmpresa(){
+  const p1=val('profissao_1'),p2=val('profissao_2');
+  return ['Empresário','Empresária','Comerciante'].includes(p1) || ['Empresário','Empresária','Comerciante'].includes(p2);
+}
+
+/* Substitui o comportamento antigo: empresário/comerciante mostra SOMENTE renda bruta e renda líquida */
+window.toggleRendaEmpresa=function(){
+  const empresa=profissaoEhEmpresa();
+  const boxEmpresa=document.getElementById('boxRendaEmpresa');
+  const boxNormal=document.getElementById('boxRendaNormal');
+  if(boxEmpresa)boxEmpresa.classList.toggle('hidden',!empresa);
+  if(boxNormal)boxNormal.classList.toggle('hidden',empresa);
+  if(empresa){
+    const renda=document.getElementById('renda_casal');
+    if(renda)renda.value='';
+  }
+};
+
+/* Carrega o contador depois do login sem mudar o login original */
+const entrarOriginal_52=window.entrar;
+if(typeof entrarOriginal_52==='function'){
+  window.entrar=async function(){
+    const r=await entrarOriginal_52.apply(this,arguments);
+    setTimeout(carregarContadorAbordagensHoje,800);
+    return r;
+  };
+}
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -316,7 +408,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:900px){.estadoCidadeGroup{grid-template-columns:1fr 1fr}}
 
 
-/* CaptaPro Elite 5.1 • Mapa Inteligente */
+/* CaptaPro Elite 5.2 • Abordagens */
 .pontoAutoBox{
   grid-column:1/-1;
   display:grid;
@@ -346,6 +438,37 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
   display:none !important;
 }
 
+
+/* CaptaPro Elite 5.2 • Botão de Abordagem */
+.abordagemBox{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:8px;
+  margin:6px 0 10px;
+}
+.btnAbordagem{
+  background:linear-gradient(135deg,#ef1b24,#8b0000)!important;
+  border:1px solid #ff4444!important;
+  min-height:62px;
+  font-size:16px!important;
+  font-weight:900!important;
+  text-transform:uppercase;
+  box-shadow:0 0 18px rgba(239,27,36,.25);
+}
+.abordagemCounter{
+  background:#101010;
+  border:1px solid #333;
+  border-radius:13px;
+  padding:10px 12px;
+  text-align:center;
+}
+.abordagemCounter span{display:block;color:#aaa;font-size:11px;font-weight:900;text-transform:uppercase}
+.abordagemCounter b{display:block;color:#00e676;font-size:27px;margin-top:2px}
+.abordagemCounter small{color:#888;font-size:11px}
+#boxRendaNormal{display:block}
+@media(max-width:900px){.abordagemBox{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -369,7 +492,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 5.1 • Mapa Inteligente</div>
+    <div class="version">CaptaPro Elite 5.2 • Abordagens</div>
     <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Criado pela empresa Bueno Invest</p>
   </div>
 
@@ -403,6 +526,16 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       <div id="jornadaStatus" class="mini admOnly">Jornada automática ainda não iniciada.</div>
       <div class="loggedPromoter"><span>Pesquisa registrada automaticamente em nome de:</span><b id="promotorLogadoNome">Aguardando entrada</b></div>
 
+      
+      <div class="abordagemBox">
+        <button class="btnAbordagem" onclick="registrarAbordagemSemPesquisa()" type="button">+ Registrar abordagem</button>
+        <div class="abordagemCounter">
+          <span>Abordagens hoje</span>
+          <b id="abordagensHoje">0</b>
+          <small>sem pesquisa/ficha</small>
+        </div>
+      </div>
+
       <div class="grid compact">
         <select id="equipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select>
         <select id="ponto_captacao"><option value="">Ponto</option><option>Porta dentro do Park</option><option>Corredor</option><option>Spinassi Avenida</option><option>Fábrica Spinassi</option><option>Baden Baden</option><option>Guarda-chuvas</option><option>Igreja</option><option>Djalma</option><option>Renner</option><option>Rua Roda Gigante</option><option>Posto Shell</option><option>Park Dream House</option></select>
@@ -433,7 +566,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
         <select id="cartao_credito"><option value="">Cartão?</option><option>Sim</option><option>Não</option></select>
         <select id="casa_propria"><option value="">Casa própria?</option><option>Sim</option><option>Não</option></select>
         <select id="multipropriedade"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
-        <input id="renda_casal" inputmode="numeric" placeholder="Renda mensal. Ex: R$ 15.000,00">
+        <div id="boxRendaNormal"><input id="renda_casal" inputmode="numeric" placeholder="Renda mensal. Ex: R$ 15.000,00"></div>
         <div id="boxRendaEmpresa" class="grid hidden" style="grid-column:1/-1">
           <input id="renda_bruta" inputmode="numeric" placeholder="Renda bruta. Ex: R$ 30.000,00">
           <input id="renda_liquida" inputmode="numeric" placeholder="Renda líquida. Ex: R$ 15.000,00">
@@ -743,7 +876,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
     </div>
   </div>
 
-  <div class="footer">CaptaPro Elite 5.1 • Criado pela empresa Bueno Invest • Mapa Inteligente</div>
+  <div class="footer">CaptaPro Elite 5.2 • Criado pela empresa Bueno Invest • Abordagens</div>
 </div>
 
 <script>
