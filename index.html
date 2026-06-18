@@ -6,10 +6,10 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro Elite 5.2</title>
+<title>CaptaPro Elite 5.3</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2">
-/* ===== CaptaPro Elite 5.2 • Abordagens ===== */
+/* ===== CaptaPro Elite 5.3 • Abordagem Corrigida ===== */
 const PONTOS_OFICIAIS_CAPTAPRO=[
   {nome:'Porta dentro do Park',apelido:'PORTA DREAM HOUSE',lat:-22.720958,lng:-45.572798,raio:25,tipo:'PARK'},
   {nome:'Park Dream House',apelido:'PARK DREAM HOUSE',lat:-22.720590,lng:-45.572894,raio:40,tipo:'PARK'},
@@ -408,7 +408,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:900px){.estadoCidadeGroup{grid-template-columns:1fr 1fr}}
 
 
-/* CaptaPro Elite 5.2 • Abordagens */
+/* CaptaPro Elite 5.3 • Abordagem Corrigida */
 .pontoAutoBox{
   grid-column:1/-1;
   display:grid;
@@ -469,6 +469,70 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 #boxRendaNormal{display:block}
 @media(max-width:900px){.abordagemBox{grid-template-columns:1fr}}
 
+
+/* Fix CaptaPro 5.2 • botão abordagem funcionando */
+.abordagemBox{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:8px;
+  margin:6px 0 10px;
+}
+.btnAbordagem{
+  background:linear-gradient(135deg,#ef1b24,#8b0000)!important;
+  border:1px solid #ff4444!important;
+  min-height:62px;
+  font-size:16px!important;
+  font-weight:900!important;
+  text-transform:uppercase;
+  box-shadow:0 0 18px rgba(239,27,36,.25);
+}
+.abordagemCounter{
+  background:#101010;
+  border:1px solid #333;
+  border-radius:13px;
+  padding:10px 12px;
+  text-align:center;
+}
+.abordagemCounter span{display:block;color:#aaa;font-size:11px;font-weight:900;text-transform:uppercase}
+.abordagemCounter b{display:block;color:#00e676;font-size:27px;margin-top:2px}
+.abordagemCounter small{color:#888;font-size:11px}
+@media(max-width:900px){.abordagemBox{grid-template-columns:1fr}}
+
+
+/* CaptaPro Elite 5.3 • Correção definitiva abordagem/renda */
+.abordagemBox{
+  grid-column:1/-1!important;
+  display:grid!important;
+  grid-template-columns:1.2fr .8fr!important;
+  gap:8px!important;
+  margin:6px 0 10px!important;
+}
+.btnAbordagem{
+  background:linear-gradient(135deg,#ef1b24,#8b0000)!important;
+  border:1px solid #ff4444!important;
+  min-height:68px!important;
+  font-size:17px!important;
+  font-weight:900!important;
+  text-transform:uppercase!important;
+  box-shadow:0 0 18px rgba(239,27,36,.28)!important;
+  cursor:pointer!important;
+}
+.abordagemCounter{
+  background:#101010!important;
+  border:1px solid #333!important;
+  border-radius:13px!important;
+  padding:10px 12px!important;
+  text-align:center!important;
+}
+.abordagemCounter span{display:block!important;color:#aaa!important;font-size:11px!important;font-weight:900!important;text-transform:uppercase!important}
+.abordagemCounter b{display:block!important;color:#00e676!important;font-size:28px!important;margin-top:2px!important}
+.abordagemCounter small{color:#888!important;font-size:11px!important}
+body.empresaRendaAtiva #boxRendaNormal{display:none!important}
+body.empresaRendaAtiva #boxRendaEmpresa{display:grid!important}
+body:not(.empresaRendaAtiva) #boxRendaEmpresa{display:none!important}
+@media(max-width:900px){.abordagemBox{grid-template-columns:1fr!important}}
+
 </style>
 </head>
 <body>
@@ -492,7 +556,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 5.2 • Abordagens</div>
+    <div class="version">CaptaPro Elite 5.3 • Abordagem Corrigida</div>
     <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Criado pela empresa Bueno Invest</p>
   </div>
 
@@ -526,9 +590,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
       <div id="jornadaStatus" class="mini admOnly">Jornada automática ainda não iniciada.</div>
       <div class="loggedPromoter"><span>Pesquisa registrada automaticamente em nome de:</span><b id="promotorLogadoNome">Aguardando entrada</b></div>
 
-      
-      <div class="abordagemBox">
-        <button class="btnAbordagem" onclick="registrarAbordagemSemPesquisa()" type="button">+ Registrar abordagem</button>
+      <div id="abordagemBox52" class="abordagemBox">
+        <button id="btnRegistrarAbordagem52" class="btnAbordagem" type="button">+ REGISTRAR ABORDAGEM</button>
         <div class="abordagemCounter">
           <span>Abordagens hoje</span>
           <b id="abordagensHoje">0</b>
@@ -2422,5 +2485,258 @@ function fmt(d){return d?new Date(d).toLocaleString('pt-BR',{day:'2-digit',month
 function escapeHtml(value){return String(value??'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]))}
 function escapeAttr(value){return escapeHtml(value).replace(/`/g,'&#96;')}
 </script>
+
+<script>
+/* ===== FIX FINAL 5.2 • abordagem funcionando ===== */
+(function(){
+  function hojeISO52(){
+    return new Date().toISOString().slice(0,10);
+  }
+
+  window.carregarContadorAbordagensHoje52 = async function(){
+    try{
+      if(!window.usuarioEmail){return}
+      const de=hojeISO52()+'T00:00:00';
+      const ate=hojeISO52()+'T23:59:59';
+      const resp=await db.from('abordagens').select('*',{count:'exact',head:true})
+        .eq('user_email',usuarioEmail)
+        .gte('created_at',de)
+        .lte('created_at',ate);
+      if(resp.error) throw resp.error;
+      const el=document.getElementById('abordagensHoje');
+      if(el) el.innerText=resp.count||0;
+    }catch(e){
+      const key='captapro_abordagens_'+(window.usuarioEmail||'sem_email')+'_'+hojeISO52();
+      const el=document.getElementById('abordagensHoje');
+      if(el) el.innerText=Number(localStorage.getItem(key)||0);
+      console.warn('Contador abordagem fallback:', e.message||e);
+    }
+  };
+
+  window.registrarAbordagemSemPesquisa52 = async function(){
+    try{
+      if(!window.usuarioEmail){
+        if(typeof msg==='function') msg('formMsg','Entre no app antes de registrar abordagem.','erro');
+        else alert('Entre no app antes de registrar abordagem.');
+        return;
+      }
+
+      if(typeof detectarPontoOficialAgora==='function'){
+        try{detectarPontoOficialAgora()}catch(e){}
+      }
+
+      const payload={
+        user_email:usuarioEmail,
+        captador_nome:window.captadorNome||'',
+        equipe:typeof val==='function' ? (val('equipe')||null) : null,
+        ponto_captacao:typeof val==='function' ? (val('ponto_captacao')||null) : null,
+        ponto_oficial:typeof val==='function' ? (val('ponto_oficial')||val('ponto_captacao')||null) : null,
+        distancia_ponto_metros:typeof val==='function' ? (Number(val('distancia_ponto_metros')||0)||null) : null,
+        latitude:window.latitude===null||window.latitude===undefined ? null : Number(window.latitude),
+        longitude:window.longitude===null||window.longitude===undefined ? null : Number(window.longitude),
+        horario_local:String(new Date().getHours()).padStart(2,'0')+':00',
+        observacao:'Abordagem registrada sem pesquisa'
+      };
+
+      const resp=await db.from('abordagens').insert(payload);
+
+      if(resp.error){
+        const key='captapro_abordagens_'+usuarioEmail+'_'+hojeISO52();
+        localStorage.setItem(key,Number(localStorage.getItem(key)||0)+1);
+        const el=document.getElementById('abordagensHoje');
+        if(el) el.innerText=Number(localStorage.getItem(key)||0);
+        if(typeof msg==='function') msg('formMsg','Abordagem contada localmente. Rode o SQL 5.2 no Supabase para salvar no banco.','ok');
+        return;
+      }
+
+      await carregarContadorAbordagensHoje52();
+      if(typeof msg==='function') msg('formMsg','Abordagem registrada com sucesso.','ok');
+    }catch(e){
+      console.error(e);
+      if(typeof msg==='function') msg('formMsg','Erro ao registrar abordagem: '+(e.message||e),'erro');
+      else alert('Erro ao registrar abordagem.');
+    }
+  };
+
+  function profissaoEmpresa52(){
+    const p1=typeof val==='function'?val('profissao_1'):'';
+    const p2=typeof val==='function'?val('profissao_2'):'';
+    return ['Empresário','Empresária','Comerciante'].includes(p1) || ['Empresário','Empresária','Comerciante'].includes(p2);
+  }
+
+  window.toggleRendaEmpresa=function(){
+    const empresa=profissaoEmpresa52();
+    const boxEmpresa=document.getElementById('boxRendaEmpresa');
+    const boxNormal=document.getElementById('boxRendaNormal');
+    if(boxEmpresa) boxEmpresa.classList.toggle('hidden',!empresa);
+    if(boxNormal) boxNormal.classList.toggle('hidden',empresa);
+    if(empresa){
+      const rc=document.getElementById('renda_casal');
+      if(rc) rc.value='';
+    }
+  };
+
+  // Atualiza contador após login, sem quebrar o login original
+  const oldEntrar=window.entrar;
+  if(typeof oldEntrar==='function' && !window.__entrarAbordagem52Wrapped){
+    window.__entrarAbordagem52Wrapped=true;
+    window.entrar=async function(){
+      const r=await oldEntrar.apply(this,arguments);
+      setTimeout(window.carregarContadorAbordagensHoje52,1000);
+      return r;
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    const btn=document.getElementById('btnRegistrarAbordagem52');
+    if(btn) btn.onclick=window.registrarAbordagemSemPesquisa52;
+  });
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro Elite 5.3 • FIX DEFINITIVO BOTÃO ABORDAGEM + RENDA ===== */
+(function(){
+  function getVal53(id){
+    const el=document.getElementById(id);
+    return el ? String(el.value||'') : '';
+  }
+  function setText53(id,value){
+    const el=document.getElementById(id);
+    if(el) el.innerText=value;
+  }
+  function showMsg53(text,cls){
+    const el=document.getElementById('formMsg');
+    if(el) el.innerHTML='<span class="'+(cls||'ok')+'">'+text+'</span>';
+  }
+  function hojeISO53(){
+    return new Date().toISOString().slice(0,10);
+  }
+  function empresaSelecionada53(){
+    const p1=getVal53('profissao_1');
+    const p2=getVal53('profissao_2');
+    return ['Empresário','Empresária','Comerciante'].includes(p1) || ['Empresário','Empresária','Comerciante'].includes(p2);
+  }
+
+  window.toggleRendaEmpresa = function(){
+    const ativa=empresaSelecionada53();
+    document.body.classList.toggle('empresaRendaAtiva', ativa);
+    const normal=document.getElementById('boxRendaNormal');
+    const empresa=document.getElementById('boxRendaEmpresa');
+    if(normal) normal.style.display=ativa?'none':'block';
+    if(empresa){
+      empresa.classList.toggle('hidden', !ativa);
+      empresa.style.display=ativa?'grid':'none';
+    }
+    if(ativa){
+      const renda=document.getElementById('renda_casal');
+      if(renda) renda.value='';
+    }
+  };
+
+  window.carregarContadorAbordagensHoje53 = async function(){
+    const email=window.usuarioEmail || '';
+    if(!email){
+      setText53('abordagensHoje',0);
+      return;
+    }
+    try{
+      const de=hojeISO53()+'T00:00:00';
+      const ate=hojeISO53()+'T23:59:59';
+      const resp=await window.db.from('abordagens').select('*',{count:'exact',head:true})
+        .eq('user_email',email)
+        .gte('created_at',de)
+        .lte('created_at',ate);
+      if(resp.error) throw resp.error;
+      setText53('abordagensHoje', resp.count || 0);
+    }catch(e){
+      const key='captapro_abordagens_'+email+'_'+hojeISO53();
+      setText53('abordagensHoje', Number(localStorage.getItem(key)||0));
+      console.warn('Contador abordagem local:', e.message||e);
+    }
+  };
+
+  window.registrarAbordagemSemPesquisa53 = async function(){
+    const email=window.usuarioEmail || '';
+    if(!email){
+      showMsg53('Entre no app antes de registrar abordagem.','erro');
+      return;
+    }
+
+    try{
+      if(typeof window.detectarPontoOficialAgora==='function'){
+        try{ window.detectarPontoOficialAgora(); }catch(e){}
+      }
+
+      const payload={
+        user_email:email,
+        captador_nome:window.captadorNome || '',
+        equipe:getVal53('equipe') || null,
+        ponto_captacao:getVal53('ponto_captacao') || null,
+        ponto_oficial:getVal53('ponto_oficial') || getVal53('ponto_captacao') || null,
+        distancia_ponto_metros:Number(getVal53('distancia_ponto_metros')||0) || null,
+        latitude:(window.latitude===null||window.latitude===undefined) ? null : Number(window.latitude),
+        longitude:(window.longitude===null||window.longitude===undefined) ? null : Number(window.longitude),
+        horario_local:String(new Date().getHours()).padStart(2,'0')+':00',
+        observacao:'Abordagem registrada sem pesquisa'
+      };
+
+      const resp=await window.db.from('abordagens').insert(payload);
+
+      if(resp.error) throw resp.error;
+
+      await window.carregarContadorAbordagensHoje53();
+      showMsg53('Abordagem registrada com sucesso.','ok');
+    }catch(e){
+      const key='captapro_abordagens_'+email+'_'+hojeISO53();
+      localStorage.setItem(key, Number(localStorage.getItem(key)||0)+1);
+      setText53('abordagensHoje', Number(localStorage.getItem(key)||0));
+      showMsg53('Abordagem contada localmente. Se não salvar no Supabase, rode o SQL 5.3.','ok');
+      console.warn('Erro Supabase abordagem:', e.message||e);
+    }
+  };
+
+  function ligarEventos53(){
+    const btn=document.getElementById('btnRegistrarAbordagem52');
+    if(btn){
+      btn.onclick=function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+        window.registrarAbordagemSemPesquisa53();
+        return false;
+      };
+    }
+
+    ['profissao_1','profissao_2'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el && !el.__renda53){
+        el.__renda53=true;
+        el.addEventListener('change',window.toggleRendaEmpresa);
+      }
+    });
+
+    window.toggleRendaEmpresa();
+    window.carregarContadorAbordagensHoje53();
+  }
+
+  // Envolve login original para atualizar contador depois de entrar
+  const oldEntrar=window.entrar;
+  if(typeof oldEntrar==='function' && !window.__entrar53Wrapped){
+    window.__entrar53Wrapped=true;
+    window.entrar=async function(){
+      const r=await oldEntrar.apply(this,arguments);
+      setTimeout(ligarEventos53,700);
+      setTimeout(window.carregarContadorAbordagensHoje53,1200);
+      return r;
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',ligarEventos53);
+  setTimeout(ligarEventos53,500);
+  setTimeout(ligarEventos53,1500);
+})();
+</script>
+
 </body>
 </html>
