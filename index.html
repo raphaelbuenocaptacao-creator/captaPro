@@ -6,10 +6,10 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro Elite 5.8</title>
+<title>CaptaPro Elite 5.9</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2">
-/* ===== CaptaPro Elite 5.8 ===== */
+/* ===== CaptaPro Elite 5.9 ===== */
 const PONTOS_OFICIAIS_CAPTAPRO=[
   {nome:'Porta dentro do Park',apelido:'PORTA DREAM HOUSE',lat:-22.720958,lng:-45.572798,raio:25,tipo:'PARK'},
   {nome:'Park Dream House',apelido:'PARK DREAM HOUSE',lat:-22.720590,lng:-45.572894,raio:40,tipo:'PARK'},
@@ -409,7 +409,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:900px){.estadoCidadeGroup{grid-template-columns:1fr 1fr}}
 
 
-/* CaptaPro Elite 5.8 */
+/* CaptaPro Elite 5.9 */
 .pontoAutoBox{
   grid-column:1/-1;
   display:grid;
@@ -535,7 +535,7 @@ body:not(.empresaRendaAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){.abordagemBox{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 5.8 • botão abordagem e renda empresário corrigidos */
+/* CaptaPro Elite 5.9 • botão abordagem e renda empresário corrigidos */
 #abordagemBox54{
   grid-column:1/-1!important;
   display:grid!important;
@@ -570,7 +570,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){#abordagemBox54{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 5.8 */
+/* CaptaPro Elite 5.9 */
 #abordagemBox55{grid-column:1/-1!important;display:grid!important;grid-template-columns:1.2fr .8fr!important;gap:8px!important;margin:8px 0 12px!important}
 #btnRegistrarAbordagem55{background:linear-gradient(135deg,#ef1b24,#850000)!important;border:1px solid #ff4444!important;min-height:72px!important;font-size:18px!important;font-weight:900!important;text-transform:uppercase!important;box-shadow:0 0 22px rgba(239,27,36,.32)!important;cursor:pointer!important}
 body.rendaEmpresarioAtiva #boxRendaNormal{display:none!important}
@@ -581,7 +581,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){#abordagemBox55{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 5.8 • Aba Excel Geral */
+/* CaptaPro Elite 5.9 • Aba Excel Geral */
 .excelTabBtn{
   background:linear-gradient(135deg,#005bff,#00c2ff)!important;
   border:1px solid #66d9ff!important;
@@ -622,7 +622,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 }
 
 
-/* CaptaPro Elite 5.8 • BI Elite e ranking restrito captador */
+/* CaptaPro Elite 5.9 • BI Elite e ranking restrito captador */
 .biEliteTabBtn{
   background:linear-gradient(135deg,#6a00ff,#ff00c8)!important;
   border:1px solid #ff74e8!important;
@@ -652,7 +652,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){.captainBox{align-items:flex-start}.captainTrophy{font-size:34px}}
 
 
-/* CaptaPro Elite 5.8 • Relatórios unificados */
+/* CaptaPro Elite 5.9 • Relatórios unificados */
 .excelTabBtn{
   background:linear-gradient(135deg,#005bff,#8a00ff,#ff00c8)!important;
   border:1px solid #66d9ff!important;
@@ -665,6 +665,13 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 .relatorioAvancadoUnificado{
   margin-top:-4px;
 }
+
+
+/* CaptaPro Elite 5.9 • CSV automático */
+#relatorioCsvStatus59{border-color:#0e78ff;color:#d7ecff}
+.csvOk59{color:#00e676;font-weight:900}
+.csvWarn59{color:#ffd54f;font-weight:900}
+.csvErr59{color:#ff7777;font-weight:900}
 
 </style>
 </head>
@@ -689,7 +696,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 5.8</div>
+    <div class="version">CaptaPro Elite 5.9</div>
     <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Criado pela empresa Bueno Invest</p>
   </div>
 
@@ -853,7 +860,9 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
           <input id="excelArquivoResultados" type="file" accept=".xlsx,.xls,.csv" onchange="importarExcelResultados(event)">
         </label>
         <button class="main" onclick="carregarExcelDoSistema()">Usar dados salvos do sistema</button>
+        <button class="secondary" onclick="carregarCsvAutomatico59(true)">Carregar 12345.csv</button>
         <button class="secondary" onclick="limparExcelResultados()">Limpar análise</button>
+        <div id="relatorioCsvStatus59" class="sectionNote" style="grid-column:1/-1">Carregamento automático: procurando 12345.csv no GitHub...</div>
       </div>
 
       <div class="filterBar four">
@@ -1249,7 +1258,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
     </div>
   </div>
 
-  <div class="footer">CaptaPro Elite 5.8 • Criado pela empresa Bueno Invest</div>
+  <div class="footer">CaptaPro Elite 5.9 • Criado pela empresa Bueno Invest</div>
 </div>
 
 <script>
@@ -3050,7 +3059,7 @@ function escapeAttr(value){return escapeHtml(value).replace(/`/g,'&#96;')}
 
 
 <script>
-/* ===== CaptaPro Elite 5.8 • FIX REAL BOTÃO ABORDAGEM + RENDA ===== */
+/* ===== CaptaPro Elite 5.9 • FIX REAL BOTÃO ABORDAGEM + RENDA ===== */
 (function(){
   function el(id){return document.getElementById(id)}
   function v(id){const x=el(id);return x?String(x.value||''):''}
@@ -3203,7 +3212,7 @@ document.addEventListener('DOMContentLoaded',ligar);setTimeout(ligar,700);setTim
 
 
 <script>
-/* ===== CaptaPro Elite 5.8 • Excel Geral ===== */
+/* ===== CaptaPro Elite 5.9 • Excel Geral ===== */
 window.excelResultadosRows=[];
 
 function excelMoeda(n){
@@ -3381,6 +3390,194 @@ function renderExcelCharts(rows){
   if(ctx1)window.chartExcelMesObj=new Chart(ctx1,{type:'bar',data:{labels,datasets:[{label:'Casais',data:porMes.map(x=>x.casais)},{label:'Vendas',data:porMes.map(x=>x.vendas)}]},options:{responsive:true}});
   if(ctx2)window.chartExcelCustoObj=new Chart(ctx2,{type:'line',data:{labels,datasets:[{label:'Total Brinde',data:porMes.map(x=>x.brinde)},{label:'Custo por Casal',data:porMes.map(x=>x.custoCasal)}]},options:{responsive:true}});
 }
+</script>
+
+
+<script>
+/* ===== CaptaPro Elite 5.9 • Correção Relatórios CSV automático ===== */
+(function(){
+  function el(id){return document.getElementById(id)}
+  function status59(txt,cls){
+    const e=el('relatorioCsvStatus59');
+    if(e)e.innerHTML='<span class="'+(cls||'csvOk59')+'">'+txt+'</span>';
+  }
+  function moedaNum59(v){
+    if(v===null||v===undefined)return 0;
+    if(typeof v==='number')return v;
+    let s=String(v).trim();
+    if(!s)return 0;
+    s=s.replace(/R\$/gi,'').replace(/\s/g,'');
+    if(s.includes(',') && s.includes('.')) s=s.replace(/\./g,'').replace(',','.');
+    else if(s.includes(',')) s=s.replace(',','.');
+    return Number(s)||0;
+  }
+  function dataISO59(v){
+    if(!v)return '';
+    if(v instanceof Date && !isNaN(v))return v.toISOString().slice(0,10);
+    if(typeof v==='number' && window.XLSX){
+      const d=XLSX.SSF.parse_date_code(v);
+      if(d)return `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`;
+    }
+    const s=String(v).trim();
+    let m=s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+    if(m){
+      let y=m[3].length===2?'20'+m[3]:m[3];
+      return `${y}-${String(m[2]).padStart(2,'0')}-${String(m[1]).padStart(2,'0')}`;
+    }
+    if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);
+    return '';
+  }
+  function splitCsvLine59(line,sep){
+    const out=[];let cur='',q=false;
+    for(let i=0;i<line.length;i++){
+      const ch=line[i],nx=line[i+1];
+      if(ch==='"' && q && nx==='"'){cur+='"';i++;continue}
+      if(ch==='"'){q=!q;continue}
+      if(ch===sep && !q){out.push(cur);cur='';continue}
+      cur+=ch;
+    }
+    out.push(cur);
+    return out.map(x=>String(x||'').trim());
+  }
+  function rowGet59(row,names){
+    const keys=Object.keys(row||{});
+    const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+    for(const name of names){
+      const n=norm(name);
+      const k=keys.find(x=>norm(x)===n) || keys.find(x=>norm(x).includes(n));
+      if(k!==undefined)return row[k];
+    }
+    return '';
+  }
+  function isVenda59(row){
+    const status=String(rowGet59(row,['Status do contrato','Status atendimento','Status'])||'').toLowerCase();
+    const valor=moedaNum59(rowGet59(row,['Valor vendido','Valor venda','VGV','Valor']));
+    return valor>0 || status.includes('vend') || status.includes('contrato') || status.includes('aprov');
+  }
+  function brindeCusto59(brinde){
+    const b=String(brinde||'').toLowerCase();
+    if(!b)return 0;
+    if(b.includes('fondue'))return 120;
+    if(b.includes('chocolate'))return 80;
+    if(b.includes('vinho'))return 70;
+    if(b.includes('almoço')||b.includes('almoco')||b.includes('jantar'))return 150;
+    if(b.includes('caneca'))return 35;
+    if(b.includes('voucher'))return 100;
+    return 50;
+  }
+  function normalizarLinhaTS59(row){
+    const data=dataISO59(rowGet59(row,['Data de atendimento','Data atendimento','Data','Dia']));
+    const valor=moedaNum59(rowGet59(row,['Valor vendido','Valor venda','VGV','Valor']));
+    const local=rowGet59(row,['Local Captação','Local Captacao','Ponto','Ponto Captação']);
+    const brinde=rowGet59(row,['Brindes efetivos','Brinde','Brindes']);
+    const venda=isVenda59(row);
+    const base={
+      data,
+      mes:data?data.slice(0,7):'Sem mês',
+      ponto:local||'Sem ponto',
+      vgv:valor,
+      brinde:brindeCusto59(brinde),
+      brinde_nome:brinde||'',
+      vendas:venda?1:0,
+      casais:1
+    };
+    const linhas=[];
+    const prom=rowGet59(row,['Promotor de marketing','Promotor Marketing','Promotor','Captador']);
+    const liner=rowGet59(row,['Liner']);
+    const closer=rowGet59(row,['Closer']);
+    if(prom)linhas.push({...base,nome:String(prom).trim(),funcao:'Promotor'});
+    if(liner)linhas.push({...base,nome:String(liner).trim(),funcao:'Liner'});
+    if(closer)linhas.push({...base,nome:String(closer).trim(),funcao:'Closer'});
+    if(!linhas.length){
+      const nome=rowGet59(row,['Profissional','Nome']);
+      if(nome)linhas.push({...base,nome:String(nome).trim(),funcao:'Promotor'});
+    }
+    return linhas.filter(x=>x.nome && x.nome!=='-');
+  }
+  function parseTSExplorerCSV59(text){
+    text=String(text||'').replace(/^\ufeff/,'');
+    const lines=text.split(/\r?\n/).filter(l=>l.trim().length);
+    const headerIndex=lines.findIndex(l=>/Promotor de marketing/i.test(l) && /Valor vendido/i.test(l));
+    const idx=headerIndex>=0?headerIndex:0;
+    const sep=(lines[idx].split(';').length>=lines[idx].split(',').length)?';':',';
+    const headers=splitCsvLine59(lines[idx],sep).map(h=>h.trim());
+    const rawRows=[];
+    for(let i=idx+1;i<lines.length;i++){
+      const vals=splitCsvLine59(lines[i],sep);
+      if(vals.every(v=>!v))continue;
+      const obj={};
+      headers.forEach((h,j)=>obj[h||('col_'+j)]=vals[j]||'');
+      rawRows.push(obj);
+    }
+    return rawRows.flatMap(normalizarLinhaTS59);
+  }
+
+  async function aplicarRows59(rows,origem){
+    window.excelResultadosRows=(rows||[]).filter(x=>x.nome);
+    const dia=el('excelDiaFiltro');
+    if(dia)dia.value=''; // evita ficar preso no dia e mostrar 0
+    if(typeof preencherFiltrosExcel==='function')preencherFiltrosExcel();
+    if(typeof renderExcelResultados==='function')renderExcelResultados();
+    if(typeof preencherProfissionaisRelatorio58==='function')preencherProfissionaisRelatorio58();
+    if(typeof renderRelatorioCompleto58==='function')renderRelatorioCompleto58();
+    if(typeof renderBIElite==='function')renderBIElite();
+    const total=window.excelResultadosRows.length;
+    const profs=new Set(window.excelResultadosRows.map(x=>x.nome)).size;
+    status59(`Dados carregados de ${origem}: ${total} registros / ${profs} profissionais.`, 'csvOk59');
+  }
+
+  window.carregarCsvAutomatico59=async function(forcar){
+    try{
+      status59('Carregando 12345.csv...', 'csvWarn59');
+      const resp=await fetch('12345.csv?ts='+(forcar?Date.now():'v59'),{cache:'no-store'});
+      if(!resp.ok)throw new Error('Arquivo 12345.csv não encontrado no mesmo repositório.');
+      const buf=await resp.arrayBuffer();
+      let text='';
+      try{text=new TextDecoder('windows-1252').decode(buf)}catch(e){text=new TextDecoder('latin1').decode(buf)}
+      const rows=parseTSExplorerCSV59(text);
+      if(!rows.length)throw new Error('CSV lido, mas sem linhas válidas.');
+      await aplicarRows59(rows,'12345.csv');
+    }catch(e){
+      status59('Não carregou automático: '+(e.message||e)+'. Use o botão Escolher arquivo.', 'csvErr59');
+    }
+  }
+
+  // Corrige importação manual: agora aceita CSV TSExplorer em latin1/windows-1252 e pula cabeçalhos
+  const oldImport=window.importarExcelResultados;
+  window.importarExcelResultados=async function(ev){
+    const file=ev.target.files&&ev.target.files[0];
+    if(!file)return;
+    const buf=await file.arrayBuffer();
+    if(file.name.toLowerCase().endsWith('.csv')){
+      let text='';
+      try{text=new TextDecoder('windows-1252').decode(buf)}catch(e){text=new TextDecoder('latin1').decode(buf)}
+      const rows=parseTSExplorerCSV59(text);
+      await aplicarRows59(rows,file.name);
+      return;
+    }
+    if(typeof oldImport==='function'){
+      const r=await oldImport.apply(this,arguments);
+      setTimeout(()=>{ if(typeof preencherProfissionaisRelatorio58==='function')preencherProfissionaisRelatorio58(); if(typeof renderRelatorioCompleto58==='function')renderRelatorioCompleto58(); },500);
+      return r;
+    }
+  }
+
+  const oldAba=window.aba;
+  if(typeof oldAba==='function'&&!window.__aba59csv){
+    window.__aba59csv=true;
+    window.aba=function(id,btn){
+      const r=oldAba.apply(this,arguments);
+      if(id==='excelResultados' && (!window.excelResultadosRows || !window.excelResultadosRows.length)){
+        setTimeout(()=>carregarCsvAutomatico59(false),500);
+      }
+      return r;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(()=>{ if(el('excelResultados') && !el('excelResultados').classList.contains('hidden')) carregarCsvAutomatico59(false); },1200);
+  });
+})();
 </script>
 
 </body>
