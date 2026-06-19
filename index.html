@@ -6,10 +6,10 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro Elite 5.3</title>
+<title>CaptaPro Elite 5.4</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2">
-/* ===== CaptaPro Elite 5.3 • Abordagem Corrigida ===== */
+/* ===== CaptaPro Elite 5.4 • Botão Corrigido ===== */
 const PONTOS_OFICIAIS_CAPTAPRO=[
   {nome:'Porta dentro do Park',apelido:'PORTA DREAM HOUSE',lat:-22.720958,lng:-45.572798,raio:25,tipo:'PARK'},
   {nome:'Park Dream House',apelido:'PARK DREAM HOUSE',lat:-22.720590,lng:-45.572894,raio:40,tipo:'PARK'},
@@ -408,7 +408,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:900px){.estadoCidadeGroup{grid-template-columns:1fr 1fr}}
 
 
-/* CaptaPro Elite 5.3 • Abordagem Corrigida */
+/* CaptaPro Elite 5.4 • Botão Corrigido */
 .pontoAutoBox{
   grid-column:1/-1;
   display:grid;
@@ -533,6 +533,41 @@ body.empresaRendaAtiva #boxRendaEmpresa{display:grid!important}
 body:not(.empresaRendaAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){.abordagemBox{grid-template-columns:1fr!important}}
 
+
+/* CaptaPro Elite 5.4 • botão abordagem e renda empresário corrigidos */
+#abordagemBox54{
+  grid-column:1/-1!important;
+  display:grid!important;
+  grid-template-columns:1.2fr .8fr!important;
+  gap:8px!important;
+  margin:8px 0 12px!important;
+}
+#btnRegistrarAbordagem54{
+  background:linear-gradient(135deg,#ef1b24,#850000)!important;
+  border:1px solid #ff4444!important;
+  min-height:72px!important;
+  font-size:18px!important;
+  font-weight:900!important;
+  text-transform:uppercase!important;
+  box-shadow:0 0 22px rgba(239,27,36,.32)!important;
+  cursor:pointer!important;
+}
+.abordagemCounter{
+  background:#101010!important;
+  border:1px solid #333!important;
+  border-radius:13px!important;
+  padding:10px 12px!important;
+  text-align:center!important;
+}
+.abordagemCounter span{display:block!important;color:#aaa!important;font-size:11px!important;font-weight:900!important;text-transform:uppercase!important}
+.abordagemCounter b{display:block!important;color:#00e676!important;font-size:30px!important;margin-top:2px!important}
+.abordagemCounter small{color:#888!important;font-size:11px!important}
+body.rendaEmpresarioAtiva #boxRendaNormal{display:none!important}
+body.rendaEmpresarioAtiva #boxRendaEmpresa{display:grid!important}
+body.rendaEmpresarioAtiva #boxRendaEmpresa.hidden{display:grid!important}
+body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
+@media(max-width:900px){#abordagemBox54{grid-template-columns:1fr!important}}
+
 </style>
 </head>
 <body>
@@ -556,7 +591,7 @@ body:not(.empresaRendaAtiva) #boxRendaEmpresa{display:none!important}
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 5.3 • Abordagem Corrigida</div>
+    <div class="version">CaptaPro Elite 5.4 • Botão Corrigido</div>
     <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Criado pela empresa Bueno Invest</p>
   </div>
 
@@ -590,8 +625,9 @@ body:not(.empresaRendaAtiva) #boxRendaEmpresa{display:none!important}
       <div id="jornadaStatus" class="mini admOnly">Jornada automática ainda não iniciada.</div>
       <div class="loggedPromoter"><span>Pesquisa registrada automaticamente em nome de:</span><b id="promotorLogadoNome">Aguardando entrada</b></div>
 
-      <div id="abordagemBox52" class="abordagemBox">
-        <button id="btnRegistrarAbordagem52" class="btnAbordagem" type="button">+ REGISTRAR ABORDAGEM</button>
+      
+      <div id="abordagemBox54" class="abordagemBox">
+        <button id="btnRegistrarAbordagem54" class="btnAbordagem" type="button" onclick="registrarAbordagemAgora(event)">+ REGISTRAR ABORDAGEM</button>
         <div class="abordagemCounter">
           <span>Abordagens hoje</span>
           <b id="abordagensHoje">0</b>
@@ -2735,6 +2771,133 @@ function escapeAttr(value){return escapeHtml(value).replace(/`/g,'&#96;')}
   document.addEventListener('DOMContentLoaded',ligarEventos53);
   setTimeout(ligarEventos53,500);
   setTimeout(ligarEventos53,1500);
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro Elite 5.4 • FIX REAL BOTÃO ABORDAGEM + RENDA ===== */
+(function(){
+  function el(id){return document.getElementById(id)}
+  function v(id){const x=el(id);return x?String(x.value||''):''}
+  function hoje(){return new Date().toISOString().slice(0,10)}
+  function emailAtual(){return (typeof usuarioEmail!=='undefined' && usuarioEmail)?usuarioEmail:'sem_email'}
+  function keyLocal(){return 'captapro_abordagens_54_'+emailAtual()+'_'+hoje()}
+  function contador(){const x=el('abordagensHoje');return Number(x&&x.innerText?x.innerText:0)||0}
+  function setContador(n){const x=el('abordagensHoje');if(x)x.innerText=Number(n||0)}
+  function msgTela(t,c){const x=el('formMsg');if(x)x.innerHTML='<span class="'+(c||'ok')+'">'+t+'</span>'}
+
+  window.registrarAbordagemAgora = async function(ev){
+    if(ev){ev.preventDefault();ev.stopPropagation();}
+    if(typeof usuarioEmail==='undefined' || !usuarioEmail){
+      msgTela('Entre no app antes de registrar abordagem.','erro');
+      return false;
+    }
+
+    const total=contador()+1;
+    setContador(total);
+    localStorage.setItem(keyLocal(), total);
+    msgTela('Abordagem registrada. Total de hoje: '+total,'ok');
+
+    try{
+      if(typeof detectarPontoOficialAgora==='function'){
+        try{detectarPontoOficialAgora()}catch(e){}
+      }
+      const payload={
+        user_email:usuarioEmail,
+        captador_nome:(typeof captadorNome!=='undefined'?captadorNome:''),
+        equipe:v('equipe')||null,
+        ponto_captacao:v('ponto_captacao')||null,
+        ponto_oficial:v('ponto_oficial')||v('ponto_captacao')||null,
+        distancia_ponto_metros:Number(v('distancia_ponto_metros')||0)||null,
+        latitude:(typeof latitude==='undefined'||latitude===null)?null:Number(latitude),
+        longitude:(typeof longitude==='undefined'||longitude===null)?null:Number(longitude),
+        horario_local:String(new Date().getHours()).padStart(2,'0')+':00',
+        observacao:'Abordagem registrada sem pesquisa'
+      };
+      const resp=await db.from('abordagens').insert(payload);
+      if(resp && resp.error){
+        console.warn('Supabase abordagem:', resp.error.message || resp.error);
+        msgTela('Abordagem contada. Para salvar no banco, rode o SQL 5.4 no Supabase.','ok');
+      }
+    }catch(e){
+      console.warn('Erro abordagem:', e.message||e);
+      msgTela('Abordagem contada localmente. Rode o SQL 5.4 no Supabase.','ok');
+    }
+    return false;
+  };
+
+  window.atualizarContadorAbordagens54 = async function(){
+    const local=Number(localStorage.getItem(keyLocal())||0);
+    setContador(local);
+    try{
+      if(typeof usuarioEmail==='undefined'||!usuarioEmail)return;
+      const de=hoje()+'T00:00:00';
+      const ate=hoje()+'T23:59:59';
+      const resp=await db.from('abordagens').select('*',{count:'exact',head:true})
+        .eq('user_email',usuarioEmail)
+        .gte('created_at',de)
+        .lte('created_at',ate);
+      if(!resp.error && typeof resp.count==='number'){
+        const maior=Math.max(local, resp.count||0);
+        setContador(maior);
+        localStorage.setItem(keyLocal(), maior);
+      }
+    }catch(e){}
+  };
+
+  function ehEmpresa(){
+    return ['Empresário','Empresária','Comerciante'].includes(v('profissao_1')) ||
+           ['Empresário','Empresária','Comerciante'].includes(v('profissao_2'));
+  }
+
+  window.toggleRendaEmpresa = function(){
+    const ativa=ehEmpresa();
+    document.body.classList.toggle('rendaEmpresarioAtiva', ativa);
+    const normal=el('boxRendaNormal');
+    const empresa=el('boxRendaEmpresa');
+    const renda=el('renda_casal');
+    if(normal) normal.style.display=ativa?'none':'block';
+    if(empresa){
+      empresa.classList.toggle('hidden', !ativa);
+      empresa.style.display=ativa?'grid':'none';
+    }
+    if(ativa && renda) renda.value='';
+  };
+
+  function ligar(){
+    const btn=el('btnRegistrarAbordagem54');
+    if(btn && !btn.__ligado54){
+      btn.__ligado54=true;
+      btn.onclick=window.registrarAbordagemAgora;
+      btn.addEventListener('click', window.registrarAbordagemAgora);
+    }
+    ['profissao_1','profissao_2'].forEach(id=>{
+      const p=el(id);
+      if(p && !p.__renda54){
+        p.__renda54=true;
+        p.addEventListener('change',window.toggleRendaEmpresa);
+        p.addEventListener('input',window.toggleRendaEmpresa);
+      }
+    });
+    window.toggleRendaEmpresa();
+    window.atualizarContadorAbordagens54();
+  }
+
+  const oldEntrar=window.entrar;
+  if(typeof oldEntrar==='function' && !window.__entrar54){
+    window.__entrar54=true;
+    window.entrar=async function(){
+      const r=await oldEntrar.apply(this,arguments);
+      setTimeout(ligar,400);
+      setTimeout(window.atualizarContadorAbordagens54,900);
+      return r;
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',ligar);
+  setTimeout(ligar,300);
+  setTimeout(ligar,1200);
 })();
 </script>
 
