@@ -6,10 +6,10 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro Elite 6.1</title>
+<title>CaptaPro Elite 6.3</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2">
-/* ===== CaptaPro Elite 6.1 ===== */
+/* ===== CaptaPro Elite 6.3 ===== */
 const PONTOS_OFICIAIS_CAPTAPRO=[
   {nome:'Porta dentro do Park',apelido:'PORTA DREAM HOUSE',lat:-22.720958,lng:-45.572798,raio:25,tipo:'PARK'},
   {nome:'Park Dream House',apelido:'PARK DREAM HOUSE',lat:-22.720590,lng:-45.572894,raio:40,tipo:'PARK'},
@@ -409,7 +409,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:900px){.estadoCidadeGroup{grid-template-columns:1fr 1fr}}
 
 
-/* CaptaPro Elite 6.1 */
+/* CaptaPro Elite 6.3 */
 .pontoAutoBox{
   grid-column:1/-1;
   display:grid;
@@ -535,7 +535,7 @@ body:not(.empresaRendaAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){.abordagemBox{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 6.1 • botão abordagem e renda empresário corrigidos */
+/* CaptaPro Elite 6.3 • botão abordagem e renda empresário corrigidos */
 #abordagemBox54{
   grid-column:1/-1!important;
   display:grid!important;
@@ -570,7 +570,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){#abordagemBox54{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 6.1 */
+/* CaptaPro Elite 6.3 */
 #abordagemBox55{grid-column:1/-1!important;display:grid!important;grid-template-columns:1.2fr .8fr!important;gap:8px!important;margin:8px 0 12px!important}
 #btnRegistrarAbordagem55{background:linear-gradient(135deg,#ef1b24,#850000)!important;border:1px solid #ff4444!important;min-height:72px!important;font-size:18px!important;font-weight:900!important;text-transform:uppercase!important;box-shadow:0 0 22px rgba(239,27,36,.32)!important;cursor:pointer!important}
 body.rendaEmpresarioAtiva #boxRendaNormal{display:none!important}
@@ -581,7 +581,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){#abordagemBox55{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 6.1 • Aba Excel Geral */
+/* CaptaPro Elite 6.3 • Aba Excel Geral */
 .excelTabBtn{
   background:linear-gradient(135deg,#005bff,#00c2ff)!important;
   border:1px solid #66d9ff!important;
@@ -622,7 +622,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 }
 
 
-/* CaptaPro Elite 6.1 • BI Elite e ranking restrito captador */
+/* CaptaPro Elite 6.3 • BI Elite e ranking restrito captador */
 .biEliteTabBtn{
   background:linear-gradient(135deg,#6a00ff,#ff00c8)!important;
   border:1px solid #ff74e8!important;
@@ -652,7 +652,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){.captainBox{align-items:flex-start}.captainTrophy{font-size:34px}}
 
 
-/* CaptaPro Elite 6.1 • Relatórios unificados */
+/* CaptaPro Elite 6.3 • Relatórios unificados */
 .excelTabBtn{
   background:linear-gradient(135deg,#005bff,#8a00ff,#ff00c8)!important;
   border:1px solid #66d9ff!important;
@@ -667,14 +667,14 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 }
 
 
-/* CaptaPro Elite 6.1 • CSV automático */
+/* CaptaPro Elite 6.3 • CSV automático */
 #relatorioCsvStatus59{border-color:#0e78ff;color:#d7ecff}
 .csvOk59{color:#00e676;font-weight:900}
 .csvWarn59{color:#ffd54f;font-weight:900}
 .csvErr59{color:#ff7777;font-weight:900}
 
 
-/* CaptaPro Elite 6.1 • atalhos CEO */
+/* CaptaPro Elite 6.3 • atalhos CEO */
 .ceoAtalhos61{
   border-color:#671818!important;
   background:linear-gradient(135deg,#120000,#101010)!important;
@@ -683,6 +683,14 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
   min-height:58px;
   font-size:16px;
 }
+
+
+/* CaptaPro Elite 6.3 • correção relatório CSV anual */
+#csvAutoInfo62{color:#d7ecff;border-color:#0e78ff}
+
+
+/* CaptaPro Elite 6.3 • parser TSExplorer anual */
+#csvAutoInfo63{color:#d7ecff;border-color:#0e78ff}
 
 </style>
 </head>
@@ -707,7 +715,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 6.1</div>
+    <div class="version">CaptaPro Elite 6.3</div>
     <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Criado pela empresa Bueno Invest</p>
   </div>
 
@@ -870,9 +878,9 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
           <input id="excelArquivoResultados" type="file" accept=".xlsx,.xls,.csv" onchange="importarExcelResultados(event)">
         </label>
         <button class="main" onclick="carregarExcelDoSistema()">Usar dados salvos do sistema</button>
-        <button class="secondary" onclick="carregarCsvAutomatico59(true)">Carregar 12345.csv</button>
+        <button class="secondary" onclick="carregarCsvAutomatico63(true)">Carregar 12345.csv</button>
         <button class="secondary" onclick="limparExcelResultados()">Limpar análise</button>
-        <div id="relatorioCsvStatus59" class="sectionNote" style="grid-column:1/-1">Carregamento automático: procurando 12345.csv no GitHub...</div>
+        <div id="relatorioCsvStatus59" class="sectionNote" style="grid-column:1/-1">Carregamento automático: procurando 12345.csv no GitHub...</div><div id="csvAutoInfo63" class="sectionNote" style="grid-column:1/-1">O arquivo precisa estar na mesma pasta do index.html com nome exato <b>12345.csv</b>.</div>
       </div>
 
       <div class="filterBar four">
@@ -1278,7 +1286,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
     </div>
   </div>
 
-  <div class="footer">CaptaPro Elite 6.1 • Criado pela empresa Bueno Invest</div>
+  <div class="footer">CaptaPro Elite 6.3 • Criado pela empresa Bueno Invest</div>
 </div>
 
 <script>
@@ -3079,7 +3087,7 @@ function escapeAttr(value){return escapeHtml(value).replace(/`/g,'&#96;')}
 
 
 <script>
-/* ===== CaptaPro Elite 6.1 • FIX REAL BOTÃO ABORDAGEM + RENDA ===== */
+/* ===== CaptaPro Elite 6.3 • FIX REAL BOTÃO ABORDAGEM + RENDA ===== */
 (function(){
   function el(id){return document.getElementById(id)}
   function v(id){const x=el(id);return x?String(x.value||''):''}
@@ -3232,7 +3240,7 @@ document.addEventListener('DOMContentLoaded',ligar);setTimeout(ligar,700);setTim
 
 
 <script>
-/* ===== CaptaPro Elite 6.1 • Excel Geral ===== */
+/* ===== CaptaPro Elite 6.3 • Excel Geral ===== */
 window.excelResultadosRows=[];
 
 function excelMoeda(n){
@@ -3414,7 +3422,7 @@ function renderExcelCharts(rows){
 
 
 <script>
-/* ===== CaptaPro Elite 6.1 • Correção Relatórios CSV automático ===== */
+/* ===== CaptaPro Elite 6.3 • Correção Relatórios CSV automático ===== */
 (function(){
   function el(id){return document.getElementById(id)}
   function status59(txt,cls){
@@ -3602,7 +3610,7 @@ function renderExcelCharts(rows){
 
 
 <script>
-/* ===== CaptaPro Elite 6.1 • Mapa escondido + salvar todas as fichas ===== */
+/* ===== CaptaPro Elite 6.3 • Mapa escondido + salvar todas as fichas ===== */
 (function(){
   function el(id){return document.getElementById(id)}
   function setMsg60(txt,classe){
@@ -3680,7 +3688,7 @@ function renderExcelCharts(rows){
 
 
 <script>
-/* ===== CaptaPro Elite 6.1 • Mapa/Sala dentro CEO + salvar Q/NQ/NQ1 ===== */
+/* ===== CaptaPro Elite 6.3 • Mapa/Sala dentro CEO + salvar Q/NQ/NQ1 ===== */
 (function(){
   function el(id){return document.getElementById(id)}
   function setMsg61(txt,classe){
@@ -3771,6 +3779,189 @@ function renderExcelCharts(rows){
       return r;
     };
   }
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro Elite 6.3 • Relatórios carregando 12345.csv do GitHub ===== */
+(function(){
+  function el(id){return document.getElementById(id)}
+  function status62(txt,cls){const e=el('relatorioCsvStatus59');if(e)e.innerHTML='<span class="'+(cls||'csvOk59')+'">'+txt+'</span>'}
+  function moedaNum62(v){if(v===null||v===undefined)return 0;if(typeof v==='number')return v;let s=String(v).trim();if(!s)return 0;s=s.replace(/R\$/gi,'').replace(/\s/g,'');if(s.includes(',')&&s.includes('.'))s=s.replace(/\./g,'').replace(',','.');else if(s.includes(','))s=s.replace(',','.');return Number(s)||0}
+  function dataISO62(v){if(!v)return '';const s=String(v).trim();let m=s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);if(m){let y=m[3].length===2?'20'+m[3]:m[3];return `${y}-${String(m[2]).padStart(2,'0')}-${String(m[1]).padStart(2,'0')}`}if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);return ''}
+  function splitCsv62(line,sep){const out=[];let cur='',q=false;for(let i=0;i<line.length;i++){const ch=line[i],nx=line[i+1];if(ch==='"'&&q&&nx==='"'){cur+='"';i++;continue}if(ch==='"'){q=!q;continue}if(ch===sep&&!q){out.push(cur);cur='';continue}cur+=ch}out.push(cur);return out.map(x=>String(x||'').trim())}
+  function norm62(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+  function get62(row,names){const keys=Object.keys(row||{});for(const name of names){const n=norm62(name);const k=keys.find(x=>norm62(x)===n)||keys.find(x=>norm62(x).includes(n));if(k!==undefined)return row[k]}return ''}
+  function isVenda62(row){const status=norm62(get62(row,['Status do contrato','Status atendimento','Status']));const valor=moedaNum62(get62(row,['Valor vendido','Valor venda','VGV','Valor']));return valor>0||status.includes('vend')||status.includes('aprov')||status.includes('contrato')}
+  function custoBrinde62(brinde){const b=norm62(brinde);if(!b)return 0;if(b.includes('fondue'))return 120;if(b.includes('chocolate'))return 80;if(b.includes('vinho'))return 70;if(b.includes('almoco')||b.includes('jantar'))return 150;if(b.includes('caneca'))return 35;if(b.includes('voucher'))return 100;return 50}
+  function normalizar62(row){const data=dataISO62(get62(row,['Data de atendimento','Data atendimento','Data','Dia']));const valor=moedaNum62(get62(row,['Valor vendido','Valor venda','VGV','Valor']));const local=get62(row,['Local Captação','Local Captacao','Ponto','Ponto Captação']);const brinde=get62(row,['Brindes efetivos','Brinde','Brindes']);const venda=isVenda62(row);const base={data,mes:data?data.slice(0,7):'Sem mês',ponto:local||'Sem ponto',vgv:valor,brinde:custoBrinde62(brinde),brinde_nome:brinde||'',vendas:venda?1:0,casais:1};const linhas=[];const prom=get62(row,['Promotor de marketing','Promotor Marketing','Promotor','Captador']);const liner=get62(row,['Liner']);const closer=get62(row,['Closer']);if(prom)linhas.push({...base,nome:String(prom).trim(),funcao:'Promotor'});if(liner)linhas.push({...base,nome:String(liner).trim(),funcao:'Liner'});if(closer)linhas.push({...base,nome:String(closer).trim(),funcao:'Closer'});return linhas.filter(x=>x.nome&&x.nome!=='-')}
+  function parseCsvTS62(text){text=String(text||'').replace(/^\ufeff/,'');const lines=text.split(/\r?\n/).filter(l=>l.trim());const headerIndex=lines.findIndex(l=>/Promotor de marketing/i.test(l)&&/Valor vendido/i.test(l));const idx=headerIndex>=0?headerIndex:0;const sep=(lines[idx].split(';').length>=lines[idx].split(',').length)?';':',';const headers=splitCsv62(lines[idx],sep);const raw=[];for(let i=idx+1;i<lines.length;i++){const vals=splitCsv62(lines[i],sep);if(vals.every(v=>!v))continue;const obj={};headers.forEach((h,j)=>obj[h||('col_'+j)]=vals[j]||'');raw.push(obj)}return raw.flatMap(normalizar62)}
+  async function aplicar62(rows,origem){window.excelResultadosRows=(rows||[]).filter(x=>x.nome);['excelDiaFiltro','relatorioProfDe','relatorioProfAte'].forEach(id=>{const x=el(id);if(x)x.value=''});if(typeof preencherFiltrosExcel==='function')preencherFiltrosExcel();if(typeof renderExcelResultados==='function')renderExcelResultados();if(typeof preencherProfissionaisRelatorio58==='function')preencherProfissionaisRelatorio58();if(typeof renderRelatorioCompleto58==='function')renderRelatorioCompleto58();if(typeof renderBIElite==='function')renderBIElite();const total=window.excelResultadosRows.length;const profs=new Set(window.excelResultadosRows.map(x=>x.nome)).size;status62(`OK: ${origem} carregado. ${total} registros / ${profs} profissionais.`,'csvOk59')}
+  async function tentar62(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(url+' não encontrado');const buf=await r.arrayBuffer();try{return new TextDecoder('windows-1252').decode(buf)}catch(e){return new TextDecoder('latin1').decode(buf)}}
+  window.carregarCsvAutomatico62=async function(forcar){try{status62('Carregando 12345.csv...','csvWarn59');const t=forcar?Date.now():'62';const urls=['./12345.csv?ts='+t,'12345.csv?ts='+t,'/captaPro/12345.csv?ts='+t];let text='',usado='';for(const u of urls){try{text=await tentar62(u);usado=u;break}catch(e){}}if(!text)throw new Error('Não encontrei 12345.csv na mesma pasta do index.html.');const rows=parseCsvTS62(text);if(!rows.length)throw new Error('CSV encontrado, mas não reconheci as colunas do TSExplorer.');await aplicar62(rows,usado)}catch(e){status62('ERRO: '+(e.message||e)+'. Confira o nome 12345.csv e aguarde o deploy do GitHub Pages.','csvErr59')}}
+  window.carregarCsvAutomatico59=window.carregarCsvAutomatico62;
+  const oldAba=window.aba;if(typeof oldAba==='function'&&!window.__aba62csv){window.__aba62csv=true;window.aba=function(id,btn){const r=oldAba.apply(this,arguments);if(id==='excelResultados')setTimeout(()=>carregarCsvAutomatico62(false),450);return r}}
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro Elite 6.3 • Parser definitivo TSExplorer 12345.csv ===== */
+(function(){
+  function el(id){return document.getElementById(id)}
+  function status63(txt,cls){const e=el('relatorioCsvStatus59');if(e)e.innerHTML='<span class="'+(cls||'csvOk59')+'">'+txt+'</span>'}
+  function norm63(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim()}
+  function moeda63(v){
+    if(v===null||v===undefined)return 0;
+    if(typeof v==='number')return v;
+    let s=String(v).trim(); if(!s)return 0;
+    s=s.replace(/R\$/gi,'').replace(/\s/g,'');
+    if(s.includes(',')&&s.includes('.'))s=s.replace(/\./g,'').replace(',','.');
+    else if(s.includes(','))s=s.replace(',','.');
+    return Number(s)||0;
+  }
+  function data63(v){
+    if(!v)return '';
+    if(typeof v==='number'&&window.XLSX){const d=XLSX.SSF.parse_date_code(v);if(d)return `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`}
+    const s=String(v).trim();
+    let m=s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+    if(m){let y=m[3].length===2?'20'+m[3]:m[3];return `${y}-${String(m[2]).padStart(2,'0')}-${String(m[1]).padStart(2,'0')}`}
+    if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);
+    return '';
+  }
+  function splitCSV63(line,sep){
+    const out=[];let cur='',q=false;
+    for(let i=0;i<line.length;i++){
+      const ch=line[i],nx=line[i+1];
+      if(ch==='"'&&q&&nx==='"'){cur+='"';i++;continue}
+      if(ch==='"'){q=!q;continue}
+      if(ch===sep&&!q){out.push(cur);cur='';continue}
+      cur+=ch;
+    }
+    out.push(cur);return out.map(x=>String(x||'').trim());
+  }
+  function parseCSV63(text){
+    text=String(text||'').replace(/^\ufeff/,'');
+    const lines=text.split(/\r?\n/).filter(l=>l.trim().length);
+    const idx=lines.findIndex(l=>/Promotor de marketing/i.test(l)&&/Data de atendimento/i.test(l));
+    if(idx<0)throw new Error('Cabeçalho TSExplorer não encontrado.');
+    const sep=(lines[idx].split(';').length>=lines[idx].split(',').length)?';':',';
+    const rawHeaders=splitCSV63(lines[idx],sep);
+    const headers=rawHeaders.map((h,i)=>String(h||('col_'+i)).trim()||('col_'+i));
+    const rows=[];
+    for(let i=idx+1;i<lines.length;i++){
+      const vals=splitCSV63(lines[i],sep);
+      if(vals.every(v=>!v))continue;
+      const obj={}; headers.forEach((h,j)=>obj[h]=vals[j]||'');
+      rows.push(obj);
+    }
+    return rows;
+  }
+  function get63(row,names){
+    const keys=Object.keys(row||{}); const nk=keys.map(k=>[k,norm63(k)]);
+    for(const name of names){
+      const n=norm63(name);
+      let found=nk.find(x=>x[1]===n) || nk.find(x=>x[1].includes(n));
+      if(found)return row[found[0]];
+    }
+    return '';
+  }
+  function custoBrinde63(brinde){
+    const b=norm63(brinde); if(!b)return 0;
+    const valores=[...String(brinde).matchAll(/VALOR:\s*([\d.,]+)/gi)].map(m=>moeda63(m[1]));
+    if(valores.length)return valores.reduce((a,b)=>a+b,0);
+    if(b.includes('fondue'))return 120;
+    if(b.includes('museu'))return 83.99;
+    if(b.includes('chocolate'))return 80;
+    if(b.includes('vinho'))return 70;
+    if(b.includes('almoco')||b.includes('jantar'))return 150;
+    if(b.includes('caneca'))return 35;
+    if(b.includes('voucher'))return 100;
+    return 50;
+  }
+  function venda63(row){
+    const status=norm63(get63(row,['Status do contrato','Status atendimento','Status']));
+    const valor=moeda63(get63(row,['Valor vendido','Valor venda','VGV','Valor']));
+    return valor>0 || status.includes('ativo') || status.includes('vend') || status.includes('contrato') || status.includes('aprov');
+  }
+  function normalizarTS63(row){
+    const dt=data63(get63(row,['Data de atendimento','Data atendimento','Data','Dia']));
+    const valor=moeda63(get63(row,['Valor vendido','Valor venda','VGV','Valor']));
+    const local=get63(row,['Local Captação','Local Captacao','Ponto Captação','Ponto']);
+    const brindeTxt=get63(row,['Brindes efetivos','Brinde','Brindes']);
+    const qual=get63(row,['Qualificação','Qualificacao']);
+    const uf=get63(row,['UF']); const cidade=get63(row,['Cidade']);
+    const status=get63(row,['Status do contrato','Status atendimento','Status']);
+    const isVenda=venda63(row);
+    const base={
+      data:dt, mes:dt?dt.slice(0,7):'Sem mês', ponto:local||'Sem ponto', ponto_captacao:local||'Sem ponto',
+      vgv:valor, brinde:custoBrinde63(brindeTxt), brinde_nome:brindeTxt||'', vendas:isVenda?1:0, casais:1,
+      qualificacao:qual||'', status:status||'', cidade:cidade||'', uf:uf||''
+    };
+    const linhas=[];
+    const prom=get63(row,['Promotor de marketing','Promotor Marketing','Promotor','Captador']);
+    const liner=get63(row,['Liner']);
+    const closer=get63(row,['Closer']);
+    if(prom)linhas.push({...base,nome:String(prom).trim(),funcao:'Promotor'});
+    if(liner)linhas.push({...base,nome:String(liner).trim(),funcao:'Liner'});
+    if(closer)linhas.push({...base,nome:String(closer).trim(),funcao:'Closer'});
+    return linhas.filter(x=>x.nome && x.nome!=='-' && x.nome.toLowerCase()!=='null');
+  }
+  function aplicarRows63(rows,origem){
+    window.excelResultadosRows=(rows||[]).filter(x=>x.nome);
+    ['excelDiaFiltro','relatorioProfDe','relatorioProfAte'].forEach(id=>{const x=el(id);if(x)x.value=''});
+    const func=el('excelFuncaoFiltro'); if(func)func.value='';
+    const mes=el('excelMesFiltro'); if(mes)mes.value='';
+    const prof=el('excelProfFiltro'); if(prof)prof.value='';
+    if(typeof preencherFiltrosExcel==='function')preencherFiltrosExcel();
+    if(typeof renderExcelResultados==='function')renderExcelResultados();
+    if(typeof preencherProfissionaisRelatorio58==='function')preencherProfissionaisRelatorio58();
+    if(typeof renderRelatorioCompleto58==='function')renderRelatorioCompleto58();
+    if(typeof renderBIElite==='function')renderBIElite();
+    const total=window.excelResultadosRows.length;
+    const profs=new Set(window.excelResultadosRows.map(x=>x.nome)).size;
+    const prom=window.excelResultadosRows.filter(x=>x.funcao==='Promotor').length;
+    const lin=window.excelResultadosRows.filter(x=>x.funcao==='Liner').length;
+    const clo=window.excelResultadosRows.filter(x=>x.funcao==='Closer').length;
+    status63(`OK: ${origem} carregado. ${total} lançamentos / ${profs} profissionais. Promotor: ${prom}, Liner: ${lin}, Closer: ${clo}.`,'csvOk59');
+  }
+  async function lerURL63(url){
+    const r=await fetch(url,{cache:'no-store'});
+    if(!r.ok)throw new Error(url+' não encontrado');
+    const buf=await r.arrayBuffer();
+    try{return new TextDecoder('windows-1252').decode(buf)}catch(e){return new TextDecoder('latin1').decode(buf)}
+  }
+  async function carregarCSV63(forcar){
+    try{
+      status63('Carregando 12345.csv...','csvWarn59');
+      const t=forcar?Date.now():'63';
+      const urls=['./12345.csv?ts='+t,'12345.csv?ts='+t,'/captaPro/12345.csv?ts='+t, location.origin+location.pathname.replace(/\/[^\/]*$/,'')+'/12345.csv?ts='+t];
+      let text='',usado='';
+      for(const u of urls){try{text=await lerURL63(u);usado=u;break}catch(e){}}
+      if(!text)throw new Error('Não encontrei 12345.csv na mesma pasta do index.html.');
+      const raw=parseCSV63(text);
+      const rows=raw.flatMap(normalizarTS63);
+      if(!rows.length)throw new Error('CSV encontrado, mas sem linhas válidas de Promotor/Liner/Closer.');
+      aplicarRows63(rows,usado);
+    }catch(e){status63('ERRO: '+(e.message||e)+'. Confira o nome 12345.csv e aguarde o deploy do GitHub Pages.','csvErr59')}
+  }
+  window.carregarCsvAutomatico63=carregarCSV63;
+  window.carregarCsvAutomatico62=carregarCSV63;
+  window.carregarCsvAutomatico59=carregarCSV63;
+  const oldImport=window.importarExcelResultados;
+  window.importarExcelResultados=async function(ev){
+    const file=ev.target.files&&ev.target.files[0]; if(!file)return;
+    const buf=await file.arrayBuffer();
+    if(file.name.toLowerCase().endsWith('.csv')){
+      let text=''; try{text=new TextDecoder('windows-1252').decode(buf)}catch(e){text=new TextDecoder('latin1').decode(buf)}
+      const raw=parseCSV63(text); const rows=raw.flatMap(normalizarTS63);
+      aplicarRows63(rows,file.name); return;
+    }
+    if(typeof oldImport==='function')return oldImport.apply(this,arguments);
+  };
+  const oldAba=window.aba;
+  if(typeof oldAba==='function'&&!window.__aba63csv){window.__aba63csv=true;window.aba=function(id,btn){const r=oldAba.apply(this,arguments);if(id==='excelResultados')setTimeout(()=>carregarCSV63(false),450);return r}}
 })();
 </script>
 
