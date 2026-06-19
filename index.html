@@ -6,10 +6,10 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro Elite 5.5</title>
+<title>CaptaPro Elite 5.7</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2">
-/* ===== CaptaPro Elite 5.5 • Funil e Abordagens ===== */
+/* ===== CaptaPro Elite 5.7 ===== */
 const PONTOS_OFICIAIS_CAPTAPRO=[
   {nome:'Porta dentro do Park',apelido:'PORTA DREAM HOUSE',lat:-22.720958,lng:-45.572798,raio:25,tipo:'PARK'},
   {nome:'Park Dream House',apelido:'PARK DREAM HOUSE',lat:-22.720590,lng:-45.572894,raio:40,tipo:'PARK'},
@@ -246,6 +246,7 @@ if(typeof entrarOriginal_52==='function'){
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -408,7 +409,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:900px){.estadoCidadeGroup{grid-template-columns:1fr 1fr}}
 
 
-/* CaptaPro Elite 5.5 • Funil e Abordagens */
+/* CaptaPro Elite 5.7 */
 .pontoAutoBox{
   grid-column:1/-1;
   display:grid;
@@ -534,7 +535,7 @@ body:not(.empresaRendaAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){.abordagemBox{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 5.5 • botão abordagem e renda empresário corrigidos */
+/* CaptaPro Elite 5.7 • botão abordagem e renda empresário corrigidos */
 #abordagemBox54{
   grid-column:1/-1!important;
   display:grid!important;
@@ -569,7 +570,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){#abordagemBox54{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 5.5 */
+/* CaptaPro Elite 5.7 */
 #abordagemBox55{grid-column:1/-1!important;display:grid!important;grid-template-columns:1.2fr .8fr!important;gap:8px!important;margin:8px 0 12px!important}
 #btnRegistrarAbordagem55{background:linear-gradient(135deg,#ef1b24,#850000)!important;border:1px solid #ff4444!important;min-height:72px!important;font-size:18px!important;font-weight:900!important;text-transform:uppercase!important;box-shadow:0 0 22px rgba(239,27,36,.32)!important;cursor:pointer!important}
 body.rendaEmpresarioAtiva #boxRendaNormal{display:none!important}
@@ -578,6 +579,77 @@ body.rendaEmpresarioAtiva #boxRendaEmpresa.hidden{display:grid!important}
 body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 .funilBar55{height:9px;background:#252525;border-radius:999px;overflow:hidden;margin-top:4px}.funilBar55 i{display:block;height:100%;background:linear-gradient(90deg,#ef1b24,#00e676)}
 @media(max-width:900px){#abordagemBox55{grid-template-columns:1fr!important}}
+
+
+/* CaptaPro Elite 5.7 • Aba Excel Geral */
+.excelTabBtn{
+  background:linear-gradient(135deg,#005bff,#00c2ff)!important;
+  border:1px solid #66d9ff!important;
+  box-shadow:0 0 18px rgba(0,194,255,.22)!important;
+}
+.excelSection{
+  border-color:#0e78ff!important;
+  box-shadow:0 0 22px rgba(0,120,255,.18)!important;
+}
+.excelUploadBox{
+  display:grid;
+  grid-template-columns:1.4fr .8fr .8fr;
+  gap:8px;
+  margin:10px 0;
+  padding:12px;
+  border-radius:14px;
+  background:#07111f;
+  border:1px solid #0e78ff;
+}
+.excelCalendar{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:6px;
+}
+.excelDay{
+  min-height:70px;
+  border:1px solid #26384f;
+  background:#0b1524;
+  border-radius:10px;
+  padding:7px;
+  font-size:11px;
+}
+.excelDay b{display:block;color:#66d9ff;font-size:13px;margin-bottom:3px}
+.excelDay strong{color:#00e676}
+@media(max-width:900px){
+  .excelUploadBox{grid-template-columns:1fr}
+  .excelCalendar{grid-template-columns:repeat(2,1fr)}
+}
+
+
+/* CaptaPro Elite 5.7 • BI Elite e ranking restrito captador */
+.biEliteTabBtn{
+  background:linear-gradient(135deg,#6a00ff,#ff00c8)!important;
+  border:1px solid #ff74e8!important;
+  box-shadow:0 0 18px rgba(255,0,200,.24)!important;
+}
+.biEliteSection{
+  border-color:#9026ff!important;
+  box-shadow:0 0 24px rgba(144,38,255,.20)!important;
+}
+.captainBox{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  padding:16px;
+  border-radius:18px;
+  margin:10px 0;
+  background:linear-gradient(135deg,#160027,#3b001f);
+  border:1px solid #ff74e8;
+  box-shadow:0 0 22px rgba(255,0,200,.18);
+}
+.captainBox small{display:block;color:#ffb7f3;font-weight:900;text-transform:uppercase;font-size:11px}
+.captainBox b{display:block;font-size:26px;color:#fff;margin:4px 0}
+.captainBox span{color:#bbb;font-size:12px}
+.captainTrophy{font-size:44px;filter:drop-shadow(0 0 12px rgba(255,213,79,.5))}
+.heatPointStrong{color:#00e676;font-weight:900}
+@media(max-width:900px){.captainBox{align-items:flex-start}.captainTrophy{font-size:34px}}
 
 </style>
 </head>
@@ -602,7 +674,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 5.5 • Funil e Abordagens</div>
+    <div class="version">CaptaPro Elite 5.7</div>
     <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Criado pela empresa Bueno Invest</p>
   </div>
 
@@ -620,6 +692,8 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
       <button class="promotorOnly" onclick="aba('meuDesempenho',this)">Meu Desempenho</button>
       <button class="admOnly" onclick="aba('dash',this)">Dashboard</button>
       <button class="admOnly" onclick="aba('ranking',this)">Rankings</button>
+      <button class="admOnly excelTabBtn" onclick="aba('excelResultados',this)">Excel Geral</button>
+      <button class="admOnly biEliteTabBtn" onclick="aba('biElite',this)">BI Elite</button>
       <button class="admOnly" onclick="aba('comparativo',this)">Comparativo</button>
       <button class="admOnly" onclick="aba('pulsador',this)">Pulsador</button>
       <button class="admOnly" onclick="aba('metas',this)">Metas</button>
@@ -755,6 +829,128 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
       <div class="card"><h2>Equipes</h2><div id="rankingEquipes"></div></div>
     </section>
 
+
+    <section id="excelResultados" class="card hidden admOnly excelSection">
+      <h2>Resultados da Planilha • Promotor / Liner / Closer</h2>
+      <p class="hint">Importe sua planilha Excel ou CSV para ver resultados por profissional, mês, dia, ranking, custo por casal e total de brindes. O restante do sistema continua igual.</p>
+
+      <div class="excelUploadBox">
+        <label class="filterLabel">Importar Excel ou CSV
+          <input id="excelArquivoResultados" type="file" accept=".xlsx,.xls,.csv" onchange="importarExcelResultados(event)">
+        </label>
+        <button class="main" onclick="carregarExcelDoSistema()">Usar dados salvos do sistema</button>
+        <button class="secondary" onclick="limparExcelResultados()">Limpar análise</button>
+      </div>
+
+      <div class="filterBar four">
+        <label class="filterLabel">Mês
+          <select id="excelMesFiltro" onchange="renderExcelResultados()"><option value="">Todos os meses</option></select>
+        </label>
+        <label class="filterLabel">Função
+          <select id="excelFuncaoFiltro" onchange="renderExcelResultados()">
+            <option value="">Todos</option>
+            <option>Promotor</option>
+            <option>Liner</option>
+            <option>Closer</option>
+          </select>
+        </label>
+        <label class="filterLabel">Profissional
+          <select id="excelProfFiltro" onchange="renderExcelResultados()"><option value="">Todos os profissionais</option></select>
+        </label>
+        <label class="filterLabel">Dia
+          <input id="excelDiaFiltro" type="date" onchange="renderExcelResultados()">
+        </label>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi">Profissionais<b id="excelKProf">0</b></div>
+        <div class="kpi">Casais<b id="excelKCasais">0</b></div>
+        <div class="kpi">Vendas<b id="excelKVendas">0</b></div>
+        <div class="kpi">VGV<b id="excelKVGV">R$ 0</b></div>
+        <div class="kpi">Total Brindes<b id="excelKBrinde">R$ 0</b></div>
+        <div class="kpi">Custo por Casal<b id="excelKCustoCasal">R$ 0</b></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card chartBox"><h2>Resultado por Mês</h2><canvas id="chartExcelMes"></canvas></div>
+        <div class="card chartBox"><h2>Custo Brinde x Casais</h2><canvas id="chartExcelCusto"></canvas></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <h2>Calendário Diário</h2>
+          <div id="excelCalendarioBox" class="excelCalendar"></div>
+        </div>
+        <div class="card">
+          <h2>Ranking Geral</h2>
+          <div id="excelRankingBox" class="tableScroll"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Coluna Individual do Profissional</h2>
+        <div id="excelIndividualBox" class="tableScroll"></div>
+      </div>
+    </section>
+
+
+
+    <section id="biElite" class="card hidden admOnly biEliteSection">
+      <h2>BI Elite • Resultados Gerais</h2>
+      <p class="hint">Área exclusiva do administrador: visão completa de promotores, liners, closers, meses, equipes, pontos, brindes, ROI e Capitão/Capitã da semana.</p>
+
+      <div class="filterBar four">
+        <label class="filterLabel">Data inicial<input id="biDe" type="date" onchange="renderBIElite()"></label>
+        <label class="filterLabel">Data final<input id="biAte" type="date" onchange="renderBIElite()"></label>
+        <label class="filterLabel">Função<select id="biFuncao" onchange="renderBIElite()"><option value="">Todas</option><option>Promotor</option><option>Liner</option><option>Closer</option></select></label>
+        <label class="filterLabel">&nbsp;<button class="main" onclick="renderBIElite()">Atualizar BI</button></label>
+      </div>
+
+      <div class="captainBox">
+        <div>
+          <small>Capitão/Capitã da Semana • Segunda a Domingo</small>
+          <b id="biCapitaoSemana">-</b>
+          <span id="biCapitaoPeriodo">Semana atual</span>
+        </div>
+        <div class="captainTrophy">🏆</div>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi">Promotores<b id="biPromotores">0</b></div>
+        <div class="kpi">Liners<b id="biLiners">0</b></div>
+        <div class="kpi">Closers<b id="biClosers">0</b></div>
+        <div class="kpi">Casais<b id="biCasais">0</b></div>
+        <div class="kpi">Vendas/Sala<b id="biVendas">0</b></div>
+        <div class="kpi">Custo/Casal Sala<b id="biCustoSala">R$ 0</b></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card"><h2>Top 10 Promotores</h2><div id="biTopPromotores" class="tableScroll"></div></div>
+        <div class="card"><h2>Top 10 Liners</h2><div id="biTopLiners" class="tableScroll"></div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card"><h2>Top 10 Closers</h2><div id="biTopClosers" class="tableScroll"></div></div>
+        <div class="card"><h2>Ranking Histórico • Todos os Meses</h2><div id="biRankingHistorico" class="tableScroll"></div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card chartBox"><h2>Evolução Mês a Mês</h2><canvas id="chartBiMes"></canvas></div>
+        <div class="card chartBox"><h2>Meta x Realizado</h2><canvas id="chartBiMeta"></canvas></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card"><h2>Ranking por Equipes</h2><div id="biRankingEquipes" class="tableScroll"></div></div>
+        <div class="card"><h2>Ranking por Pontos</h2><div id="biRankingPontos" class="tableScroll"></div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card"><h2>ROI dos Brindes</h2><div id="biRoiBrindes" class="tableScroll"></div></div>
+        <div class="card"><h2>Mapa de Calor • Casais e Vendas por Ponto</h2><div id="biMapaCalorPontos" class="tableScroll"></div></div>
+      </div>
+    </section>
+
+
     <section id="comparativo" class="card hidden admOnly">
       <h2>Comparativo de Períodos</h2>
       <div class="filterBar four">
@@ -810,6 +1006,13 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
         <div class="kpi projCard">Projeção sala no mês<b id="meuProjSala">0</b></div>
       </div>
       <div class="card" id="metaIndividual55Box"><h2>Meta Individual • Funil Diário</h2><div id="metaIndividual55" class="tableScroll"></div></div><div class="card chartBox"><h2>Minha evolução diária</h2><canvas id="chartMeuPeriodo"></canvas></div>
+
+      
+      <div class="card promotorOnly" id="rankingIndividualCaptadorBox">
+        <h2>Meu Ranking Completo</h2>
+        <p class="hint">Visão permitida ao captador: mostra somente os próprios resultados, ranking individual e custo por casal em sala.</p>
+        <div id="rankingIndividualCaptador55" class="tableScroll"></div>
+      </div>
 
       <div class="card">
         <h2>Minhas pesquisas • Atendimento em sala</h2>
@@ -1003,7 +1206,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
     </div>
   </div>
 
-  <div class="footer">CaptaPro Elite 5.2 • Criado pela empresa Bueno Invest • Abordagens</div>
+  <div class="footer">CaptaPro Elite 5.7 • Criado pela empresa Bueno Invest</div>
 </div>
 
 <script>
@@ -2804,7 +3007,7 @@ function escapeAttr(value){return escapeHtml(value).replace(/`/g,'&#96;')}
 
 
 <script>
-/* ===== CaptaPro Elite 5.5 • FIX REAL BOTÃO ABORDAGEM + RENDA ===== */
+/* ===== CaptaPro Elite 5.7 • FIX REAL BOTÃO ABORDAGEM + RENDA ===== */
 (function(){
   function el(id){return document.getElementById(id)}
   function v(id){const x=el(id);return x?String(x.value||''):''}
@@ -2953,6 +3156,188 @@ function ligar(){let old=E('btnRegistrarAbordagem55')||E('btnRegistrarAbordagem5
 let oldEntrar=window.entrar;if(typeof oldEntrar==='function'&&!window.__entrar55){window.__entrar55=true;window.entrar=async function(){let r=await oldEntrar.apply(this,arguments);setTimeout(ligar,700);setTimeout(()=>{carregarFunil55();carregarHeatmapFunil55()},1300);return r}}
 document.addEventListener('DOMContentLoaded',ligar);setTimeout(ligar,700);setTimeout(ligar,1800);
 })();
+</script>
+
+
+<script>
+/* ===== CaptaPro Elite 5.7 • Excel Geral ===== */
+window.excelResultadosRows=[];
+
+function excelMoeda(n){
+  n=Number(n||0);
+  return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+}
+function excelNum(v){
+  if(v===null||v===undefined)return 0;
+  if(typeof v==='number')return v;
+  let s=String(v).replace(/[R$\s.]/g,'').replace(',','.');
+  return Number(s)||0;
+}
+function excelDataISO(v){
+  if(!v)return '';
+  if(v instanceof Date && !isNaN(v))return v.toISOString().slice(0,10);
+  if(typeof v==='number'){
+    const d=XLSX.SSF.parse_date_code(v);
+    if(d)return `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`;
+  }
+  let s=String(v).trim();
+  let m=s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+  if(m){
+    let y=m[3].length===2?'20'+m[3]:m[3];
+    return `${y}-${String(m[2]).padStart(2,'0')}-${String(m[1]).padStart(2,'0')}`;
+  }
+  if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);
+  return '';
+}
+function excelMes(iso){return iso?iso.slice(0,7):'Sem mês'}
+function normalizarExcelRow(r){
+  const keys=Object.keys(r||{});
+  const get=(arr)=>{
+    for(const a of arr){
+      const k=keys.find(x=>String(x).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(a));
+      if(k!==undefined)return r[k];
+    }
+    return '';
+  };
+  const nome=get(['profissional','promotor','captador','liner','closer','nome']);
+  const funcao=get(['funcao','cargo','tipo']) || (String(get(['liner'])).trim()? 'Liner' : String(get(['closer'])).trim()? 'Closer' : 'Promotor');
+  const data=excelDataISO(get(['data','dia','created','inicio']));
+  const casais=excelNum(get(['casais','casal','pesquisas','leads'])) || 0;
+  const vendas=excelNum(get(['vendas','venda'])) || 0;
+  const vgv=excelNum(get(['vgv','valor venda','valor_venda','valor']));
+  const brinde=excelNum(get(['brinde','brindes','custo brinde','custo_brinde','valor brinde']));
+  return {nome:String(nome||'Sem nome').trim(),funcao:String(funcao||'Promotor').trim(),data,mes:excelMes(data),casais,vendas,vgv,brinde};
+}
+async function importarExcelResultados(ev){
+  const file=ev.target.files[0];
+  if(!file)return;
+  const buf=await file.arrayBuffer();
+  let rows=[];
+  if(file.name.toLowerCase().endsWith('.csv')){
+    const text=new TextDecoder('utf-8').decode(buf);
+    const wb=XLSX.read(text,{type:'string'});
+    const ws=wb.Sheets[wb.SheetNames[0]];
+    rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+  }else{
+    const wb=XLSX.read(buf,{type:'array',cellDates:true});
+    const ws=wb.Sheets[wb.SheetNames[0]];
+    rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+  }
+  window.excelResultadosRows=rows.map(normalizarExcelRow).filter(x=>x.nome);
+  preencherFiltrosExcel();
+  renderExcelResultados();
+}
+async function carregarExcelDoSistema(){
+  try{
+    const {data,error}=await db.from('pesquisas').select('*').order('created_at',{ascending:false}).limit(5000);
+    if(error)throw error;
+    window.excelResultadosRows=(data||[]).map(p=>({
+      nome:p.captador_nome||p.user_email||'Sem nome',
+      funcao:p.funcao||p.cargo||'Promotor',
+      data:p.created_at?String(p.created_at).slice(0,10):'',
+      mes:p.created_at?String(p.created_at).slice(0,7):'Sem mês',
+      casais:1,
+      vendas:String(p.sala_status||p.levou_sala||'')==='Aprovado'?1:0,
+      vgv:excelNum(p.vgv||p.valor_venda||0),
+      brinde:excelNum(p.custo_brinde||0)
+    }));
+    preencherFiltrosExcel();
+    renderExcelResultados();
+  }catch(e){
+    alert('Não consegui carregar do sistema. Importe a planilha Excel ou rode o SQL necessário.');
+  }
+}
+function limparExcelResultados(){
+  window.excelResultadosRows=[];
+  preencherFiltrosExcel();
+  renderExcelResultados();
+}
+function preencherFiltrosExcel(){
+  const rows=window.excelResultadosRows||[];
+  const meses=[...new Set(rows.map(x=>x.mes).filter(Boolean))].sort();
+  const profs=[...new Set(rows.map(x=>x.nome).filter(Boolean))].sort();
+  const mesEl=document.getElementById('excelMesFiltro');
+  const profEl=document.getElementById('excelProfFiltro');
+  if(mesEl)mesEl.innerHTML='<option value="">Todos os meses</option>'+meses.map(m=>`<option>${m}</option>`).join('');
+  if(profEl)profEl.innerHTML='<option value="">Todos os profissionais</option>'+profs.map(p=>`<option>${p}</option>`).join('');
+}
+function filtroExcelRows(){
+  let rows=[...(window.excelResultadosRows||[])];
+  const mes=document.getElementById('excelMesFiltro')?.value||'';
+  const func=document.getElementById('excelFuncaoFiltro')?.value||'';
+  const prof=document.getElementById('excelProfFiltro')?.value||'';
+  const dia=document.getElementById('excelDiaFiltro')?.value||'';
+  if(mes)rows=rows.filter(x=>x.mes===mes);
+  if(func)rows=rows.filter(x=>String(x.funcao).toLowerCase().includes(func.toLowerCase()));
+  if(prof)rows=rows.filter(x=>x.nome===prof);
+  if(dia)rows=rows.filter(x=>x.data===dia);
+  return rows;
+}
+function agruparExcel(rows,key){
+  const o={};
+  rows.forEach(r=>{
+    const k=r[key]||'Sem informação';
+    if(!o[k])o[k]={nome:k,casais:0,vendas:0,vgv:0,brinde:0,dias:{}};
+    o[k].casais+=Number(r.casais||0);
+    o[k].vendas+=Number(r.vendas||0);
+    o[k].vgv+=Number(r.vgv||0);
+    o[k].brinde+=Number(r.brinde||0);
+    if(r.data)o[k].dias[r.data]=(o[k].dias[r.data]||0)+Number(r.casais||0);
+  });
+  return Object.values(o).map(x=>({...x,custoCasal:x.casais?x.brinde/x.casais:0,conv:x.casais?Math.round(x.vendas/x.casais*100)+'%':'0%'}));
+}
+function tabelaExcel(rows,cols){
+  if(!rows.length)return '<p class="mini">Importe uma planilha ou use os dados do sistema.</p>';
+  return '<table><thead><tr>'+cols.map(c=>`<th>${c.label}</th>`).join('')+'</tr></thead><tbody>'+
+    rows.map(r=>'<tr>'+cols.map(c=>`<td>${c.money?excelMoeda(r[c.key]):(r[c.key]??'')}</td>`).join('')+'</tr>').join('')+
+    '</tbody></table>';
+}
+function renderExcelResultados(){
+  const rows=filtroExcelRows();
+  const totalCasais=rows.reduce((a,b)=>a+Number(b.casais||0),0);
+  const totalVendas=rows.reduce((a,b)=>a+Number(b.vendas||0),0);
+  const totalVGV=rows.reduce((a,b)=>a+Number(b.vgv||0),0);
+  const totalBrinde=rows.reduce((a,b)=>a+Number(b.brinde||0),0);
+  document.getElementById('excelKProf').innerText=new Set(rows.map(x=>x.nome)).size;
+  document.getElementById('excelKCasais').innerText=totalCasais;
+  document.getElementById('excelKVendas').innerText=totalVendas;
+  document.getElementById('excelKVGV').innerText=excelMoeda(totalVGV);
+  document.getElementById('excelKBrinde').innerText=excelMoeda(totalBrinde);
+  document.getElementById('excelKCustoCasal').innerText=excelMoeda(totalCasais?totalBrinde/totalCasais:0);
+
+  const prof=agruparExcel(rows,'nome').sort((a,b)=>b.vendas-a.vendas||b.casais-a.casais);
+  const cols=[
+    {key:'nome',label:'Profissional'},
+    {key:'casais',label:'Casais'},
+    {key:'vendas',label:'Vendas'},
+    {key:'conv',label:'Conv.'},
+    {key:'vgv',label:'VGV',money:true},
+    {key:'brinde',label:'Total Brinde',money:true},
+    {key:'custoCasal',label:'Custo/Casal',money:true}
+  ];
+  document.getElementById('excelRankingBox').innerHTML=tabelaExcel(prof,cols);
+  document.getElementById('excelIndividualBox').innerHTML=tabelaExcel(prof,cols);
+
+  renderExcelCalendario(rows);
+  renderExcelCharts(rows);
+}
+function renderExcelCalendario(rows){
+  const box=document.getElementById('excelCalendarioBox');
+  if(!box)return;
+  const dias=agruparExcel(rows,'data').sort((a,b)=>String(a.nome).localeCompare(String(b.nome)));
+  box.innerHTML=dias.slice(0,42).map(d=>`<div class="excelDay"><b>${d.nome||'-'}</b>Casais: <strong>${d.casais}</strong><br>Vendas: ${d.vendas}<br>Brinde: ${excelMoeda(d.brinde)}</div>`).join('') || '<p class="mini">Sem dias para mostrar.</p>';
+}
+function renderExcelCharts(rows){
+  if(!window.Chart)return;
+  const porMes=agruparExcel(rows,'mes').sort((a,b)=>String(a.nome).localeCompare(String(b.nome)));
+  const labels=porMes.map(x=>x.nome);
+  if(window.chartExcelMesObj)window.chartExcelMesObj.destroy();
+  if(window.chartExcelCustoObj)window.chartExcelCustoObj.destroy();
+  const ctx1=document.getElementById('chartExcelMes');
+  const ctx2=document.getElementById('chartExcelCusto');
+  if(ctx1)window.chartExcelMesObj=new Chart(ctx1,{type:'bar',data:{labels,datasets:[{label:'Casais',data:porMes.map(x=>x.casais)},{label:'Vendas',data:porMes.map(x=>x.vendas)}]},options:{responsive:true}});
+  if(ctx2)window.chartExcelCustoObj=new Chart(ctx2,{type:'line',data:{labels,datasets:[{label:'Total Brinde',data:porMes.map(x=>x.brinde)},{label:'Custo por Casal',data:porMes.map(x=>x.custoCasal)}]},options:{responsive:true}});
+}
 </script>
 
 </body>
