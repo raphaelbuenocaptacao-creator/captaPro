@@ -6,10 +6,10 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro Elite 6.0</title>
+<title>CaptaPro Elite 6.1</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2">
-/* ===== CaptaPro Elite 6.0 ===== */
+/* ===== CaptaPro Elite 6.1 ===== */
 const PONTOS_OFICIAIS_CAPTAPRO=[
   {nome:'Porta dentro do Park',apelido:'PORTA DREAM HOUSE',lat:-22.720958,lng:-45.572798,raio:25,tipo:'PARK'},
   {nome:'Park Dream House',apelido:'PARK DREAM HOUSE',lat:-22.720590,lng:-45.572894,raio:40,tipo:'PARK'},
@@ -409,7 +409,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:900px){.estadoCidadeGroup{grid-template-columns:1fr 1fr}}
 
 
-/* CaptaPro Elite 6.0 */
+/* CaptaPro Elite 6.1 */
 .pontoAutoBox{
   grid-column:1/-1;
   display:grid;
@@ -535,7 +535,7 @@ body:not(.empresaRendaAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){.abordagemBox{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 6.0 • botão abordagem e renda empresário corrigidos */
+/* CaptaPro Elite 6.1 • botão abordagem e renda empresário corrigidos */
 #abordagemBox54{
   grid-column:1/-1!important;
   display:grid!important;
@@ -570,7 +570,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){#abordagemBox54{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 6.0 */
+/* CaptaPro Elite 6.1 */
 #abordagemBox55{grid-column:1/-1!important;display:grid!important;grid-template-columns:1.2fr .8fr!important;gap:8px!important;margin:8px 0 12px!important}
 #btnRegistrarAbordagem55{background:linear-gradient(135deg,#ef1b24,#850000)!important;border:1px solid #ff4444!important;min-height:72px!important;font-size:18px!important;font-weight:900!important;text-transform:uppercase!important;box-shadow:0 0 22px rgba(239,27,36,.32)!important;cursor:pointer!important}
 body.rendaEmpresarioAtiva #boxRendaNormal{display:none!important}
@@ -581,7 +581,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){#abordagemBox55{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 6.0 • Aba Excel Geral */
+/* CaptaPro Elite 6.1 • Aba Excel Geral */
 .excelTabBtn{
   background:linear-gradient(135deg,#005bff,#00c2ff)!important;
   border:1px solid #66d9ff!important;
@@ -622,7 +622,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 }
 
 
-/* CaptaPro Elite 6.0 • BI Elite e ranking restrito captador */
+/* CaptaPro Elite 6.1 • BI Elite e ranking restrito captador */
 .biEliteTabBtn{
   background:linear-gradient(135deg,#6a00ff,#ff00c8)!important;
   border:1px solid #ff74e8!important;
@@ -652,7 +652,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){.captainBox{align-items:flex-start}.captainTrophy{font-size:34px}}
 
 
-/* CaptaPro Elite 6.0 • Relatórios unificados */
+/* CaptaPro Elite 6.1 • Relatórios unificados */
 .excelTabBtn{
   background:linear-gradient(135deg,#005bff,#8a00ff,#ff00c8)!important;
   border:1px solid #66d9ff!important;
@@ -667,11 +667,22 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 }
 
 
-/* CaptaPro Elite 6.0 • CSV automático */
+/* CaptaPro Elite 6.1 • CSV automático */
 #relatorioCsvStatus59{border-color:#0e78ff;color:#d7ecff}
 .csvOk59{color:#00e676;font-weight:900}
 .csvWarn59{color:#ffd54f;font-weight:900}
 .csvErr59{color:#ff7777;font-weight:900}
+
+
+/* CaptaPro Elite 6.1 • atalhos CEO */
+.ceoAtalhos61{
+  border-color:#671818!important;
+  background:linear-gradient(135deg,#120000,#101010)!important;
+}
+.ceoAtalhos61 .grid2 button{
+  min-height:58px;
+  font-size:16px;
+}
 
 </style>
 </head>
@@ -696,7 +707,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 6.0</div>
+    <div class="version">CaptaPro Elite 6.1</div>
     <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Criado pela empresa Bueno Invest</p>
   </div>
 
@@ -1170,6 +1181,16 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 
     <section id="ceo" class="card hidden admOnly">
       <h2>CEO • Qualificação e Regras</h2>
+
+      <div class="card ceoAtalhos61">
+        <h2>Atalhos do CEO</h2>
+        <div class="grid2">
+          <button class="main" type="button" onclick="abrirAreaCEO61('mapa')">Abrir Mapa</button>
+          <button class="main" type="button" onclick="abrirAreaCEO61('salaAdmin')">Sala do Administrador</button>
+        </div>
+        <p class="hint">O mapa e a sala do administrador ficam acessíveis por aqui, dentro da área CEO.</p>
+      </div>
+
       <div class="grid compact">
         <input id="cfg_renda" placeholder="Renda mínima Q" value="R$ 15.000,00"><input id="cfg_ano" placeholder="Ano mínimo carro" value="2011"><input id="cfg_idmin" placeholder="Idade mínima casal" value="25">
         <input id="cfg_idmax" placeholder="Idade máxima" value="64"><input id="cfg_uniao" placeholder="União estável mínima" value="2"><input id="cfg_idsolo" placeholder="Idade mínima solo" value="30">
@@ -1257,7 +1278,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
     </div>
   </div>
 
-  <div class="footer">CaptaPro Elite 6.0 • Criado pela empresa Bueno Invest</div>
+  <div class="footer">CaptaPro Elite 6.1 • Criado pela empresa Bueno Invest</div>
 </div>
 
 <script>
@@ -3058,7 +3079,7 @@ function escapeAttr(value){return escapeHtml(value).replace(/`/g,'&#96;')}
 
 
 <script>
-/* ===== CaptaPro Elite 6.0 • FIX REAL BOTÃO ABORDAGEM + RENDA ===== */
+/* ===== CaptaPro Elite 6.1 • FIX REAL BOTÃO ABORDAGEM + RENDA ===== */
 (function(){
   function el(id){return document.getElementById(id)}
   function v(id){const x=el(id);return x?String(x.value||''):''}
@@ -3211,7 +3232,7 @@ document.addEventListener('DOMContentLoaded',ligar);setTimeout(ligar,700);setTim
 
 
 <script>
-/* ===== CaptaPro Elite 6.0 • Excel Geral ===== */
+/* ===== CaptaPro Elite 6.1 • Excel Geral ===== */
 window.excelResultadosRows=[];
 
 function excelMoeda(n){
@@ -3393,7 +3414,7 @@ function renderExcelCharts(rows){
 
 
 <script>
-/* ===== CaptaPro Elite 6.0 • Correção Relatórios CSV automático ===== */
+/* ===== CaptaPro Elite 6.1 • Correção Relatórios CSV automático ===== */
 (function(){
   function el(id){return document.getElementById(id)}
   function status59(txt,cls){
@@ -3581,7 +3602,7 @@ function renderExcelCharts(rows){
 
 
 <script>
-/* ===== CaptaPro Elite 6.0 • Mapa escondido + salvar todas as fichas ===== */
+/* ===== CaptaPro Elite 6.1 • Mapa escondido + salvar todas as fichas ===== */
 (function(){
   function el(id){return document.getElementById(id)}
   function setMsg60(txt,classe){
@@ -3653,6 +3674,102 @@ function renderExcelCharts(rows){
       setTimeout(liberarFichaSempre60,800);
       return r;
     }
+  }
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro Elite 6.1 • Mapa/Sala dentro CEO + salvar Q/NQ/NQ1 ===== */
+(function(){
+  function el(id){return document.getElementById(id)}
+  function setMsg61(txt,classe){
+    const m=el('formMsg');
+    if(m)m.innerHTML='<span class="'+(classe||'ok')+'">'+txt+'</span>';
+  }
+
+  window.abrirAreaCEO61=function(area){
+    if(typeof aba==='function'){
+      aba(area,null);
+      setTimeout(()=>{
+        if(area==='mapa' && typeof carregarMapa==='function')carregarMapa(true);
+        if(area==='salaAdmin' && typeof carregarSalaAdmin==='function')carregarSalaAdmin();
+      },250);
+    }
+  };
+
+  function garantirBrindeParaSalvar61(){
+    const brinde=el('brinde');
+    if(brinde){
+      brinde.disabled=false;
+
+      let existeSemBrinde=false;
+      Array.from(brinde.options||[]).forEach(o=>{
+        if(String(o.value||o.textContent).toLowerCase().includes('sem brinde'))existeSemBrinde=true;
+      });
+
+      if(!existeSemBrinde){
+        const opt=document.createElement('option');
+        opt.value='Sem brinde';
+        opt.textContent='Sem brinde / não informado';
+        brinde.appendChild(opt);
+      }
+
+      if(!brinde.value){
+        brinde.value='Sem brinde';
+      }
+    }
+
+    const regra=el('brindeRegra');
+    if(regra)regra.innerHTML='Ficha liberada para salvar independente de Q, NQ ou NQ 1 item.';
+  }
+
+  const oldCalc61=window.calcularQualificacao;
+  if(typeof oldCalc61==='function' && !window.__calc61SalvarTudo){
+    window.__calc61SalvarTudo=true;
+    window.calcularQualificacao=function(){
+      const r=oldCalc61.apply(this,arguments);
+      setTimeout(garantirBrindeParaSalvar61,120);
+      return r;
+    };
+  }
+
+  const oldSalvar61=window.salvarPesquisa;
+  if(typeof oldSalvar61==='function' && !window.__salvar61Tudo){
+    window.__salvar61Tudo=true;
+    window.salvarPesquisa=async function(){
+      garantirBrindeParaSalvar61();
+
+      try{
+        if(typeof oldCalc61==='function'){
+          oldCalc61.apply(this,[]);
+          garantirBrindeParaSalvar61();
+        }
+      }catch(e){}
+
+      try{
+        const r=await oldSalvar61.apply(this,arguments);
+        setTimeout(garantirBrindeParaSalvar61,200);
+        return r;
+      }catch(e){
+        console.warn('Salvar pesquisa 6.1:',e);
+        setMsg61('Erro ao salvar. A ficha está liberada para Q, NQ e NQ 1 item; confira conexão ou Supabase.','erro');
+      }
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(garantirBrindeParaSalvar61,700);
+  });
+
+  const oldEntrar61=window.entrar;
+  if(typeof oldEntrar61==='function' && !window.__entrar61SalvarTudo){
+    window.__entrar61SalvarTudo=true;
+    window.entrar=async function(){
+      const r=await oldEntrar61.apply(this,arguments);
+      setTimeout(garantirBrindeParaSalvar61,900);
+      return r;
+    };
   }
 })();
 </script>
