@@ -6,10 +6,10 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro Elite 5.7</title>
+<title>CaptaPro Elite 5.8</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2">
-/* ===== CaptaPro Elite 5.7 ===== */
+/* ===== CaptaPro Elite 5.8 ===== */
 const PONTOS_OFICIAIS_CAPTAPRO=[
   {nome:'Porta dentro do Park',apelido:'PORTA DREAM HOUSE',lat:-22.720958,lng:-45.572798,raio:25,tipo:'PARK'},
   {nome:'Park Dream House',apelido:'PARK DREAM HOUSE',lat:-22.720590,lng:-45.572894,raio:40,tipo:'PARK'},
@@ -409,7 +409,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:900px){.estadoCidadeGroup{grid-template-columns:1fr 1fr}}
 
 
-/* CaptaPro Elite 5.7 */
+/* CaptaPro Elite 5.8 */
 .pontoAutoBox{
   grid-column:1/-1;
   display:grid;
@@ -535,7 +535,7 @@ body:not(.empresaRendaAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){.abordagemBox{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 5.7 • botão abordagem e renda empresário corrigidos */
+/* CaptaPro Elite 5.8 • botão abordagem e renda empresário corrigidos */
 #abordagemBox54{
   grid-column:1/-1!important;
   display:grid!important;
@@ -570,7 +570,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){#abordagemBox54{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 5.7 */
+/* CaptaPro Elite 5.8 */
 #abordagemBox55{grid-column:1/-1!important;display:grid!important;grid-template-columns:1.2fr .8fr!important;gap:8px!important;margin:8px 0 12px!important}
 #btnRegistrarAbordagem55{background:linear-gradient(135deg,#ef1b24,#850000)!important;border:1px solid #ff4444!important;min-height:72px!important;font-size:18px!important;font-weight:900!important;text-transform:uppercase!important;box-shadow:0 0 22px rgba(239,27,36,.32)!important;cursor:pointer!important}
 body.rendaEmpresarioAtiva #boxRendaNormal{display:none!important}
@@ -581,7 +581,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){#abordagemBox55{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 5.7 • Aba Excel Geral */
+/* CaptaPro Elite 5.8 • Aba Excel Geral */
 .excelTabBtn{
   background:linear-gradient(135deg,#005bff,#00c2ff)!important;
   border:1px solid #66d9ff!important;
@@ -622,7 +622,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 }
 
 
-/* CaptaPro Elite 5.7 • BI Elite e ranking restrito captador */
+/* CaptaPro Elite 5.8 • BI Elite e ranking restrito captador */
 .biEliteTabBtn{
   background:linear-gradient(135deg,#6a00ff,#ff00c8)!important;
   border:1px solid #ff74e8!important;
@@ -651,6 +651,21 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 .heatPointStrong{color:#00e676;font-weight:900}
 @media(max-width:900px){.captainBox{align-items:flex-start}.captainTrophy{font-size:34px}}
 
+
+/* CaptaPro Elite 5.8 • Relatórios unificados */
+.excelTabBtn{
+  background:linear-gradient(135deg,#005bff,#8a00ff,#ff00c8)!important;
+  border:1px solid #66d9ff!important;
+  box-shadow:0 0 20px rgba(90,80,255,.28)!important;
+}
+.relatorioIndividualFullBox{
+  border-color:#00c2ff!important;
+  box-shadow:0 0 18px rgba(0,194,255,.16)!important;
+}
+.relatorioAvancadoUnificado{
+  margin-top:-4px;
+}
+
 </style>
 </head>
 <body>
@@ -674,7 +689,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 5.7</div>
+    <div class="version">CaptaPro Elite 5.8</div>
     <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Criado pela empresa Bueno Invest</p>
   </div>
 
@@ -692,8 +707,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
       <button class="promotorOnly" onclick="aba('meuDesempenho',this)">Meu Desempenho</button>
       <button class="admOnly" onclick="aba('dash',this)">Dashboard</button>
       <button class="admOnly" onclick="aba('ranking',this)">Rankings</button>
-      <button class="admOnly excelTabBtn" onclick="aba('excelResultados',this)">Excel Geral</button>
-      <button class="admOnly biEliteTabBtn" onclick="aba('biElite',this)">BI Elite</button>
+      <button class="admOnly excelTabBtn" onclick="aba('excelResultados',this)">Relatórios</button>
       <button class="admOnly" onclick="aba('comparativo',this)">Comparativo</button>
       <button class="admOnly" onclick="aba('pulsador',this)">Pulsador</button>
       <button class="admOnly" onclick="aba('metas',this)">Metas</button>
@@ -831,8 +845,8 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 
 
     <section id="excelResultados" class="card hidden admOnly excelSection">
-      <h2>Resultados da Planilha • Promotor / Liner / Closer</h2>
-      <p class="hint">Importe sua planilha Excel ou CSV para ver resultados por profissional, mês, dia, ranking, custo por casal e total de brindes. O restante do sistema continua igual.</p>
+      <h2>Relatórios Gerais e Individuais • Promotor / Liner / Closer</h2>
+      <p class="hint">Tudo em uma única aba: geral, profissional individual, meses, dias, rankings, custos, brindes, equipes, pontos, ROI, mapa de calor e Capitão/Capitã da semana.</p>
 
       <div class="excelUploadBox">
         <label class="filterLabel">Importar Excel ou CSV
@@ -887,6 +901,35 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
         </div>
       </div>
 
+      
+      <div class="card relatorioIndividualFullBox">
+        <h2>Relatório Individual Completo</h2>
+        <p class="hint">Escolha um profissional para aparecer tudo dele: casais, vendas/sala, VGV, custo por casal em sala, brindes, evolução por mês, pontos e calendário.</p>
+        <div class="filterBar three">
+          <label class="filterLabel">Profissional
+            <select id="relatorioProfissionalFiltro" onchange="renderRelatorioCompleto58()"><option value="">Selecione um profissional</option></select>
+          </label>
+          <label class="filterLabel">Data inicial<input id="relatorioProfDe" type="date" onchange="renderRelatorioCompleto58()"></label>
+          <label class="filterLabel">Data final<input id="relatorioProfAte" type="date" onchange="renderRelatorioCompleto58()"></label>
+        </div>
+        <div class="kpis">
+          <div class="kpi">Casais<b id="relProfCasais">0</b></div>
+          <div class="kpi">Sala/Vendas<b id="relProfVendas">0</b></div>
+          <div class="kpi">Conversão<b id="relProfConv">0%</b></div>
+          <div class="kpi">VGV<b id="relProfVGV">R$ 0</b></div>
+          <div class="kpi">Brindes<b id="relProfBrindes">R$ 0</b></div>
+          <div class="kpi">Custo/Casal Sala<b id="relProfCustoSala">R$ 0</b></div>
+        </div>
+        <div class="grid2">
+          <div class="card chartBox"><h2>Evolução do Profissional</h2><canvas id="chartRelProfMes"></canvas></div>
+          <div class="card"><h2>Resumo por Ponto</h2><div id="relProfPontos" class="tableScroll"></div></div>
+        </div>
+        <div class="grid2">
+          <div class="card"><h2>Resumo por Mês</h2><div id="relProfMeses" class="tableScroll"></div></div>
+          <div class="card"><h2>Calendário do Profissional</h2><div id="relProfCalendario" class="excelCalendar"></div></div>
+        </div>
+      </div>
+
       <div class="card">
         <h2>Coluna Individual do Profissional</h2>
         <div id="excelIndividualBox" class="tableScroll"></div>
@@ -895,8 +938,8 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 
 
 
-    <section id="biElite" class="card hidden admOnly biEliteSection">
-      <h2>BI Elite • Resultados Gerais</h2>
+    <section id="biElite" class="card hidden admOnly biEliteSection relatorioAvancadoUnificado">
+      <h2>Relatórios Avançados • Geral, Equipes, Pontos e ROI</h2>
       <p class="hint">Área exclusiva do administrador: visão completa de promotores, liners, closers, meses, equipes, pontos, brindes, ROI e Capitão/Capitã da semana.</p>
 
       <div class="filterBar four">
@@ -1206,7 +1249,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
     </div>
   </div>
 
-  <div class="footer">CaptaPro Elite 5.7 • Criado pela empresa Bueno Invest</div>
+  <div class="footer">CaptaPro Elite 5.8 • Criado pela empresa Bueno Invest</div>
 </div>
 
 <script>
@@ -3007,7 +3050,7 @@ function escapeAttr(value){return escapeHtml(value).replace(/`/g,'&#96;')}
 
 
 <script>
-/* ===== CaptaPro Elite 5.7 • FIX REAL BOTÃO ABORDAGEM + RENDA ===== */
+/* ===== CaptaPro Elite 5.8 • FIX REAL BOTÃO ABORDAGEM + RENDA ===== */
 (function(){
   function el(id){return document.getElementById(id)}
   function v(id){const x=el(id);return x?String(x.value||''):''}
@@ -3160,7 +3203,7 @@ document.addEventListener('DOMContentLoaded',ligar);setTimeout(ligar,700);setTim
 
 
 <script>
-/* ===== CaptaPro Elite 5.7 • Excel Geral ===== */
+/* ===== CaptaPro Elite 5.8 • Excel Geral ===== */
 window.excelResultadosRows=[];
 
 function excelMoeda(n){
