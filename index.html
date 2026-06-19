@@ -6,10 +6,10 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro Elite 5.4</title>
+<title>CaptaPro Elite 5.5</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2">
-/* ===== CaptaPro Elite 5.4 • Botão Corrigido ===== */
+/* ===== CaptaPro Elite 5.5 • Funil e Abordagens ===== */
 const PONTOS_OFICIAIS_CAPTAPRO=[
   {nome:'Porta dentro do Park',apelido:'PORTA DREAM HOUSE',lat:-22.720958,lng:-45.572798,raio:25,tipo:'PARK'},
   {nome:'Park Dream House',apelido:'PARK DREAM HOUSE',lat:-22.720590,lng:-45.572894,raio:40,tipo:'PARK'},
@@ -408,7 +408,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:900px){.estadoCidadeGroup{grid-template-columns:1fr 1fr}}
 
 
-/* CaptaPro Elite 5.4 • Botão Corrigido */
+/* CaptaPro Elite 5.5 • Funil e Abordagens */
 .pontoAutoBox{
   grid-column:1/-1;
   display:grid;
@@ -534,7 +534,7 @@ body:not(.empresaRendaAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){.abordagemBox{grid-template-columns:1fr!important}}
 
 
-/* CaptaPro Elite 5.4 • botão abordagem e renda empresário corrigidos */
+/* CaptaPro Elite 5.5 • botão abordagem e renda empresário corrigidos */
 #abordagemBox54{
   grid-column:1/-1!important;
   display:grid!important;
@@ -568,6 +568,17 @@ body.rendaEmpresarioAtiva #boxRendaEmpresa.hidden{display:grid!important}
 body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 @media(max-width:900px){#abordagemBox54{grid-template-columns:1fr!important}}
 
+
+/* CaptaPro Elite 5.5 */
+#abordagemBox55{grid-column:1/-1!important;display:grid!important;grid-template-columns:1.2fr .8fr!important;gap:8px!important;margin:8px 0 12px!important}
+#btnRegistrarAbordagem55{background:linear-gradient(135deg,#ef1b24,#850000)!important;border:1px solid #ff4444!important;min-height:72px!important;font-size:18px!important;font-weight:900!important;text-transform:uppercase!important;box-shadow:0 0 22px rgba(239,27,36,.32)!important;cursor:pointer!important}
+body.rendaEmpresarioAtiva #boxRendaNormal{display:none!important}
+body.rendaEmpresarioAtiva #boxRendaEmpresa{display:grid!important}
+body.rendaEmpresarioAtiva #boxRendaEmpresa.hidden{display:grid!important}
+body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
+.funilBar55{height:9px;background:#252525;border-radius:999px;overflow:hidden;margin-top:4px}.funilBar55 i{display:block;height:100%;background:linear-gradient(90deg,#ef1b24,#00e676)}
+@media(max-width:900px){#abordagemBox55{grid-template-columns:1fr!important}}
+
 </style>
 </head>
 <body>
@@ -591,7 +602,7 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">CaptaPro Elite 5.4 • Botão Corrigido</div>
+    <div class="version">CaptaPro Elite 5.5 • Funil e Abordagens</div>
     <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Criado pela empresa Bueno Invest</p>
   </div>
 
@@ -626,12 +637,12 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
       <div class="loggedPromoter"><span>Pesquisa registrada automaticamente em nome de:</span><b id="promotorLogadoNome">Aguardando entrada</b></div>
 
       
-      <div id="abordagemBox54" class="abordagemBox">
-        <button id="btnRegistrarAbordagem54" class="btnAbordagem" type="button" onclick="registrarAbordagemAgora(event)">+ REGISTRAR ABORDAGEM</button>
+      <div id="abordagemBox55" class="abordagemBox">
+        <button id="btnRegistrarAbordagem55" class="btnAbordagem" type="button">+ REGISTRAR ABORDAGEM</button>
         <div class="abordagemCounter">
           <span>Abordagens hoje</span>
           <b id="abordagensHoje">0</b>
-          <small>sem pesquisa/ficha</small>
+          <small>1 clique = 1 abordagem</small>
         </div>
       </div>
 
@@ -707,7 +718,11 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
         <div class="kpi">NQ<b id="kNQ">0</b></div>
         <div class="kpi">Sala<b id="kSala">0</b></div>
         <div class="kpi">Eficiência<b id="kConv">0%</b></div>
-        <div class="kpi">Pendentes<b id="kPendentes">0</b></div>
+        <div class="kpi">Pendentes<b id="kPendentes">0</b></div><div class="kpi">Abordagens<b id="kAbordagens55">0</b></div><div class="kpi">Abord. → Pesquisa<b id="kConvAbordPesquisa55">0%</b></div><div class="kpi">Pesquisa → Sala<b id="kConvPesquisaSala55">0%</b></div>
+      </div>
+      <div class="grid2" id="dashFunil55">
+        <div class="card"><h2>Ranking de Abordagens</h2><div id="rankingAbordagens55" class="tableScroll"></div></div>
+        <div class="card"><h2>Ranking de Conversão</h2><div id="rankingConversao55" class="tableScroll"></div></div>
       </div>
       <div class="grid2">
         <div class="card chartBox"><h2>Conversão por Ponto</h2><canvas id="chartPontos"></canvas></div>
@@ -732,6 +747,10 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
       <div class="grid2">
         <div class="card"><h2>Top Profissionais</h2><div id="rankingCaptadores"></div></div>
         <div class="card"><h2>Top Pontos</h2><div id="rankingPontos"></div></div>
+      </div>
+      <div class="grid2" id="rankingAbordagemConversao55Box">
+        <div class="card"><h2>Ranking de Abordagens</h2><div id="rankingAbaAbordagens55"></div></div>
+        <div class="card"><h2>Ranking de Conversão</h2><div id="rankingAbaConversao55"></div></div>
       </div>
       <div class="card"><h2>Equipes</h2><div id="rankingEquipes"></div></div>
     </section>
@@ -786,11 +805,11 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
         <div class="kpi">Sala aprovada<b id="meuSala">0</b></div>
         <div class="kpi">Aguardando ADM<b id="meuSalaPendente">0</b></div>
         <div class="kpi">Eficiência aprovada<b id="meuEficiencia">0%</b></div>
-        <div class="kpi">Q<b id="meuQ">0</b></div>
+        <div class="kpi">Q<b id="meuQ">0</b></div><div class="kpi">Abordagens<b id="meuAbordagens55">0</b></div><div class="kpi">Abord. → Pesquisa<b id="meuConvAbordPesquisa55">0%</b></div><div class="kpi">Pesquisa → Sala<b id="meuConvPesquisaSala55">0%</b></div><div class="kpi projCard">Meta Abordagens<b id="meuMetaAbordagens55">0%</b></div>
         <div class="kpi projCard">Projeção pesquisas no mês<b id="meuProjPesq">0</b></div>
         <div class="kpi projCard">Projeção sala no mês<b id="meuProjSala">0</b></div>
       </div>
-      <div class="card chartBox"><h2>Minha evolução diária</h2><canvas id="chartMeuPeriodo"></canvas></div>
+      <div class="card" id="metaIndividual55Box"><h2>Meta Individual • Funil Diário</h2><div id="metaIndividual55" class="tableScroll"></div></div><div class="card chartBox"><h2>Minha evolução diária</h2><canvas id="chartMeuPeriodo"></canvas></div>
 
       <div class="card">
         <h2>Minhas pesquisas • Atendimento em sala</h2>
@@ -854,6 +873,15 @@ body:not(.rendaEmpresarioAtiva) #boxRendaEmpresa{display:none!important}
           <div class="kpi">Horário forte<b id="miHorarioForte">-</b></div>
         </div>
         <div id="mapaRankingPontos" class="tableScroll" style="margin-top:10px"></div>
+      </div>
+<div id="heatmapFunil55" class="card">
+        <h2>Heatmap Inteligente • Q / NQ / Sala</h2>
+        <div class="filterBar three">
+          <label class="filterLabel">Métrica<select id="heatmapMetrica55" onchange="carregarHeatmapFunil55()"><option value="q">Q</option><option value="nq">NQ</option><option value="sala">Sala</option></select></label>
+          <label class="filterLabel">&nbsp;<button class="main" onclick="carregarHeatmapFunil55()">Atualizar Heatmap</button></label>
+          <span></span>
+        </div>
+        <div id="heatmapFunilTabela55" class="tableScroll"></div>
       </div>
 <div id="mapaLocaisResumo" class="card"><h2>Locais visitados</h2><div id="mapaLocaisConteudo" class="tableScroll"><p class="mini">Selecione um promotor e um dia.</p></div></div>
       <div id="mapaLista" class="tableScroll" style="margin-top:10px"></div>
@@ -2776,7 +2804,7 @@ function escapeAttr(value){return escapeHtml(value).replace(/`/g,'&#96;')}
 
 
 <script>
-/* ===== CaptaPro Elite 5.4 • FIX REAL BOTÃO ABORDAGEM + RENDA ===== */
+/* ===== CaptaPro Elite 5.5 • FIX REAL BOTÃO ABORDAGEM + RENDA ===== */
 (function(){
   function el(id){return document.getElementById(id)}
   function v(id){const x=el(id);return x?String(x.value||''):''}
@@ -2898,6 +2926,32 @@ function escapeAttr(value){return escapeHtml(value).replace(/`/g,'&#96;')}
   document.addEventListener('DOMContentLoaded',ligar);
   setTimeout(ligar,300);
   setTimeout(ligar,1200);
+})();
+</script>
+
+
+<script>
+(function(){
+function E(i){return document.getElementById(i)};function V(i){let e=E(i);return e?String(e.value||''):''};function S(i,v){let e=E(i);if(e)e.innerText=v};function H(i,v){let e=E(i);if(e)e.innerHTML=v};function D(){return new Date().toISOString().slice(0,10)};function P(a,b){return b?Math.round(a/b*100)+'%':'0%'}
+function msg(t,c){let e=E('formMsg');if(e)e.innerHTML='<span class="'+(c||'ok')+'">'+t+'</span>'}
+function table(rows,cols){if(!rows||!rows.length)return '<p class="mini">Sem dados no período.</p>';return '<table><thead><tr>'+cols.map(c=>'<th>'+c.label+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+cols.map(c=>'<td>'+(r[c.key]??'')+'</td>').join('')+'</tr>').join('')+'</tbody></table>'}
+function periodo(){let de=V('dashDe')||V('rankingDe')||V('meuDe')||D(), ate=V('dashAte')||V('rankingAte')||V('meuAte')||D();return{de:de+'T00:00:00',ate:ate+'T23:59:59'}}
+function nome(p){return p.captador_nome||p.captador||p.nome_profissional||p.user_email||'Sem nome'}
+function sala(p){let s=String(p.sala_status||p.levou_sala||p.sala||'');return s==='Aprovado'||s==='Sim'||s==='Foi em sala'||s==='Enviado'}
+function qok(p){let s=String(p.qualificacao_automatica||p.status||p.resultado||'').toUpperCase();return s==='Q'||s.includes('QUALIFICADO')}
+function nq(p){let s=String(p.qualificacao_automatica||p.status||p.resultado||'').toUpperCase();return s.startsWith('NQ')||s.includes('NÃO QUALIFICADO')||s.includes('NAO QUALIFICADO')}
+function group(a,f){let o={};(a||[]).forEach(x=>{let k=f(x)||'Sem nome';(o[k]=o[k]||[]).push(x)});return o}
+async function pesquisas(){try{let p=periodo(),q=db.from('pesquisas').select('*').gte('created_at',p.de).lte('created_at',p.ate);let eq=V('dashEquipe')||V('rankingEquipe'),cap=V('dashCaptador')||V('rankingCaptadorFiltro');if(eq)q=q.eq('equipe',eq);if(cap)q=q.eq('captador_nome',cap);let r=await q;if(r.error)throw r.error;return r.data||[]}catch(e){console.warn(e);return[]}}
+async function abordagens(){try{let p=periodo(),q=db.from('abordagens').select('*').gte('created_at',p.de).lte('created_at',p.ate);let eq=V('dashEquipe')||V('rankingEquipe'),cap=V('dashCaptador')||V('rankingCaptadorFiltro');if(eq)q=q.eq('equipe',eq);if(cap)q=q.eq('captador_nome',cap);let r=await q;if(r.error)throw r.error;return r.data||[]}catch(e){console.warn(e);return[]}}
+window.carregarFunil55=async function(){let ps=await pesquisas(),ab=await abordagens(),sal=ps.filter(sala).length;S('kAbordagens55',ab.length);S('kConvAbordPesquisa55',P(ps.length,ab.length));S('kConvPesquisaSala55',P(sal,ps.length));let gp=group(ps,nome),ga=group(ab,nome),nomes=[...new Set([...Object.keys(gp),...Object.keys(ga)])];let rows=nomes.map(n=>{let p=gp[n]||[],a=ga[n]||[],sl=p.filter(sala).length;return{profissional:n,abordagens:a.length,pesquisas:p.length,q:p.filter(qok).length,sala:sl,conv_abord_pesq:P(p.length,a.length),conv_pesq_sala:P(sl,p.length)}});let cols=[{key:'profissional',label:'Profissional'},{key:'abordagens',label:'Abord.'},{key:'pesquisas',label:'Pesq.'},{key:'q',label:'Q'},{key:'sala',label:'Sala'},{key:'conv_abord_pesq',label:'Abord.→Pesq.'},{key:'conv_pesq_sala',label:'Pesq.→Sala'}];let ra=[...rows].sort((a,b)=>b.abordagens-a.abordagens),rc=[...rows].sort((a,b)=>parseInt(b.conv_abord_pesq)-parseInt(a.conv_abord_pesq)||parseInt(b.conv_pesq_sala)-parseInt(a.conv_pesq_sala));H('rankingAbordagens55',table(ra,cols));H('rankingConversao55',table(rc,cols));H('rankingAbaAbordagens55',table(ra,cols));H('rankingAbaConversao55',table(rc,cols));let meu=(typeof captadorNome!=='undefined'?captadorNome:'');let m=rows.find(x=>x.profissional===meu)||rows.find(x=>String(x.profissional).toLowerCase().includes(String(meu).toLowerCase()));if(m){S('meuAbordagens55',m.abordagens);S('meuConvAbordPesquisa55',m.conv_abord_pesq);S('meuConvPesquisaSala55',m.conv_pesq_sala);let meta=Number(V('metaAbordagens')||30),per=meta?Math.min(100,Math.round(m.abordagens/meta*100)):0;S('meuMetaAbordagens55',per+'%');H('metaIndividual55','<table><tbody><tr><th>Indicador</th><th>Realizado</th><th>Meta</th><th>Progresso</th></tr><tr><td>Abordagens</td><td>'+m.abordagens+'</td><td>'+meta+'</td><td><div class="funilBar55"><i style="width:'+per+'%"></i></div>'+per+'%</td></tr><tr><td>Pesquisas</td><td>'+m.pesquisas+'</td><td>-</td><td>'+m.conv_abord_pesq+'</td></tr><tr><td>Sala</td><td>'+m.sala+'</td><td>-</td><td>'+m.conv_pesq_sala+'</td></tr></tbody></table>')}}
+window.carregarHeatmapFunil55=async function(){let ps=await pesquisas(),met=V('heatmapMetrica55')||'q',g=group(ps,p=>p.ponto_oficial||p.ponto_captacao||p.ponto||'Sem ponto');let rows=Object.entries(g).map(([p,it])=>{let qq=it.filter(qok).length,nn=it.filter(nq).length,ss=it.filter(sala).length;return{ponto:p,pesquisas:it.length,q:qq,nq:nn,sala:ss,intensidade:met==='q'?qq:(met==='nq'?nn:ss)}}).sort((a,b)=>b.intensidade-a.intensidade);H('heatmapFunilTabela55',table(rows,[{key:'ponto',label:'Ponto'},{key:'pesquisas',label:'Pesq.'},{key:'q',label:'Q'},{key:'nq',label:'NQ'},{key:'sala',label:'Sala'},{key:'intensidade',label:'Intensidade'}]));try{if(typeof map!=='undefined'&&map&&typeof L!=='undefined'&&typeof L.heatLayer==='function'){if(window.__heatFunil55)map.removeLayer(window.__heatFunil55);let pts=(typeof PONTOS_OFICIAIS_CAPTAPRO!=='undefined')?PONTOS_OFICIAIS_CAPTAPRO:[],heat=[];rows.forEach(r=>{let ref=pts.find(p=>p.nome===r.ponto||p.apelido===r.ponto);if(ref)heat.push([ref.lat,ref.lng,Math.max(1,r.intensidade)])});if(heat.length)window.__heatFunil55=L.heatLayer(heat,{radius:32,blur:22,maxZoom:18}).addTo(map)}}catch(e){}}
+window.__abordagem55Lock=false;window.registrarAbordagem55=async function(ev){if(ev){ev.preventDefault();ev.stopPropagation()}if(window.__abordagem55Lock)return false;window.__abordagem55Lock=true;setTimeout(()=>window.__abordagem55Lock=false,700);if(typeof usuarioEmail==='undefined'||!usuarioEmail){msg('Entre no app antes de registrar abordagem.','erro');return false}try{if(typeof detectarPontoOficialAgora==='function')detectarPontoOficialAgora()}catch(e){}let atual=Number((E('abordagensHoje')||{}).innerText||0)||0;S('abordagensHoje',atual+1);let payload={user_email:usuarioEmail,captador_nome:(typeof captadorNome!=='undefined'?captadorNome:''),equipe:V('equipe')||null,ponto_captacao:V('ponto_captacao')||null,ponto_oficial:V('ponto_oficial')||V('ponto_captacao')||null,distancia_ponto_metros:Number(V('distancia_ponto_metros')||0)||null,latitude:(typeof latitude==='undefined'||latitude===null)?null:Number(latitude),longitude:(typeof longitude==='undefined'||longitude===null)?null:Number(longitude),horario_local:String(new Date().getHours()).padStart(2,'0')+':00',observacao:'Abordagem registrada sem pesquisa'};try{let r=await db.from('abordagens').insert(payload);if(r.error)throw r.error;msg('Abordagem registrada. Total de hoje: '+(atual+1),'ok')}catch(e){let k='captapro_abordagens55_'+usuarioEmail+'_'+D();localStorage.setItem(k,Number(localStorage.getItem(k)||0)+1);msg('Abordagem contada localmente. Rode o SQL 5.5 para salvar no Supabase.','ok')}setTimeout(()=>{contadorHoje55();carregarFunil55()},300);return false}
+window.contadorHoje55=async function(){if(typeof usuarioEmail==='undefined'||!usuarioEmail)return;try{let d=D(),r=await db.from('abordagens').select('*',{count:'exact',head:true}).eq('user_email',usuarioEmail).gte('created_at',d+'T00:00:00').lte('created_at',d+'T23:59:59');if(r.error)throw r.error;S('abordagensHoje',r.count||0)}catch(e){let k='captapro_abordagens55_'+usuarioEmail+'_'+D();S('abordagensHoje',Number(localStorage.getItem(k)||0))}}
+window.toggleRendaEmpresa=function(){let a=['Empresário','Empresária','Comerciante'].includes(V('profissao_1'))||['Empresário','Empresária','Comerciante'].includes(V('profissao_2'));document.body.classList.toggle('rendaEmpresarioAtiva',a);let n=E('boxRendaNormal'),em=E('boxRendaEmpresa'),r=E('renda_casal');if(n)n.style.display=a?'none':'block';if(em){em.classList.toggle('hidden',!a);em.style.display=a?'grid':'none'}if(a&&r)r.value=''}
+function ligar(){let old=E('btnRegistrarAbordagem55')||E('btnRegistrarAbordagem54');if(old){let b=old.cloneNode(true);b.id='btnRegistrarAbordagem55';b.removeAttribute('onclick');old.parentNode.replaceChild(b,old);b.addEventListener('click',window.registrarAbordagem55,{passive:false})}['profissao_1','profissao_2'].forEach(id=>{let x=E(id);if(x&&!x.__r55){x.__r55=true;x.addEventListener('change',window.toggleRendaEmpresa);x.addEventListener('input',window.toggleRendaEmpresa)}});window.toggleRendaEmpresa();contadorHoje55();carregarFunil55()}
+['carregarDashboard','carregarRanking','carregarMeuDesempenho','carregarMapa'].forEach(fn=>{let old=window[fn];if(typeof old==='function'&&!old.__w55){window[fn]=async function(){let r=await old.apply(this,arguments);setTimeout(()=>{carregarFunil55();carregarHeatmapFunil55()},350);return r};window[fn].__w55=true}})
+let oldEntrar=window.entrar;if(typeof oldEntrar==='function'&&!window.__entrar55){window.__entrar55=true;window.entrar=async function(){let r=await oldEntrar.apply(this,arguments);setTimeout(ligar,700);setTimeout(()=>{carregarFunil55();carregarHeatmapFunil55()},1300);return r}}
+document.addEventListener('DOMContentLoaded',ligar);setTimeout(ligar,700);setTimeout(ligar,1800);
 })();
 </script>
 
