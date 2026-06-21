@@ -4997,5 +4997,178 @@ body.carroNaoSelecionado .fipeValue{
 })();
 </script>
 
+
+<script>
+/* =========================================================
+   CAPTAPRO 1.0 • CORREÇÃO PRODUÇÃO/SALVAR/CARROS
+   - Sincroniza usuário logado nas rotinas extras
+   - Salvar ficha grava no Supabase e conta como pesquisa/produção
+   - Se existir coluna diferente no Supabase, remove só a coluna que deu erro e tenta novamente
+   - Carro salva nome da marca/modelo/ano, não código
+   ========================================================= */
+(function(){
+  const $=id=>document.getElementById(id);
+  const V=id=>String($(id)?.value||'').trim();
+  const setMsg=(txt,ok=true)=>{const el=$('formMsg'); if(el)el.innerHTML='<span class="'+(ok?'ok':'erro')+'">'+String(txt).replace(/[<>&]/g,m=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[m]))+'</span>';};
+  const money=v=>{try{return typeof numericOrNull==='function'?numericOrNull(v):(Number(String(v).replace(/[^0-9,-]/g,'').replace(',','.'))||null)}catch(e){return null}};
+  const numVal=id=>{const n=Number(V(id));return Number.isFinite(n)&&n>0?n:null};
+  const selectedLabel=id=>{
+    const el=$(id); if(!el)return '';
+    const op=el.options?.[el.selectedIndex];
+    const t=String(op?.dataset?.nome||op?.textContent||el.value||'').trim();
+    return t.replace(/^(Selecione|Carregando|Não foi possível).*$/i,'').trim();
+  };
+  const profFinal=(id,outro)=> V(id)==='Outro' ? V(outro) : V(id);
+  const brindeCusto=nome=>{try{return typeof valorBrindeEstimado==='function'?valorBrindeEstimado(nome):0}catch(e){return 0}};
+
+  function syncWindowUser(){
+    try{ window.usuarioEmail=usuarioEmail||V('email')||window.usuarioEmail||''; }catch(e){}
+    try{ window.captadorNome=captadorNome||V('captadorNome')||window.captadorNome||''; }catch(e){}
+    try{ window.userRole=userRole||window.userRole||'captador'; }catch(e){}
+  }
+  setInterval(syncWindowUser,1500);
+
+  async function insertPesquisaRobusto(payload){
+    let p={...payload};
+    const removidas=[];
+    for(let i=0;i<35;i++){
+      const r=await db.from('pesquisas').insert(p).select().single();
+      if(!r.error)return {data:r.data,removidas};
+      const msg=String(r.error.message||'');
+      const m=msg.match(/column\s+"?([a-zA-Z0-9_]+)"?\s+of relation|Could not find the '([^']+)' column|record has no field "?([a-zA-Z0-9_]+)"?/i);
+      const col=(m&&(m[1]||m[2]||m[3]))||'';
+      if(col && Object.prototype.hasOwnProperty.call(p,col)){
+        delete p[col]; removidas.push(col); continue;
+      }
+      throw r.error;
+    }
+    throw new Error('Não consegui adaptar o payload para a tabela pesquisas.');
+  }
+
+  function montarPayloadPesquisa(){
+    try{ if(typeof calcularQualificacao==='function')calcularQualificacao(); }catch(e){}
+    let inicio=new Date();
+    try{ inicio=new Date(jornada?.inicio_meeting||new Date()); }catch(e){}
+    const tempo=Math.max(0,Math.round((new Date()-inicio)/60000));
+    const veiculo=V('veiculo');
+    const payload={
+      user_email:(typeof usuarioEmail!=='undefined'?usuarioEmail:window.usuarioEmail)||V('email'),
+      captador_nome:String((typeof captadorNome!=='undefined'?captadorNome:window.captadorNome)||V('captadorNome')).trim(),
+      equipe:V('equipe'),
+      ponto_captacao:V('ponto_captacao'),
+      tipo_abordagem:'PESQUISA/FICHA',
+      estado_origem:V('estado_origem'),
+      cidade_origem:V('cidade_origem'),
+      jornada_id:(typeof jornada!=='undefined'&&jornada?.id)||null,
+      inicio_meeting:(typeof jornada!=='undefined'&&jornada?.inicio_meeting)||new Date().toISOString(),
+      tempo_no_ponto_minutos:tempo,
+      convidado_1:V('convidado_1'),
+      idade_1:numVal('idade_1'),
+      profissao_1:profFinal('profissao_1','outra_profissao_1'),
+      convidado_2:V('convidado_2'),
+      idade_2:numVal('idade_2'),
+      profissao_2:profFinal('profissao_2','outra_profissao_2'),
+      estado_civil:V('estado_civil'),
+      tempo_juntos:V('tempo_juntos'),
+      renda_casal:money(V('renda_casal')),
+      renda_bruta:money(V('renda_bruta')),
+      renda_liquida:money(V('renda_liquida')),
+      veiculo:veiculo,
+      marca_carro:veiculo==='Sim'?selectedLabel('marca_carro'):'',
+      modelo_carro:veiculo==='Sim'?selectedLabel('modelo_carro'):'',
+      ano_veiculo:veiculo==='Sim'?selectedLabel('ano_veiculo'):'',
+      valor_fipe:money(V('valor_fipe_preview')),
+      cartao_credito:V('cartao_credito'),
+      casa_propria:V('casa_propria'),
+      multipropriedade:V('multipropriedade'),
+      onde_multipropriedade:null,
+      brinde:V('brinde'),
+      custo_brinde:brindeCusto(V('brinde')),
+      levou_sala:'Pendente',
+      sala_declarada_promotor:'Pendente',
+      sala_status_aprovacao:'Aguardando declaração',
+      sala_status:'Pendente',
+      consultor_nome:null,
+      anotacao_sala:null,
+      sala_solicitada_em:null,
+      sala_solicitada_por:null,
+      contato:V('contato'),
+      observacoes:V('observacoes'),
+      status:(typeof qualificacao!=='undefined'?qualificacao:'NQ'),
+      qualificacao_automatica:(typeof qualificacao!=='undefined'?qualificacao:'NQ'),
+      motivo_qualificacao:(typeof motivoQualificacao!=='undefined'?motivoQualificacao:''),
+      latitude:(typeof latitude!=='undefined'?latitude:null),
+      longitude:(typeof longitude!=='undefined'?longitude:null),
+      horario_local:String(new Date().getHours()).padStart(2,'0')+':00',
+      producao_conta:true,
+      ficha_salva:true
+    };
+    Object.keys(payload).forEach(k=>{ if(payload[k]===undefined) payload[k]=null; });
+    return payload;
+  }
+
+  async function contarAbordagemAoSalvar(){
+    try{
+      const email=(typeof usuarioEmail!=='undefined'?usuarioEmail:window.usuarioEmail)||V('email');
+      if(!email)return;
+      const key='captapro_abordagem_auto_save_'+email+'_'+new Date().toISOString().slice(0,10)+'_'+V('convidado_1')+'_'+V('contato');
+      if(sessionStorage.getItem(key))return; // evita duplicar se apertar salvar duas vezes na mesma ficha
+      const payload={
+        user_email:email,
+        captador_nome:(typeof captadorNome!=='undefined'?captadorNome:window.captadorNome)||V('captadorNome'),
+        equipe:V('equipe')||null,
+        ponto_captacao:V('ponto_captacao')||null,
+        latitude:(typeof latitude!=='undefined'&&latitude!==null)?Number(latitude):null,
+        longitude:(typeof longitude!=='undefined'&&longitude!==null)?Number(longitude):null,
+        horario_local:String(new Date().getHours()).padStart(2,'0')+':00',
+        observacao:'Contado automaticamente ao salvar ficha'
+      };
+      await db.from('abordagens').insert(payload);
+      sessionStorage.setItem(key,'1');
+      if(typeof contadorHoje55==='function')setTimeout(contadorHoje55,500);
+    }catch(e){ /* abordagem extra não pode travar a pesquisa */ }
+  }
+
+  async function salvarPesquisaCorrigido(){
+    syncWindowUser();
+    if(window.__salvandoPesquisaCapta)return false;
+    window.__salvandoPesquisaCapta=true;
+    try{
+      try{ if(!jornada && typeof iniciarJornadaAutomatica==='function') await iniciarJornadaAutomatica(); }catch(e){}
+      try{ if(typeof calcularQualificacao==='function')calcularQualificacao(); }catch(e){}
+      if(!V('equipe')||!V('ponto_captacao')){setMsg('Preencha equipe e ponto.',false);return false;}
+      if(!V('convidado_1')){setMsg('Preencha o Nome 1.',false);return false;}
+      if(!V('brinde')){setMsg('Selecione o brinde liberado para esta qualificação.',false);return false;}
+      if(V('veiculo')==='Sim'&&(!V('marca_carro')||!V('modelo_carro')||!V('ano_veiculo'))){setMsg('Selecione marca, modelo e ano do carro.',false);return false;}
+      const payload=montarPayloadPesquisa();
+      const r=await insertPesquisaRobusto(payload);
+      try{ ultimaPesquisaSalva=r.data||payload; }catch(e){}
+      try{ if(typeof renderFichaSalva==='function')renderFichaSalva(r.data||payload); }catch(e){}
+      await contarAbordagemAoSalvar();
+      try{ if(typeof enviarLocalizacaoTempoReal==='function')enviarLocalizacaoTempoReal(true); }catch(e){}
+      try{ if(typeof carregarDashboard==='function')setTimeout(carregarDashboard,700); }catch(e){}
+      try{ if(typeof carregarMeuDesempenho==='function')setTimeout(carregarMeuDesempenho,700); }catch(e){}
+      setMsg('Ficha salva no Supabase e já contou como pesquisa/produção.',true);
+      window.__aguardandoCompartilharFicha73=true;
+      return true;
+    }catch(e){
+      console.error('Erro real ao salvar pesquisa:',e);
+      setMsg('Não salvou no Supabase: '+(e.message||e)+'. Confira se a tabela pesquisas permite INSERT para usuário aprovado.',false);
+      return false;
+    }finally{
+      setTimeout(()=>{window.__salvandoPesquisaCapta=false},900);
+    }
+  }
+
+  window.salvarPesquisa=salvarPesquisaCorrigido;
+  const entrarBase=window.entrar;
+  if(typeof entrarBase==='function'&&!window.__entrarProducaoFix){
+    window.__entrarProducaoFix=true;
+    window.entrar=async function(){const r=await entrarBase.apply(this,arguments); syncWindowUser(); return r;};
+  }
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(syncWindowUser,1000));
+})();
+</script>
+
 </body>
 </html>
