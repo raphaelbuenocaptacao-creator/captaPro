@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaptaPro Simples 1.7</title>
+<title>CaptaPro Simples 1.8</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
@@ -22,12 +22,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .fichaTitleFull b{display:block;font-size:22px}.fichaTitleFull small{color:#aaa}
 .fichaRodapeFull{border-top:1px solid #3b1b1b;margin-top:12px;padding-top:10px;color:#888;font-size:11px}
 
-/* CaptaPro Simples 1.7 */
+/* CaptaPro Simples 1.8 */
 #brinde{border-color:#00c2ff!important}
 .rankDestaque13{color:#00e676;font-weight:900}
 
 
-/* CaptaPro Simples 1.7 • organização pesquisa e CEO */
+/* CaptaPro Simples 1.8 • organização pesquisa e CEO */
 .pesquisaGrid14 input,.pesquisaGrid14 select{min-height:47px}
 .ceoPainel14{border:1px solid #5a1717;border-radius:16px;padding:12px;background:#080808}
 .ceoGrid14{grid-template-columns:repeat(3,1fr)}
@@ -36,23 +36,22 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:700px){.ceoGrid14{grid-template-columns:1fr}}
 
 
-/* CaptaPro Simples 1.7 • renda BRL + ranking mês */
+/* CaptaPro Simples 1.8 • renda BRL + ranking mês */
 #rankingMesAtual15{border-color:#00c2ff!important}
 #rankingMesAtual15 h2{border-left-color:#00c2ff!important}
 .rendaAjuda15{font-size:11px;color:#aaa;margin-top:-4px;margin-bottom:6px}
 
 
-/* CaptaPro Simples 1.7 • correção renda e CSV */
+/* CaptaPro Simples 1.8 • correção renda e CSV */
 #renda{border-color:#00c2ff!important}
 #csvRankingInput16{border-color:#00e676!important}
 
 
-/* CaptaPro Simples 1.7 • Aba Raking */
-#rakingBox table{min-width:760px}
+/* CaptaPro Simples 1.8 • Aba Raking */
+#rakingBox table{min-width:650px}
 #rakingBox tr:nth-child(2) td:first-child{color:#ffd54f;font-weight:900}
 #rakingBox tr:nth-child(3) td:first-child{color:#cfd8dc;font-weight:900}
 #rakingBox tr:nth-child(4) td:first-child{color:#d7a36a;font-weight:900}
-#custoBrinde{border-color:#ffd54f!important}
 .rakingTools17{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 @media(max-width:700px){.rakingTools17{grid-template-columns:1fr}.tabs{grid-template-columns:1fr}body.ceo .tabs{grid-template-columns:1fr}}
 
@@ -60,7 +59,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Simples 1.7</div><p class="mini">Pesquisa e Relatório • Criado pela empresa <b style="color:#00e676">Bueno Invest</b></p></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Simples 1.8</div><p class="mini">Pesquisa e Relatório • Criado pela empresa <b style="color:#00e676">Bueno Invest</b></p></div>
 
 <section id="loginBox" class="card">
 <h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
@@ -110,22 +109,30 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <select id="cartao"><option value="">10. Cartão de crédito?</option><option>Sim</option><option>Não</option></select>
 
 <!-- 11 renda em reais -->
-<select id="renda"><option value="">11. Renda do casal</option><option value="10.000,00">R$ 10.000,00</option><option value="15.000,00">R$ 15.000,00</option><option value="20.000,00">R$ 20.000,00</option><option value="25.000,00">R$ 25.000,00</option><option value="30.000,00">R$ 30.000,00</option><option value="35.000,00">R$ 35.000,00</option><option value="40.000,00">R$ 40.000,00</option><option value="45.000,00">R$ 45.000,00</option><option value="50.000,00">R$ 50.000,00</option><option value="55.000,00">R$ 55.000,00</option><option value="60.000,00">R$ 60.000,00</option><option value="65.000,00">R$ 65.000,00</option><option value="70.000,00">R$ 70.000,00</option><option value="75.000,00">R$ 75.000,00</option><option value="80.000,00">R$ 80.000,00</option><option value="85.000,00">R$ 85.000,00</option><option value="90.000,00">R$ 90.000,00</option><option value="95.000,00">R$ 95.000,00</option><option value="100.000,00">R$ 100.000,00</option></select>
+<input id="renda" inputmode="numeric" autocomplete="off" placeholder="11. Renda do casal. Ex: 10000 vira 10.000,00">
 
 <!-- demais campos necessários -->
 <select id="multi"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
 <select id="brinde">
-<option value="">Selecione o brinde</option>
-<option>Voucher</option>
-<option>Almoço</option>
-<option>Passeio</option>
-<option>Desconto</option>
-<option>Suvenir 150</option>
-<option>Chocolate</option>
-<option>Brinde Especial</option>
-<option>Sem brinde</option>
+<option value="">Selecione a cortesia</option>
+<option>1 Museu de Cera</option>
+<option>2 Museu de Cera</option>
+<option>1 Mini Mundo</option>
+<option>2 Mini Mundo</option>
+<option>1 Vale dos Dinossauros</option>
+<option>2 Vale dos Dinossauros</option>
+<option>1 Terror</option>
+<option>2 Terror</option>
+<option>1 Espelho de Jordão</option>
+<option>2 Espelho de Jordão</option>
+<option>R$ 100,00 de consumo</option>
+<option>Rostie</option>
+<option>Vemaguet</option>
+<option>Armazém Brasil</option>
+<option>Combustível</option>
+<option>Chocolate Spinassi</option>
+<option>Sem cortesia</option>
 </select>
-<input id="custoBrinde" inputmode="numeric" placeholder="Custo do brinde. Ex: 150,00">
 <input id="contato" placeholder="WhatsApp / contato">
 </div>
 <textarea id="obs" style="margin-top:8px" placeholder="Observações"></textarea>
@@ -137,7 +144,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <div class="kpis"><div class="kpi">Abordagens<b id="rAbord">0</b></div><div class="kpi">Pesquisas<b id="rPesq">0</b></div><div class="kpi">Sala<b id="rSala">0</b></div><div class="kpi">Conversão<b id="rConv">0%</b></div></div>
 <div class="card scroll" id="rankingMesAtual15">
 <h2>Ranking do Mês Atual</h2>
-<p class="hint">Junho: profissional, casais total, vendas, VGV, eficiência e custo por casal em sala.</p>
+<p class="hint">Junho: profissional, casais total, vendas, VGV e eficiência.</p>
 <input id="csvRankingInput16" type="file" accept=".csv,text/csv" onchange="importarRankingCSV16(event)">
 <p class="mini">Opcional: importe sua planilha CSV para montar o ranking do mês.</p>
 <div id="rankingMesBox15"></div>
@@ -147,7 +154,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
 <section id="raking" class="card hidden">
 <h2>Raking</h2>
-<p class="hint">Ranking do mês atual com profissional, casais, vendas, VGV, eficiência e custo por casal em sala de brinde.</p>
+<p class="hint">Ranking do mês atual com profissional, casais, vendas, VGV e eficiência.</p>
 <div class="rakingTools17">
   <input id="rakingDe" type="date">
   <input id="rakingAte" type="date">
@@ -207,14 +214,14 @@ function qual(){let c=getCfg(),idade=Math.max(+V('idade1')||0,+V('idade2')||0),r
 function calcularQualificacao(){let q=qual();H('resultado',`<div class=card><span class=badge>${q.status}</span><p class=mini>${q.motivo}</p></div>`);return q}
 async function registrarAbordagem(){let p={user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),observacao:'Abordagem',created_at:new Date().toISOString()};try{await db.from('abordagens').insert(p)}catch(e){let a=JSON.parse(localStorage.getItem('abordagensLocal')||'[]');a.push(p);localStorage.setItem('abordagensLocal',JSON.stringify(a))}carregarAbordagensHoje();H('formMsg','<span class=ok>Abordagem registrada.</span>')}
 async function carregarAbordagensHoje(){let total=0,d=new Date().toISOString().slice(0,10);try{let r=await db.from('abordagens').select('*',{count:'exact',head:true}).eq('user_email',usuarioEmail).gte('created_at',d+'T00:00:00').lte('created_at',d+'T23:59:59');total=r.count||0}catch(e){total=JSON.parse(localStorage.getItem('abordagensLocal')||'[]').filter(x=>x.user_email===usuarioEmail&&x.created_at.slice(0,10)===d).length}S('abordagensHoje',total)}
-function payload(){let q=calcularQualificacao();return {user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),convidado_1:V('nome1'),convidado_2:V('nome2'),idade_1:+V('idade1')||0,idade_2:+V('idade2')||0,profissao_1:V('profissao1'),profissao_2:V('profissao2'),estado_origem:V('estado'),cidade_origem:V('cidade'),estado_civil:V('relacionamento'),tempo_juntos:V('tempo'),veiculo:V('nomeCarro')?'Sim':'Não',marca_carro:'',modelo_carro:V('nomeCarro'),ano_veiculo:V('anoCarro'),cartao_credito:V('cartao'),casa_propria:V('casa'),multipropriedade:V('multi'),renda_casal:V('renda'),brinde:V('brinde'),custo_brinde:parseMoedaGlobalCP17(V('custoBrinde')),contato:V('contato'),observacoes:V('obs'),qualificacao_automatica:q.status,motivo_qualificacao:q.motivo,levou_sala:'Não',created_at:new Date().toISOString()}}
+function payload(){let q=calcularQualificacao();return {user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),convidado_1:V('nome1'),convidado_2:V('nome2'),idade_1:+V('idade1')||0,idade_2:+V('idade2')||0,profissao_1:V('profissao1'),profissao_2:V('profissao2'),estado_origem:V('estado'),cidade_origem:V('cidade'),estado_civil:V('relacionamento'),tempo_juntos:V('tempo'),veiculo:V('nomeCarro')?'Sim':'Não',marca_carro:'',modelo_carro:V('nomeCarro'),ano_veiculo:V('anoCarro'),cartao_credito:V('cartao'),casa_propria:V('casa'),multipropriedade:V('multi'),renda_casal:V('renda'),brinde:V('brinde'),contato:V('contato'),observacoes:V('obs'),qualificacao_automatica:q.status,motivo_qualificacao:q.motivo,levou_sala:'Não',created_at:new Date().toISOString()}}
 async function salvarPesquisa(){let p=payload();if(!p.convidado_1){H('formMsg','<span class=erro>Informe o Nome 1.</span>');return}try{await db.from('pesquisas').insert(p);H('formMsg','<span class=ok>Ficha salva.</span>')}catch(e){let a=JSON.parse(localStorage.getItem('pesquisasLocal')||'[]');a.push(p);localStorage.setItem('pesquisasLocal',JSON.stringify(a));H('formMsg','<span class=warn>Ficha salva localmente.</span>')}ultimaFicha=p;renderFicha(p);carregarRelatorio()}
 function campoFicha(label,valor){return `<div class=campo><small>${label}</small>${valor||'-'}</div>`}
 function renderFicha(p){
 E('fichaBox').classList.remove('hidden');
 const carroTxt = `${p.modelo_carro||'-'} ${p.ano_veiculo||''}`.trim();
 H('fichaConteudo',`<div id=fichaImg class=ficha>
-<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Simples 1.7 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
+<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Simples 1.8 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
 ${campoFicha('Resultado da qualificação', `${p.qualificacao_automatica||'-'} • ${p.motivo_qualificacao||'Perfil dentro da regra'}`)}
 ${campoFicha('Nome 1', p.convidado_1)}
 ${campoFicha('Idade 1 / Profissão 1', `${p.idade_1||'-'} anos • ${p.profissao_1||'-'}`)}
@@ -227,8 +234,7 @@ ${campoFicha('Cartão de crédito', p.cartao_credito)}
 ${campoFicha('Casa própria', p.casa_propria)}
 ${campoFicha('Estado / Cidade', `${p.estado_origem||'-'} • ${p.cidade_origem||'-'}`)}
 ${campoFicha('Multipropriedade', p.multipropriedade)}
-${campoFicha('Brinde entregue', p.brinde)}
-${campoFicha('Custo do brinde', p.custo_brinde?moedaGlobalCP17(p.custo_brinde):'-')}
+${campoFicha('Cortesia escolhida', p.brinde)}
 ${campoFicha('WhatsApp / Contato', p.contato)}
 ${campoFicha('Entrada em sala', p.levou_sala||'Aguardando informação do promotor')}
 ${campoFicha('Equipe / Ponto', `${p.equipe||'-'} • ${p.ponto_captacao||'-'}`)}
@@ -238,7 +244,7 @@ ${campoFicha('Observações', p.observacoes||'Sem observações')}
 </div>`);
 }
 async function compartilharFicha(){let node=E('fichaImg');if(!node)return;let c=await html2canvas(node,{scale:2,backgroundColor:'#090909'});c.toBlob(async b=>{let f=new File([b],'ficha-captapro.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'Ficha CaptaPro'});else{let a=document.createElement('a');a.href=c.toDataURL();a.download='ficha-captapro.png';a.click()}})}
-function novaPesquisa(){['nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade','relacionamento','tempo','nomeCarro','anoCarro','cartao','casa','multi','renda','brinde','custoBrinde','contato','obs'].forEach(id=>E(id).value='');H('resultado','');H('formMsg','');E('fichaBox').classList.add('hidden');E('nome1').focus()}
+function novaPesquisa(){['nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade','relacionamento','tempo','nomeCarro','anoCarro','cartao','casa','multi','renda','brinde','contato','obs'].forEach(id=>E(id).value='');H('resultado','');H('formMsg','');E('fichaBox').classList.add('hidden');E('nome1').focus()}
 async function dados(t){try{let r=await db.from(t).select('*').order('created_at',{ascending:false}).limit(1000);return r.data||[]}catch(e){return JSON.parse(localStorage.getItem(t==='pesquisas'?'pesquisasLocal':'abordagensLocal')||'[]')}}
 function per(x,de,ate){let d=(x.created_at||'').slice(0,10);return(!de||d>=de)&&(!ate||d<=ate)}
 async function carregarRelatorio(){
@@ -286,7 +292,7 @@ function mostrarIndividual(){let r=(window.rowsRel||[]).find(x=>x.nome===V('prof
 </script>
 
 <script>
-/* ===== CaptaPro Simples 1.7 • renda R$, pesquisa organizada e CEO completo ===== */
+/* ===== CaptaPro Simples 1.8 • renda R$, pesquisa organizada e CEO completo ===== */
 (function(){
 function E14(id){return document.getElementById(id)}
 function V14(id){return (E14(id)?.value||'').trim()}
@@ -394,7 +400,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 <script>
-/* ===== CaptaPro Simples 1.7 • renda correta + ranking CSV ===== */
+/* ===== CaptaPro Simples 1.8 • renda correta + ranking CSV ===== */
 (function(){
 function E16(id){return document.getElementById(id)}
 function V16(id){return (E16(id)?.value||'').trim()}
@@ -493,20 +499,18 @@ function renderRankingCSV16(dados){
  const map={};
  (dados||[]).forEach(r=>{
    const nome=pick16(r,['profissional','captador','promotor','nome'])||'Sem nome';
-   if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0,sala:0,custo:0};
+   if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0,sala:0};
    map[nome].casais += numPlanilha16(pick16(r,['casais','casal','pesquisas'])) || 0;
    map[nome].vendas += numPlanilha16(pick16(r,['vendas','venda'])) || 0;
    map[nome].vgv += numPlanilha16(pick16(r,['vgv','valor','valor vgv'])) || 0;
    map[nome].sala += numPlanilha16(pick16(r,['sala','em sala','casais sala'])) || 0;
-   map[nome].custo += numPlanilha16(pick16(r,['custo_brinde','custo brinde','brinde','custo'])) || 0;
  });
  const arr=Object.values(map).sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv);
  if(!arr.length){box.innerHTML='<p class="mini">CSV sem dados compatíveis.</p>';return}
- box.innerHTML='<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th><th>Custo / casal sala</th></tr>'+
+ box.innerHTML='<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>'+
  arr.map(r=>{
    const ef=r.casais?Math.round(r.vendas/r.casais*100):0;
-   const custoSala=r.sala?Math.round(r.custo/r.sala):0;
-   return `<tr><td>${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moedaBR16(r.vgv)}</td><td>${ef}%</td><td>${moedaBR16(custoSala)}</td></tr>`;
+   return `<tr><td>${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moedaBR16(r.vgv)}</td><td>${ef}%</td></tr>`;
  }).join('')+'</table>';
 }
 
@@ -539,7 +543,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 <script>
-/* ===== CaptaPro Simples 1.7 • Raking + renda por escolha ===== */
+/* ===== CaptaPro Simples 1.8 • Raking + renda digitável + cortesias ===== */
 function parseMoedaGlobalCP17(v){
   let s=String(v||'').replace(/R\$|\s/g,'').trim();
   if(!s)return 0;
@@ -560,19 +564,6 @@ function vendaCountCP17(v){
   const n=Number(String(v).replace(/[^0-9]/g,''));
   return Number.isFinite(n)?n:0;
 }
-function brindeCustoEstimadoCP17(txt){
-  const s=String(txt||'');
-  const n=parseMoedaGlobalCP17(s);
-  if(n)return n;
-  if(normalCP17(s).includes('sem brinde'))return 0;
-  return 0;
-}
-function aplicarMascaraCustoBrinde17(){
- const el=E('custoBrinde'); if(!el||el.__cp17)return; el.__cp17=true;
- el.addEventListener('input',()=>{const n=String(el.value||'').replace(/\D/g,''); el.value=n?numeroTelaCP17(Number(n)/100):''});
- el.addEventListener('blur',()=>{const n=parseMoedaGlobalCP17(el.value); el.value=n?numeroTelaCP17(n):''});
-}
-
 window.qual = qual = function(){
  let c=getCfg();
  if(!c.rendaMin)c={rendaMin:15000,anoMin:2011,idadeMin:25,idadeMax:64,tempoMinNumero:2,casa:'sim',cartao:'sim',profObrigatoria:'sim',profissoesBloqueadas:'Operador de caixa, Zelador, Secretária, Auxiliar, Assistente, Estudante, Uber/App/Freelancer'};
@@ -601,7 +592,6 @@ if(typeof payloadBaseCP17==='function' && !window.__payloadCP17){
  window.payload = payload = function(){
    const p=payloadBaseCP17.apply(this,arguments);
    p.renda_casal=V('renda');
-   p.custo_brinde=parseMoedaGlobalCP17(V('custoBrinde')) || brindeCustoEstimadoCP17(V('brinde'));
    p.vgv=parseMoedaGlobalCP17(p.vgv||0);
    return p;
  }
@@ -645,12 +635,11 @@ function montarRakingDeCSVCP17(dados){
  const map={};
  (dados||[]).forEach(r=>{
    const nome=pickCP17(r,['profissional','captador','promotor','nome','captador_nome'])||'Sem nome';
-   if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0,sala:0,custo:0};
+   if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0,sala:0};
    map[nome].casais += parseMoedaGlobalCP17(pickCP17(r,['casais','casal','pesquisas','fichas'])) || 0;
    map[nome].vendas += parseMoedaGlobalCP17(pickCP17(r,['vendas','venda'])) || vendaCountCP17(pickCP17(r,['status']));
    map[nome].vgv += parseMoedaGlobalCP17(pickCP17(r,['vgv','valor vgv','valor','volume geral'])) || 0;
    map[nome].sala += parseMoedaGlobalCP17(pickCP17(r,['sala','em sala','casais sala','levou_sala'])) || 0;
-   map[nome].custo += parseMoedaGlobalCP17(pickCP17(r,['custo_brinde','custo brinde','custo','brinde'])) || 0;
  });
  return Object.values(map);
 }
@@ -658,13 +647,12 @@ function montarRakingDePesquisasCP17(pesquisas){
  const map={};
  (pesquisas||[]).forEach(x=>{
    const nome=x.captador_nome||x.profissional||x.user_email||'Sem nome';
-   if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0,sala:0,custo:0};
+   if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0,sala:0};
    map[nome].casais += 1;
    map[nome].vendas += vendaCountCP17(x.status||x.venda||x.vendas);
    map[nome].vgv += parseMoedaGlobalCP17(x.vgv||x.valor_vgv||0);
    const entrouSala=normalCP17(x.levou_sala||x.sala||'').includes('sim') || x.sala===true || Number(x.sala)>0;
    if(entrouSala)map[nome].sala += 1;
-   map[nome].custo += parseMoedaGlobalCP17(x.custo_brinde||x.custoBrinde||0) || brindeCustoEstimadoCP17(x.brinde);
  });
  return Object.values(map);
 }
@@ -673,17 +661,15 @@ function renderTabelaRakingCP17(arr,fonte){
  arr=(arr||[]).filter(r=>r.nome).sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv||a.nome.localeCompare(b.nome));
  if(E('rakingFonte17'))E('rakingFonte17').innerHTML=fonte||'';
  if(!arr.length){box.innerHTML='<p class="mini">Sem dados para montar o Raking.</p>';return;}
- const total={casais:0,vendas:0,vgv:0,sala:0,custo:0};
- arr.forEach(r=>{total.casais+=r.casais;total.vendas+=r.vendas;total.vgv+=r.vgv;total.sala+=r.sala;total.custo+=r.custo});
+ const total={casais:0,vendas:0,vgv:0,sala:0};
+ arr.forEach(r=>{total.casais+=r.casais;total.vendas+=r.vendas;total.vgv+=r.vgv;total.sala+=r.sala});
  const linhas=arr.map((r,i)=>{
    const ef=r.casais?((r.vendas/r.casais)*100):0;
-   const custoSala=r.sala?(r.custo/r.sala):0;
    const pos=i+1;
-   return `<tr><td>${pos}º ${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moedaGlobalCP17(r.vgv)}</td><td>${ef.toFixed(1).replace('.',',')}%</td><td>${moedaGlobalCP17(custoSala)}</td></tr>`;
+   return `<tr><td>${pos}º ${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moedaGlobalCP17(r.vgv)}</td><td>${ef.toFixed(1).replace('.',',')}%</td></tr>`;
  }).join('');
  const efTotal=total.casais?((total.vendas/total.casais)*100):0;
- const custoTotal=total.sala?(total.custo/total.sala):0;
- box.innerHTML=`<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th><th>Custo / casal em sala</th></tr>${linhas}<tr><th>Total</th><th>${total.casais}</th><th>${total.vendas}</th><th>${moedaGlobalCP17(total.vgv)}</th><th>${efTotal.toFixed(1).replace('.',',')}%</th><th>${moedaGlobalCP17(custoTotal)}</th></tr></table>`;
+ box.innerHTML=`<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${linhas}<tr><th>Total</th><th>${total.casais}</th><th>${total.vendas}</th><th>${moedaGlobalCP17(total.vgv)}</th><th>${efTotal.toFixed(1).replace('.',',')}%</th></tr></table>`;
 }
 function setPeriodoRakingCP17(){
  const de=E('rakingDe'), ate=E('rakingAte'); if(!de||!ate)return;
@@ -748,8 +734,79 @@ if(typeof carregarRelatorioBaseCP17==='function'&&!window.__relatorioCP17){
  }
 }
 document.addEventListener('DOMContentLoaded',()=>{
- setTimeout(()=>{aplicarMascaraCustoBrinde17(); setPeriodoRakingCP17(); carregarRaking();},700);
+ setTimeout(()=>{setPeriodoRakingCP17(); carregarRaking();},700);
 });
+</script>
+
+<script>
+/* ===== CaptaPro Simples 1.8 • máscara de renda digitável ===== */
+(function(){
+function E18(id){return document.getElementById(id)}
+function formataRendaCP18(digits){
+  digits=String(digits||'').replace(/\D/g,'');
+  return digits ? Number(digits).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '';
+}
+function aplicaRendaDigitavelCP18(){
+  const el=E18('renda'); if(!el || el.__rendaCP18)return;
+  el.__rendaCP18=true;
+  // impede máscaras antigas de colocarem R$ ou dobrarem os zeros
+  el.__moeda14=true;
+  el.__renda16=true;
+  let digits=String(el.value||'').split(',')[0].replace(/\D/g,'');
+  function render(){
+    el.value=formataRendaCP18(digits);
+    try{ const pos=Math.max(0, el.value.indexOf(',')>-1 ? el.value.indexOf(',') : el.value.length); el.setSelectionRange(pos,pos); }catch(e){}
+  }
+  el.addEventListener('focus',()=>{ digits=String(el.value||'').split(',')[0].replace(/\D/g,''); render(); });
+  el.addEventListener('beforeinput',(ev)=>{
+    if(ev.inputType==='insertText' && /^\d$/.test(ev.data||'')){
+      ev.preventDefault();
+      if(el.selectionStart===0 && el.selectionEnd===el.value.length)digits='';
+      digits += ev.data;
+      render();
+    }else if(ev.inputType==='deleteContentBackward'){
+      ev.preventDefault();
+      digits=digits.slice(0,-1);
+      render();
+    }
+  });
+  el.addEventListener('paste',(ev)=>{
+    ev.preventDefault();
+    const t=(ev.clipboardData||window.clipboardData).getData('text')||'';
+    digits=String(t).replace(/\D/g,'');
+    render();
+  });
+  el.addEventListener('input',()=>{
+    // fallback para navegadores sem beforeinput
+    if(!el.__fallbackCP18){
+      digits=String(el.value||'').split(',')[0].replace(/\D/g,'');
+      render();
+    }
+  });
+  el.addEventListener('blur',render);
+}
+function aplicaCortesiasCP18(){
+  const brinde=E18('brinde'); if(brinde)brinde.setAttribute('aria-label','Cortesia escolhida');
+}
+window.salvarConfig=function(){
+  const c={
+    rendaMin:parseMoedaGlobalCP17((E18('cfgRendaMin')?.value)||'')||15000,
+    anoMin:Number((E18('cfgAnoMin')?.value)||'')||2011,
+    idadeMin:Number((E18('cfgIdadeMin')?.value)||'')||25,
+    idadeMax:Number((E18('cfgIdadeMax')?.value)||'')||64,
+    tempoMinNumero:Number((E18('cfgTempoMinNumero')?.value)||'')||2,
+    tempoMaxNumero:Number((E18('cfgTempoMaxNumero')?.value)||'')||30,
+    casa:(E18('cfgCasa')?.value)||'sim',
+    cartao:(E18('cfgCartao')?.value)||'sim',
+    profObrigatoria:(E18('cfgProfObrigatoria')?.value)||'sim',
+    profissoesBloqueadas:(E18('cfgProfissoesBloqueadas')?.value)||'',
+    obsCEO:(E18('cfgObsCEO')?.value)||''
+  };
+  localStorage.setItem('cfg',JSON.stringify(c));
+  const msg=E18('cfgMsg'); if(msg)msg.innerHTML='<span class="ok">Perfil CEO salvo.</span>';
+}
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{aplicaRendaDigitavelCP18(); aplicaCortesiasCP18();},100);});
+})();
 </script>
 
 </body></html>
