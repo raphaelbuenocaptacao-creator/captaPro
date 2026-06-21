@@ -5605,5 +5605,535 @@ body.carroNaoSelecionado .fipeValue{
 })();
 </script>
 
+
+<style id="captapro_final_10_css">
+/* CAPTAPRO 1.0 FINAL • dashboard/produção/login */
+.captaproStatusFinal{padding:10px 12px;border-radius:12px;background:#f9fafb;border:1px solid #e5e7eb;color:#344054;font-size:12px;margin:8px 0}
+#dash:not(.hidden),#producaoDia:not(.hidden),#salaAdmin:not(.hidden),#ceo:not(.hidden){display:block!important}
+.tabs button.producaoDiaBtnFix{display:block!important}
+.producaoDiaBtnFix{background:linear-gradient(135deg,#12b76a,#027a48)!important;color:#fff!important;border:1px solid #6ce9a6!important}
+.novaFichaActionsFinal{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.novaFichaActionsFinal button{min-height:52px}
+.btnShareFinal{background:#18a84a!important;color:#fff!important;border:1px solid #22c55e!important}
+.btnNovaFinal{background:#fff!important;color:#111827!important;border:1px solid #d0d5dd!important}
+@media(max-width:900px){.novaFichaActionsFinal{grid-template-columns:1fr}}
+</style>
+
+<script id="captapro_final_10_script">
+/* =========================================================
+   CAPTAPRO 1.0 FINAL • LOGIN + DASHBOARD + PRODUÇÃO + FICHA
+   ========================================================= */
+(function(){
+  const $=id=>document.getElementById(id);
+  const V=id=>String($(id)?.value||'').trim();
+  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const hojeISO=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+  const dataBR=d=>{try{return new Date(d).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}catch(e){return '-'}};
+  const deHoje=()=>hojeISO()+'T00:00:00';
+  const ateHoje=()=>hojeISO()+'T23:59:59';
+  const CEO_EMAILS=['raphaelbueno.captacao@gmail.com','raphaelbueno.captacao@gmail.com'.replace('raphael','raphaael'),'marcel.dorado2@gmail.com'];
+
+  function setHTML(id,html){const e=$(id);if(e)e.innerHTML=html}
+  function setTXT(id,txt){const e=$(id);if(e)e.textContent=txt}
+  function show(id,on){const e=$(id);if(e)e.classList.toggle('hidden',!on)}
+  function emailAtual(){try{return String(usuarioEmail||window.usuarioEmail||V('email')||'').toLowerCase().trim()}catch(e){return String(window.usuarioEmail||V('email')||'').toLowerCase().trim()}}
+  function nomeAtual(){try{return String(captadorNome||window.captadorNome||V('captadorNome')||'').trim()}catch(e){return String(window.captadorNome||V('captadorNome')||'').trim()}}
+  function roleAtual(){try{return String(userRole||window.userRole||'captador').toLowerCase()}catch(e){return String(window.userRole||'captador').toLowerCase()}}
+  function admin(){return CEO_EMAILS.includes(emailAtual()) || ['ceo','gestor','lider','líder','admin'].includes(roleAtual())}
+  window.isAdminRole=function(){return admin()};
+
+  function syncUser(email,nome,role){
+    email=email||emailAtual(); nome=nome||nomeAtual(); role=role||roleAtual();
+    try{usuarioEmail=email}catch(e){window.usuarioEmail=email}
+    try{captadorNome=nome}catch(e){window.captadorNome=nome}
+    try{userRole=role}catch(e){window.userRole=role}
+    setTXT('promotorLogadoNome',nome||'Aguardando entrada');
+    if($('arenaDesafiante'))$('arenaDesafiante').value=nome||'';
+  }
+
+  function aplicarPermissoes(){
+    const adm=admin();
+    document.querySelectorAll('.admOnly').forEach(el=>el.style.display=adm?'block':'none');
+    document.querySelectorAll('.promotorOnly').forEach(el=>el.style.display=adm?'none':'block');
+    const prod=document.querySelector('.producaoDiaBtnFix'); if(prod)prod.style.display=adm?'block':'none';
+    if(!adm && $('dash') && !$('dash').classList.contains('hidden')) window.aba('pesquisa',document.querySelector(".tabs button[onclick*='pesquisa']"));
+  }
+
+  async function insertAdaptavel(tabela,payload){
+    let p={...payload};
+    for(let i=0;i<50;i++){
+      const r=await db.from(tabela).insert(p).select().single();
+      if(!r.error)return r.data||p;
+      const msg=String(r.error.message||'');
+      const m=msg.match(/column\s+"?([a-zA-Z0-9_]+)"?\s+of relation|Could not find the '([^']+)' column|record has no field "?([a-zA-Z0-9_]+)"?/i);
+      const col=m&&(m[1]||m[2]||m[3]);
+      if(col && Object.prototype.hasOwnProperty.call(p,col)){delete p[col];continue}
+      throw r.error;
+    }
+    throw new Error('Campos incompatíveis com a tabela '+tabela);
+  }
+
+  function aprovado(data,email){
+    if(CEO_EMAILS.includes(String(email).toLowerCase()))return true;
+    if(data.approved===true || data.aprovado===true || data.ativo===true)return true;
+    if(String(data.status||'').toLowerCase().includes('aprov'))return true;
+    return false;
+  }
+
+  window.entrar=async function(){
+    const email=V('email').toLowerCase(), nome=V('captadorNome');
+    if(!email||!nome){setHTML('loginMsg','<span class="erro">Preencha e-mail e nome.</span>');return}
+    const btn=document.querySelector('#loginBox button.main');
+    if(btn){btn.disabled=true;btn.textContent='Entrando...'}
+    try{
+      let role='captador', data=null;
+      const r=await db.from('approved_users').select('*').eq('email',email).maybeSingle();
+      if(r.error)throw r.error;
+      data=r.data;
+      if(!data && !CEO_EMAILS.includes(email)){
+        await insertAdaptavel('approved_users',{email,name:nome,nome,approved:false,aprovado:false,role:'captador'});
+        show('loginBox',false);show('aguardandoBox',true);
+        return;
+      }
+      if(data && !aprovado(data,email)){
+        show('loginBox',false);show('aguardandoBox',true);
+        return;
+      }
+      role=CEO_EMAILS.includes(email)?'ceo':String(data?.role||data?.perfil||'captador').toLowerCase();
+      const nomeFinal=String(data?.name||data?.nome||nome).trim();
+      syncUser(email,nomeFinal,role);
+      localStorage.setItem('captapro_login_72',JSON.stringify({email,nome:nomeFinal,role,t:Date.now()}));
+      localStorage.setItem('captapro_login_final',JSON.stringify({email,nome:nomeFinal,role,t:Date.now()}));
+      show('loginBox',false);show('aguardandoBox',false);show('appBox',true);show('btnSair72',true);
+      aplicarPermissoes();
+      try{await carregarConfig()}catch(e){}
+      try{await carregarListasFiltrosFinal()}catch(e){try{await carregarListasFiltros()}catch(x){}}
+      try{inicializarDatasPadrao()}catch(e){}
+      try{iniciarRastreamentoGps()}catch(e){}
+      try{iniciarJornadaAutomatica()}catch(e){}
+      try{iniciarRealtimeLocalizacoes()}catch(e){}
+      instalarAbaProducao();
+      await atualizarContadorAbordagensFinal();
+      if(admin()){setTimeout(()=>{carregarDashboard();carregarProducaoHojeFix()},500)}
+      window.aba('pesquisa',document.querySelector(".tabs button[onclick*='pesquisa']"));
+    }catch(e){
+      setHTML('loginMsg','<span class="erro">Erro no login: '+esc(e.message||e)+'</span>');
+    }finally{
+      if(btn){btn.disabled=false;btn.textContent='Entrar'}
+    }
+  };
+
+  window.sairCaptaPro72=function(){
+    localStorage.removeItem('captapro_login_final');
+    localStorage.removeItem('captapro_login_72');
+    sessionStorage.clear();
+    syncUser('','','captador');
+    show('appBox',false);show('loginBox',true);show('aguardandoBox',false);show('btnSair72',false);
+    if($('email'))$('email').value=''; if($('captadorNome'))$('captadorNome').value='';
+  };
+
+  function periodoDash(){
+    const de=V('dashDe')||hojeISO(), ate=V('dashAte')||hojeISO();
+    return {de:de+'T00:00:00',ate:ate+'T23:59:59',deD:de,ateD:ate};
+  }
+
+  async function selectPeriodo(tabela,de,ate){
+    try{
+      const r=await db.from(tabela).select('*').gte('created_at',de).lte('created_at',ate).order('created_at',{ascending:false}).limit(5000);
+      if(r.error)throw r.error;
+      return r.data||[];
+    }catch(e){console.warn('Erro lendo '+tabela,e);return []}
+  }
+
+  function filtrarLocal(arr){
+    const eq=V('dashEquipe'), cap=V('dashCaptador');
+    return (arr||[]).filter(x=>(!eq||String(x.equipe||'')===eq)&&(!cap||String(x.captador_nome||x.user_email||'')===cap));
+  }
+
+  function statusQ(p){return String(p.qualificacao_automatica||p.status||'').toUpperCase()==='Q'}
+  function statusSala(p){return /sim|aprov|confirm|foi/i.test(String(p.sala_status||p.levou_sala||p.sala_status_aprovacao||''))}
+  function nomeLinha(x){return String(x.captador_nome||x.nome||x.user_email||'Sem nome').trim()||'Sem nome'}
+  function table(rows,cols){
+    if(!rows.length)return '<p class="mini">Sem dados no período.</p>';
+    return '<div class="tableScroll"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c.label)+'</th>').join('')+'</tr></thead><tbody>'+
+      rows.map((r,i)=>'<tr>'+cols.map(c=>'<td>'+esc(c.key==='#'?i+1:(r[c.key]??'-'))+'</td>').join('')+'</tr>').join('')+
+      '</tbody></table></div>';
+  }
+
+  function desenharGrafico(id,labels,values,type){
+    try{
+      if(typeof Chart==='undefined')return;
+      const cv=$(id); if(!cv)return;
+      if(cv.__chartFinal)cv.__chartFinal.destroy();
+      cv.__chartFinal=new Chart(cv,{type:type||'bar',data:{labels,datasets:[{label:'Total',data:values,borderWidth:1}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+    }catch(e){console.warn('Gráfico '+id,e)}
+  }
+
+  window.carregarDashboard=async function(){
+    if(!admin())return;
+    const p=periodoDash();
+    setHTML('dashResumoFiltro','<div class="captaproStatusFinal">Carregando Dashboard...</div>');
+    let [pesq,abord]=await Promise.all([selectPeriodo('pesquisas',p.de,p.ate),selectPeriodo('abordagens',p.de,p.ate)]);
+    pesq=filtrarLocal(pesq); abord=filtrarLocal(abord);
+    const q=pesq.filter(statusQ).length, nq=pesq.length-q, sala=pesq.filter(statusSala).length;
+    const pend=pesq.filter(x=>/pend/i.test(String(x.sala_status||x.levou_sala||''))).length;
+    setTXT('kTotal',pesq.length);setTXT('kQ',q);setTXT('kNQ',nq);setTXT('kSala',sala);
+    setTXT('kConv',pesq.length?((sala/pesq.length)*100).toFixed(1)+'%':'0%');
+    setTXT('kPendentes',pend);
+    setTXT('kAbordagens55',abord.length);
+    setTXT('kConvAbordPesquisa55',abord.length?Math.round(pesq.length/abord.length*100)+'%':'0%');
+    setTXT('kConvPesquisaSala55',pesq.length?Math.round(sala/pesq.length*100)+'%':'0%');
+    setHTML('dashResumoFiltro',`<div class="captaproStatusFinal"><b>Dashboard funcionando.</b> Período: ${esc(p.deD)} até ${esc(p.ateD)} • Equipe: ${esc(V('dashEquipe')||'Todas')} • Captador: ${esc(V('dashCaptador')||'Todos')}</div>`);
+    const mapa={};
+    [...abord.map(x=>({...x,_tipo:'abordagem'})),...pesq.map(x=>({...x,_tipo:'pesquisa'}))].forEach(x=>{
+      const n=nomeLinha(x); if(!mapa[n])mapa[n]={profissional:n,abordagens:0,pesquisas:0,q:0,nq:0,sala:0,ultima:''};
+      if(x._tipo==='abordagem')mapa[n].abordagens++;
+      if(x._tipo==='pesquisa'){mapa[n].pesquisas++; statusQ(x)?mapa[n].q++:mapa[n].nq++; if(statusSala(x))mapa[n].sala++}
+      if(!mapa[n].ultima || String(x.created_at||'')>mapa[n].ultima)mapa[n].ultima=String(x.created_at||'');
+    });
+    const rows=Object.values(mapa).map(r=>({...r,conv:r.abordagens?Math.round(r.pesquisas/r.abordagens*100)+'%':'0%',ultima:dataBR(r.ultima)}))
+      .sort((a,b)=>b.abordagens-a.abordagens||b.pesquisas-a.pesquisas||b.sala-a.sala);
+    const cols=[{key:'#',label:'#'},{key:'profissional',label:'Profissional'},{key:'abordagens',label:'Abord.'},{key:'pesquisas',label:'Pesq.'},{key:'conv',label:'Conv.'},{key:'q',label:'Q'},{key:'nq',label:'NQ'},{key:'sala',label:'Sala'},{key:'ultima',label:'Última'}];
+    setHTML('rankingAbordagens55',table(rows,cols));
+    setHTML('rankingConversao55',table([...rows].sort((a,b)=>parseInt(b.conv)-parseInt(a.conv)||b.pesquisas-a.pesquisas),cols));
+    const porPonto={};pesq.forEach(x=>{const k=x.ponto_captacao||'Sem ponto';porPonto[k]=(porPonto[k]||0)+1});
+    const porHora={};abord.forEach(x=>{const k=x.horario_local||new Date(x.created_at||Date.now()).getHours().toString().padStart(2,'0')+':00';porHora[k]=(porHora[k]||0)+1});
+    const porEquipe={};pesq.forEach(x=>{const k=x.equipe||'Sem equipe';porEquipe[k]=(porEquipe[k]||0)+1});
+    desenharGrafico('chartPontos',Object.keys(porPonto),Object.values(porPonto),'bar');
+    desenharGrafico('chartHoras',Object.keys(porHora),Object.values(porHora),'line');
+    desenharGrafico('chartEquipes',Object.keys(porEquipe),Object.values(porEquipe),'bar');
+    desenharGrafico('chartQNQ',['Q','NQ'],[q,nq],'doughnut');
+  };
+
+  window.carregarListasFiltrosFinal=async function(){
+    try{
+      const ps=await selectPeriodo('pesquisas','2000-01-01T00:00:00','2999-12-31T23:59:59');
+      const nomes=[...new Set(ps.map(nomeLinha).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      ['dashCaptador','rankingCaptadorFiltro'].forEach(id=>{
+        const s=$(id); if(!s)return;
+        const atual=s.value; s.innerHTML='<option value="">Todos os captadores</option>'+nomes.map(n=>`<option>${esc(n)}</option>`).join('');
+        if(nomes.includes(atual))s.value=atual;
+      });
+    }catch(e){}
+  };
+
+  async function salvarAbordagemFinal(obs){
+    const payload={user_email:emailAtual(),captador_nome:nomeAtual(),equipe:V('equipe')||null,ponto_captacao:V('ponto_captacao')||null,ponto_oficial:V('ponto_oficial')||V('ponto_captacao')||null,latitude:(typeof latitude!=='undefined'&&latitude!==null)?Number(latitude):null,longitude:(typeof longitude!=='undefined'&&longitude!==null)?Number(longitude):null,horario_local:String(new Date().getHours()).padStart(2,'0')+':00',observacao:obs||'Abordagem registrada',created_at:new Date().toISOString()};
+    try{await insertAdaptavel('abordagens',payload);return true}catch(e){
+      const arr=JSON.parse(localStorage.getItem('captapro_abordagens_pendentes')||'[]');arr.push(payload);localStorage.setItem('captapro_abordagens_pendentes',JSON.stringify(arr));return false;
+    }
+  }
+
+  window.atualizarContadorAbordagensFinal=async function(){
+    try{
+      if(!emailAtual())return;
+      const r=await db.from('abordagens').select('*',{count:'exact',head:true}).eq('user_email',emailAtual()).gte('created_at',deHoje()).lte('created_at',ateHoje());
+      const pend=JSON.parse(localStorage.getItem('captapro_abordagens_pendentes')||'[]').filter(x=>String(x.user_email||'').toLowerCase()===emailAtual()&&String(x.created_at||'').slice(0,10)===hojeISO()).length;
+      setTXT('abordagensHoje',(r.count||0)+pend);
+    }catch(e){}
+  };
+
+  window.registrarAbordagem55=async function(ev){
+    if(ev){ev.preventDefault();ev.stopPropagation()}
+    if(!emailAtual()){setHTML('formMsg','<span class="erro">Entre no app antes de registrar abordagem.</span>');return false}
+    const atual=Number($('abordagensHoje')?.textContent||0)||0;setTXT('abordagensHoje',atual+1);
+    const ok=await salvarAbordagemFinal('Abordagem registrada sem pesquisa');
+    await atualizarContadorAbordagensFinal();
+    setHTML('formMsg',ok?'<span class="ok">Abordagem salva.</span>':'<span class="erro">Abordagem ficou pendente local. Confira tabela abordagens/RLS.</span>');
+    if(admin())carregarProducaoHojeFix();
+    return false;
+  };
+
+  function limparFichaFinal(){
+    ['convidado_1','convidado_2','profissao_1','profissao_2','outra_profissao_1','outra_profissao_2','idade_1','idade_2','estado_civil','tempo_juntos','veiculo','marca_carro','modelo_carro','ano_veiculo','valor_fipe_preview','cartao_credito','casa_propria','multipropriedade','renda_casal','renda_bruta','renda_liquida','brinde','contato','observacoes','busca_marca_carro_75','busca_modelo_carro_75'].forEach(id=>{if($(id))$(id).value=''});
+    show('fichaSalvaBox',false);show('brindesDisponiveis',false);show('novaPesquisaDepoisCompartilhar73',false);
+    setHTML('resultadoQualificacao',''); window.__aguardandoCompartilharFicha73=false;
+    try{toggleVeiculo()}catch(e){}
+    try{carregarMarcasFipe()}catch(e){}
+    setHTML('formMsg','<span class="ok">Nova ficha liberada.</span>');
+    $('convidado_1')?.focus();
+  }
+  window.comecarOutraFicha81=limparFichaFinal;
+  window.iniciarNovaPesquisaDepoisCompartilhar73=limparFichaFinal;
+
+  const salvarBase=window.salvarPesquisa;
+  window.salvarPesquisa=async function(){
+    const r=await salvarBase.apply(this,arguments);
+    if(r!==false){
+      window.__aguardandoCompartilharFicha73=true;
+      setHTML('novaPesquisaDepoisCompartilhar73','Ficha salva. Compartilhe no WhatsApp ou clique em <b>Começar outra ficha</b>.');
+      show('novaPesquisaDepoisCompartilhar73',true);
+      setTimeout(instalarBotoesFicha,300);
+      if(admin()){carregarDashboard();carregarProducaoHojeFix()}
+    }
+    return r;
+  };
+
+  function instalarBotoesFicha(){
+    const box=$('fichaSalvaBox'); if(!box)return;
+    let div=$('novaFichaActionsFinal');
+    if(!div){
+      div=document.createElement('div');div.id='novaFichaActionsFinal';div.className='novaFichaActionsFinal';
+      div.innerHTML='<button type="button" class="btnShareFinal">Compartilhar no WhatsApp</button><button type="button" class="btnNovaFinal">Começar outra ficha</button>';
+      box.appendChild(div);
+      div.querySelector('.btnShareFinal').onclick=async function(){
+        try{
+          if(typeof compartilharFichaWhatsApp==='function')await compartilharFichaWhatsApp();
+          else if(typeof compartilharFichaImagem==='function')await compartilharFichaImagem();
+          else if(typeof compartilharFicha==='function')await compartilharFicha();
+        }catch(e){}
+        setTimeout(limparFichaFinal,900);
+      };
+      div.querySelector('.btnNovaFinal').onclick=limparFichaFinal;
+    }
+  }
+
+  function instalarAbaProducao(){
+    if(!$('producaoDia')){
+      const sec=document.createElement('section');
+      sec.id='producaoDia';sec.className='card hidden admOnly';
+      sec.innerHTML='<h2>Produção Hoje</h2><p class="hint">Ranking do dia por profissional: abordagens, pesquisas/fichas, Q, NQ, sala, carros e última atividade.</p><button class="main" type="button" onclick="carregarProducaoHojeFix()">Atualizar Produção Hoje</button><div id="producaoDiaConteudo"></div>';
+      ($('dash')||$('pesquisa'))?.parentNode?.insertBefore(sec,($('dash')||$('pesquisa')).nextSibling);
+    }
+    if(!document.querySelector('.tabs button.producaoDiaBtnFix')){
+      const btn=document.createElement('button');btn.className='admOnly producaoDiaBtnFix';btn.type='button';btn.textContent='Produção Hoje';btn.onclick=function(){window.aba('producaoDia',btn)};
+      const dashBtn=[...document.querySelectorAll('.tabs button')].find(b=>String(b.getAttribute('onclick')||'').includes('dash'));
+      if(dashBtn)dashBtn.after(btn);else document.querySelector('.tabs')?.appendChild(btn);
+    }
+    aplicarPermissoes();
+  }
+  window.instalarAbaProducao=instalarAbaProducao;
+
+  window.carregarProducaoHojeFix=async function(){
+    if(!admin())return;
+    instalarAbaProducao();
+    setHTML('producaoDiaConteudo','<div class="captaproStatusFinal">Carregando produção de hoje...</div>');
+    const [pesq,abord]=await Promise.all([selectPeriodo('pesquisas',deHoje(),ateHoje()),selectPeriodo('abordagens',deHoje(),ateHoje())]);
+    const pend=JSON.parse(localStorage.getItem('captapro_abordagens_pendentes')||'[]').filter(x=>String(x.created_at||'').slice(0,10)===hojeISO());
+    const mapa={};
+    function it(x){const n=nomeLinha(x),key=String(x.user_email||n).toLowerCase();return mapa[key]||(mapa[key]={profissional:n,abordagens:0,pesquisas:0,q:0,nq:0,sala:0,carros:0,brindes:0,ultima:'',pontos:{}})}
+    abord.concat(pend).forEach(a=>{const r=it(a);r.abordagens++;if(a.ponto_captacao)r.pontos[a.ponto_captacao]=(r.pontos[a.ponto_captacao]||0)+1;if(!r.ultima||String(a.created_at||'')>r.ultima)r.ultima=String(a.created_at||'')});
+    pesq.forEach(p=>{const r=it(p);r.pesquisas++;statusQ(p)?r.q++:r.nq++;if(statusSala(p))r.sala++;if(String(p.veiculo||'').toLowerCase()==='sim')r.carros++;if(p.brinde)r.brindes++;if(p.ponto_captacao)r.pontos[p.ponto_captacao]=(r.pontos[p.ponto_captacao]||0)+1;if(!r.ultima||String(p.created_at||'')>r.ultima)r.ultima=String(p.created_at||'')});
+    const rows=Object.values(mapa).map(r=>{const top=Object.entries(r.pontos).sort((a,b)=>b[1]-a[1])[0];return {...r,conv:r.abordagens?Math.round(r.pesquisas/r.abordagens*100)+'%':'0%',ponto:top?top[0]:'-',ultima:dataBR(r.ultima)}}).sort((a,b)=>b.abordagens-a.abordagens||b.pesquisas-a.pesquisas||b.q-a.q);
+    const cols=[{key:'#',label:'#'},{key:'profissional',label:'Profissional'},{key:'abordagens',label:'Abord.'},{key:'pesquisas',label:'Pesq./Fichas'},{key:'conv',label:'Conv.'},{key:'q',label:'Q'},{key:'nq',label:'NQ'},{key:'sala',label:'Sala'},{key:'carros',label:'Carros'},{key:'brindes',label:'Brindes'},{key:'ponto',label:'Ponto forte'},{key:'ultima',label:'Última'}];
+    const totalSala=pesq.filter(statusSala).length,totalQ=pesq.filter(statusQ).length;
+    setHTML('producaoDiaConteudo',`
+      <div class="producaoTopFix">
+        <div class="producaoCardFix"><span>Abordagens</span><b>${abord.length+pend.length}</b></div>
+        <div class="producaoCardFix"><span>Pesquisas/Fichas</span><b>${pesq.length}</b></div>
+        <div class="producaoCardFix"><span>Q do dia</span><b>${totalQ}</b></div>
+        <div class="producaoCardFix"><span>Sala</span><b>${totalSala}</b></div>
+      </div>
+      <div class="captaproStatusFinal">Ficha salva conta como pesquisa/produção e também soma 1 abordagem automática.</div>
+      ${table(rows,cols)}
+    `);
+  };
+
+  window.aba=function(id,b){
+    if(!admin() && !['pesquisa','arenaSX','meuDesempenho'].includes(id))return;
+    ['pesquisa','arenaSX','meuDesempenho','dash','producaoDia','ranking','excelResultados','comparativo','pulsador','metas','mapa','salaAdmin','historico','profissionais','ceo'].forEach(x=>$(x)?.classList.add('hidden'));
+    $(id)?.classList.remove('hidden');
+    document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active')); b?.classList.add('active');
+    if(id==='dash')carregarDashboard();
+    if(id==='producaoDia')carregarProducaoHojeFix();
+    if(id==='salaAdmin'&&typeof carregarSalaAdmin==='function')carregarSalaAdmin();
+    if(id==='ceo'&&typeof carregarCeo==='function')carregarCeo();
+    if(id==='arenaSX'&&typeof renderArenaSX==='function')renderArenaSX();
+  };
+
+  function boot(){
+    instalarAbaProducao();
+    const b=$('btnRegistrarAbordagem55'); if(b&&!b.__final10){b.__final10=true;b.removeAttribute('onclick');b.addEventListener('click',window.registrarAbordagem55,{passive:false})}
+    instalarBotoesFicha();
+    aplicarPermissoes();
+    try{
+      const saved=JSON.parse(localStorage.getItem('captapro_login_final')||localStorage.getItem('captapro_login_72')||'null');
+      if(saved?.email&&saved?.nome&&!emailAtual()){
+        if($('email'))$('email').value=saved.email;
+        if($('captadorNome'))$('captadorNome').value=saved.nome;
+      }
+    }catch(e){}
+  }
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,200));
+  window.addEventListener('load',()=>setTimeout(boot,600));
+})();
+</script>
+
+
+
+<style>
+/* ===== AJUSTE FINAL RAPHAEL • PROFISSÃO, CARRO, WHATSAPP, DASHBOARD E BRINDE ===== */
+#btnCompartilharFicha,.btnWhatsApp,.btnShareFinal,.btnShare81,.btnShareRaphaelFinal{
+  background:#18a84a!important;border:1px solid #22c55e!important;color:#fff!important;font-weight:900!important;
+}
+.btnNovaFinal,.btnNovaFicha81,.btnNovaRaphaelFinal{
+  background:linear-gradient(135deg,#1d4ed8,#38bdf8)!important;border:1px solid #7dd3fc!important;color:#fff!important;font-weight:900!important;
+}
+.novaFichaActionsFinal,.novaFichaActions81,.novaFichaActionsRaphaelFinal{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin-top:10px!important}
+#modelo_carro,#ano_veiculo,#marca_carro{display:block!important;width:100%!important}
+.carSearch75{display:block!important}
+#busca_marca_carro_75,#busca_modelo_carro_75,#valor_fipe_preview,#fipeReferencia{display:none!important}
+@media(max-width:900px){.novaFichaActionsFinal,.novaFichaActions81,.novaFichaActionsRaphaelFinal{grid-template-columns:1fr!important}}
+</style>
+<script>
+/* ===== AJUSTE FINAL RAPHAEL • pedido final ===== */
+(function(){
+  const BRINDE_ESPELHO='Espelho do Jordão + R$ 100 parceiro';
+  const $=id=>document.getElementById(id);
+  const V=id=>String($(id)?.value||'').trim();
+  const esc=s=>String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+  function datalist(id,arr){
+    const dl=$(id); if(!dl)return;
+    const uniq=[]; (arr||[]).forEach(x=>{x=String(x||'').trim(); if(x&&!uniq.includes(x))uniq.push(x)});
+    dl.innerHTML=uniq.map(v=>`<option value="${esc(v)}"></option>`).join('');
+  }
+
+  function ajustarProfissoes(){
+    const base=['Outro (a)','Empresário','Empresária','Comerciante','Autônomo','Autônoma','Aposentado','Aposentada','Administrador','Administradora','Advogado','Advogada','Arquiteto','Arquiteta','Engenheiro','Engenheira','Médico','Médica','Dentista','Veterinário','Psicólogo','Professor','Professora','Gerente','Diretor','Diretora','Consultor','Consultora','Corretor','Corretora','Vendedor','Vendedora','Representante comercial','Bancário','Contador','Contadora','Funcionário público','Servidor público','Policial','Militar','Produtor rural','Investidor','Motorista','Técnico','Técnica','Do lar','Estudante','Outro','Outra'];
+    datalist('listaProfissoes74',base);
+    datalist('listaProfissoes74b',base);
+    ['profissao_1','profissao_2'].forEach(id=>{const el=$(id); if(el)el.placeholder='Profissão - escolha Outro (a) para escrever abaixo';});
+  }
+
+  window.toggleOutraProfissao=function(){
+    const ehOutro=v=>['outro','outra','outro (a)','outro(a)'].includes(String(v||'').toLowerCase().trim());
+    const b1=$('outra_profissao_1'), b2=$('outra_profissao_2');
+    if(b1)b1.classList.toggle('hidden',!ehOutro(V('profissao_1')));
+    if(b2)b2.classList.toggle('hidden',!ehOutro(V('profissao_2')));
+  };
+  window.profissaoFinal=function(id,outro){
+    const v=V(id); const o=V(outro);
+    if(['outro','outra','outro (a)','outro(a)'].includes(v.toLowerCase())) return o?('Outro: '+o):'Outro';
+    return v;
+  };
+
+  function trocarPorInput(id,placeholder,inputmode){
+    const old=$(id); if(!old || old.tagName==='INPUT')return old;
+    const inp=document.createElement('input');
+    inp.id=id; inp.placeholder=placeholder; inp.value='';
+    if(inputmode)inp.inputMode=inputmode;
+    inp.autocomplete='off';
+    old.replaceWith(inp);
+    return inp;
+  }
+
+  function ajustarCarroLivre(){
+    const veic=$('veiculo');
+    const marca=trocarPorInput('marca_carro','Marca do carro. Ex: Toyota');
+    const modelo=trocarPorInput('modelo_carro','Modelo do carro. Ex: Corolla');
+    const ano=trocarPorInput('ano_veiculo','Ano do carro. Ex: 2021','numeric');
+    if(marca)marca.parentElement?.classList.add('carSearch75');
+    if(modelo)modelo.parentElement?.classList.add('carSearch75');
+    ['busca_marca_carro_75','busca_modelo_carro_75','valor_fipe_preview','fipeReferencia'].forEach(id=>{const e=$(id); if(e)e.style.display='none'});
+    window.selectedText=function(id){return V(id)};
+    window.carregarMarcasFipe=function(){};
+    window.carregarModelosFipe=function(){};
+    window.carregarAnosFipe=function(){};
+    window.exibirPrecoFipe=function(){};
+    window.filtrarMarcasCarro75=function(){};
+    window.filtrarModelosCarro75=function(){};
+    window.prepararMarcasCarro75=function(){};
+    window.prepararModelosCarro75=function(){};
+    window.toggleVeiculo=function(){
+      const tem=V('veiculo')==='Sim';
+      ['marca_carro','modelo_carro','ano_veiculo'].forEach(id=>{const e=$(id); if(e){e.disabled=!tem;e.closest('.carSearch75')?.classList.toggle('hidden',!tem); if(!tem)e.value='';}});
+    };
+    veic?.removeEventListener?.('change',window.toggleVeiculo);
+    veic?.addEventListener('change',window.toggleVeiculo);
+    window.toggleVeiculo();
+  }
+
+  function ajustarDashboardLiberado(){
+    document.querySelectorAll('.tabs button').forEach(btn=>{
+      const oc=btn.getAttribute('onclick')||'';
+      if(oc.includes('dash')){btn.classList.remove('admOnly');btn.style.display='block';btn.textContent='Dashboard';}
+      if(oc.includes('producaoDia')){btn.classList.remove('admOnly');btn.style.display='block';btn.textContent='Produção Hoje';}
+    });
+    ['dash','producaoDia'].forEach(id=>{const sec=$(id); if(sec){sec.classList.remove('admOnly');sec.style.display='';}});
+  }
+
+  const oldAplicar=window.aplicarPermissaoVisual;
+  window.aplicarPermissaoVisual=function(){ if(typeof oldAplicar==='function')oldAplicar.apply(this,arguments); ajustarDashboardLiberado(); };
+  const oldAba=window.aba;
+  window.aba=function(id,b){
+    if(['dash','producaoDia'].includes(id)){
+      ['pesquisa','arenaSX','meuDesempenho','dash','producaoDia','ranking','excelResultados','comparativo','pulsador','metas','mapa','salaAdmin','historico','profissionais','ceo'].forEach(x=>$(x)?.classList.add('hidden'));
+      $(id)?.classList.remove('hidden');
+      document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active')); b?.classList.add('active');
+      if(id==='dash'&&typeof carregarDashboard==='function')carregarDashboard();
+      if(id==='producaoDia'&&typeof carregarProducaoHojeFix==='function')carregarProducaoHojeFix();
+      return;
+    }
+    if(typeof oldAba==='function')return oldAba.apply(this,arguments);
+  };
+
+  function adicionarBrindeEspecial(){
+    try{
+      if(Array.isArray(window.brindesPadrao) && !window.brindesPadrao.some(b=>b&&b[0]===BRINDE_ESPELHO)) window.brindesPadrao.unshift([BRINDE_ESPELHO,100]);
+    }catch(e){}
+    const sel=$('brinde');
+    if(sel && ![...sel.options].some(o=>o.value===BRINDE_ESPELHO)){
+      const opt=document.createElement('option'); opt.value=BRINDE_ESPELHO; opt.textContent=BRINDE_ESPELHO+' • limite 2 por dia';
+      sel.insertBefore(opt,sel.options[1]||null);
+    }
+  }
+  const oldPermitidos=window.brindesPermitidos;
+  window.brindesPermitidos=function(){
+    let lista=[]; try{lista=typeof oldPermitidos==='function'?oldPermitidos.apply(this,arguments):[]}catch(e){lista=[]}
+    lista=(lista||[]).filter(b=>b&&b[0]!==BRINDE_ESPELHO);
+    lista.unshift([BRINDE_ESPELHO,100]);
+    return lista;
+  };
+  const oldAtualizarBrindes=window.atualizarBrindesPorQualificacao;
+  window.atualizarBrindesPorQualificacao=function(){const r=typeof oldAtualizarBrindes==='function'?oldAtualizarBrindes.apply(this,arguments):undefined; setTimeout(adicionarBrindeEspecial,50); return r;};
+  const oldValorBrinde=window.valorBrindeEstimado;
+  window.valorBrindeEstimado=function(nome){if(String(nome||'')===BRINDE_ESPELHO)return 100; return typeof oldValorBrinde==='function'?oldValorBrinde.apply(this,arguments):0;};
+
+  async function limiteBrindeEspecialOk(){
+    if(V('brinde')!==BRINDE_ESPELHO)return true;
+    try{
+      const de=new Date(); de.setHours(0,0,0,0); const ate=new Date(); ate.setHours(23,59,59,999);
+      if(typeof db!=='undefined'&&db){
+        const r=await db.from('pesquisas').select('id,brinde,created_at').eq('brinde',BRINDE_ESPELHO).gte('created_at',de.toISOString()).lte('created_at',ate.toISOString());
+        if(!r.error && (r.data||[]).length>=2){
+          const fm=$('formMsg'); if(fm)fm.innerHTML='<span class="erro">Esse brinde já bateu o limite de 2 usos hoje.</span>';
+          return false;
+        }
+      }
+    }catch(e){}
+    return true;
+  }
+  const oldSalvar=window.salvarPesquisa;
+  if(typeof oldSalvar==='function'){
+    window.salvarPesquisa=async function(){
+      if(!(await limiteBrindeEspecialOk()))return false;
+      return oldSalvar.apply(this,arguments);
+    };
+  }
+
+  function botoesFicha(){
+    const box=$('fichaSalvaBox'); if(!box)return;
+    let div=$('novaFichaActionsRaphaelFinal')||$('novaFichaActionsFinal')||$('novaFichaActions81');
+    if(!div){
+      div=document.createElement('div'); div.id='novaFichaActionsRaphaelFinal'; div.className='novaFichaActionsRaphaelFinal';
+      div.innerHTML='<button type="button" class="btnShareRaphaelFinal">Compartilhar ficha no WhatsApp</button><button type="button" class="btnNovaRaphaelFinal">Começar outra ficha</button>';
+      box.appendChild(div);
+    }
+    const bs=div.querySelector('button:first-child'); const bn=div.querySelector('button:last-child');
+    if(bs){bs.className='btnShareRaphaelFinal'; bs.textContent='Compartilhar ficha no WhatsApp'; if(!bs.__raphael){bs.__raphael=true; bs.onclick=async()=>{try{if(typeof compartilharFichaWhatsApp==='function')await compartilharFichaWhatsApp()}catch(e){} setTimeout(()=>{if(typeof comecarOutraFicha81==='function')comecarOutraFicha81(); else if(typeof iniciarNovaPesquisaDepoisCompartilhar73==='function')iniciarNovaPesquisaDepoisCompartilhar73();},900);};}}
+    if(bn){bn.className='btnNovaRaphaelFinal'; bn.textContent='Começar outra ficha'; if(!bn.__raphael){bn.__raphael=true; bn.onclick=()=>{if(typeof comecarOutraFicha81==='function')comecarOutraFicha81(); else if(typeof iniciarNovaPesquisaDepoisCompartilhar73==='function')iniciarNovaPesquisaDepoisCompartilhar73();};}}
+  }
+  const oldSalvar2=window.salvarPesquisa;
+  if(typeof oldSalvar2==='function'){
+    window.salvarPesquisa=async function(){const r=await oldSalvar2.apply(this,arguments); setTimeout(botoesFicha,300); setTimeout(botoesFicha,900); return r;};
+  }
+
+  function boot(){ajustarProfissoes();ajustarCarroLivre();adicionarBrindeEspecial();ajustarDashboardLiberado();botoesFicha();}
+  document.addEventListener('DOMContentLoaded',()=>{boot();setTimeout(boot,700);setTimeout(boot,1800);});
+  window.addEventListener('load',()=>{boot();setTimeout(boot,1200);});
+})();
+</script>
+
 </body>
 </html>
