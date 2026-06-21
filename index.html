@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaptaPro Simples 1.5</title>
+<title>CaptaPro Simples 1.6</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
@@ -22,12 +22,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .fichaTitleFull b{display:block;font-size:22px}.fichaTitleFull small{color:#aaa}
 .fichaRodapeFull{border-top:1px solid #3b1b1b;margin-top:12px;padding-top:10px;color:#888;font-size:11px}
 
-/* CaptaPro Simples 1.5 */
+/* CaptaPro Simples 1.6 */
 #brinde{border-color:#00c2ff!important}
 .rankDestaque13{color:#00e676;font-weight:900}
 
 
-/* CaptaPro Simples 1.5 • organização pesquisa e CEO */
+/* CaptaPro Simples 1.6 • organização pesquisa e CEO */
 .pesquisaGrid14 input,.pesquisaGrid14 select{min-height:47px}
 .ceoPainel14{border:1px solid #5a1717;border-radius:16px;padding:12px;background:#080808}
 .ceoGrid14{grid-template-columns:repeat(3,1fr)}
@@ -36,16 +36,21 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:700px){.ceoGrid14{grid-template-columns:1fr}}
 
 
-/* CaptaPro Simples 1.5 • renda BRL + ranking mês */
+/* CaptaPro Simples 1.6 • renda BRL + ranking mês */
 #rankingMesAtual15{border-color:#00c2ff!important}
 #rankingMesAtual15 h2{border-left-color:#00c2ff!important}
 .rendaAjuda15{font-size:11px;color:#aaa;margin-top:-4px;margin-bottom:6px}
+
+
+/* CaptaPro Simples 1.6 • correção renda e CSV */
+#renda{border-color:#00c2ff!important}
+#csvRankingInput16{border-color:#00e676!important}
 
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Simples 1.5</div><p class="mini">Pesquisa e Relatório • Criado pela empresa <b style="color:#00e676">Bueno Invest</b></p></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Simples 1.6</div><p class="mini">Pesquisa e Relatório • Criado pela empresa <b style="color:#00e676">Bueno Invest</b></p></div>
 
 <section id="loginBox" class="card">
 <h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
@@ -95,7 +100,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <select id="cartao"><option value="">10. Cartão de crédito?</option><option>Sim</option><option>Não</option></select>
 
 <!-- 11 renda em reais -->
-<input id="renda" inputmode="numeric" placeholder="11. Renda mensal em R$">
+<input id="renda" inputmode="numeric" autocomplete="off" placeholder="11. Renda mensal. Ex: 15.000,00">
 
 <!-- demais campos necessários -->
 <select id="multi"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
@@ -119,7 +124,13 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
 <section id="relatorio" class="card hidden"><h2>Relatório</h2><div class="grid"><input id="relDe" type="date"><input id="relAte" type="date"></div><button class="main" style="margin-top:8px" onclick="carregarRelatorio()">Atualizar</button>
 <div class="kpis"><div class="kpi">Abordagens<b id="rAbord">0</b></div><div class="kpi">Pesquisas<b id="rPesq">0</b></div><div class="kpi">Sala<b id="rSala">0</b></div><div class="kpi">Conversão<b id="rConv">0%</b></div></div>
-<div class="card scroll" id="rankingMesAtual15"><h2>Ranking do Mês Atual</h2><p class="hint">Junho: profissional, casais total, vendas, VGV, eficiência e custo por casal em sala.</p><div id="rankingMesBox15"></div></div><div class="card scroll"><h2>Ranking da Equipe</h2><p class="hint">Profissional vê ranking da equipe. CEO vê todos.</p><div id="rankingEquipeBox13"></div></div><div id="rankingBox" class="hidden"></div><div class="card"><h2>Individual</h2><select id="profFiltro" onchange="mostrarIndividual()"><option value="">Escolha o profissional</option></select><div id="individualBox"></div></div>
+<div class="card scroll" id="rankingMesAtual15">
+<h2>Ranking do Mês Atual</h2>
+<p class="hint">Junho: profissional, casais total, vendas, VGV, eficiência e custo por casal em sala.</p>
+<input id="csvRankingInput16" type="file" accept=".csv,text/csv" onchange="importarRankingCSV16(event)">
+<p class="mini">Opcional: importe sua planilha CSV para montar o ranking do mês.</p>
+<div id="rankingMesBox15"></div>
+</div><div class="card scroll"><h2>Ranking da Equipe</h2><p class="hint">Profissional vê ranking da equipe. CEO vê todos.</p><div id="rankingEquipeBox13"></div></div><div id="rankingBox" class="hidden"></div><div class="card"><h2>Individual</h2><select id="profFiltro" onchange="mostrarIndividual()"><option value="">Escolha o profissional</option></select><div id="individualBox"></div></div>
 </section>
 
 <section id="qualificacao" class="card hidden adminOnly">
@@ -172,7 +183,7 @@ function renderFicha(p){
 E('fichaBox').classList.remove('hidden');
 const carroTxt = `${p.modelo_carro||'-'} ${p.ano_veiculo||''}`.trim();
 H('fichaConteudo',`<div id=fichaImg class=ficha>
-<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Simples 1.5 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
+<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Simples 1.6 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
 ${campoFicha('Resultado da qualificação', `${p.qualificacao_automatica||'-'} • ${p.motivo_qualificacao||'Perfil dentro da regra'}`)}
 ${campoFicha('Nome 1', p.convidado_1)}
 ${campoFicha('Idade 1 / Profissão 1', `${p.idade_1||'-'} anos • ${p.profissao_1||'-'}`)}
@@ -243,7 +254,7 @@ function mostrarIndividual(){let r=(window.rowsRel||[]).find(x=>x.nome===V('prof
 </script>
 
 <script>
-/* ===== CaptaPro Simples 1.5 • renda R$, pesquisa organizada e CEO completo ===== */
+/* ===== CaptaPro Simples 1.6 • renda R$, pesquisa organizada e CEO completo ===== */
 (function(){
 function E14(id){return document.getElementById(id)}
 function V14(id){return (E14(id)?.value||'').trim()}
@@ -349,129 +360,148 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 
+
 <script>
-/* ===== CaptaPro Simples 1.5 • Estado antes da cidade + renda 15.000,00 + ranking mês ===== */
+/* ===== CaptaPro Simples 1.6 • renda correta + ranking CSV ===== */
 (function(){
-function E15(id){return document.getElementById(id)}
-function V15(id){return (E15(id)?.value||'').trim()}
-function H15(id,v){if(E15(id))E15(id).innerHTML=v}
-function n15(v){return Number(String(v||'').replace(/\D/g,''))||0}
-function brNum15(v){return n15(v)}
-function brlSemSimbolo15(n){
-  return (Number(n||0)).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-}
-function brl15(n){
-  return (Number(n||0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-}
-function mascaraRendaSemSimbolo15(id){
- const el=E15(id); if(!el||el.__mascara15)return; el.__mascara15=true;
+function E16(id){return document.getElementById(id)}
+function V16(id){return (E16(id)?.value||'').trim()}
+function setHTML16(id,v){if(E16(id))E16(id).innerHTML=v}
+function onlyDigits16(v){return String(v||'').replace(/\D/g,'')}
+function numeroBR16(v){return Number(onlyDigits16(v))||0}
+function moedaBR16(n){return (Number(n||0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function rendaSemSimbolo16(n){return (Number(n||0)).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+
+function aplicarRendaCorreta16(){
+ const el=E16('renda'); if(!el || el.__renda16)return; el.__renda16=true;
+ el.addEventListener('focus',()=>{ el.dataset.editando='1'; });
  el.addEventListener('input',()=>{
-   let raw=String(el.value||'').replace(/\D/g,'');
-   if(!raw){el.value='';return}
-   el.value=brlSemSimbolo15(Number(raw));
+   // Durante digitação, NÃO fica reprocessando valor já formatado.
+   // Pega apenas os dígitos atuais e mostra como número inteiro com ,00.
+   const raw=onlyDigits16(el.value);
+   el.value = raw ? rendaSemSimbolo16(Number(raw)) : '';
  });
  el.addEventListener('blur',()=>{
-   let raw=String(el.value||'').replace(/\D/g,'');
-   if(raw)el.value=brlSemSimbolo15(Number(raw));
+   const raw=onlyDigits16(el.value);
+   el.value = raw ? rendaSemSimbolo16(Number(raw)) : '';
  });
 }
 
-// substitui formatador antigo do 1.4 para renda ficar 15.000,00 sem R$
-window.formatarBRL14=function(n){return brlSemSimbolo15(n)}
-window.moedaParaNumero14=function(v){return n15(v)}
-
-function dtMesAtual15(){
- const now=new Date();
- return {ano:now.getFullYear(), mes:now.getMonth()};
-}
-function getData15(x){
- const d=new Date(x.created_at||x.data||Date.now());
- return d;
-}
-function noMesAtual15(x){
- const d=getData15(x), m=dtMesAtual15();
- return d.getFullYear()===m.ano && d.getMonth()===m.mes;
-}
-function valorVGV15(x){
- return n15(x.vgv||x.valor_vgv||x.valor||x.venda_valor||x.valor_venda||0);
-}
-function isVenda15(x){
- const s=String(x.status||x.venda||x.vendeu||x.tipo||'').toLowerCase();
- return s.includes('venda') || s.includes('vendido') || s==='#' || Number(valorVGV15(x))>0;
-}
-function isSala15(x){
- return String(x.levou_sala||x.sala_status||x.entrada_sala||'').toLowerCase().includes('sim') ||
-        String(x.sala_status||'').toLowerCase().includes('confirm');
-}
-function brindeCusto15(x){
- return n15(x.custo_brinde||x.valor_brinde||x.brinde_custo||0);
-}
-
-window.renderRankingMesAtual15=function(pesquisas){
- const box=E15('rankingMesBox15'); if(!box)return;
- let rows={};
- (pesquisas||[]).filter(noMesAtual15).forEach(x=>{
-   const nome=x.captador_nome||x.profissional||x.promotor||x.user_email||'Sem nome';
-   if(!rows[nome])rows[nome]={nome,casais:0,vendas:0,vgv:0,sala:0,custo:0};
-   rows[nome].casais++;
-   if(isVenda15(x)){rows[nome].vendas++; rows[nome].vgv+=valorVGV15(x);}
-   if(isSala15(x))rows[nome].sala++;
-   rows[nome].custo+=brindeCusto15(x);
+function aplicarRendaCEOCorreta16(){
+ const el=E16('cfgRendaMin'); if(!el || el.__rendaCEO16)return; el.__rendaCEO16=true;
+ el.addEventListener('input',()=>{
+   const raw=onlyDigits16(el.value);
+   el.value = raw ? rendaSemSimbolo16(Number(raw)) : '';
  });
- let arr=Object.values(rows).sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv);
- if(!arr.length){box.innerHTML='<p class="mini">Sem dados no mês atual.</p>';return}
- box.innerHTML='<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th><th>Custo / casal sala</th></tr>'+
- arr.map(r=>{
-   const eficiencia=r.casais?Math.round((r.vendas/r.casais)*100):0;
-   const custoSala=r.sala?Math.round(r.custo/r.sala):0;
-   return `<tr><td>${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${brl15(r.vgv)}</td><td>${eficiencia}%</td><td>${custoSala?brl15(custoSala):'R$ 0,00'}</td></tr>`;
- }).join('')+'</table>';
+ el.addEventListener('blur',()=>{
+   const raw=onlyDigits16(el.value);
+   el.value = raw ? rendaSemSimbolo16(Number(raw)) : '';
+ });
 }
 
-// intercepta dados para ranking mês sem mexer no restante
-const oldCarregarRel15=window.carregarRelatorio;
-if(typeof oldCarregarRel15==='function'&&!window.__rel15){
- window.__rel15=true;
- window.carregarRelatorio=async function(){
-   const r=await oldCarregarRel15.apply(this,arguments);
-   try{
-     const p=await window.dados('pesquisas');
-     let filtrado=p||[];
-     if(window.role!=='ceo'){
-       const equipe=V15('equipe');
-       if(equipe)filtrado=filtrado.filter(x=>x.equipe===equipe || x.user_email===window.usuarioEmail);
-       else filtrado=filtrado.filter(x=>x.user_email===window.usuarioEmail);
-     }
-     renderRankingMesAtual15(filtrado);
-     const rg=E15('rankingBox'); if(rg)rg.classList.add('hidden');
-   }catch(e){}
-   return r;
+// Sobrescreve as funções antigas usadas pelo cálculo
+window.moedaParaNumero14=function(v){return numeroBR16(v)}
+window.formatarBRL14=function(n){return rendaSemSimbolo16(n)}
+
+const oldPayload16=window.payload;
+if(typeof oldPayload16==='function'&&!window.__payload16){
+ window.__payload16=true;
+ window.payload=function(){
+   const p=oldPayload16.apply(this,arguments);
+   p.renda_casal=V16('renda');
+   return p;
  }
 }
 
-// reforça payload: renda sem símbolo mas formatada 15.000,00
-const oldPayload15=window.payload;
-if(typeof oldPayload15==='function'&&!window.__payload15){
- window.__payload15=true;
- window.payload=function(){
-   const p=oldPayload15.apply(this,arguments);
-   p.renda_casal=V15('renda');
-   return p;
+function csvSplit16(line){
+ const out=[]; let cur='', q=false;
+ for(let i=0;i<line.length;i++){
+   const c=line[i];
+   if(c === '"'){ q=!q; continue; }
+   if((c===',' || c===';' || c==='\t') && !q){ out.push(cur.trim()); cur=''; continue; }
+   cur+=c;
+ }
+ out.push(cur.trim());
+ return out;
+}
+function normaliza16(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function parseCSV16(text){
+ const lines=String(text||'').split(/\r?\n/).filter(l=>l.trim());
+ if(lines.length<2)return [];
+ const headers=csvSplit16(lines[0]).map(normaliza16);
+ return lines.slice(1).map(line=>{
+   const cols=csvSplit16(line); const o={};
+   headers.forEach((h,i)=>o[h]=cols[i]||'');
+   return o;
+ });
+}
+function pick16(o,names){
+ for(const n of names){
+   const key=Object.keys(o).find(k=>normaliza16(k)===normaliza16(n) || normaliza16(k).includes(normaliza16(n)));
+   if(key)return o[key];
+ }
+ return '';
+}
+function numPlanilha16(v){return Number(String(v||'').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.'))||0}
+
+window.importarRankingCSV16=function(ev){
+ const file=ev.target.files && ev.target.files[0];
+ if(!file)return;
+ const reader=new FileReader();
+ reader.onload=function(){
+   const dados=parseCSV16(reader.result);
+   renderRankingCSV16(dados);
+   localStorage.setItem('ranking_csv_16', JSON.stringify(dados));
+ };
+ reader.readAsText(file,'utf-8');
+}
+
+function renderRankingCSV16(dados){
+ const box=E16('rankingMesBox15'); if(!box)return;
+ const map={};
+ (dados||[]).forEach(r=>{
+   const nome=pick16(r,['profissional','captador','promotor','nome'])||'Sem nome';
+   if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0,sala:0,custo:0};
+   map[nome].casais += numPlanilha16(pick16(r,['casais','casal','pesquisas'])) || 0;
+   map[nome].vendas += numPlanilha16(pick16(r,['vendas','venda'])) || 0;
+   map[nome].vgv += numPlanilha16(pick16(r,['vgv','valor','valor vgv'])) || 0;
+   map[nome].sala += numPlanilha16(pick16(r,['sala','em sala','casais sala'])) || 0;
+   map[nome].custo += numPlanilha16(pick16(r,['custo_brinde','custo brinde','brinde','custo'])) || 0;
+ });
+ const arr=Object.values(map).sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv);
+ if(!arr.length){box.innerHTML='<p class="mini">CSV sem dados compatíveis.</p>';return}
+ box.innerHTML='<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th><th>Custo / casal sala</th></tr>'+
+ arr.map(r=>{
+   const ef=r.casais?Math.round(r.vendas/r.casais*100):0;
+   const custoSala=r.sala?Math.round(r.custo/r.sala):0;
+   return `<tr><td>${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moedaBR16(r.vgv)}</td><td>${ef}%</td><td>${moedaBR16(custoSala)}</td></tr>`;
+ }).join('')+'</table>';
+}
+
+// Mantém o ranking automático do banco, mas sem quebrar se tiver CSV salvo
+const oldCarregarRel16=window.carregarRelatorio;
+if(typeof oldCarregarRel16==='function'&&!window.__rel16){
+ window.__rel16=true;
+ window.carregarRelatorio=async function(){
+   const r=await oldCarregarRel16.apply(this,arguments);
+   try{
+     const salvo=JSON.parse(localStorage.getItem('ranking_csv_16')||'[]');
+     if(salvo.length)renderRankingCSV16(salvo);
+   }catch(e){}
+   const rg=E16('rankingBox'); if(rg)rg.classList.add('hidden');
+   return r;
  }
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
  setTimeout(()=>{
-   mascaraRendaSemSimbolo15('renda');
-   mascaraRendaSemSimbolo15('cfgRendaMin');
-   if(E15('renda')&&!E15('rendaHelp15')){
-     const div=document.createElement('div');
-     div.id='rendaHelp15';
-     div.className='rendaAjuda15';
-     div.innerText='Digite somente números. Ex: 15000 vira 15.000,00';
-     E15('renda').insertAdjacentElement('afterend',div);
-   }
- },600);
+   aplicarRendaCorreta16();
+   aplicarRendaCEOCorreta16();
+   try{
+     const salvo=JSON.parse(localStorage.getItem('ranking_csv_16')||'[]');
+     if(salvo.length)renderRankingCSV16(salvo);
+   }catch(e){}
+ },500);
 });
 })();
 </script>
