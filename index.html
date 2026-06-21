@@ -6135,5 +6135,207 @@ body.carroNaoSelecionado .fipeValue{
 })();
 </script>
 
+
+<style>
+/* ===== CAPTAPRO 1.0 • AJUSTE DEFINITIVO CARRO SIMPLES + FIPE ===== */
+#busca_marca_carro_75,
+#busca_modelo_carro_75,
+#marca_carro,
+label[for="marca_carro"]{display:none!important}
+#modelo_carro,#ano_veiculo{display:block!important;width:100%!important}
+#modelo_carro::placeholder{color:#98a2b3!important}
+#ano_veiculo::placeholder{color:#98a2b3!important}
+#valor_fipe_preview,#fipeReferencia{display:block!important}
+#captaFipeLivreBox{grid-column:1/-1!important;background:#f9fafb!important;border:1px solid #e5e7eb!important;border-radius:16px!important;padding:12px!important;color:#111827!important}
+#captaFipeLivreBox b{color:#039855!important}
+#captaFipeLivreBox table{width:100%;font-size:12px;margin-top:8px;border-collapse:collapse}
+#captaFipeLivreBox th,#captaFipeLivreBox td{padding:7px;border-bottom:1px solid #e5e7eb;text-align:left;color:#111827}
+#captaFipeLivreStatus{font-size:12px;color:#475467;margin-top:4px}
+.btnShareRaphaelFinal,.btnWhatsApp,#btnCompartilharFicha{background:#18a84a!important;border:1px solid #22c55e!important;color:#fff!important;font-weight:900!important}
+.btnNovaRaphaelFinal,.btnNovaFinal{background:linear-gradient(135deg,#1d4ed8,#38bdf8)!important;border:1px solid #7dd3fc!important;color:#fff!important;font-weight:900!important}
+</style>
+<script>
+/* ===== CAPTAPRO 1.0 • PATCH FINAL RAPHAEL 21/06 =====
+   - Profissão: Outro (a) primeiro
+   - Carro: somente Modelo + Ano digitados
+   - FIPE: tabela embaixo, sem travar salvamento
+   - Dashboard liberado para visualização
+   - Brinde especial com limite de 2 por dia
+*/
+(function(){
+  const $=id=>document.getElementById(id);
+  const V=id=>String($(id)?.value||'').trim();
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const BRINDE_ESPELHO='Espelho do Jordão + R$ 100 parceiro';
+  const FIPE_API='https://parallelum.com.br/fipe/api/v1/carros';
+  let fipeTimer=null;
+
+  function profissaoOutroPrimeiro(){
+    const lista=['Outro (a)','Empresário','Empresária','Comerciante','Autônomo','Autônoma','Aposentado','Aposentada','Administrador','Administradora','Advogado','Advogada','Arquiteto','Arquiteta','Engenheiro','Engenheira','Médico','Médica','Dentista','Gerente','Diretor','Diretora','Consultor','Consultora','Corretor','Corretora','Vendedor','Vendedora','Representante comercial','Professor','Professora','Servidor público','Servidora pública','Funcionário público','Policial','Militar','Produtor rural','Produtora rural','Investidor','Investidora','Motorista','Técnico','Técnica','Do lar','Estudante','Outro','Outra'];
+    ['listaProfissoes74','listaProfissoes74b'].forEach(id=>{const dl=$(id); if(dl) dl.innerHTML=lista.map(x=>`<option value="${esc(x)}"></option>`).join('');});
+    ['profissao_1','profissao_2'].forEach(id=>{const el=$(id); if(el)el.placeholder='Profissão - Outro (a) primeiro';});
+  }
+
+  window.toggleOutraProfissao=function(){
+    const eh=v=>['outro','outra','outro (a)','outro(a)'].includes(String(v||'').toLowerCase().trim());
+    $('outra_profissao_1')?.classList.toggle('hidden',!eh(V('profissao_1')));
+    $('outra_profissao_2')?.classList.toggle('hidden',!eh(V('profissao_2')));
+  };
+  window.profissaoFinal=function(id,outro){
+    const v=V(id), o=V(outro);
+    if(['outro','outra','outro (a)','outro(a)'].includes(v.toLowerCase())) return o || 'Outro';
+    return v;
+  };
+
+  function trocarSelectPorInput(id,placeholder,inputmode){
+    const old=$(id); if(!old)return null;
+    if(old.tagName==='INPUT') { old.placeholder=placeholder; if(inputmode)old.inputMode=inputmode; return old; }
+    const inp=document.createElement('input');
+    inp.id=id; inp.placeholder=placeholder; inp.autocomplete='off'; if(inputmode)inp.inputMode=inputmode;
+    old.replaceWith(inp); return inp;
+  }
+
+  function instalarFipeBox(){
+    let box=$('captaFipeLivreBox');
+    if(box)return box;
+    const ano=$('ano_veiculo'); if(!ano)return null;
+    box=document.createElement('div'); box.id='captaFipeLivreBox';
+    box.innerHTML=`<b>FIPE / referência do veículo</b><div id="captaFipeLivreStatus">Digite o modelo e o ano. A pesquisa salva mesmo se a FIPE não localizar.</div><div id="captaFipeLivreTabela"><table><tr><th>Modelo</th><th>Ano</th><th>Valor</th></tr><tr><td>-</td><td>-</td><td>R$ 0,00</td></tr></table></div>`;
+    const ref=$('fipeReferencia') || ano;
+    ref.parentElement?.insertAdjacentElement('afterend',box);
+    return box;
+  }
+
+  function normalizar(txt){return String(txt||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();}
+  async function fetchJson(url){const r=await fetch(url,{cache:'force-cache'}); if(!r.ok)throw new Error('FIPE offline'); return r.json();}
+  async function consultarFipeLivre(){
+    const modelo=V('modelo_carro'), ano=V('ano_veiculo');
+    const status=$('captaFipeLivreStatus'), tabela=$('captaFipeLivreTabela'), valor=$('valor_fipe_preview'), ref=$('fipeReferencia');
+    if(!status||!tabela)return;
+    if(V('veiculo')!=='Sim'){status.textContent='Sem veículo informado.'; tabela.innerHTML='<table><tr><th>Modelo</th><th>Ano</th><th>Valor</th></tr><tr><td>Não possui</td><td>-</td><td>-</td></tr></table>'; if(valor)valor.value=''; if(ref)ref.textContent=''; return;}
+    if(modelo.length<3 || ano.length<4){status.textContent='Digite o modelo e o ano para tentar localizar a FIPE.'; return;}
+    status.textContent='Consultando FIPE automaticamente...';
+    const q=normalizar(modelo);
+    try{
+      const marcas=await fetchJson(FIPE_API+'/marcas');
+      let achados=[];
+      for(const marca of marcas){
+        if(achados.length>=5)break;
+        try{
+          const mods=await fetchJson(`${FIPE_API}/marcas/${encodeURIComponent(marca.codigo)}/modelos`);
+          for(const m of (mods.modelos||[])){
+            const nm=normalizar(m.nome);
+            if(nm.includes(q) || q.split(' ').every(p=>p && nm.includes(p))){achados.push({marca,modelo:m}); if(achados.length>=5)break;}
+          }
+        }catch(e){}
+      }
+      if(!achados.length){
+        status.textContent='FIPE não localizada automaticamente. A ficha será salva normalmente.';
+        if(valor)valor.value=''; if(ref)ref.textContent='Modelo digitado pelo profissional.';
+        tabela.innerHTML=`<table><tr><th>Modelo digitado</th><th>Ano</th><th>Valor</th></tr><tr><td>${esc(modelo)}</td><td>${esc(ano)}</td><td>Não localizado</td></tr></table>`;
+        return;
+      }
+      const linhas=[]; let primeiroValor='';
+      for(const item of achados){
+        try{
+          const anos=await fetchJson(`${FIPE_API}/marcas/${encodeURIComponent(item.marca.codigo)}/modelos/${encodeURIComponent(item.modelo.codigo)}/anos`);
+          const anoObj=(anos||[]).find(a=>String(a.nome||'').includes(ano)) || (anos||[])[0];
+          if(!anoObj)continue;
+          const preco=await fetchJson(`${FIPE_API}/marcas/${encodeURIComponent(item.marca.codigo)}/modelos/${encodeURIComponent(item.modelo.codigo)}/anos/${encodeURIComponent(anoObj.codigo)}`);
+          if(!primeiroValor)primeiroValor=preco.Valor||'';
+          linhas.push(`<tr><td>${esc(preco.Marca||item.marca.nome)} ${esc(preco.Modelo||item.modelo.nome)}</td><td>${esc(preco.AnoModelo||anoObj.nome)}</td><td>${esc(preco.Valor||'-')}</td></tr>`);
+        }catch(e){}
+      }
+      if(linhas.length){
+        status.textContent='FIPE encontrada. Confira se o modelo bate com o carro informado.';
+        tabela.innerHTML='<table><tr><th>Modelo FIPE</th><th>Ano</th><th>Valor</th></tr>'+linhas.join('')+'</table>';
+        if(valor)valor.value=primeiroValor;
+        if(ref)ref.textContent='Referência FIPE automática por modelo/ano digitado.';
+      }else{
+        status.textContent='FIPE não localizada automaticamente. A ficha será salva normalmente.';
+        tabela.innerHTML=`<table><tr><th>Modelo digitado</th><th>Ano</th><th>Valor</th></tr><tr><td>${esc(modelo)}</td><td>${esc(ano)}</td><td>Não localizado</td></tr></table>`;
+      }
+    }catch(e){
+      status.textContent='FIPE indisponível no momento. A ficha será salva normalmente.';
+      tabela.innerHTML=`<table><tr><th>Modelo digitado</th><th>Ano</th><th>Valor</th></tr><tr><td>${esc(modelo)}</td><td>${esc(ano)}</td><td>Consultar depois</td></tr></table>`;
+    }
+  }
+  function agendarFipe(){clearTimeout(fipeTimer); fipeTimer=setTimeout(consultarFipeLivre,700);}
+
+  function carroSimples(){
+    const modelo=trocarSelectPorInput('modelo_carro','Modelo do carro. Ex: Corolla, HB20, Compass');
+    const ano=trocarSelectPorInput('ano_veiculo','Ano do carro. Ex: 2022','numeric');
+    let marca=$('marca_carro');
+    if(marca){
+      if(marca.tagName!=='INPUT') marca=trocarSelectPorInput('marca_carro','');
+      marca.type='hidden'; marca.value='Digitado pelo profissional';
+    }
+    ['busca_marca_carro_75','busca_modelo_carro_75'].forEach(id=>{const e=$(id); if(e)e.remove();});
+    instalarFipeBox();
+    window.selectedText=function(id){return V(id)};
+    window.carregarMarcasFipe=function(){}; window.carregarModelosFipe=function(){}; window.carregarAnosFipe=function(){}; window.exibirPrecoFipe=consultarFipeLivre;
+    window.filtrarMarcasCarro75=function(){}; window.filtrarModelosCarro75=function(){}; window.prepararMarcasCarro75=function(){}; window.prepararModelosCarro75=function(){};
+    window.toggleVeiculo=function(){
+      const tem=V('veiculo')==='Sim';
+      ['modelo_carro','ano_veiculo','valor_fipe_preview','fipeReferencia','captaFipeLivreBox'].forEach(id=>{const e=$(id); if(e){e.closest('.carSearch75')?.classList.toggle('hidden',!tem); e.classList.toggle('hidden',!tem);}});
+      const m=$('marca_carro'); if(m)m.value=tem?'Digitado pelo profissional':'';
+      if(!tem){ if(modelo)modelo.value=''; if(ano)ano.value=''; }
+      consultarFipeLivre();
+    };
+    modelo?.addEventListener('input',agendarFipe); ano?.addEventListener('input',agendarFipe); $('veiculo')?.addEventListener('change',window.toggleVeiculo);
+    window.toggleVeiculo();
+  }
+
+  function liberarDashboard(){
+    document.querySelectorAll('.tabs button').forEach(btn=>{const oc=btn.getAttribute('onclick')||''; if(oc.includes("'dash'")||oc.includes('dash')){btn.classList.remove('admOnly');btn.style.display='block';btn.textContent='Dashboard';}});
+    const dash=$('dash'); if(dash)dash.classList.remove('admOnly');
+  }
+
+  function brindeEspecial(){
+    if(Array.isArray(window.brindesPadrao) && !window.brindesPadrao.some(b=>b&&b[0]===BRINDE_ESPELHO)) window.brindesPadrao.unshift([BRINDE_ESPELHO,100]);
+    const sel=$('brinde'); if(sel && ![...sel.options].some(o=>o.value===BRINDE_ESPELHO)){
+      const o=document.createElement('option'); o.value=BRINDE_ESPELHO; o.textContent=BRINDE_ESPELHO+' • limite 2 por dia'; sel.insertBefore(o,sel.options[1]||null);
+    }
+  }
+  const oldPermitidos=window.brindesPermitidos;
+  window.brindesPermitidos=function(){
+    let lista=[]; try{lista=typeof oldPermitidos==='function'?oldPermitidos.apply(this,arguments):[]}catch(e){}
+    lista=(lista||[]).filter(b=>b&&b[0]!==BRINDE_ESPELHO); lista.unshift([BRINDE_ESPELHO,100]); return lista;
+  };
+  const oldValor=window.valorBrindeEstimado;
+  window.valorBrindeEstimado=function(nome){return String(nome||'')===BRINDE_ESPELHO?100:(typeof oldValor==='function'?oldValor.apply(this,arguments):0)};
+
+  async function limiteBrindeOk(){
+    if(V('brinde')!==BRINDE_ESPELHO)return true;
+    try{
+      const de=new Date(); de.setHours(0,0,0,0); const ate=new Date(); ate.setHours(23,59,59,999);
+      const r=await db.from('pesquisas').select('id',{count:'exact',head:true}).eq('brinde',BRINDE_ESPELHO).gte('created_at',de.toISOString()).lte('created_at',ate.toISOString());
+      if(!r.error && Number(r.count||0)>=2){ const fm=$('formMsg'); if(fm)fm.innerHTML='<span class="erro">Esse brinde especial já foi usado 2 vezes hoje.</span>'; return false; }
+    }catch(e){}
+    return true;
+  }
+
+  const oldSalvar=window.salvarPesquisa;
+  if(typeof oldSalvar==='function'){
+    window.salvarPesquisa=async function(){
+      if(V('veiculo')==='Sim'){
+        const m=$('marca_carro'); if(m)m.value='Digitado pelo profissional';
+        if(!V('modelo_carro')){ if(typeof msg==='function')msg('formMsg','Digite o modelo do carro.','erro'); return false; }
+        if(!V('ano_veiculo')){ if(typeof msg==='function')msg('formMsg','Digite o ano do carro.','erro'); return false; }
+      }
+      if(!(await limiteBrindeOk()))return false;
+      await consultarFipeLivre();
+      const r=await oldSalvar.apply(this,arguments);
+      setTimeout(()=>{document.querySelectorAll('.btnShareRaphaelFinal,.btnWhatsApp,#btnCompartilharFicha').forEach(b=>{b.style.background='#18a84a';b.style.color='#fff'});},400);
+      return r;
+    };
+  }
+
+  function boot(){profissaoOutroPrimeiro(); carroSimples(); liberarDashboard(); brindeEspecial(); if(typeof atualizarBrindesPorQualificacao==='function')try{atualizarBrindesPorQualificacao()}catch(e){};}
+  document.addEventListener('DOMContentLoaded',()=>{boot();setTimeout(boot,800);setTimeout(boot,2000);});
+  window.addEventListener('load',()=>{boot();setTimeout(boot,1200);});
+})();
+</script>
+
 </body>
 </html>
