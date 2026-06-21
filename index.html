@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaptaPro Simples 1.0</title>
+<title>CaptaPro Simples 1.1</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
@@ -20,7 +20,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Simples 1.0</div><p class="mini">Pesquisa e Relatório • CEO altera qualificação</p></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Simples 1.1</div><p class="mini">Pesquisa e Relatório • CEO altera qualificação</p></div>
 
 <section id="loginBox" class="card">
 <h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
@@ -40,7 +40,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <select id="estado"><option value="">Estado</option><option>SP</option><option>RJ</option><option>MG</option><option>PR</option><option>SC</option><option>RS</option><option>GO</option><option>DF</option><option>BA</option></select><input id="cidade" list="cidades" placeholder="Cidade">
 <select id="relacionamento"><option value="">Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option></select>
 <select id="tempo"><option value="">Tempo juntos</option><option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option><option>3 a 5 anos</option><option>Mais de 5 anos</option></select>
-<select id="carro"><option value="">Possui carro?</option><option>Sim</option><option>Não</option></select><input id="marca" list="marcas" placeholder="Marca"><input id="modelo" placeholder="Modelo"><select id="ano"><option value="">Ano</option></select>
+<input id="nomeCarro" placeholder="Nome do carro (Ex: Onix)"><input id="anoCarro" inputmode="numeric" placeholder="Ano do carro (Ex: 2015)">
 <select id="cartao"><option value="">Cartão?</option><option>Sim</option><option>Não</option></select><select id="casa"><option value="">Casa própria?</option><option>Sim</option><option>Não</option></select><select id="multi"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
 <input id="renda" inputmode="numeric" placeholder="Renda mensal"><select id="brinde"><option value="">Brinde</option><option>Voucher</option><option>Almoço</option><option>Passeio</option><option>Desconto</option></select><input id="contato" placeholder="WhatsApp / contato">
 </div>
@@ -54,7 +54,22 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <div class="card scroll"><h2>Ranking</h2><div id="rankingBox"></div></div><div class="card"><h2>Individual</h2><select id="profFiltro" onchange="mostrarIndividual()"><option value="">Escolha o profissional</option></select><div id="individualBox"></div></div>
 </section>
 
-<section id="qualificacao" class="card hidden adminOnly"><h2>Qualificação CEO</h2><div class="grid"><input id="cfgIdadeMin" type="number" placeholder="Idade mínima"><input id="cfgRendaMin" type="number" placeholder="Renda mínima"><select id="cfgCarro"><option value="nao">Carro não obrigatório</option><option value="sim">Carro obrigatório</option></select><select id="cfgCartao"><option value="nao">Cartão não obrigatório</option><option value="sim">Cartão obrigatório</option></select></div><button class="main" style="margin-top:8px" onclick="salvarConfig()">Salvar regras</button><p id="cfgMsg"></p></section>
+<section id="qualificacao" class="card hidden adminOnly">
+<h2>Qualificação CEO • Perfil Completo</h2>
+<p class="hint">Somente CEO altera o perfil usado para calcular Q, NQ e NQ 1 Item.</p>
+<div class="grid">
+<input id="cfgIdadeMin" type="number" placeholder="Idade mínima">
+<input id="cfgRendaMin" type="number" placeholder="Renda mínima">
+<select id="cfgCarro"><option value="nao">Carro não obrigatório</option><option value="sim">Carro obrigatório</option></select>
+<select id="cfgCartao"><option value="nao">Cartão não obrigatório</option><option value="sim">Cartão obrigatório</option></select>
+<select id="cfgCasa"><option value="nao">Casa própria não obrigatória</option><option value="sim">Casa própria obrigatória</option></select>
+<select id="cfgCasado"><option value="nao">Relacionamento não obrigatório</option><option value="sim">Exigir casados/união estável</option></select>
+<select id="cfgTempoMin"><option value="">Tempo mínimo juntos</option><option value="nao">Não exigir</option><option value="1">1 ano</option><option value="2">2 anos</option><option value="3">3 a 5 anos</option><option value="5">Mais de 5 anos</option></select>
+<select id="cfgMulti"><option value="nao">Multipropriedade não obrigatória</option><option value="sim">Exigir que já conheceu</option></select>
+</div>
+<button class="main" style="margin-top:8px" onclick="salvarConfig()">Salvar perfil completo</button>
+<p id="cfgMsg"></p>
+</section>
 </section></div>
 
 <datalist id="profissoes"><option value="Outro(a)"><option value="Empresário"><option value="Empresária"><option value="Comerciante"><option value="Vendedor"><option value="Gerente"><option value="Professor"><option value="Médico"><option value="Advogado"><option value="Engenheiro"><option value="Autônomo"><option value="Aposentado"></datalist>
@@ -66,22 +81,36 @@ const SUPABASE_URL="https://veznreiamwstlulkpocz.supabase.co", SUPABASE_KEY="eyJ
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const CEOS=['raphaelbueno.captacao@gmail.com','marcel.dorado2@gmail.com'];let usuarioEmail='',usuarioNome='',role='profissional',ultimaFicha=null;
 function E(id){return document.getElementById(id)}function V(id){return (E(id)?.value||'').trim()}function H(id,v){E(id).innerHTML=v}function S(id,v){E(id).innerText=v}
-for(let i=18;i<=90;i++){E('idade1').innerHTML+=`<option>${i}</option>`;E('idade2').innerHTML+=`<option>${i}</option>`}for(let a=new Date().getFullYear()+1;a>=1980;a--)E('ano').innerHTML+=`<option>${a}</option>`;
-function getCfg(){return JSON.parse(localStorage.getItem('cfg')||'{"idadeMin":30,"rendaMin":12000,"carro":"nao","cartao":"nao"}')}
-function loadCfg(){let c=getCfg();E('cfgIdadeMin').value=c.idadeMin;E('cfgRendaMin').value=c.rendaMin;E('cfgCarro').value=c.carro;E('cfgCartao').value=c.cartao}
+for(let i=18;i<=90;i++){E('idade1').innerHTML+=`<option>${i}</option>`;E('idade2').innerHTML+=`<option>${i}</option>`}
+function getCfg(){return JSON.parse(localStorage.getItem('cfg')||'{"idadeMin":30,"rendaMin":12000,"carro":"nao","cartao":"nao","casa":"nao","casado":"nao","tempoMin":"nao","multi":"nao"}')}
+function loadCfg(){let c=getCfg();E('cfgIdadeMin').value=c.idadeMin;E('cfgRendaMin').value=c.rendaMin;E('cfgCarro').value=c.carro||'nao';E('cfgCartao').value=c.cartao||'nao';E('cfgCasa').value=c.casa||'nao';E('cfgCasado').value=c.casado||'nao';E('cfgTempoMin').value=c.tempoMin||'nao';E('cfgMulti').value=c.multi||'nao'}
 async function entrar(){usuarioEmail=V('email').toLowerCase();usuarioNome=V('nome')||usuarioEmail;if(!usuarioEmail){H('loginMsg','<span class=erro>Informe o e-mail.</span>');return}try{let r=await db.from('approved_users').select('*').eq('email',usuarioEmail).maybeSingle();let u=r.data;if(!u&&CEOS.includes(usuarioEmail))u={role:'ceo',approved:true,name:usuarioNome};if(!u||u.approved===false){H('loginMsg','<span class=erro>E-mail não aprovado.</span>');return}role=u.role||'profissional';usuarioNome=u.name||usuarioNome}catch(e){role=CEOS.includes(usuarioEmail)?'ceo':'profissional'}document.body.classList.toggle('ceo',role==='ceo'||CEOS.includes(usuarioEmail));E('loginBox').classList.add('hidden');E('app').classList.remove('hidden');localStorage.setItem('loginSimples',JSON.stringify({email:usuarioEmail,nome:usuarioNome}));loadCfg();carregarAbordagensHoje();carregarRelatorio()}
 (function(){try{let l=JSON.parse(localStorage.getItem('loginSimples')||'null');if(l){E('email').value=l.email;E('nome').value=l.nome;setTimeout(entrar,300)}}catch(e){}})();
 function aba(id,b){['pesquisa','relatorio','qualificacao'].forEach(x=>E(x).classList.add('hidden'));E(id).classList.remove('hidden');document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(id==='relatorio')carregarRelatorio()}
-function salvarConfig(){let c={idadeMin:+V('cfgIdadeMin')||30,rendaMin:+V('cfgRendaMin')||12000,carro:V('cfgCarro'),cartao:V('cfgCartao')};localStorage.setItem('cfg',JSON.stringify(c));H('cfgMsg','<span class=ok>Regras salvas.</span>')}
-function qual(){let c=getCfg(),idade=Math.max(+V('idade1')||0,+V('idade2')||0),renda=+String(V('renda')).replace(/[^0-9]/g,'')||0,status='Q',m=[];if(idade<c.idadeMin){status='NQ';m.push('idade')}if(renda<c.rendaMin){status=status==='Q'?'NQ 1 Item':status;m.push('renda')}if(c.carro==='sim'&&V('carro')!=='Sim'){status=status==='Q'?'NQ 1 Item':status;m.push('carro')}if(c.cartao==='sim'&&V('cartao')!=='Sim'){status=status==='Q'?'NQ 1 Item':status;m.push('cartão')}return {status,motivo:m.join(', ')||'Perfil dentro da regra'}}
+function salvarConfig(){let c={idadeMin:+V('cfgIdadeMin')||30,rendaMin:+V('cfgRendaMin')||12000,carro:V('cfgCarro'),cartao:V('cfgCartao'),casa:V('cfgCasa'),casado:V('cfgCasado'),tempoMin:V('cfgTempoMin'),multi:V('cfgMulti')};localStorage.setItem('cfg',JSON.stringify(c));H('cfgMsg','<span class=ok>Perfil completo salvo.</span>')}
+function qual(){
+let c=getCfg(),idade=Math.max(+V('idade1')||0,+V('idade2')||0),renda=+String(V('renda')).replace(/[^0-9]/g,'')||0,status='Q',m=[];
+function falha(txt){status=status==='Q'?'NQ 1 Item':status;m.push(txt)}
+if(idade<c.idadeMin){status='NQ';m.push('idade')}
+if(renda<c.rendaMin){falha('renda')}
+if(c.carro==='sim'&&!V('nomeCarro')){falha('carro')}
+if(c.cartao==='sim'&&V('cartao')!=='Sim'){falha('cartão')}
+if(c.casa==='sim'&&V('casa')!=='Sim'){falha('casa própria')}
+if(c.casado==='sim'&&!['Casados','União estável'].includes(V('relacionamento'))){falha('relacionamento')}
+if(c.multi==='sim'&&V('multi')!=='Sim'){falha('multipropriedade')}
+if(c.tempoMin&&c.tempoMin!=='nao'){
+ const ordem={'Menos de 1 ano':0,'1 ano':1,'2 anos':2,'3 a 5 anos':3,'Mais de 5 anos':5};
+ if((ordem[V('tempo')]||0)<Number(c.tempoMin)){falha('tempo juntos')}
+}
+return {status,motivo:m.join(', ')||'Perfil dentro da regra'}}
 function calcularQualificacao(){let q=qual();H('resultado',`<div class=card><span class=badge>${q.status}</span><p class=mini>${q.motivo}</p></div>`);return q}
 async function registrarAbordagem(){let p={user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),observacao:'Abordagem',created_at:new Date().toISOString()};try{await db.from('abordagens').insert(p)}catch(e){let a=JSON.parse(localStorage.getItem('abordagensLocal')||'[]');a.push(p);localStorage.setItem('abordagensLocal',JSON.stringify(a))}carregarAbordagensHoje();H('formMsg','<span class=ok>Abordagem registrada.</span>')}
 async function carregarAbordagensHoje(){let total=0,d=new Date().toISOString().slice(0,10);try{let r=await db.from('abordagens').select('*',{count:'exact',head:true}).eq('user_email',usuarioEmail).gte('created_at',d+'T00:00:00').lte('created_at',d+'T23:59:59');total=r.count||0}catch(e){total=JSON.parse(localStorage.getItem('abordagensLocal')||'[]').filter(x=>x.user_email===usuarioEmail&&x.created_at.slice(0,10)===d).length}S('abordagensHoje',total)}
-function payload(){let q=calcularQualificacao();return {user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),convidado_1:V('nome1'),convidado_2:V('nome2'),idade_1:+V('idade1')||0,idade_2:+V('idade2')||0,profissao_1:V('profissao1'),profissao_2:V('profissao2'),estado_origem:V('estado'),cidade_origem:V('cidade'),estado_civil:V('relacionamento'),tempo_juntos:V('tempo'),veiculo:V('carro'),marca_carro:V('marca'),modelo_carro:V('modelo'),ano_veiculo:V('ano'),cartao_credito:V('cartao'),casa_propria:V('casa'),multipropriedade:V('multi'),renda_casal:V('renda'),brinde:V('brinde'),contato:V('contato'),observacoes:V('obs'),qualificacao_automatica:q.status,motivo_qualificacao:q.motivo,levou_sala:'Não',created_at:new Date().toISOString()}}
+function payload(){let q=calcularQualificacao();return {user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),convidado_1:V('nome1'),convidado_2:V('nome2'),idade_1:+V('idade1')||0,idade_2:+V('idade2')||0,profissao_1:V('profissao1'),profissao_2:V('profissao2'),estado_origem:V('estado'),cidade_origem:V('cidade'),estado_civil:V('relacionamento'),tempo_juntos:V('tempo'),veiculo:V('nomeCarro')?'Sim':'Não',marca_carro:'',modelo_carro:V('nomeCarro'),ano_veiculo:V('anoCarro'),cartao_credito:V('cartao'),casa_propria:V('casa'),multipropriedade:V('multi'),renda_casal:V('renda'),brinde:V('brinde'),contato:V('contato'),observacoes:V('obs'),qualificacao_automatica:q.status,motivo_qualificacao:q.motivo,levou_sala:'Não',created_at:new Date().toISOString()}}
 async function salvarPesquisa(){let p=payload();if(!p.convidado_1){H('formMsg','<span class=erro>Informe o Nome 1.</span>');return}try{await db.from('pesquisas').insert(p);H('formMsg','<span class=ok>Ficha salva.</span>')}catch(e){let a=JSON.parse(localStorage.getItem('pesquisasLocal')||'[]');a.push(p);localStorage.setItem('pesquisasLocal',JSON.stringify(a));H('formMsg','<span class=warn>Ficha salva localmente.</span>')}ultimaFicha=p;renderFicha(p);carregarRelatorio()}
-function renderFicha(p){E('fichaBox').classList.remove('hidden');H('fichaConteudo',`<div id=fichaImg class=ficha><h2>Ficha CaptaPro</h2><p><span class=badge>${p.qualificacao_automatica}</span></p><div class=campo><small>Casal</small>${p.convidado_1} / ${p.convidado_2||'-'}</div><div class=campo><small>Cidade</small>${p.cidade_origem||'-'} - ${p.estado_origem||'-'}</div><div class=campo><small>Renda</small>${p.renda_casal||'-'}</div><div class=campo><small>Carro</small>${p.marca_carro||'-'} ${p.modelo_carro||''} ${p.ano_veiculo||''}</div><div class=campo><small>Captador</small>${p.captador_nome} • ${p.ponto_captacao||'-'}</div></div>`)}
+function renderFicha(p){E('fichaBox').classList.remove('hidden');H('fichaConteudo',`<div id=fichaImg class=ficha><h2>Ficha CaptaPro</h2><p><span class=badge>${p.qualificacao_automatica}</span></p><div class=campo><small>Casal</small>${p.convidado_1} / ${p.convidado_2||'-'}</div><div class=campo><small>Cidade</small>${p.cidade_origem||'-'} - ${p.estado_origem||'-'}</div><div class=campo><small>Renda</small>${p.renda_casal||'-'}</div><div class=campo><small>Carro</small>${p.modelo_carro||'-'} ${p.ano_veiculo||''}</div><div class=campo><small>Captador</small>${p.captador_nome} • ${p.ponto_captacao||'-'}</div></div>`)}
 async function compartilharFicha(){let node=E('fichaImg');if(!node)return;let c=await html2canvas(node,{scale:2,backgroundColor:'#090909'});c.toBlob(async b=>{let f=new File([b],'ficha-captapro.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'Ficha CaptaPro'});else{let a=document.createElement('a');a.href=c.toDataURL();a.download='ficha-captapro.png';a.click()}})}
-function novaPesquisa(){['nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade','relacionamento','tempo','carro','marca','modelo','ano','cartao','casa','multi','renda','brinde','contato','obs'].forEach(id=>E(id).value='');H('resultado','');H('formMsg','');E('fichaBox').classList.add('hidden');E('nome1').focus()}
+function novaPesquisa(){['nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade','relacionamento','tempo','nomeCarro','anoCarro','cartao','casa','multi','renda','brinde','contato','obs'].forEach(id=>E(id).value='');H('resultado','');H('formMsg','');E('fichaBox').classList.add('hidden');E('nome1').focus()}
 async function dados(t){try{let r=await db.from(t).select('*').order('created_at',{ascending:false}).limit(1000);return r.data||[]}catch(e){return JSON.parse(localStorage.getItem(t==='pesquisas'?'pesquisasLocal':'abordagensLocal')||'[]')}}
 function per(x,de,ate){let d=(x.created_at||'').slice(0,10);return(!de||d>=de)&&(!ate||d<=ate)}
 async function carregarRelatorio(){let de=V('relDe'),ate=V('relAte'),p=await dados('pesquisas'),a=await dados('abordagens');if(role!=='ceo'){p=p.filter(x=>x.user_email===usuarioEmail);a=a.filter(x=>x.user_email===usuarioEmail)}p=p.filter(x=>per(x,de,ate));a=a.filter(x=>per(x,de,ate));let sala=p.filter(x=>String(x.levou_sala||'').toLowerCase().includes('sim')).length;S('rAbord',a.length);S('rPesq',p.length);S('rSala',sala);S('rConv',p.length?Math.round(sala/p.length*100)+'%':'0%');let m={};p.forEach(x=>{let n=x.captador_nome||x.user_email;if(!m[n])m[n]={nome:n,p:0,s:0,q:0,nq:0,a:0};m[n].p++;if(x.qualificacao_automatica==='Q')m[n].q++;else m[n].nq++;if(String(x.levou_sala||'').toLowerCase().includes('sim'))m[n].s++});a.forEach(x=>{let n=x.captador_nome||x.user_email;if(!m[n])m[n]={nome:n,p:0,s:0,q:0,nq:0,a:0};m[n].a++});let rows=Object.values(m).sort((x,y)=>y.p-x.p||y.s-x.s);H('rankingBox',rows.length?'<table><tr><th>Nome</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>Sala</th></tr>'+rows.map(r=>`<tr><td>${r.nome}</td><td>${r.a}</td><td>${r.p}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.s}</td></tr>`).join('')+'</table>':'<p class=mini>Sem dados.</p>');H('profFiltro','<option value="">Escolha o profissional</option>'+rows.map(r=>`<option>${r.nome}</option>`).join(''));window.rowsRel=rows;mostrarIndividual()}
