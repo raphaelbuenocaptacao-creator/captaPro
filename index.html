@@ -7175,5 +7175,320 @@ section#meuDesempenho:not(.hidden){display:block!important}
 })();
 </script>
 
+
+
+<!-- =========================================================
+     CAPTAPRO VERSÃO 2 • PATCH URGENTE MOBILE / MENU / TEMA
+     Profissional: somente Pesquisa, Arena SX e Relatório.
+     Tema escuro definitivo e relatório leve para celular.
+     ========================================================= -->
+<style id="captapro-v2-patch-urgente-mobile">
+  :root{
+    --bg:#050505!important;--card:#101010!important;--card2:#171717!important;--line:#2b2b2b!important;
+    --red:#ef1b24!important;--red2:#ff3333!important;--muted:#a9a9a9!important;--ok:#00e676!important;--warn:#ffd54f!important;--bad:#ff5252!important;
+  }
+  html,body{background:linear-gradient(180deg,#050505,#170000)!important;color:#fff!important;overscroll-behavior:none!important;}
+  body{font-family:Arial,sans-serif!important;}
+  .wrap{max-width:1250px!important;margin:auto!important;padding:10px!important;}
+  .top{background:rgba(16,16,16,.96)!important;border:1px solid #2b2b2b!important;border-radius:17px!important;box-shadow:0 0 20px rgba(239,27,36,.12)!important;color:#fff!important;}
+  .top h1,.top h2,h1,h2,h3{color:#fff!important;}
+  .top p,.hint,.mini,.sectionNote{color:#bbb!important;}
+  .top span{color:#ff3333!important;}
+  .version{background:#1b0505!important;border:1px solid #671818!important;color:#ff8585!important;}
+  .brandLine{background:linear-gradient(90deg,transparent,#ff3333,transparent)!important;}
+  .card,.modalCard,.periodBox,.smartPointCard,.adminResearchCard,.arenaRules span,.readonlyInfo,.chartBox,.relatorioSimples71{
+    background:rgba(16,16,16,.96)!important;border:1px solid #2b2b2b!important;color:#fff!important;box-shadow:0 0 20px rgba(239,27,36,.12)!important;
+  }
+  input,select,textarea{
+    background:#050505!important;color:#fff!important;border:1px solid #333!important;border-radius:11px!important;box-shadow:none!important;-webkit-text-fill-color:#fff!important;
+  }
+  input::placeholder,textarea::placeholder{color:#999!important;-webkit-text-fill-color:#999!important;}
+  select option{background:#050505!important;color:#fff!important;}
+  input[readonly],.fipeValue input{background:#0a0a0a!important;color:#00e676!important;border-color:#185c38!important;-webkit-text-fill-color:#00e676!important;}
+  button{border-radius:12px!important;touch-action:manipulation!important;}
+  button.main,.main{background:linear-gradient(135deg,#ef1b24,#ff3333)!important;color:#fff!important;border:0!important;box-shadow:0 0 14px rgba(239,27,36,.25)!important;}
+  button.secondary,.secondary{background:#202020!important;color:#fff!important;border:1px solid #444!important;}
+  .tabs{grid-template-columns:repeat(3,1fr)!important;gap:7px!important;position:sticky!important;top:0!important;z-index:20!important;background:#050505!important;padding:8px 0!important;}
+  .tabs button{background:#181818!important;color:#fff!important;border:1px solid #2b2b2b!important;box-shadow:none!important;}
+  .tabs button.active{background:linear-gradient(135deg,#ef1b24,#ff3333)!important;color:#fff!important;}
+  .kpi{background:#181818!important;border-color:#2d2d2d!important;color:#ccc!important;}
+  .kpi b{color:#ff3333!important;}
+  table{color:#fff!important;background:#101010!important;} th{color:#ff7777!important;} td,th{border-bottom-color:#2b2b2b!important;}
+  .tableScroll{background:#101010!important;border-radius:13px!important;}
+  .loggedPromoter{background:#0b1510!important;border-color:#1e5f3b!important;color:#d9ffe8!important;}
+  .loggedPromoter b{color:#00e676!important;}
+  .abordagemCounter{background:#101010!important;border-color:#333!important;}
+  .abordagemCounter span{color:#aaa!important;}.abordagemCounter b{color:#00e676!important;}.abordagemCounter small{color:#888!important;}
+  #brindeRegra{background:#151515!important;border-color:#333!important;color:#bbb!important;}
+  .q{background:#05381f!important;color:#00e676!important;}.nq1{background:#3a2f03!important;color:#ffd54f!important;}.nq{background:#3b0505!important;color:#ff5252!important;}
+  .arenaSection{border-color:#ff7a00!important;}.arenaHero{background:linear-gradient(135deg,#2a0900,#1b0505)!important;border-color:#ff7a00!important;}
+  .arenaHero b{color:#fff!important;}.arenaHero small,.arenaHero span{color:#ffbf8a!important;}.captainBox{background:linear-gradient(135deg,#160027,#3b001f)!important;border-color:#ff74e8!important;}
+  .footer{color:#888!important;}
+
+  /* Profissional: só 3 abas */
+  body.captapro-profissional .tabs{grid-template-columns:repeat(3,1fr)!important;}
+  body.captapro-profissional .tabs button{display:none!important;}
+  body.captapro-profissional .tabs button[onclick*="pesquisa"],
+  body.captapro-profissional .tabs button[onclick*="arenaSX"],
+  body.captapro-profissional .tabs button[onclick*="excelResultados"]{display:block!important;}
+
+  body.captapro-profissional #dash,
+  body.captapro-profissional #ranking,
+  body.captapro-profissional #comparativo,
+  body.captapro-profissional #pulsador,
+  body.captapro-profissional #metas,
+  body.captapro-profissional #mapa,
+  body.captapro-profissional #salaAdmin,
+  body.captapro-profissional #historico,
+  body.captapro-profissional #profissionais,
+  body.captapro-profissional #ceo,
+  body.captapro-profissional #meuDesempenho{display:none!important;}
+
+  body.captapro-profissional #pesquisa:not(.hidden),
+  body.captapro-profissional #arenaSX:not(.hidden),
+  body.captapro-profissional #excelResultados:not(.hidden){display:block!important;}
+
+  /* Relatório do profissional precisa abrir, mesmo sendo admOnly no HTML antigo */
+  body.captapro-profissional #excelResultados.admOnly:not(.hidden){display:block!important;}
+  body.captapro-profissional .tabs button.admOnly[onclick*="excelResultados"]{display:block!important;}
+
+  /* Modo leve no celular: relatório simples, sem gráficos/importação pesada para profissional */
+  body.captapro-profissional #excelResultados .excelUploadBox,
+  body.captapro-profissional #excelResultados > .filterBar,
+  body.captapro-profissional #excelResultados > .kpis,
+  body.captapro-profissional #excelResultados > .grid2,
+  body.captapro-profissional #excelResultados .chartBox,
+  body.captapro-profissional #excelResultados #excelCalendarioBox,
+  body.captapro-profissional #excelResultados .relatorioAvancadoUnificado,
+  body.captapro-profissional #excelResultados #relatorioSimples71{display:none!important;}
+  body.captapro-profissional #relatorioProfissionalV2Urgente{display:block!important;}
+  #relatorioProfissionalV2Urgente{display:none;}
+  .relatorioProfKpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0;}
+  .relatorioProfKpi{background:#181818;border:1px solid #2d2d2d;border-radius:13px;padding:11px;text-align:center;color:#ccc;}
+  .relatorioProfKpi b{display:block;color:#00e676;font-size:23px;margin-top:4px;}
+  .relatorioProfTable{max-height:430px;overflow:auto;border:1px solid #2b2b2b;border-radius:13px;}
+
+  @media(max-width:900px){
+    .wrap{padding:8px!important;}
+    .tabs{grid-template-columns:repeat(3,1fr)!important;gap:6px!important;}
+    .tabs button{font-size:12px!important;padding:10px 5px!important;min-height:44px!important;}
+    .grid,.grid2,.kpis,#pesquisa .grid.compact,.estadoCidadeGroup,.relatorioProfKpis{grid-template-columns:1fr!important;}
+    .top h1{font-size:29px!important;}
+    input,select,textarea{font-size:16px!important;min-height:46px!important;}
+    #pesquisa.card{padding:12px!important;}
+    .card{border-radius:16px!important;padding:12px!important;}
+    .fichaImagem{padding:12px!important;}
+    .relatorioProfTable{max-height:360px;}
+  }
+</style>
+
+<script id="captapro-v2-patch-urgente-mobile-js">
+(function(){
+  'use strict';
+  const CEO_EMAILS=['raphaelbueno.captacao@gmail.com','raphaaelbueno.captacao@gmail.com','marcel.dorado2@gmail.com'];
+  const ALLOWED_PRO=['pesquisa','arenaSX','excelResultados'];
+  const ALL_SECTIONS=['pesquisa','arenaSX','excelResultados','meuDesempenho','dash','ranking','comparativo','pulsador','metas','mapa','salaAdmin','historico','profissionais','ceo','producaoDia'];
+  const $=id=>document.getElementById(id);
+  const clean=s=>String(s||'').toLowerCase().trim();
+  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const brDate=s=>{try{const d=s?new Date(s):new Date();return isNaN(d)?'-':d.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(e){return '-'}};
+
+  function emailAtual(){return clean(window.usuarioEmail||$('email')?.value||'');}
+  function nomeAtual(){return String(window.captadorNome||$('captadorNome')?.value||'').trim();}
+  function isAdm(){return CEO_EMAILS.includes(emailAtual());}
+  function setImportant(el,prop,val){if(el)el.style.setProperty(prop,val,'important');}
+  function showSec(id,on){const el=$(id); if(!el)return; el.classList.toggle('hidden',!on); if(on)setImportant(el,'display','block'); else el.style.removeProperty('display');}
+
+  function marcarPerfil(){
+    const adm=isAdm();
+    document.body.classList.toggle('captapro-admin',adm);
+    document.body.classList.toggle('captapro-profissional',!adm);
+    return adm;
+  }
+
+  function garantirBotaoRelatorio(){
+    const tabs=document.querySelector('.tabs');
+    if(!tabs)return;
+    let btn=document.querySelector(".tabs button[onclick*='excelResultados']");
+    if(!btn){
+      btn=document.createElement('button');
+      btn.type='button';
+      btn.className='excelTabBtn';
+      btn.textContent='Relatórios';
+      btn.onclick=function(){window.aba('excelResultados',btn)};
+      tabs.appendChild(btn);
+    }
+    btn.classList.remove('admOnly');
+    btn.textContent='Relatórios';
+    return btn;
+  }
+
+  function aplicarMenu(){
+    const adm=marcarPerfil();
+    const btnRel=garantirBotaoRelatorio();
+    document.querySelectorAll('.tabs button').forEach(btn=>{
+      const onclick=String(btn.getAttribute('onclick')||'');
+      let id='';
+      const m=onclick.match(/aba\(['\"]([^'\"]+)/); if(m)id=m[1];
+      if(!adm){
+        if(ALLOWED_PRO.includes(id))setImportant(btn,'display','block');
+        else setImportant(btn,'display','none');
+      }else{
+        btn.style.removeProperty('display');
+        if(btn.classList.contains('promotorOnly'))setImportant(btn,'display','none');
+      }
+    });
+    if(btnRel && !adm)setImportant(btnRel,'display','block');
+    if(!adm){
+      document.querySelectorAll('.admOnly').forEach(el=>{
+        const isRel=el.id==='excelResultados'||(el.matches&&el.matches(".tabs button[onclick*='excelResultados']"));
+        if(!isRel)setImportant(el,'display','none');
+      });
+      const rel=$('excelResultados'); if(rel)rel.classList.remove('admOnly');
+    }
+  }
+
+  function lerLocalFichas(){
+    const keys=['captapro_fichas_salvas_83','captapro_fichas_salvas','captapro_fichas_local'];
+    const out=[];
+    keys.forEach(k=>{try{const arr=JSON.parse(localStorage.getItem(k)||'[]'); if(Array.isArray(arr))out.push(...arr);}catch(e){}});
+    const seen=new Set();
+    return out.filter(f=>{
+      const em=clean(f.user_email||f.email||'');
+      if(em && em!==emailAtual())return false;
+      const ch=String(f.id||f._local_key||'')+'|'+String(f.created_at||'')+'|'+String(f.convidado_1||'')+'|'+String(f.contato||'');
+      if(seen.has(ch))return false; seen.add(ch); return true;
+    }).sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||''))).slice(0,120);
+  }
+
+  function garantirRelatorioProfissional(){
+    const sec=$('excelResultados'); if(!sec)return null;
+    let box=$('relatorioProfissionalV2Urgente');
+    if(!box){
+      box=document.createElement('div');
+      box.id='relatorioProfissionalV2Urgente';
+      box.className='card';
+      box.innerHTML=`
+        <h2>Meu Relatório</h2>
+        <p class="hint">Resumo leve para celular: fichas salvas, abordagens e status Q/NQ.</p>
+        <div class="relatorioProfKpis">
+          <div class="relatorioProfKpi">Fichas/Pesquisas<b id="rpFichasV2">0</b></div>
+          <div class="relatorioProfKpi">Abordagens<b id="rpAbordagensV2">0</b></div>
+          <div class="relatorioProfKpi">Q<b id="rpQV2">0</b></div>
+          <div class="relatorioProfKpi">NQ / 1 item<b id="rpNQV2">0</b></div>
+        </div>
+        <div class="rowbtn" style="margin:8px 0">
+          <button class="main" type="button" id="btnAtualizarRelatorioProfV2">Atualizar relatório</button>
+          <button class="secondary" type="button" id="btnVoltarPesquisaProfV2">Voltar para pesquisa</button>
+        </div>
+        <div class="relatorioProfTable"><table><thead><tr><th>Data</th><th>Casal</th><th>Status</th><th>Ponto</th></tr></thead><tbody id="rpTabelaV2"><tr><td colspan="4">Carregando...</td></tr></tbody></table></div>`;
+      sec.insertBefore(box,sec.firstChild);
+      $('btnAtualizarRelatorioProfV2')?.addEventListener('click',renderRelatorioProfissional);
+      $('btnVoltarPesquisaProfV2')?.addEventListener('click',()=>window.aba('pesquisa',document.querySelector(".tabs button[onclick*='pesquisa']")));
+    }
+    return box;
+  }
+
+  async function buscarFichasSupabase(){
+    if(typeof db==='undefined'||!db||!emailAtual())return [];
+    try{
+      const r=await db.from('pesquisas').select('*').eq('user_email',emailAtual()).order('created_at',{ascending:false}).limit(120);
+      if(!r.error && Array.isArray(r.data))return r.data;
+    }catch(e){console.warn('Relatório profissional: Supabase não carregou:',e.message||e)}
+    return [];
+  }
+
+  async function renderRelatorioProfissional(){
+    if(isAdm())return;
+    garantirRelatorioProfissional();
+    const tbody=$('rpTabelaV2'); if(tbody)tbody.innerHTML='<tr><td colspan="4">Atualizando...</td></tr>';
+    let fichas=[...lerLocalFichas()];
+    const supa=await buscarFichasSupabase();
+    const map=new Map();
+    [...supa,...fichas].forEach(f=>{
+      const ch=String(f.id||f._local_key||'')+'|'+String(f.created_at||'')+'|'+String(f.convidado_1||'')+'|'+String(f.contato||'');
+      if(!map.has(ch))map.set(ch,f);
+    });
+    fichas=[...map.values()].sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||''))).slice(0,120);
+    const q=fichas.filter(f=>String(f.qualificacao_automatica||f.status||'').toUpperCase()==='Q').length;
+    const nq=fichas.length-q;
+    if($('rpFichasV2'))$('rpFichasV2').textContent=fichas.length;
+    if($('rpAbordagensV2'))$('rpAbordagensV2').textContent=fichas.length;
+    if($('rpQV2'))$('rpQV2').textContent=q;
+    if($('rpNQV2'))$('rpNQV2').textContent=nq;
+    if(tbody){
+      tbody.innerHTML=fichas.length?fichas.slice(0,80).map(f=>{
+        const casal=[f.convidado_1,f.convidado_2].filter(Boolean).join(' e ')||'-';
+        const st=f.qualificacao_automatica||f.status||'-';
+        return `<tr><td>${esc(brDate(f.created_at))}</td><td>${esc(casal)}</td><td>${esc(st)}</td><td>${esc(f.ponto_oficial||f.ponto_captacao||'-')}</td></tr>`;
+      }).join(''):'<tr><td colspan="4">Nenhuma ficha salva ainda neste aparelho/usuário.</td></tr>';
+    }
+  }
+
+  function abrirAbaProfissional(id,btn){
+    if(!ALLOWED_PRO.includes(id))id='pesquisa';
+    aplicarMenu();
+    ALL_SECTIONS.forEach(sec=>showSec(sec,false));
+    showSec(id,true);
+    document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+    const realBtn=btn || document.querySelector(`.tabs button[onclick*='${id}']`);
+    realBtn?.classList.add('active');
+    if(id==='excelResultados')setTimeout(renderRelatorioProfissional,40);
+    if(id==='arenaSX'){
+      try{if(typeof window.renderArenaSX==='function')setTimeout(window.renderArenaSX,80);}catch(e){}
+    }
+    if(id==='pesquisa'){
+      try{if(typeof window.carregarMinhasFichas83==='function')setTimeout(window.carregarMinhasFichas83,80);}catch(e){}
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+    return true;
+  }
+
+  const oldAba=window.aba;
+  window.aba=function(id,btn){
+    aplicarMenu();
+    if(!isAdm())return abrirAbaProfissional(id,btn);
+    const r=typeof oldAba==='function'?oldAba.apply(this,arguments):true;
+    setTimeout(aplicarMenu,30);
+    return r;
+  };
+
+  const oldEntrar=window.entrar;
+  if(typeof oldEntrar==='function'){
+    window.entrar=async function(){
+      const r=await oldEntrar.apply(this,arguments);
+      setTimeout(()=>{aplicarMenu(); if(!isAdm())abrirAbaProfissional('pesquisa',document.querySelector(".tabs button[onclick*='pesquisa']"));},80);
+      return r;
+    };
+  }
+
+  // Segurança contra renderizações pesadas no celular do profissional.
+  function modoLeveProfissional(){
+    if(isAdm())return;
+    ['carregarMapa','carregarDashboard','carregarRanking','carregarComparativo','carregarPulsador','carregarMetas','carregarHistorico','carregarProfissionais','carregarSalaAdmin'].forEach(fn=>{
+      const old=window[fn];
+      if(typeof old==='function'&&!old.__safeMobile){
+        const safe=function(){if(!isAdm())return null; return old.apply(this,arguments);};
+        safe.__safeMobile=true; window[fn]=safe;
+      }
+    });
+  }
+
+  function init(){
+    aplicarMenu(); garantirRelatorioProfissional(); modoLeveProfissional();
+    if(!isAdm()){
+      const active=document.querySelector('.tabs button.active');
+      const activeOn=String(active?.getAttribute('onclick')||'');
+      if(!ALLOWED_PRO.some(id=>activeOn.includes(id)))abrirAbaProfissional('pesquisa',document.querySelector(".tabs button[onclick*='pesquisa']"));
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{[250,900,1600,2800,4200].forEach(t=>setTimeout(init,t));});
+  window.addEventListener('load',()=>{[450,1200,2400,5000].forEach(t=>setTimeout(init,t));});
+  setInterval(()=>{if(document.body.classList.contains('captapro-profissional'))aplicarMenu();},2500);
+  window.renderRelatorioProfissionalV2Urgente=renderRelatorioProfissional;
+})();
+</script>
+
 </body>
 </html>
