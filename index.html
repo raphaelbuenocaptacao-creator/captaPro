@@ -4758,5 +4758,244 @@ table{color:#fff!important}th{color:#ff7777!important}td,th{border-bottom-color:
 })();
 </script>
 
+
+
+<style>
+/* =========================================================
+   CAPTAPRO 1.0 • CORREÇÃO FINAL DA PARTE DOS CARROS
+   ========================================================= */
+#pesquisa .carSearch75{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:7px!important;
+  padding:10px!important;
+  border:1px solid #2b2b2b!important;
+  border-radius:14px!important;
+  background:#0b0b0b!important;
+}
+#busca_marca_carro_75,
+#busca_modelo_carro_75{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  border-color:#444!important;
+  background:#070707!important;
+}
+#marca_carro,
+#modelo_carro,
+#ano_veiculo{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  border-color:#444!important;
+}
+#marca_carro option,
+#modelo_carro option,
+#ano_veiculo option{
+  color:#fff!important;
+  background:#111!important;
+}
+body.carroNaoSelecionado #busca_marca_carro_75,
+body.carroNaoSelecionado #marca_carro,
+body.carroNaoSelecionado #busca_modelo_carro_75,
+body.carroNaoSelecionado #modelo_carro,
+body.carroNaoSelecionado #ano_veiculo,
+body.carroNaoSelecionado .fipeValue{
+  display:none!important;
+}
+.veiculoHelpFix{
+  grid-column:1/-1;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid #333;
+  background:#101010;
+  color:#bbb;
+  font-size:12px;
+}
+.veiculoHelpFix b{color:#00e676}
+</style>
+
+<script>
+/* =========================================================
+   CAPTAPRO 1.0 • FIPE corrigida: mostra nome, não código
+   ========================================================= */
+(function(){
+  const API_PARALLELUM='https://parallelum.com.br/fipe/api/v1/carros';
+  const API_BRASIL='https://brasilapi.com.br/api/fipe';
+  const MARCAS_FIXAS=[
+    ['Chevrolet','Chevrolet'],['Volkswagen','Volkswagen'],['Fiat','Fiat'],['Toyota','Toyota'],['Honda','Honda'],
+    ['Hyundai','Hyundai'],['Jeep','Jeep'],['Nissan','Nissan'],['Renault','Renault'],['Ford','Ford'],
+    ['BMW','BMW'],['Mercedes-Benz','Mercedes-Benz'],['Audi','Audi'],['BYD','BYD'],['GWM','GWM'],
+    ['Caoa Chery','Caoa Chery'],['Mitsubishi','Mitsubishi'],['Peugeot','Peugeot'],['Citroën','Citroën'],['Kia','Kia'],['Volvo','Volvo']
+  ].map(([codigo,nome])=>({codigo,nome}));
+  function E(id){return document.getElementById(id)}
+  function V(id){return E(id)?.value||''}
+  function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+  function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+  async function getJSON(url){
+    const r=await fetch(url,{cache:'force-cache'});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    return await r.json();
+  }
+  function render(sel,lista,ph,disabled){
+    if(!sel)return;
+    const old=sel.value;
+    sel.innerHTML='<option value="">'+esc(ph)+'</option>'+lista.map(item=>{
+      const codigo=item.codigo??item.valor??item.value??item.nome??item.text??'';
+      const nome=item.nome??item.text??item.modelo??item.name??codigo;
+      return '<option value="'+esc(codigo)+'" data-nome="'+esc(nome)+'">'+esc(nome)+'</option>';
+    }).join('');
+    sel.disabled=!!disabled;
+    if(old && [...sel.options].some(o=>o.value==old))sel.value=old;
+  }
+  function textoSelecionado(id){
+    const el=E(id); if(!el)return '';
+    const op=el.options?.[el.selectedIndex];
+    return op ? (op.dataset.nome || op.textContent || '') : '';
+  }
+  function setBusca(id,txt){const el=E(id); if(el)el.value=txt||''}
+  function aplicarVisibilidadeCarro(){
+    const sim=V('veiculo')==='Sim';
+    document.body.classList.toggle('carroNaoSelecionado',!sim);
+    ['marca_carro','modelo_carro','ano_veiculo'].forEach(id=>{const el=E(id); if(el)el.disabled=!sim || (id!=='marca_carro' && !V('marca_carro'))});
+    if(!sim){
+      ['busca_marca_carro_75','busca_modelo_carro_75','marca_carro','modelo_carro','ano_veiculo','valor_fipe_preview'].forEach(id=>{const el=E(id); if(el)el.value=''});
+      const ref=E('fipeReferencia'); if(ref)ref.innerHTML='';
+    }
+  }
+  function normalizarMarca(m){
+    return {codigo:String(m.codigo??m.valor??m.id??m.nome??''),nome:String(m.nome??m.name??m.valor??m.codigo??'')};
+  }
+  function normalizarModelo(m){
+    return {codigo:String(m.codigo??m.codigoFipe??m.valor??m.id??m.modelo??m.nome??''),nome:String(m.nome??m.modelo??m.name??m.codigo??'')};
+  }
+  window.__captaMarcasCarroFix=[];
+  window.__captaModelosCarroFix=[];
+  window.__captaAnosCarroFix=[];
+
+  window.carregarMarcasFipe=async function(){
+    aplicarVisibilidadeCarro();
+    const sel=E('marca_carro');
+    render(sel,[], 'Carregando marcas...', true);
+    try{
+      let marcas=(await getJSON(API_PARALLELUM+'/marcas')).map(normalizarMarca)
+        .filter(x=>x.codigo && x.nome && !/^\d+$/.test(x.nome));
+      marcas.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+      window.veiculoProvider='parallelum';
+      window.__captaMarcasCarroFix=marcas;
+      render(sel,marcas,'Selecione a marca',V('veiculo')!=='Sim');
+    }catch(e){
+      try{
+        let marcas=(await getJSON(API_BRASIL+'/marcas/v1/carros')).map(normalizarMarca)
+          .filter(x=>x.codigo && x.nome && !/^\d+$/.test(x.nome));
+        marcas.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+        window.veiculoProvider='brasilapi';
+        window.__captaMarcasCarroFix=marcas;
+        render(sel,marcas,'Selecione a marca',V('veiculo')!=='Sim');
+      }catch(err){
+        window.veiculoProvider='manual';
+        window.__captaMarcasCarroFix=MARCAS_FIXAS;
+        render(sel,MARCAS_FIXAS,'Selecione a marca',V('veiculo')!=='Sim');
+      }
+    }
+    setBusca('busca_marca_carro_75',textoSelecionado('marca_carro'));
+  };
+
+  window.filtrarMarcasCarro75=function(){
+    const q=norm(V('busca_marca_carro_75'));
+    const lista=(window.__captaMarcasCarroFix||MARCAS_FIXAS).filter(x=>!q || norm(x.nome).includes(q));
+    render(E('marca_carro'),lista,'Selecione a marca',V('veiculo')!=='Sim');
+  };
+
+  window.carregarModelosFipe=async function(){
+    const marca=V('marca_carro');
+    setBusca('busca_marca_carro_75',textoSelecionado('marca_carro'));
+    render(E('modelo_carro'),[],marca?'Carregando modelos...':'Selecione primeiro a marca',true);
+    render(E('ano_veiculo'),[],'Selecione primeiro o modelo',true);
+    setBusca('busca_modelo_carro_75','');
+    const val=E('valor_fipe_preview'); if(val)val.value='';
+    const ref=E('fipeReferencia'); if(ref)ref.innerHTML='';
+    window.__captaModelosCarroFix=[];
+    if(!marca)return;
+    try{
+      let modelos=[];
+      if(window.veiculoProvider==='brasilapi'){
+        const dados=await getJSON(API_BRASIL+'/veiculos/v1/carros/'+encodeURIComponent(marca));
+        const map=new Map();
+        (Array.isArray(dados)?dados:[]).forEach(m=>{const n=normalizarModelo(m); if(n.codigo&&n.nome)map.set(n.codigo+'|'+n.nome,n)});
+        modelos=[...map.values()];
+      }else if(window.veiculoProvider==='manual'){
+        modelos=[];
+      }else{
+        const resp=await getJSON(API_PARALLELUM+'/marcas/'+encodeURIComponent(marca)+'/modelos');
+        modelos=(Array.isArray(resp?.modelos)?resp.modelos:[]).map(normalizarModelo);
+      }
+      modelos=modelos.filter(x=>x.codigo&&x.nome).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+      window.__captaModelosCarroFix=modelos;
+      render(E('modelo_carro'),modelos,modelos.length?'Selecione o modelo':'Digite o modelo nas observações',!modelos.length);
+    }catch(e){
+      render(E('modelo_carro'),[],'Não foi possível carregar os modelos',true);
+    }
+  };
+
+  window.filtrarModelosCarro75=function(){
+    const q=norm(V('busca_modelo_carro_75'));
+    const lista=(window.__captaModelosCarroFix||[]).filter(x=>!q || norm(x.nome).includes(q));
+    render(E('modelo_carro'),lista,'Selecione o modelo',!window.__captaModelosCarroFix?.length);
+  };
+
+  window.carregarAnosFipe=async function(){
+    const marca=V('marca_carro'), modelo=V('modelo_carro');
+    setBusca('busca_modelo_carro_75',textoSelecionado('modelo_carro'));
+    render(E('ano_veiculo'),[],modelo?'Carregando anos...':'Selecione primeiro o modelo',true);
+    const val=E('valor_fipe_preview'); if(val)val.value='';
+    const ref=E('fipeReferencia'); if(ref)ref.innerHTML='';
+    window.fipePrecosAtuais=[];
+    if(!marca||!modelo)return;
+    try{
+      if(window.veiculoProvider==='brasilapi'){
+        const precos=await getJSON(API_BRASIL+'/preco/v1/'+encodeURIComponent(modelo));
+        window.fipePrecosAtuais=Array.isArray(precos)?precos:[];
+        const anos=[];
+        const seen=new Set();
+        window.fipePrecosAtuais.forEach(item=>{
+          const ano=Number(item.anoModelo)===32000?'Zero KM':String(item.anoModelo||'');
+          const comb=item.combustivel||item.siglaCombustivel||'';
+          const codigo=String(item.anoModelo||'')+'|'+comb;
+          if(ano && !seen.has(codigo)){seen.add(codigo); anos.push({codigo,nome:[ano,comb].filter(Boolean).join(' • ')})}
+        });
+        anos.sort((a,b)=>parseInt(b.nome)||0 - parseInt(a.nome)||0);
+        render(E('ano_veiculo'),anos,'Ano do carro',!anos.length);
+      }else{
+        const anos=await getJSON(API_PARALLELUM+'/marcas/'+encodeURIComponent(marca)+'/modelos/'+encodeURIComponent(modelo)+'/anos');
+        window.fipePrecosAtuais=Array.isArray(anos)?anos:[];
+        const lista=window.fipePrecosAtuais.map(a=>({codigo:a.codigo,nome:String(a.nome||'').replace(/^32000\b/,'Zero KM')}));
+        render(E('ano_veiculo'),lista,'Ano do carro',!lista.length);
+      }
+    }catch(e){
+      render(E('ano_veiculo'),[],'Não foi possível carregar os anos',true);
+    }
+  };
+
+  function instalarEventos(){
+    const veiculo=E('veiculo');
+    if(veiculo && !veiculo.__carFix){veiculo.__carFix=true;veiculo.addEventListener('change',()=>{aplicarVisibilidadeCarro(); if(V('veiculo')==='Sim')window.carregarMarcasFipe();});}
+    const marca=E('marca_carro');
+    if(marca && !marca.__carFix){marca.__carFix=true;marca.addEventListener('change',()=>{setBusca('busca_marca_carro_75',textoSelecionado('marca_carro'));});}
+    const modelo=E('modelo_carro');
+    if(modelo && !modelo.__carFix){modelo.__carFix=true;modelo.addEventListener('change',()=>setBusca('busca_modelo_carro_75',textoSelecionado('modelo_carro')));}
+    const helpId='veiculoHelpFix';
+    if(!E(helpId) && E('busca_marca_carro_75')){
+      const d=document.createElement('div'); d.id=helpId; d.className='veiculoHelpFix';
+      d.innerHTML='<b>Veículo:</b> digite para buscar marca e modelo. A lista agora mostra nomes, não códigos.';
+      E('busca_marca_carro_75').closest('.carSearch75')?.before(d);
+    }
+    aplicarVisibilidadeCarro();
+  }
+  document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{instalarEventos();window.carregarMarcasFipe();},700);setTimeout(instalarEventos,1800);});
+  window.addEventListener('load',()=>setTimeout(()=>{instalarEventos(); if(!window.__captaMarcasCarroFix.length)window.carregarMarcasFipe();},500));
+})();
+</script>
+
 </body>
 </html>
