@@ -8,7 +8,8 @@
 <meta http-equiv="Expires" content="0"/>
 <title>CaptaPro 1.0</title>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2">
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
 /* ===== CaptaPro 1.0 ===== */
 const PONTOS_OFICIAIS_CAPTAPRO=[
   {nome:'Porta dentro do Park',apelido:'PORTA DREAM HOUSE',lat:-22.720958,lng:-45.572798,raio:25,tipo:'PARK'},
@@ -6334,6 +6335,325 @@ label[for="marca_carro"]{display:none!important}
   function boot(){profissaoOutroPrimeiro(); carroSimples(); liberarDashboard(); brindeEspecial(); if(typeof atualizarBrindesPorQualificacao==='function')try{atualizarBrindesPorQualificacao()}catch(e){};}
   document.addEventListener('DOMContentLoaded',()=>{boot();setTimeout(boot,800);setTimeout(boot,2000);});
   window.addEventListener('load',()=>{boot();setTimeout(boot,1200);});
+})();
+</script>
+
+
+
+<style id="captapro_fix_final_css">
+/* ===== CAPTAPRO 1.0 • CORREÇÃO FINAL ESTÁVEL ===== */
+section#meuDesempenho:not(.hidden){display:block!important}
+.tabs button[onclick*="meuDesempenho"]{display:block!important}
+#fichaSalvaBox .captaFinalActions{
+  display:grid!important;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:12px;
+}
+#fichaSalvaBox .captaFinalShare{
+  background:#18a84a!important;
+  border:1px solid #22c55e!important;
+  color:#fff!important;
+  font-weight:900!important;
+}
+#fichaSalvaBox .captaFinalNova{
+  background:linear-gradient(135deg,#111827,#344054)!important;
+  border:1px solid #475467!important;
+  color:#fff!important;
+  font-weight:900!important;
+}
+#fichaSalvaBox button[onclick*="baixarImagemFicha"],
+#fichaSalvaBox #btnCompartilharFicha,
+#fichaSalvaBox .btnShareFinal,
+#fichaSalvaBox .btnNovaFinal,
+#fichaSalvaBox .btnShare81,
+#fichaSalvaBox .btnNovaFicha81,
+#fichaSalvaBox .btnShareRaphaelFinal,
+#fichaSalvaBox .btnNovaRaphaelFinal{
+  display:none!important;
+}
+#novaFichaActions81{display:none!important}
+@media(max-width:900px){#fichaSalvaBox .captaFinalActions{grid-template-columns:1fr!important}}
+</style>
+
+<script id="captapro_fix_final_script">
+/* ===== CAPTAPRO 1.0 • CORREÇÃO FINAL =====
+   Corrige:
+   1) sala do profissional indo para a tabela pesquisas, não para salas_pendentes;
+   2) ADM lendo pendências reais em pesquisas;
+   3) botões duplicados de compartilhar / nova ficha;
+   4) Meu Desempenho visível;
+   5) funções ausentes dos relatórios avançados.
+*/
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const V=id=>String($(id)?.value||'').trim();
+  const T=id=>String($(id)?.textContent||'').trim();
+  const setTxt=(id,v)=>{const e=$(id);if(e)e.textContent=v};
+  const html=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const money=n=>{
+    n=Number(n||0);
+    try{return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}catch(e){return 'R$ '+n.toFixed(2)}
+  };
+  const num=v=>{
+    if(typeof v==='number')return v;
+    const s=String(v??'').replace(/[^0-9,.-]/g,'').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.');
+    return Number(s)||0;
+  };
+  const dataKey=d=>{
+    const x=new Date(d||new Date());
+    if(isNaN(x))return '';
+    return x.toISOString().slice(0,10);
+  };
+  const inPeriodo=(row,de,ate)=>{
+    const d=dataKey(row?.created_at||row?.data||row?.Data);
+    return (!de||d>=de)&&(!ate||d<=ate);
+  };
+  const nomeRow=r=>String(r?.captador_nome||r?.nome||r?.Nome||r?.profissional||r?.Profissional||'').trim();
+  const equipeRow=r=>String(r?.equipe||r?.Equipe||'').trim();
+  const pontoRow=r=>String(r?.ponto_captacao||r?.ponto||r?.Ponto||r?.local||'Não informado').trim()||'Não informado';
+  const isSala=r=>String(r?.levou_sala||r?.sala||r?.venda||r?.status_sala||'').toLowerCase().includes('sim') || String(r?.sala_status_aprovacao||'').toLowerCase()==='aprovado';
+  const isPendenteSala=r=>String(r?.sala_declarada_promotor||'').toLowerCase()==='sim' && String(r?.sala_status_aprovacao||'').toLowerCase()==='pendente';
+  const custoRow=r=>num(r?.custo_brinde||r?.brinde_valor||r?.custo||0);
+  const vgvRow=r=>num(r?.vgv||r?.VGV||r?.valor_venda||r?.Valor||0);
+
+  function rowsAtuais(){
+    if(Array.isArray(window.excelResultadosRows)&&window.excelResultadosRows.length)return window.excelResultadosRows;
+    if(Array.isArray(window.salaAdminDados)&&window.salaAdminDados.length)return window.salaAdminDados;
+    if(Array.isArray(window.pesquisasCache)&&window.pesquisasCache.length)return window.pesquisasCache;
+    return [];
+  }
+
+  function tabela(rows,cols){
+    if(!rows.length)return '<p class="mini">Sem dados para exibir.</p>';
+    return '<table><thead><tr>'+cols.map(c=>'<th>'+html(c.label)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+cols.map(c=>'<td>'+html(typeof c.val==='function'?c.val(r):(r[c.key]??''))+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+  }
+
+  function agrupar(rows,chaveFn){
+    const m={};
+    rows.forEach(r=>{
+      const k=chaveFn(r)||'Não informado';
+      if(!m[k])m[k]={nome:k,casais:0,sala:0,pendentes:0,q:0,vgv:0,brindes:0,custo:0};
+      m[k].casais++;
+      if(isSala(r))m[k].sala++;
+      if(isPendenteSala(r))m[k].pendentes++;
+      if(String(r?.qualificacao_automatica||r?.status||'').toUpperCase()==='Q')m[k].q++;
+      m[k].vgv+=vgvRow(r);
+      m[k].custo+=custoRow(r);
+      if(r?.brinde)m[k].brindes++;
+    });
+    return Object.values(m).map(x=>({...x,conv:x.casais?Math.round(x.sala/x.casais*100)+'%':'0%',vgvFmt:money(x.vgv),custoFmt:money(x.custo),custoSalaFmt:money(x.custo/(x.sala||1))}));
+  }
+
+  async function buscarPesquisas(){
+    try{
+      if(typeof window.getPesquisas==='function'){
+        const d=await window.getPesquisas();
+        if(Array.isArray(d))return d;
+      }
+    }catch(e){console.warn('getPesquisas falhou:',e)}
+    try{
+      if(typeof db!=='undefined'&&db){
+        const r=await db.from('pesquisas').select('*').order('created_at',{ascending:false}).limit(2000);
+        if(!r.error)return r.data||[];
+      }
+    }catch(e){console.warn('busca pesquisas falhou:',e)}
+    return rowsAtuais();
+  }
+
+  function limparBotoesDuplicadosFicha(){
+    const box=$('fichaSalvaBox');
+    if(!box)return;
+    box.querySelectorAll('#novaFichaActions81,.captaFinalActions').forEach((el,i)=>{if(el.classList.contains('captaFinalActions')&&i===0)return; el.remove();});
+    const seletores=['#btnCompartilharFicha','.btnShareFinal','.btnNovaFinal','.btnShare81','.btnNovaFicha81','.btnShareRaphaelFinal','.btnNovaRaphaelFinal','button[onclick*="baixarImagemFicha"]'];
+    box.querySelectorAll(seletores.join(',')).forEach(b=>{ if(!b.closest('.captaFinalActions')) b.style.display='none'; });
+    let actions=box.querySelector('.captaFinalActions');
+    if(!actions){
+      actions=document.createElement('div');
+      actions.className='captaFinalActions';
+      actions.innerHTML='<button type="button" class="captaFinalShare">Compartilhar ficha no WhatsApp</button><button type="button" class="captaFinalNova">Começar outra ficha</button>';
+      box.appendChild(actions);
+    }
+    const share=actions.querySelector('.captaFinalShare');
+    const nova=actions.querySelector('.captaFinalNova');
+    if(share&&!share.__captaFinal){
+      share.__captaFinal=true;
+      share.onclick=async()=>{
+        const old=share.textContent;
+        share.disabled=true; share.textContent='Gerando ficha...';
+        try{
+          if(typeof window.compartilharFichaWhatsApp==='function')await window.compartilharFichaWhatsApp();
+          else if(typeof window.compartilharFichaImagem==='function')await window.compartilharFichaImagem();
+          if(typeof window.iniciarNovaPesquisaDepoisCompartilhar73==='function')setTimeout(()=>window.iniciarNovaPesquisaDepoisCompartilhar73(),600);
+        }catch(e){
+          const fm=$('formMsg'); if(fm)fm.innerHTML='<span class="erro">Erro ao compartilhar: '+html(e.message||e)+'</span>';
+        }finally{share.disabled=false;share.textContent=old;}
+      };
+    }
+    if(nova&&!nova.__captaFinal){
+      nova.__captaFinal=true;
+      nova.onclick=()=>{
+        if(typeof window.comecarOutraFicha81==='function')window.comecarOutraFicha81();
+        else if(typeof window.iniciarNovaPesquisaDepoisCompartilhar73==='function')window.iniciarNovaPesquisaDepoisCompartilhar73();
+        else location.reload();
+      };
+    }
+  }
+
+  const obsFicha=new MutationObserver(()=>limparBotoesDuplicadosFicha());
+  function iniciarObsFicha(){
+    const box=$('fichaSalvaBox');
+    if(box&&!box.__obsFinal){box.__obsFinal=true;obsFicha.observe(box,{childList:true,subtree:true});}
+    limparBotoesDuplicadosFicha();
+  }
+
+  function corrigirMenu(){
+    document.querySelectorAll('.tabs button').forEach(btn=>{
+      const oc=btn.getAttribute('onclick')||'';
+      if(oc.includes('meuDesempenho'))btn.style.display='block';
+      if(oc.includes('dash')){btn.classList.remove('admOnly');btn.style.display='block';}
+    });
+    const md=$('meuDesempenho'); if(md&&md.classList.contains('hidden')===false)md.style.display='block';
+    const extra=$('salaAdminPendentes72'); if(extra)extra.closest('.card')?.remove();
+  }
+
+  async function localizarUltimaPesquisaParaSala(){
+    if(window.ultimaPesquisaSalva&&window.ultimaPesquisaSalva.id)return window.ultimaPesquisaSalva;
+    const email=String(window.usuarioEmail||V('email')||'').trim();
+    if(!email||typeof db==='undefined'||!db)return null;
+    let q=db.from('pesquisas').select('*').eq('user_email',email).order('created_at',{ascending:false}).limit(1);
+    const c1=V('convidado_1');
+    if(c1)q=q.eq('convidado_1',c1);
+    const r=await q;
+    if(r.error)throw r.error;
+    return (r.data||[])[0]||null;
+  }
+
+  window.solicitarSala72=async function(){
+    const fm=$('formMsg');
+    try{
+      const pesquisa=await localizarUltimaPesquisaParaSala();
+      if(!pesquisa||!pesquisa.id){
+        if(fm)fm.innerHTML='<span class="erro">Salve a pesquisa primeiro. Depois confirme que colocou em sala.</span>';
+        return false;
+      }
+      const email=String(window.usuarioEmail||V('email')||'').trim();
+      const payload={
+        sala_declarada_promotor:'Sim',
+        sala_status_aprovacao:'Pendente',
+        levou_sala:'Pendente',
+        sala_solicitada_em:new Date().toISOString(),
+        sala_solicitada_por:email,
+        updated_at:new Date().toISOString()
+      };
+      let query=db.from('pesquisas').update(payload).eq('id',pesquisa.id);
+      if(email)query=query.eq('user_email',email);
+      let r=await query.select().maybeSingle();
+      if(r.error&&String(r.error.message||'').toLowerCase().includes('updated_at')){
+        const payloadSemUpdated={...payload};
+        delete payloadSemUpdated.updated_at;
+        let q2=db.from('pesquisas').update(payloadSemUpdated).eq('id',pesquisa.id);
+        if(email)q2=q2.eq('user_email',email);
+        r=await q2.select().maybeSingle();
+      }
+      if(r.error)throw r.error;
+      const atualizado=r.data||{...pesquisa,...payload};
+      window.ultimaPesquisaSalva=atualizado;
+      if(Array.isArray(window.minhasPesquisasSalaDados)){
+        const i=window.minhasPesquisasSalaDados.findIndex(x=>String(x.id)===String(atualizado.id));
+        if(i>=0)window.minhasPesquisasSalaDados[i]={...window.minhasPesquisasSalaDados[i],...payload};
+      }
+      const m=$('salaSolicitadaMsg72');
+      if(m){m.classList.remove('hidden');m.innerHTML='<span class="salaPendente72">Sala confirmada pelo profissional. Aguardando aprovação do ADM/CEO.</span>';}
+      if(fm)fm.innerHTML='<span class="ok">Sala enviada para aprovação do ADM/CEO. Agora ela aparece na aba Sala ADM.</span>';
+      if(typeof window.renderFichaSalva==='function')setTimeout(()=>{try{window.renderFichaSalva(atualizado);limparBotoesDuplicadosFicha();}catch(e){}},150);
+      return true;
+    }catch(e){
+      console.error('Erro sala final:',e);
+      if(fm)fm.innerHTML='<span class="erro">Erro ao enviar sala: '+html(e.message||e)+'</span>';
+      return false;
+    }
+  };
+
+  window.renderSalaAdmin72=function(){
+    const extra=$('salaAdminPendentes72'); if(extra)extra.closest('.card')?.remove();
+    if(typeof window.carregarSalaAdmin==='function')window.carregarSalaAdmin();
+  };
+
+  const oldAba=window.aba;
+  if(typeof oldAba==='function'&&!window.__captaFinalAba){
+    window.__captaFinalAba=true;
+    window.aba=function(id,btn){
+      const r=oldAba.apply(this,arguments);
+      setTimeout(()=>{corrigirMenu();iniciarObsFicha();if(id==='salaAdmin'&&typeof window.carregarSalaAdmin==='function')window.carregarSalaAdmin();},120);
+      return r;
+    };
+  }
+
+  const oldSalvar=window.salvarPesquisa;
+  if(typeof oldSalvar==='function'&&!window.__captaFinalSalvar){
+    window.__captaFinalSalvar=true;
+    window.salvarPesquisa=async function(){
+      const r=await oldSalvar.apply(this,arguments);
+      setTimeout(()=>{limparBotoesDuplicadosFicha();corrigirMenu();},250);
+      setTimeout(()=>{limparBotoesDuplicadosFicha();corrigirMenu();},900);
+      return r;
+    };
+  }
+
+  if(typeof window.renderRelatorioCompleto58!=='function'){
+    window.renderRelatorioCompleto58=async function(){
+      const nome=V('relatorioProfissionalFiltro');
+      const de=V('relatorioProfDe'),ate=V('relatorioProfAte');
+      let rows=await buscarPesquisas();
+      rows=rows.filter(r=>(!nome||nomeRow(r)===nome)&&inPeriodo(r,de,ate));
+      const casais=rows.length,sala=rows.filter(isSala).length,vgv=rows.reduce((s,r)=>s+vgvRow(r),0),custo=rows.reduce((s,r)=>s+custoRow(r),0);
+      setTxt('relProfCasais',casais);setTxt('relProfVendas',sala);setTxt('relProfConv',casais?(sala/casais*100).toFixed(1)+'%':'0%');setTxt('relProfVGV',money(vgv));setTxt('relProfBrindes',money(custo));setTxt('relProfCustoSala',money(custo/(sala||1)));
+      const pontos=agrupar(rows,pontoRow).sort((a,b)=>b.casais-a.casais);
+      const meses=agrupar(rows,r=>dataKey(r.created_at).slice(0,7)).sort((a,b)=>a.nome.localeCompare(b.nome));
+      const pBox=$('relProfPontos'); if(pBox)pBox.innerHTML=tabela(pontos,[{key:'nome',label:'Ponto'},{key:'casais',label:'Casais'},{key:'sala',label:'Sala'},{key:'conv',label:'Conv.'},{key:'custoFmt',label:'Brindes'}]);
+      const mBox=$('relProfMeses'); if(mBox)mBox.innerHTML=tabela(meses,[{key:'nome',label:'Mês'},{key:'casais',label:'Casais'},{key:'sala',label:'Sala'},{key:'conv',label:'Conv.'},{key:'vgvFmt',label:'VGV'}]);
+      const cal=$('relProfCalendario');
+      if(cal){
+        const dias=agrupar(rows,r=>dataKey(r.created_at)).sort((a,b)=>a.nome.localeCompare(b.nome));
+        cal.innerHTML=dias.map(d=>'<div class="excelDay"><b>'+html(d.nome.slice(8,10)+'/'+d.nome.slice(5,7))+'</b>Casais: <strong>'+d.casais+'</strong><br>Sala: <strong>'+d.sala+'</strong></div>').join('')||'<p class="mini">Sem dados.</p>';
+      }
+    };
+  }
+
+  if(typeof window.renderBIElite!=='function'){
+    window.renderBIElite=async function(){
+      const de=V('biDe'),ate=V('biAte');
+      let rows=(await buscarPesquisas()).filter(r=>inPeriodo(r,de,ate));
+      const porProf=agrupar(rows,nomeRow).sort((a,b)=>b.sala-a.sala||b.casais-a.casais).filter(x=>x.nome!=='Não informado');
+      const porEquipe=agrupar(rows,equipeRow).sort((a,b)=>b.casais-a.casais);
+      const porPonto=agrupar(rows,pontoRow).sort((a,b)=>b.casais-a.casais);
+      setTxt('biPromotores',porProf.length);setTxt('biLiners',0);setTxt('biClosers',0);setTxt('biCasais',rows.length);setTxt('biVendas',rows.filter(isSala).length);setTxt('biCustoSala',money(rows.reduce((s,r)=>s+custoRow(r),0)/(rows.filter(isSala).length||1)));
+      setTxt('biCapitaoSemana',porProf[0]?.nome||'-');
+      setTxt('biCapitaoPeriodo',(de||'início')+' até '+(ate||'hoje'));
+      const cols=[{key:'nome',label:'Nome'},{key:'casais',label:'Casais'},{key:'sala',label:'Sala'},{key:'conv',label:'Conv.'},{key:'vgvFmt',label:'VGV'},{key:'custoFmt',label:'Brindes'}];
+      const top=$('biTopPromotores'); if(top)top.innerHTML=tabela(porProf.slice(0,10),cols);
+      const lin=$('biTopLiners'); if(lin)lin.innerHTML='<p class="mini">Sem base de liners no arquivo atual.</p>';
+      const clo=$('biTopClosers'); if(clo)clo.innerHTML='<p class="mini">Sem base de closers no arquivo atual.</p>';
+      const hist=$('biRankingHistorico'); if(hist)hist.innerHTML=tabela(agrupar(rows,r=>dataKey(r.created_at).slice(0,7)).sort((a,b)=>a.nome.localeCompare(b.nome)),[{key:'nome',label:'Mês'},{key:'casais',label:'Casais'},{key:'sala',label:'Sala'},{key:'conv',label:'Conv.'},{key:'vgvFmt',label:'VGV'}]);
+      const eq=$('biRankingEquipes'); if(eq)eq.innerHTML=tabela(porEquipe,[{key:'nome',label:'Equipe'},{key:'casais',label:'Casais'},{key:'sala',label:'Sala'},{key:'conv',label:'Conv.'},{key:'custoFmt',label:'Brindes'}]);
+      const pt=$('biRankingPontos'); if(pt)pt.innerHTML=tabela(porPonto,[{key:'nome',label:'Ponto'},{key:'casais',label:'Casais'},{key:'sala',label:'Sala'},{key:'conv',label:'Conv.'},{key:'custoSalaFmt',label:'Custo/Sala'}]);
+      const roi=$('biRoiBrindes'); if(roi)roi.innerHTML=tabela(agrupar(rows,r=>String(r?.brinde||'Sem brinde')).sort((a,b)=>b.custo-a.custo),[{key:'nome',label:'Brinde'},{key:'brindes',label:'Qtd.'},{key:'custoFmt',label:'Custo'},{key:'casais',label:'Casais'}]);
+      const mapa=$('biMapaCalorPontos'); if(mapa)mapa.innerHTML=tabela(porPonto,[{key:'nome',label:'Ponto'},{key:'casais',label:'Pesquisas'},{key:'sala',label:'Sala'},{key:'q',label:'Q'},{key:'conv',label:'Conversão'}]);
+    };
+  }
+
+  function preencherFiltroRelatorioFinal(){
+    const sel=$('relatorioProfissionalFiltro');
+    if(!sel)return;
+    const atual=sel.value;
+    const nomes=[...new Set(rowsAtuais().map(nomeRow).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    if(nomes.length){sel.innerHTML='<option value="">Selecione um profissional</option>'+nomes.map(n=>'<option>'+html(n)+'</option>').join('');sel.value=atual;}
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{corrigirMenu();iniciarObsFicha();preencherFiltroRelatorioFinal();},500);setTimeout(()=>{corrigirMenu();iniciarObsFicha();preencherFiltroRelatorioFinal();},1800);});
+  window.addEventListener('load',()=>setTimeout(()=>{corrigirMenu();iniciarObsFicha();preencherFiltroRelatorioFinal();},1000));
 })();
 </script>
 
