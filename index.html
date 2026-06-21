@@ -4526,5 +4526,163 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(prepararMarcasCarro
 })();
 </script>
 
+
+
+<style>
+/* =========================================================
+   CAPTAPRO 8.1 • AJUSTES RAPHAEL
+   - volta visual escuro
+   - menu estável com Sala ADM
+   - cidade, carro e Arena SX melhorados
+   ========================================================= */
+:root{
+  --bg:#050505!important;--card:#101010!important;--card2:#171717!important;--line:#2b2b2b!important;
+  --red:#ef1b24!important;--red2:#ff3333!important;--muted:#a9a9a9!important;--ok:#00e676!important;--warn:#ffd54f!important;--bad:#ff5252!important;
+}
+body{background:linear-gradient(180deg,#050505,#170000)!important;color:#fff!important;font-family:Arial,sans-serif!important}
+.wrap{max-width:1250px!important;margin:auto!important;padding:10px!important}
+.top{background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important;text-align:center!important;margin:10px 0 12px!important}
+.top h1{color:#fff!important}.top span{color:var(--red2)!important}.top p{color:#ccc!important}.version{background:#1b0505!important;border:1px solid #671818!important;color:#ff8585!important}.brandLine{background:linear-gradient(90deg,transparent,var(--red2),transparent)!important}
+.card{background:rgba(16,16,16,.96)!important;border:1px solid var(--line)!important;border-radius:17px!important;padding:14px!important;margin-bottom:12px!important;box-shadow:0 0 20px rgba(239,27,36,.12)!important;color:#fff!important}
+h2{color:#fff!important;border-left:4px solid var(--red)!important;font-size:21px!important}.hint,.mini{color:#bbb!important}.sectionNote{background:#151515!important;border:1px solid #303030!important;color:#bbb!important}.readonlyInfo{background:#0a0a0a!important;color:#bbb!important;border-color:#333!important}
+input,select,textarea{background:#050505!important;color:#fff!important;border:1px solid #333!important;border-radius:11px!important;font-size:14px!important;min-height:46px!important;box-shadow:none!important}input::placeholder,textarea::placeholder{color:#888!important}select option{background:#111!important;color:#fff!important}
+button{border-radius:12px!important;min-height:46px!important}.main,button.main{background:linear-gradient(135deg,var(--red),var(--red2))!important;color:#fff!important;border:0!important;box-shadow:none!important}.secondary{background:#202020!important;color:#fff!important;border:1px solid #444!important}
+.tabs{display:grid!important;grid-template-columns:repeat(5,1fr)!important;gap:7px!important;margin:12px 0!important;position:sticky!important;top:0!important;z-index:20!important;background:#050505!important;padding:8px 0!important}.tabs button{display:block!important;background:#181818!important;color:#fff!important;border:0!important;box-shadow:none!important;font-size:13px!important;padding:12px 7px!important}.tabs button.active{background:linear-gradient(135deg,var(--red),var(--red2))!important;color:#fff!important}.arenaTabBtn{background:linear-gradient(135deg,#ff7a00,#ff004c)!important;color:#fff!important}
+.tabs button[onclick*="ranking"],.tabs button[onclick*="excelResultados"],.tabs button[onclick*="comparativo"],.tabs button[onclick*="pulsador"],.tabs button[onclick*="metas"],.tabs button[onclick*="historico"],.tabs button[onclick*="profissionais"],.tabs button[onclick*="meuDesempenho"]{display:none!important}
+#ranking,#excelResultados,#comparativo,#pulsador,#metas,#historico,#profissionais,#meuDesempenho{display:none!important}
+.kpi,.abordagemCounter,.chartBox,.periodBox,.smartPointCard,.adminResearchCard,.arenaRules span{background:#181818!important;border-color:#2d2d2d!important;color:#ccc!important}.kpi b{color:var(--red2)!important}.abordagemCounter span{color:#aaa!important}.abordagemCounter b{color:#00e676!important}.abordagemCounter small{color:#888!important}
+.loggedPromoter{background:#0b1510!important;border-color:#1e5f3b!important;color:#d9ffe8!important}.loggedPromoter b{color:#00e676!important}
+#btnRegistrarAbordagem55{background:linear-gradient(135deg,#ef1b24,#850000)!important;border:1px solid #ff4444!important;color:#fff!important}.fipeValue input{color:#00e676!important;border-color:#185c38!important}
+#brindeRegra{background:#0a0a0a!important;border-color:#333!important;color:#bbb!important}.q{background:#05381f!important;color:#00e676!important}.nq1{background:#3a2f03!important;color:#ffd54f!important}.nq{background:#3b0505!important;color:#ff5252!important}
+.arenaHero{background:linear-gradient(135deg,#2a0900,#1b0505)!important;border-color:#ff7a00!important}.arenaHero b{color:#fff!important}.arenaHero small,.arenaHero span{color:#ffd1a8!important}.captainBox{background:linear-gradient(135deg,#241400,#3b001f)!important;border-color:#ffd54f!important}.captainBox b{color:#fff!important}.captainBox small{color:#ffb7f3!important}.arenaOnline{background:#063d24!important;color:#00e676!important}
+table{color:#fff!important}th{color:#ff7777!important}td,th{border-bottom-color:#2b2b2b!important}.tableScroll{background:transparent!important}.pill{background:#260000!important;border-color:#5b1111!important;color:#ff8585!important}
+/* cidade melhor: estado e cidade ficam separados e grandes */
+.estadoCidadeGroup{grid-column:1/-1!important;display:grid!important;grid-template-columns:120px 1fr!important;gap:8px!important}.estadoCidadeGroup input{border-color:#333!important}
+/* carro melhor: sem campo extra duplicado de busca */
+#busca_marca_carro_75,#busca_modelo_carro_75{display:none!important}.carSearch75{display:block!important}.carSearch75 select{margin:0!important;border-color:#333!important}
+/* caixa pós-salvar */
+.novaFichaActions81{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.btnNovaFicha81{background:#202020!important;border:1px solid #444!important;color:#fff!important}.btnShare81{background:#18a84a!important;border:1px solid #22c55e!important;color:#fff!important}
+@media(max-width:900px){.tabs{grid-template-columns:repeat(2,1fr)!important}.grid,.grid2,.kpis,#pesquisa .grid.compact{grid-template-columns:1fr!important}.estadoCidadeGroup{grid-template-columns:1fr!important}.novaFichaActions81{grid-template-columns:1fr!important}}
+</style>
+
+<script>
+/* =========================================================
+   CAPTAPRO 8.1 • CORREÇÕES FUNCIONAIS RAPHAEL
+   ========================================================= */
+(function(){
+  const PROFISSIONAIS_81=['José Ademir','Daniela','André','Pedro','Ana Caroline','Jonatas','Ivanilson','Larissa Ribeiro','Jessica','Marcio Vinicius','Mateus Esley','Mateus Santos','Alexandre','Rebeca','Adriano','Renan','Francisco','Felipe','Suenne','Josyene','Matheus Rosa','Matheus Domingos','João Francisco','Larissa Vitória','Hemerson','Ivanilson'];
+  const MARCAS_81=['Chevrolet','Fiat','Ford','Volkswagen','Toyota','Honda','Hyundai','Jeep','Nissan','Renault','Peugeot','Citroën','Mitsubishi','Kia','BMW','Mercedes-Benz','Audi','Volvo','BYD','Caoa Chery','Land Rover','Mini','Porsche','Ram','Iveco','Outra'];
+  const CIDADES_SP_81=['Campos do Jordão','São Paulo','São José dos Campos','Taubaté','Pindamonhangaba','Caçapava','Guaratinguetá','Aparecida','Campinas','Santo André','São Bernardo do Campo','Santos','Sorocaba','Ribeirão Preto','Jundiaí','Jacareí','Caraguatatuba','Ubatuba','Lorena','Cruzeiro','Mogi das Cruzes','Osasco','Barueri','Guarulhos'];
+  const CIDADES_BR_81=['Rio de Janeiro','Belo Horizonte','Curitiba','Brasília','Goiânia','Porto Alegre','Salvador','Recife','Fortaleza','Florianópolis','Vitória','Manaus','Belém','Cuiabá','Campo Grande','Natal','João Pessoa','Maceió','Aracaju','São Luís','Teresina','Palmas','Porto Velho','Boa Vista','Macapá','Rio Branco'];
+  function E(id){return document.getElementById(id)}
+  function V(id){const x=E(id);return x?String(x.value||'').trim():''}
+  function opt(v){return '<option value="'+String(v).replace(/"/g,'&quot;')+'">'+v+'</option>'}
+  function msg(id,html){const e=E(id);if(e)e.innerHTML=html}
+
+  function menu81(){
+    document.querySelectorAll('.tabs button').forEach(btn=>{
+      const oc=btn.getAttribute('onclick')||'';
+      const keep=oc.includes('pesquisa')||oc.includes('arenaSX')||oc.includes('dash')||oc.includes('salaAdmin')||oc.includes('ceo');
+      btn.style.display=keep?'block':'none';
+      if(oc.includes('dash')){btn.classList.remove('admOnly');btn.textContent='Dashboard'}
+      if(oc.includes('salaAdmin')){btn.textContent='Sala ADM'}
+    });
+    const dash=E('dash'); if(dash)dash.classList.remove('admOnly');
+  }
+
+  function arena81(){
+    const sel=E('arenaDesafiadoSelect71');
+    if(sel){
+      const atual=sel.value;
+      sel.innerHTML='<option value="">Escolha quem deseja desafiar</option>'+PROFISSIONAIS_81.filter((v,i,a)=>a.indexOf(v)===i).map(opt).join('');
+      if(atual)sel.value=atual;
+    }
+    const inp=E('arenaDesafiado'); if(inp)inp.placeholder='Ou digite o nome do desafiado';
+    const desafio=E('arenaAposta'); if(desafio && (!desafio.value || Number(desafio.value)<10))desafio.value=100;
+    const saldo=E('arenaMeuSaldo');
+    if(saldo){
+      const n=Number(String(saldo.innerText||'').replace(/\D/g,''));
+      if(!n || n<500)saldo.innerText='500 SX';
+    }
+  }
+  window.arenaSelecionarDesafiado71=function(){const v=V('arenaDesafiadoSelect71'); if(E('arenaDesafiado'))E('arenaDesafiado').value=v;};
+  const oldRenderArena=window.renderArenaSX;
+  if(typeof oldRenderArena==='function'&&!window.__renderArena81){window.__renderArena81=true;window.renderArenaSX=function(){const r=oldRenderArena.apply(this,arguments);arena81();return r;};}
+
+  function cidade81(){
+    const uf=E('estado_origem'), cid=E('cidade_origem'); if(!uf||!cid)return;
+    cid.setAttribute('list','listaCidades74');
+    const dl=E('listaCidades74'); if(!dl)return;
+    const base=(uf.value==='SP'?CIDADES_SP_81.concat(CIDADES_BR_81):CIDADES_BR_81.concat(CIDADES_SP_81));
+    dl.innerHTML=[...new Set(base)].map(c=>'<option value="'+c.replace(/"/g,'&quot;')+'"></option>').join('');
+    cid.placeholder=uf.value?'Cidade - digite e escolha':'Escolha o Estado primeiro';
+  }
+  const oldCid=window.carregarCidadesOrigem;
+  window.carregarCidadesOrigem=function(){let r;try{if(typeof oldCid==='function')r=oldCid.apply(this,arguments)}catch(e){}setTimeout(cidade81,80);return r;};
+
+  function carro81(){
+    const marca=E('marca_carro');
+    if(marca){
+      const atual=marca.value;
+      const existentes=[...marca.options].map(o=>o.value||o.textContent).filter(Boolean).filter(x=>!/selecione|carregando/i.test(x));
+      const arr=[...new Set(existentes.concat(MARCAS_81))];
+      marca.innerHTML='<option value="">Marca do carro</option>'+arr.map(opt).join('');
+      if(atual)marca.value=atual;
+    }
+    const modelo=E('modelo_carro'); if(modelo && modelo.options.length<=1)modelo.innerHTML='<option value="">Modelo do carro</option>';
+    const ano=E('ano_veiculo');
+    if(ano && ano.options.length<=1){
+      const y=new Date().getFullYear()+1; let html='<option value="">Ano do veículo</option>'; for(let a=y;a>=1995;a--)html+=opt(a); ano.innerHTML=html; ano.disabled=false;
+    }
+  }
+  const oldMarca=window.carregarModelosFipe;
+  window.carregarModelosFipe=function(){let r;try{if(typeof oldMarca==='function')r=oldMarca.apply(this,arguments)}catch(e){}setTimeout(carro81,450);return r;};
+  const oldAno=window.carregarAnosFipe;
+  window.carregarAnosFipe=function(){let r;try{if(typeof oldAno==='function')r=oldAno.apply(this,arguments)}catch(e){}setTimeout(carro81,450);return r;};
+
+  function limparFicha81(){
+    const manter={equipe:V('equipe'),ponto:V('ponto_captacao'),uf:V('estado_origem'),cidade:V('cidade_origem')};
+    ['convidado_1','convidado_2','idade_1','idade_2','profissao_1','profissao_2','outra_profissao_1','outra_profissao_2','estado_civil','tempo_juntos','veiculo','marca_carro','modelo_carro','ano_veiculo','valor_fipe_preview','cartao_credito','casa_propria','multipropriedade','renda_casal','renda_bruta','renda_liquida','brinde','contato','observacoes'].forEach(id=>{const el=E(id);if(!el)return;if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';});
+    if(E('equipe'))E('equipe').value=manter.equipe;if(E('ponto_captacao'))E('ponto_captacao').value=manter.ponto;if(E('estado_origem'))E('estado_origem').value=manter.uf;if(E('cidade_origem'))E('cidade_origem').value=manter.cidade;
+    msg('resultadoQualificacao','');msg('formMsg','<span class="ok">Nova ficha liberada.</span>');
+    const fs=E('fichaSalvaBox'); if(fs)fs.classList.add('hidden');
+    const b=E('brindesDisponiveis'); if(b)b.classList.add('hidden');
+    const s=E('salaSolicitadaMsg72'); if(s)s.classList.add('hidden');
+    window.__aguardandoCompartilharFicha73=false;window.__permitirNovaFichaManual=false;
+    window.scrollTo({top:E('pesquisa')?.offsetTop||0,behavior:'smooth'});
+  }
+  window.comecarOutraFicha81=function(){window.__permitirNovaFichaManual=true;limparFicha81();};
+  window.novaFichaRapida80=function(){
+    if(window.__permitirNovaFichaManual){limparFicha81();return;}
+    msg('formMsg','<span class="ok">Ficha salva. Compartilhe a ficha ou clique em Começar outra ficha.</span>');
+  };
+  window.iniciarNovaPesquisaDepoisCompartilhar73=function(){limparFicha81();msg('formMsg','<span class="ok">Ficha compartilhada. Nova pesquisa liberada.</span>');};
+
+  function botoesFicha81(){
+    const box=E('fichaSalvaBox'); if(!box||E('novaFichaActions81'))return;
+    const div=document.createElement('div');div.id='novaFichaActions81';div.className='novaFichaActions81';
+    div.innerHTML='<button type="button" class="btnShare81" onclick="if(typeof compartilharFichaImagem===\'function\')compartilharFichaImagem();else if(typeof compartilharFicha===\'function\')compartilharFicha();else window.iniciarNovaPesquisaDepoisCompartilhar73();">Compartilhar ficha</button><button type="button" class="btnNovaFicha81" onclick="comecarOutraFicha81()">Começar outra ficha</button>';
+    box.appendChild(div);
+  }
+  const obs=new MutationObserver(()=>{botoesFicha81();});
+
+  function sala81(){
+    const b=E('btnSolicitarSala72'); if(b)b.textContent='CONFIRMAR QUE COLOCOU EM SALA';
+  }
+  window.solicitarSala72=async function(){
+    const item={id:'sala81_'+Date.now()+'_'+Math.random().toString(16).slice(2),user_email:(window.usuarioEmail||V('email')||''),captador_nome:(window.captadorNome||V('captadorNome')||''),casal:[V('convidado_1'),V('convidado_2')].filter(Boolean).join(' e '),contato:V('contato'),equipe:V('equipe'),ponto_captacao:V('ponto_captacao'),consultor:'',status:'CONFIRMADO_PELO_PROFISSIONAL',sala_status:'Confirmado pelo profissional',levou_sala:'Sim',conferido_adm:false,created_at:new Date().toISOString()};
+    let erro=false;try{if(typeof db!=='undefined'&&db){let r=await db.from('salas_pendentes').insert(item);if(r.error)erro=true}else erro=true}catch(e){erro=true}
+    if(erro){try{let k='captapro_salas_pendentes_72',a=JSON.parse(localStorage.getItem(k)||'[]');a.unshift(item);localStorage.setItem(k,JSON.stringify(a));}catch(e){}}
+    const m=E('salaSolicitadaMsg72');if(m){m.classList.remove('hidden');m.innerHTML='<span class="salaAprovada72">Confirmado pelo profissional: colocou em sala. ADM/CEO vai conferir.</span>';}
+    msg('formMsg','<span class="ok">Sala confirmada pelo profissional e enviada para conferência.</span>');
+  };
+
+  const oldAba=window.aba;
+  if(typeof oldAba==='function'&&!window.__aba81){window.__aba81=true;window.aba=function(id,btn){const r=oldAba.apply(this,arguments);setTimeout(()=>{menu81();arena81();cidade81();carro81();sala81();botoesFicha81();},80);return r;};}
+  document.addEventListener('DOMContentLoaded',()=>{menu81();arena81();cidade81();carro81();sala81();botoesFicha81();const box=E('fichaSalvaBox');if(box)obs.observe(box,{childList:true,subtree:true,attributes:true});setTimeout(()=>{menu81();arena81();cidade81();carro81();sala81();botoesFicha81();},1000);});
+  window.addEventListener('load',()=>setTimeout(()=>{menu81();arena81();cidade81();carro81();sala81();botoesFicha81();},1200));
+})();
+</script>
+
 </body>
 </html>
