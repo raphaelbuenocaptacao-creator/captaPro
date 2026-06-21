@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
-<title>CaptaPro 2</title>
+<title>CaptaPro 2.2 Mobile</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
@@ -818,8 +818,8 @@ button{border-radius:16px!important;min-height:48px!important;font-weight:900!im
 
     <h1>Capta<span>Pro</span></h1>
     <div class="brandLine"></div>
-    <div class="version">Versão 2</div><button id="btnSair72" class="secondary hidden" type="button" onclick="sairCaptaPro72()" style="max-width:120px;margin:8px auto 0;padding:7px 10px;font-size:12px">Sair</button>
-    <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Empresa Bueno Invest • Versão 2</p>
+    <div class="version">Versão 2.2</div><button id="btnSair72" class="secondary hidden" type="button" onclick="sairCaptaPro72()" style="max-width:120px;margin:8px auto 0;padding:7px 10px;font-size:12px">Sair</button>
+    <p>Sistema Inteligente de Captação</p><p style="margin-top:4px;color:#888;font-size:12px">Empresa Bueno Invest • Versão 2.2</p>
   </div>
 
   <div id="loginBox" class="card">
@@ -7668,6 +7668,263 @@ body.captapro-mobile-lite .hidden{display:none!important}
   }
   document.addEventListener('DOMContentLoaded',()=>{boot();[700,1600,3200].forEach(t=>setTimeout(boot,t));});
   window.addEventListener('load',()=>{boot();setTimeout(boot,1200);});
+})();
+</script>
+
+
+
+<!-- =========================================================
+  PATCH FINAL RAPHAEL • CAPTAPRO 2.2
+  Profissional: somente Pesquisa + Relatório leve
+  CEO/ADM: mantém aprovação, Dashboard, Sala ADM, CEO e Relatórios
+  Arena SX: removida/desativada para aliviar celular
+========================================================= -->
+<style id="patch_final_raphael_22_css">
+  /* Arena SX removida do sistema */
+  .tabs button[onclick*="arenaSX"],
+  #arenaSX{display:none!important;visibility:hidden!important;height:0!important;overflow:hidden!important;padding:0!important;margin:0!important;border:0!important;}
+
+  /* Profissional: menu limpo */
+  body.capta-profissional-final .tabs{grid-template-columns:repeat(2,1fr)!important;}
+  body.capta-profissional-final .tabs button{display:none!important;}
+  body.capta-profissional-final .tabs button[data-final-pro="pesquisa"],
+  body.capta-profissional-final .tabs button[data-final-pro="relatorio"]{display:block!important;}
+
+  /* Profissional: esconder áreas administrativas e pesadas */
+  body.capta-profissional-final #dash,
+  body.capta-profissional-final #ranking,
+  body.capta-profissional-final #excelResultados,
+  body.capta-profissional-final #biElite,
+  body.capta-profissional-final #comparativo,
+  body.capta-profissional-final #pulsador,
+  body.capta-profissional-final #metas,
+  body.capta-profissional-final #mapa,
+  body.capta-profissional-final #salaAdmin,
+  body.capta-profissional-final #historico,
+  body.capta-profissional-final #profissionais,
+  body.capta-profissional-final #ceo,
+  body.capta-profissional-final #producaoDia,
+  body.capta-profissional-final #meuDesempenho{display:none!important;}
+
+  /* Relatório leve */
+  #relatorioProfissionalFinal22{background:#fff!important;color:#111827!important;}
+  .relatorioFinalGrid22{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0;}
+  .relatorioFinalKpi22{background:#f9fafb;border:1px solid #e5e7eb;border-radius:16px;padding:12px;text-align:center;color:#475467;font-weight:800;}
+  .relatorioFinalKpi22 b{display:block;font-size:28px;color:#e50914;margin-top:4px;}
+  .relatorioFinalTable22{overflow:auto;border:1px solid #e5e7eb;border-radius:14px;margin-top:10px;}
+  .relatorioFinalTable22 table{min-width:680px;}
+  body.capta-ceo-final .admOnly{display:block;}
+  @media(max-width:900px){.relatorioFinalGrid22{grid-template-columns:repeat(2,1fr);} }
+</style>
+<script id="patch_final_raphael_22_js">
+(function(){
+  'use strict';
+  const CEO_EMAILS_FINAL = ['raphaelbueno.captacao@gmail.com','raphaaelbueno.captacao@gmail.com','marcel.dorado2@gmail.com'];
+  const ALL_FINAL = ['pesquisa','relatorioProfissionalFinal22','arenaSX','meuDesempenho','dash','ranking','excelResultados','biElite','comparativo','pulsador','metas','mapa','salaAdmin','historico','profissionais','ceo','producaoDia'];
+  const ADMIN_FINAL = ['pesquisa','dash','excelResultados','salaAdmin','ceo','producaoDia','ranking','historico','profissionais','comparativo','pulsador','metas','mapa','biElite'];
+  function $(id){return document.getElementById(id)}
+  function txt(v){return String(v||'').trim()}
+  function emailAtual(){
+    try{
+      const saved = JSON.parse(localStorage.getItem('captapro_login_72')||localStorage.getItem('captapro_login_final')||'{}');
+      return txt(window.usuarioEmail||window.userEmail||saved.email||localStorage.getItem('captapro_email')||$('email')?.value).toLowerCase();
+    }catch(e){return txt(window.usuarioEmail||$('email')?.value).toLowerCase()}
+  }
+  function roleAtual(){
+    try{
+      const saved = JSON.parse(localStorage.getItem('captapro_login_72')||localStorage.getItem('captapro_login_final')||'{}');
+      return txt(window.userRole||window.usuarioRole||saved.role||localStorage.getItem('captapro_role')).toLowerCase();
+    }catch(e){return txt(window.userRole||window.usuarioRole).toLowerCase()}
+  }
+  function isAdminFinal(){
+    const e=emailAtual(), r=roleAtual();
+    return CEO_EMAILS_FINAL.includes(e) || ['ceo','gestor','lider','líder','admin','adm'].includes(r);
+  }
+  function esc(s){return String(s??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));}
+  function brData(v){try{return v?new Date(v).toLocaleString('pt-BR'):''}catch(e){return String(v||'')}}
+  function statusFicha(f){return String(f.qualificacao_automatica||f.status||f.qualificacao||'-').toUpperCase();}
+  function meuEmailIgual(f){const e=emailAtual(); const fe=String(f.user_email||f.email||f.captador_email||'').toLowerCase(); return !fe || !e || fe===e;}
+
+  // Desativa Arena SX para parar processamento extra no celular.
+  window.renderArenaSX=function(){return null};
+  window.tentarSincronizarOffline=function(){return null};
+  window.arenaCriarDesafio=function(){return null};
+
+  function garantirBotaoRelatorio(){
+    const tabs=document.querySelector('.tabs'); if(!tabs)return null;
+    let btn=document.getElementById('btnRelatorioProfissionalFinal22');
+    if(!btn){
+      btn=document.createElement('button');
+      btn.id='btnRelatorioProfissionalFinal22';
+      btn.type='button';
+      btn.textContent='Relatório';
+      btn.setAttribute('data-final-pro','relatorio');
+      btn.onclick=function(){window.aba('relatorioProfissionalFinal22',btn)};
+      const pesquisa=document.querySelector(".tabs button[onclick*='pesquisa']");
+      if(pesquisa && pesquisa.nextSibling)tabs.insertBefore(btn,pesquisa.nextSibling); else tabs.appendChild(btn);
+    }
+    return btn;
+  }
+
+  function garantirRelatorioSection(){
+    let sec=$('relatorioProfissionalFinal22');
+    if(!sec){
+      sec=document.createElement('section');
+      sec.id='relatorioProfissionalFinal22';
+      sec.className='card hidden';
+      sec.innerHTML=`
+        <h2>Meu Relatório</h2>
+        <p class="hint">Resumo individual do profissional: abordagens, pesquisas, Q/NQ e sala.</p>
+        <div class="relatorioFinalGrid22">
+          <div class="relatorioFinalKpi22">Abordagens<b id="rfAbordagens22">0</b></div>
+          <div class="relatorioFinalKpi22">Pesquisas<b id="rfPesquisas22">0</b></div>
+          <div class="relatorioFinalKpi22">Q<b id="rfQ22">0</b></div>
+          <div class="relatorioFinalKpi22">NQ / 1 item<b id="rfNQ22">0</b></div>
+          <div class="relatorioFinalKpi22">Sala<b id="rfSala22">0</b></div>
+          <div class="relatorioFinalKpi22">Conversão<b id="rfConv22">0%</b></div>
+          <div class="relatorioFinalKpi22">Hoje<b id="rfHoje22">0</b></div>
+          <div class="relatorioFinalKpi22">Últimas fichas<b id="rfUltimas22">0</b></div>
+        </div>
+        <div class="rowbtn" style="margin-top:8px">
+          <button class="main" type="button" id="btnAtualizarRelatorioFinal22">Atualizar</button>
+          <button class="secondary" type="button" id="btnVoltarPesquisaFinal22">Voltar para Pesquisa</button>
+        </div>
+        <div class="relatorioFinalTable22"><table><thead><tr><th>Data</th><th>Casal</th><th>Status</th><th>Sala</th><th>Ponto</th></tr></thead><tbody id="rfTabela22"><tr><td colspan="5">Carregando...</td></tr></tbody></table></div>`;
+      const app=$('appBox')||document.body;
+      app.appendChild(sec);
+      $('btnAtualizarRelatorioFinal22')?.addEventListener('click',renderRelatorioFinal);
+      $('btnVoltarPesquisaFinal22')?.addEventListener('click',()=>window.aba('pesquisa',document.querySelector(".tabs button[onclick*='pesquisa']")));
+    }
+    return sec;
+  }
+
+  function lerLocal(){
+    const keys=['captapro_fichas_salvas_83','captapro_fichas_salvas','captapro_fichas_local','pesquisas_local','captapro_pesquisas'];
+    const arr=[];
+    keys.forEach(k=>{try{const v=JSON.parse(localStorage.getItem(k)||'[]'); if(Array.isArray(v))arr.push(...v);}catch(e){}});
+    const seen=new Set();
+    return arr.filter(f=>{
+      if(!f || !meuEmailIgual(f))return false;
+      const ch=[f.id,f.created_at,f.convidado_1,f.convidado_2,f.contato].join('|');
+      if(seen.has(ch))return false; seen.add(ch); return true;
+    });
+  }
+  async function lerSupabase(){
+    if(typeof db==='undefined'||!db||!emailAtual())return [];
+    try{
+      const r=await db.from('pesquisas').select('*').eq('user_email',emailAtual()).order('created_at',{ascending:false}).limit(150);
+      if(!r.error && Array.isArray(r.data))return r.data;
+    }catch(e){console.warn('Relatório profissional Supabase:',e.message||e)}
+    return [];
+  }
+  async function contarAbordagens(){
+    let local=0;
+    try{local=Number(localStorage.getItem('captapro_abordagens_'+emailAtual()+'_'+new Date().toISOString().slice(0,10))||0)}catch(e){}
+    if(typeof db==='undefined'||!db||!emailAtual())return local;
+    try{
+      const h=new Date().toISOString().slice(0,10);
+      const r=await db.from('abordagens').select('*',{count:'exact',head:true}).eq('user_email',emailAtual()).gte('created_at',h+'T00:00:00').lte('created_at',h+'T23:59:59');
+      if(!r.error)return Math.max(local,Number(r.count||0));
+    }catch(e){}
+    return local;
+  }
+  async function renderRelatorioFinal(){
+    garantirRelatorioSection();
+    const tbody=$('rfTabela22'); if(tbody)tbody.innerHTML='<tr><td colspan="5">Atualizando...</td></tr>';
+    const supa=await lerSupabase();
+    const local=lerLocal();
+    const map=new Map();
+    [...supa,...local].forEach(f=>{const ch=[f.id,f.created_at,f.convidado_1,f.convidado_2,f.contato].join('|'); if(!map.has(ch))map.set(ch,f);});
+    const fichas=[...map.values()].sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||'')));
+    const hoje=new Date().toISOString().slice(0,10);
+    const q=fichas.filter(f=>statusFicha(f)==='Q').length;
+    const nq=fichas.filter(f=>statusFicha(f)!=='Q').length;
+    const sala=fichas.filter(f=>/sim|aprovado|sala/i.test(String(f.sala_status||f.levou_sala||f.foi_sala||''))).length;
+    const abord=await contarAbordagens();
+    const conv=fichas.length?Math.round((q/fichas.length)*100):0;
+    if($('rfAbordagens22'))$('rfAbordagens22').textContent=abord;
+    if($('rfPesquisas22'))$('rfPesquisas22').textContent=fichas.length;
+    if($('rfQ22'))$('rfQ22').textContent=q;
+    if($('rfNQ22'))$('rfNQ22').textContent=nq;
+    if($('rfSala22'))$('rfSala22').textContent=sala;
+    if($('rfConv22'))$('rfConv22').textContent=conv+'%';
+    if($('rfHoje22'))$('rfHoje22').textContent=fichas.filter(f=>String(f.created_at||'').slice(0,10)===hoje).length;
+    if($('rfUltimas22'))$('rfUltimas22').textContent=Math.min(fichas.length,50);
+    if(tbody){
+      tbody.innerHTML=fichas.length?fichas.slice(0,50).map(f=>{
+        const casal=[f.convidado_1,f.convidado_2].filter(Boolean).join(' e ')||'-';
+        const salaTxt=f.sala_status||f.levou_sala||f.foi_sala||'-';
+        return `<tr><td>${esc(brData(f.created_at))}</td><td>${esc(casal)}</td><td>${esc(statusFicha(f))}</td><td>${esc(salaTxt)}</td><td>${esc(f.ponto_oficial||f.ponto_captacao||f.ponto||'-')}</td></tr>`;
+      }).join(''):'<tr><td colspan="5">Nenhuma pesquisa encontrada para este profissional.</td></tr>';
+    }
+  }
+
+  function aplicarPerfilFinal(){
+    const admin=isAdminFinal();
+    document.body.classList.toggle('capta-profissional-final',!admin);
+    document.body.classList.toggle('capta-ceo-final',admin);
+    garantirBotaoRelatorio(); garantirRelatorioSection();
+    const bPesq=document.querySelector(".tabs button[onclick*='pesquisa']"); if(bPesq)bPesq.setAttribute('data-final-pro','pesquisa');
+    const bRel=$('btnRelatorioProfissionalFinal22'); if(bRel)bRel.setAttribute('data-final-pro','relatorio');
+    document.querySelectorAll(".tabs button[onclick*='arenaSX']").forEach(b=>b.style.setProperty('display','none','important'));
+    if(admin){
+      document.querySelectorAll('.admOnly').forEach(el=>el.style.removeProperty('display'));
+      const sec=$('relatorioProfissionalFinal22'); if(sec)sec.classList.add('hidden');
+    }else{
+      document.querySelectorAll('.admOnly').forEach(el=>el.style.setProperty('display','none','important'));
+      document.querySelectorAll('#appBox section').forEach(sec=>{if(!['pesquisa','relatorioProfissionalFinal22'].includes(sec.id))sec.classList.add('hidden')});
+    }
+    const v=document.querySelector('.version'); if(v)v.textContent='Versão 2.2';
+    document.title='CaptaPro 2.2 Mobile';
+  }
+
+  function abrirFinal(id,btn){
+    aplicarPerfilFinal();
+    const admin=isAdminFinal();
+    if(!admin && !['pesquisa','relatorioProfissionalFinal22'].includes(id))id='pesquisa';
+    if(id==='arenaSX')id='pesquisa';
+    ALL_FINAL.forEach(x=>$(x)?.classList.add('hidden'));
+    const sec=$(id); if(sec)sec.classList.remove('hidden');
+    document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+    let real=btn;
+    if(!real){real=id==='relatorioProfissionalFinal22'?$('btnRelatorioProfissionalFinal22'):document.querySelector(`.tabs button[onclick*='${id}']`)}
+    real?.classList.add('active');
+    if(id==='relatorioProfissionalFinal22')setTimeout(renderRelatorioFinal,30);
+    if(id==='pesquisa')setTimeout(()=>{try{window.carregarContadorAbordagensHoje?.()}catch(e){}},80);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  const oldAbaFinal=window.aba;
+  window.aba=function(id,btn){
+    if(id==='arenaSX')return abrirFinal('pesquisa',document.querySelector(".tabs button[onclick*='pesquisa']"));
+    if(!isAdminFinal())return abrirFinal(id,btn);
+    // CEO/ADM: mantém sistema antigo, só bloqueia Arena removida.
+    if(id==='relatorioProfissionalFinal22')return abrirFinal('pesquisa',document.querySelector(".tabs button[onclick*='pesquisa']"));
+    try{const r=typeof oldAbaFinal==='function'?oldAbaFinal.apply(this,arguments):abrirFinal(id,btn); setTimeout(aplicarPerfilFinal,40); return r;}catch(e){console.warn('Aba original falhou:',e); return abrirFinal(id,btn);}
+  };
+
+  const oldEntrarFinal=window.entrar;
+  if(typeof oldEntrarFinal==='function'){
+    window.entrar=async function(){
+      const r=await oldEntrarFinal.apply(this,arguments);
+      setTimeout(()=>{aplicarPerfilFinal(); if(!isAdminFinal())abrirFinal('pesquisa',document.querySelector(".tabs button[onclick*='pesquisa']"));},180);
+      setTimeout(aplicarPerfilFinal,900);
+      return r;
+    };
+  }
+
+  function bootFinal(){
+    aplicarPerfilFinal();
+    if(!isAdminFinal()){
+      const active=document.querySelector('.tabs button.active');
+      const on=String(active?.getAttribute('onclick')||'');
+      if(!on.includes('pesquisa') && active?.id!=='btnRelatorioProfissionalFinal22')abrirFinal('pesquisa',document.querySelector(".tabs button[onclick*='pesquisa']"));
+    }
+  }
+  document.addEventListener('DOMContentLoaded',()=>{[80,600,1500,3000].forEach(t=>setTimeout(bootFinal,t));});
+  window.addEventListener('load',()=>{[100,900,2200].forEach(t=>setTimeout(bootFinal,t));});
+  setInterval(bootFinal,12000);
+  window.renderRelatorioFinal22=renderRelatorioFinal;
 })();
 </script>
 
