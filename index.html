@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaptaPro Simples 1.3</title>
+<title>CaptaPro Simples 1.4</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
@@ -22,15 +22,24 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .fichaTitleFull b{display:block;font-size:22px}.fichaTitleFull small{color:#aaa}
 .fichaRodapeFull{border-top:1px solid #3b1b1b;margin-top:12px;padding-top:10px;color:#888;font-size:11px}
 
-/* CaptaPro Simples 1.3 */
+/* CaptaPro Simples 1.4 */
 #brinde{border-color:#00c2ff!important}
 .rankDestaque13{color:#00e676;font-weight:900}
+
+
+/* CaptaPro Simples 1.4 • organização pesquisa e CEO */
+.pesquisaGrid14 input,.pesquisaGrid14 select{min-height:47px}
+.ceoPainel14{border:1px solid #5a1717;border-radius:16px;padding:12px;background:#080808}
+.ceoGrid14{grid-template-columns:repeat(3,1fr)}
+#cfgRendaMin{font-weight:900}
+#rankingBox.hidden{display:none!important}
+@media(max-width:700px){.ceoGrid14{grid-template-columns:1fr}}
 
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Simples 1.3</div><p class="mini">Pesquisa e Relatório • Criado pela empresa <b style="color:#00e676">Bueno Invest</b></p></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Simples 1.4</div><p class="mini">Pesquisa e Relatório • Criado pela empresa <b style="color:#00e676">Bueno Invest</b></p></div>
 
 <section id="loginBox" class="card">
 <h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
@@ -42,17 +51,49 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <section id="pesquisa" class="card">
 <h2>Pesquisa</h2><p class="hint">Abordagem → ficha → salvar → compartilhar → nova ficha.</p>
 <div class="card"><button class="main" style="min-height:62px;font-size:18px" onclick="registrarAbordagem()">+ REGISTRAR ABORDAGEM</button><p class="mini">Abordagens hoje: <b id="abordagensHoje" class="ok">0</b></p></div>
-<div class="grid">
-<select id="equipe"><option value="">Equipe</option><option>PARK</option><option>EXTERNA</option></select>
-<select id="ponto"><option value="">Ponto</option><option>Porta dentro do Park</option><option>Park Dream House</option><option>Fábrica Spinassi</option><option>Corredor</option><option>Baden Baden</option><option>Djalma</option><option>Igreja</option><option>Renner</option><option>Guarda-chuvas</option><option>Posto Shell</option></select>
-<input id="nome1" placeholder="Nome 1"><select id="idade1"><option value="">Idade 1</option></select><input id="profissao1" list="profissoes" placeholder="Profissão 1">
-<input id="nome2" placeholder="Nome 2"><select id="idade2"><option value="">Idade 2</option></select><input id="profissao2" list="profissoes" placeholder="Profissão 2">
-<select id="estado"><option value="">Estado</option><option>SP</option><option>RJ</option><option>MG</option><option>PR</option><option>SC</option><option>RS</option><option>GO</option><option>DF</option><option>BA</option></select><input id="cidade" list="cidades" placeholder="Cidade">
-<select id="relacionamento"><option value="">Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option></select>
-<select id="tempo"><option value="">Tempo juntos</option><option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option><option>3 a 5 anos</option><option>Mais de 5 anos</option></select>
-<input id="nomeCarro" placeholder="Nome do carro (Ex: Onix)"><input id="anoCarro" inputmode="numeric" placeholder="Ano do carro (Ex: 2015)">
-<select id="cartao"><option value="">Cartão?</option><option>Sim</option><option>Não</option></select><select id="casa"><option value="">Casa própria?</option><option>Sim</option><option>Não</option></select><select id="multi"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
-<input id="renda" inputmode="numeric" placeholder="Renda mensal"><select id="brinde">
+<div class="grid pesquisaGrid14">
+<!-- 1 equipe -->
+<select id="equipe"><option value="">1. Equipe</option><option>PARK</option><option>EXTERNA</option></select>
+
+<!-- 2 ponto de captação -->
+<select id="ponto"><option value="">2. Ponto de captação</option><option>Porta dentro do Park</option><option>Park Dream House</option><option>Fábrica Spinassi</option><option>Corredor</option><option>Baden Baden</option><option>Djalma</option><option>Igreja</option><option>Renner</option><option>Guarda-chuvas</option><option>Posto Shell</option></select>
+
+<!-- 3 nome 1 e nome 2 -->
+<input id="nome1" placeholder="3. Nome 1">
+<input id="nome2" placeholder="3. Nome 2">
+
+<!-- 4 idade 1 idade 2 -->
+<select id="idade1"><option value="">4. Idade 1</option></select>
+<select id="idade2"><option value="">4. Idade 2</option></select>
+
+<!-- 5 profissão 1 profissão 2 -->
+<input id="profissao1" list="profissoes" placeholder="5. Profissão 1">
+<input id="profissao2" list="profissoes" placeholder="5. Profissão 2">
+
+<!-- 6 cidade e estado -->
+<input id="cidade" list="cidades" placeholder="6. Cidade">
+<select id="estado"><option value="">6. Estado</option><option>SP</option><option>RJ</option><option>MG</option><option>PR</option><option>SC</option><option>RS</option><option>GO</option><option>DF</option><option>BA</option><option>CE</option><option>PE</option><option>ES</option><option>MT</option><option>MS</option><option>PA</option><option>AM</option></select>
+
+<!-- 7 relacionamento e tempo -->
+<select id="relacionamento"><option value="">7. Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option></select>
+<select id="tempo"><option value="">7. Tempo juntos</option><option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option><option>3 a 5 anos</option><option>Mais de 5 anos</option></select>
+
+<!-- 8 carro e ano -->
+<input id="nomeCarro" placeholder="8. Carro (Ex: Onix)">
+<input id="anoCarro" inputmode="numeric" placeholder="8. Ano do carro (Ex: 2015)">
+
+<!-- 9 casa sim ou não -->
+<select id="casa"><option value="">9. Casa própria?</option><option>Sim</option><option>Não</option></select>
+
+<!-- 10 cartão sim ou não -->
+<select id="cartao"><option value="">10. Cartão de crédito?</option><option>Sim</option><option>Não</option></select>
+
+<!-- 11 renda em reais -->
+<input id="renda" inputmode="numeric" placeholder="11. Renda mensal em R$">
+
+<!-- demais campos necessários -->
+<select id="multi"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
+<select id="brinde">
 <option value="">Selecione o brinde</option>
 <option>Voucher</option>
 <option>Almoço</option>
@@ -62,7 +103,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <option>Chocolate</option>
 <option>Brinde Especial</option>
 <option>Sem brinde</option>
-</select><input id="contato" placeholder="WhatsApp / contato">
+</select>
+<input id="contato" placeholder="WhatsApp / contato">
 </div>
 <textarea id="obs" style="margin-top:8px" placeholder="Observações"></textarea>
 <div class="grid" style="margin-top:8px"><button class="secondary" onclick="calcularQualificacao()">Calcular Q/NQ</button><button class="main" onclick="salvarPesquisa()">Salvar Pesquisa</button></div><p id="formMsg"></p><div id="resultado"></div>
@@ -71,24 +113,30 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
 <section id="relatorio" class="card hidden"><h2>Relatório</h2><div class="grid"><input id="relDe" type="date"><input id="relAte" type="date"></div><button class="main" style="margin-top:8px" onclick="carregarRelatorio()">Atualizar</button>
 <div class="kpis"><div class="kpi">Abordagens<b id="rAbord">0</b></div><div class="kpi">Pesquisas<b id="rPesq">0</b></div><div class="kpi">Sala<b id="rSala">0</b></div><div class="kpi">Conversão<b id="rConv">0%</b></div></div>
-<div class="card scroll"><h2>Ranking da Equipe</h2><p class="hint">Profissional vê ranking da equipe. CEO vê todos.</p><div id="rankingEquipeBox13"></div></div><div class="card scroll"><h2>Ranking Geral</h2><div id="rankingBox"></div></div><div class="card"><h2>Individual</h2><select id="profFiltro" onchange="mostrarIndividual()"><option value="">Escolha o profissional</option></select><div id="individualBox"></div></div>
+<div class="card scroll"><h2>Ranking da Equipe</h2><p class="hint">Profissional vê ranking da equipe. CEO vê todos.</p><div id="rankingEquipeBox13"></div></div><div id="rankingBox" class="hidden"></div><div class="card"><h2>Individual</h2><select id="profFiltro" onchange="mostrarIndividual()"><option value="">Escolha o profissional</option></select><div id="individualBox"></div></div>
 </section>
 
 <section id="qualificacao" class="card hidden adminOnly">
-<h2>Qualificação CEO • Perfil Completo</h2>
+<h2>CEO • Perfil de Qualificação Completo</h2>
 <p class="hint">Somente CEO altera o perfil usado para calcular Q, NQ e NQ 1 Item.</p>
-<div class="grid">
-<input id="cfgIdadeMin" type="number" placeholder="Idade mínima">
-<input id="cfgRendaMin" type="number" placeholder="Renda mínima">
-<select id="cfgCarro"><option value="nao">Carro não obrigatório</option><option value="sim">Carro obrigatório</option></select>
-<select id="cfgCartao"><option value="nao">Cartão não obrigatório</option><option value="sim">Cartão obrigatório</option></select>
-<select id="cfgCasa"><option value="nao">Casa própria não obrigatória</option><option value="sim">Casa própria obrigatória</option></select>
-<select id="cfgCasado"><option value="nao">Relacionamento não obrigatório</option><option value="sim">Exigir casados/união estável</option></select>
-<select id="cfgTempoMin"><option value="nao">Tempo juntos não obrigatório</option><option value="1">Mínimo 1 ano</option><option value="2">Mínimo 2 anos</option><option value="3">Mínimo 3 a 5 anos</option><option value="5">Mais de 5 anos</option></select>
-<select id="cfgMulti"><option value="nao">Multipropriedade não obrigatória</option><option value="sim">Exigir que já conheceu</option></select>
+<div class="ceoPainel14">
+  <div class="grid ceoGrid14">
+    <input id="cfgRendaMin" inputmode="numeric" placeholder="R$ 15.000,00">
+    <input id="cfgAnoMin" type="number" placeholder="Ano mínimo do carro. Ex: 2011">
+    <input id="cfgIdadeMin" type="number" placeholder="Idade mínima. Ex: 25">
+    <input id="cfgIdadeMax" type="number" placeholder="Idade máxima. Ex: 64">
+    <input id="cfgTempoMinNumero" type="number" placeholder="Tempo mínimo juntos. Ex: 2">
+    <input id="cfgTempoMaxNumero" type="number" placeholder="Tempo máximo referência. Ex: 30">
+    <select id="cfgCasa"><option value="nao">Casa obrigatória: Não</option><option value="sim">Casa obrigatória: Sim</option></select>
+    <select id="cfgCartao"><option value="nao">Cartão obrigatório: Não</option><option value="sim">Cartão obrigatório: Sim</option></select>
+    <select id="cfgProfObrigatoria"><option value="nao">Profissão definida não obrigatória</option><option value="sim">Profissão definida obrigatória</option></select>
+  </div>
+  <textarea id="cfgProfissoesBloqueadas" placeholder="Profissões que deixam NQ. Ex: Operador de caixa, Zelador, Estudante, Uber/App/Freelancer"></textarea>
+  <textarea id="cfgObsCEO" placeholder="Observações do CEO"></textarea>
+  <button class="main" style="margin-top:8px" onclick="salvarConfig()">Salvar CEO</button>
+  <p id="cfgMsg"></p>
 </div>
-<button class="main" style="margin-top:8px" onclick="salvarConfig()">Salvar perfil completo</button>
-<p id="cfgMsg"></p></section>
+</section>
 </section></div>
 
 <datalist id="profissoes"><option value="Outro(a)"><option value="Empresário"><option value="Empresária"><option value="Comerciante"><option value="Vendedor"><option value="Gerente"><option value="Professor"><option value="Médico"><option value="Advogado"><option value="Engenheiro"><option value="Autônomo"><option value="Aposentado"></datalist>
@@ -118,7 +166,7 @@ function renderFicha(p){
 E('fichaBox').classList.remove('hidden');
 const carroTxt = `${p.modelo_carro||'-'} ${p.ano_veiculo||''}`.trim();
 H('fichaConteudo',`<div id=fichaImg class=ficha>
-<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Simples 1.3 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
+<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Simples 1.4 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
 ${campoFicha('Resultado da qualificação', `${p.qualificacao_automatica||'-'} • ${p.motivo_qualificacao||'Perfil dentro da regra'}`)}
 ${campoFicha('Nome 1', p.convidado_1)}
 ${campoFicha('Idade 1 / Profissão 1', `${p.idade_1||'-'} anos • ${p.profissao_1||'-'}`)}
@@ -187,4 +235,111 @@ window.rowsRel=rows;mostrarIndividual()
 }
 function mostrarIndividual(){let r=(window.rowsRel||[]).find(x=>x.nome===V('profFiltro'));H('individualBox',r?`<div class=kpis><div class=kpi>Abord.<b>${r.a}</b></div><div class=kpi>Pesq.<b>${r.p}</b></div><div class=kpi>Q<b>${r.q}</b></div><div class=kpi>NQ<b>${r.nq}</b></div><div class=kpi>1 Item<b>${r.nq1}</b></div><div class=kpi>Sala<b>${r.s}</b></div><div class=kpi>Conv.<b>${r.p?Math.round(r.s/r.p*100):0}%</b></div></div>`:'<p class=mini>Escolha um profissional.</p>')}
 </script>
+
+<script>
+/* ===== CaptaPro Simples 1.4 • renda R$, pesquisa organizada e CEO completo ===== */
+(function(){
+function E14(id){return document.getElementById(id)}
+function V14(id){return (E14(id)?.value||'').trim()}
+function moedaParaNumero14(v){return Number(String(v||'').replace(/\D/g,''))||0}
+function formatarBRL14(n){return (Number(n||0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function aplicarMascaraMoeda14(id){
+ const el=E14(id); if(!el||el.__moeda14)return; el.__moeda14=true;
+ el.addEventListener('input',()=>{let n=moedaParaNumero14(el.value); el.value=n?formatarBRL14(n):''});
+ el.addEventListener('blur',()=>{let n=moedaParaNumero14(el.value); if(n)el.value=formatarBRL14(n)});
+}
+function tempoValor14(t){return {'Menos de 1 ano':0,'1 ano':1,'2 anos':2,'3 a 5 anos':3,'Mais de 5 anos':5}[t]||0}
+function profBloqueada14(prof,cfg){
+ const lista=String(cfg.profissoesBloqueadas||'').toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);
+ const p=String(prof||'').toLowerCase();
+ return lista.some(x=>p.includes(x));
+}
+
+window.getCfg=function(){
+ try{
+  return JSON.parse(localStorage.getItem('cfg')||'{}');
+ }catch(e){return {}}
+}
+
+window.loadCfg=function(){
+ let c=getCfg();
+ if(E14('cfgIdadeMin'))E14('cfgIdadeMin').value=c.idadeMin||25;
+ if(E14('cfgIdadeMax'))E14('cfgIdadeMax').value=c.idadeMax||64;
+ if(E14('cfgRendaMin'))E14('cfgRendaMin').value=formatarBRL14(c.rendaMin||15000);
+ if(E14('cfgAnoMin'))E14('cfgAnoMin').value=c.anoMin||2011;
+ if(E14('cfgTempoMinNumero'))E14('cfgTempoMinNumero').value=c.tempoMinNumero||2;
+ if(E14('cfgTempoMaxNumero'))E14('cfgTempoMaxNumero').value=c.tempoMaxNumero||30;
+ if(E14('cfgCasa'))E14('cfgCasa').value=c.casa||'sim';
+ if(E14('cfgCartao'))E14('cfgCartao').value=c.cartao||'sim';
+ if(E14('cfgProfObrigatoria'))E14('cfgProfObrigatoria').value=c.profObrigatoria||'sim';
+ if(E14('cfgProfissoesBloqueadas'))E14('cfgProfissoesBloqueadas').value=c.profissoesBloqueadas||'Operador de caixa, Zelador, Secretária, Auxiliar, Assistente, Avon/Natura/Multinível, Gari, Vendedor ambulante, Motoboy, Do lar, Estoquista, Eletricista, Diarista, Doméstica, Garçom, Manicure, Pedreiro, Atendente, Balconista, Babá, Porteiro, Frentista, Estudante, Uber/App/Freelancer';
+ if(E14('cfgObsCEO'))E14('cfgObsCEO').value=c.obsCEO||'';
+}
+
+window.salvarConfig=function(){
+ let c={
+  rendaMin:moedaParaNumero14(V14('cfgRendaMin'))||15000,
+  anoMin:Number(V14('cfgAnoMin'))||2011,
+  idadeMin:Number(V14('cfgIdadeMin'))||25,
+  idadeMax:Number(V14('cfgIdadeMax'))||64,
+  tempoMinNumero:Number(V14('cfgTempoMinNumero'))||2,
+  tempoMaxNumero:Number(V14('cfgTempoMaxNumero'))||30,
+  casa:V14('cfgCasa')||'sim',
+  cartao:V14('cfgCartao')||'sim',
+  profObrigatoria:V14('cfgProfObrigatoria')||'sim',
+  profissoesBloqueadas:V14('cfgProfissoesBloqueadas'),
+  obsCEO:V14('cfgObsCEO')
+ };
+ localStorage.setItem('cfg',JSON.stringify(c));
+ if(E14('cfgMsg'))E14('cfgMsg').innerHTML='<span class="ok">Perfil CEO salvo.</span>';
+}
+
+window.qual=function(){
+ let c=getCfg();
+ if(!c.rendaMin)c={rendaMin:15000,anoMin:2011,idadeMin:25,idadeMax:64,tempoMinNumero:2,casa:'sim',cartao:'sim',profObrigatoria:'sim',profissoesBloqueadas:'Operador de caixa, Zelador, Secretária, Auxiliar, Assistente, Estudante, Uber/App/Freelancer'};
+ let idade1=Number(V14('idade1'))||0, idade2=Number(V14('idade2'))||0;
+ let idade=Math.max(idade1,idade2), renda=moedaParaNumero14(V14('renda')), ano=Number(V14('anoCarro'))||0;
+ let status='Q',m=[];
+ function nq(txt){status='NQ';m.push(txt)}
+ function item(txt){if(status==='Q')status='NQ 1 Item';m.push(txt)}
+ if(idade<c.idadeMin||idade>c.idadeMax)nq('idade');
+ if(renda<c.rendaMin)item('renda');
+ if(c.anoMin&&ano&&ano<c.anoMin)item('ano do carro');
+ if(c.casa==='sim'&&V14('casa')!=='Sim')item('casa própria');
+ if(c.cartao==='sim'&&V14('cartao')!=='Sim')item('cartão');
+ if(c.profObrigatoria==='sim'&&(!V14('profissao1')&&!V14('profissao2')))item('profissão');
+ if(profBloqueada14(V14('profissao1'),c)||profBloqueada14(V14('profissao2'),c))nq('profissão fora do perfil');
+ if(c.tempoMinNumero&&tempoValor14(V14('tempo'))<Number(c.tempoMinNumero))item('tempo juntos');
+ return {status,motivo:m.join(', ')||'Perfil dentro da regra'};
+}
+
+const oldPayload14=window.payload;
+if(typeof oldPayload14==='function'&&!window.__payload14){
+ window.__payload14=true;
+ window.payload=function(){
+   let p=oldPayload14.apply(this,arguments);
+   p.renda_casal=V14('renda');
+   p.estado_origem=V14('estado');
+   p.cidade_origem=V14('cidade');
+   return p;
+ }
+}
+
+const oldRel14=window.carregarRelatorio;
+if(typeof oldRel14==='function'&&!window.__rel14){
+ window.__rel14=true;
+ window.carregarRelatorio=async function(){
+   const r=await oldRel14.apply(this,arguments);
+   const rg=E14('rankingBox');
+   if(rg)rg.classList.add('hidden');
+   return r;
+ }
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+ setTimeout(()=>{aplicarMascaraMoeda14('renda');aplicarMascaraMoeda14('cfgRendaMin');loadCfg();},500);
+});
+})();
+</script>
+
 </body></html>
