@@ -5170,5 +5170,440 @@ body.carroNaoSelecionado .fipeValue{
 })();
 </script>
 
+
+<style>
+/* =========================================================
+   CAPTAPRO 1.0 • PRODUÇÃO DO DIA + CORREÇÕES FINAIS
+   ========================================================= */
+.producaoDiaBtnFix{
+  background:linear-gradient(135deg,#12b76a,#027a48)!important;
+  color:#fff!important;
+  border:1px solid #6ce9a6!important;
+  box-shadow:0 0 18px rgba(18,183,106,.22)!important;
+}
+#producaoDia{
+  border-color:#12b76a!important;
+  box-shadow:0 0 24px rgba(18,183,106,.16)!important;
+}
+.producaoTopFix{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin:10px 0;
+}
+.producaoCardFix{
+  background:#101010;
+  border:1px solid #2d2d2d;
+  border-radius:14px;
+  padding:12px;
+  text-align:center;
+}
+.producaoCardFix span{display:block;color:#aaa;font-size:12px;font-weight:900;text-transform:uppercase}
+.producaoCardFix b{display:block;color:#00e676;font-size:27px;margin-top:4px}
+.producaoStatusFix{
+  padding:10px 12px;
+  border-radius:12px;
+  background:#101010;
+  border:1px solid #333;
+  color:#bbb;
+  font-size:12px;
+  margin:8px 0;
+}
+@media(max-width:900px){.producaoTopFix{grid-template-columns:1fr 1fr}}
+</style>
+
+<script>
+/* =========================================================
+   CAPTAPRO 1.0 • CHECK FINAL RAPHAEL
+   - Fichas salvas contam como pesquisa/produção
+   - Salvar ficha conta também como abordagem, sem duplicar a mesma ficha
+   - Aba Produção Hoje com profissionais + ranking do dia
+   - Login mais estável, sem bug de tela piscando
+   - Carros continuam salvando nome da marca/modelo
+   ========================================================= */
+(function(){
+  const $ = id => document.getElementById(id);
+  const V = id => String($(id)?.value || '').trim();
+  const esc = v => String(v ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const hojeISO = () => {
+    const d=new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  };
+  const inicioHoje = () => hojeISO()+'T00:00:00';
+  const fimHoje = () => hojeISO()+'T23:59:59';
+  const nomeAtual = () => {
+    try{return String(captadorNome||window.captadorNome||V('captadorNome')||'').trim()}catch(e){return String(window.captadorNome||V('captadorNome')||'').trim()}
+  };
+  const emailAtual = () => {
+    try{return String(usuarioEmail||window.usuarioEmail||V('email')||'').trim().toLowerCase()}catch(e){return String(window.usuarioEmail||V('email')||'').trim().toLowerCase()}
+  };
+  const roleAtual = () => {
+    try{return String(userRole||window.userRole||'captador').toLowerCase()}catch(e){return String(window.userRole||'captador').toLowerCase()}
+  };
+  const isAdm = () => ['ceo','gestor','lider','líder','admin'].includes(roleAtual());
+  function msgForm(txt,ok=true){
+    const el=$('formMsg');
+    if(el)el.innerHTML='<span class="'+(ok?'ok':'erro')+'">'+esc(txt)+'</span>';
+  }
+  function labelSelect(id){
+    const el=$(id); if(!el)return '';
+    const op=el.options?.[el.selectedIndex];
+    const t=String(op?.dataset?.nome || op?.textContent || el.value || '').trim();
+    if(/^(selecione|carregando|não foi possível|digite o modelo)/i.test(t))return '';
+    return t;
+  }
+  function toMoneyNumber(v){
+    const s=String(v||'').replace(/\s/g,'').replace(/[R$]/g,'');
+    if(!s)return null;
+    const br=s.replace(/\./g,'').replace(',','.');
+    const n=Number(br.replace(/[^0-9.-]/g,''));
+    return Number.isFinite(n)?n:null;
+  }
+  function profFinal(id,outro){return V(id)==='Outro'?V(outro):V(id)}
+
+  function syncUser(){
+    const em=emailAtual(), nm=nomeAtual();
+    try{ if(em) usuarioEmail=em; }catch(e){ window.usuarioEmail=em; }
+    try{ if(nm) captadorNome=nm; }catch(e){ window.captadorNome=nm; }
+    const p=$('promotorLogadoNome'); if(p && nm)p.textContent=nm;
+  }
+
+  async function insertRobusto(tabela,payload){
+    let p={...payload}, removidas=[];
+    for(let i=0;i<45;i++){
+      const r=await db.from(tabela).insert(p).select().single();
+      if(!r.error)return {data:r.data,removidas};
+      const m=String(r.error.message||'').match(/column\s+"?([a-zA-Z0-9_]+)"?\s+of relation|Could not find the '([^']+)' column|record has no field "?([a-zA-Z0-9_]+)"?/i);
+      const col=m&&(m[1]||m[2]||m[3]);
+      if(col && Object.prototype.hasOwnProperty.call(p,col)){delete p[col];removidas.push(col);continue;}
+      throw r.error;
+    }
+    throw new Error('Não foi possível adaptar os campos da tabela '+tabela+'.');
+  }
+
+  function montarPesquisaFinal(){
+    try{ if(typeof calcularQualificacao==='function')calcularQualificacao(); }catch(e){}
+    let tempo=0;
+    try{
+      const inicio=new Date(jornada?.inicio_meeting||new Date());
+      tempo=Math.max(0,Math.round((new Date()-inicio)/60000));
+    }catch(e){}
+    const veiculo=V('veiculo');
+    const brinde=V('brinde');
+    let custo=0; try{custo=typeof valorBrindeEstimado==='function'?valorBrindeEstimado(brinde):0}catch(e){}
+    let q='NQ', motivo='';
+    try{q=qualificacao||'NQ'; motivo=motivoQualificacao||'';}catch(e){}
+    const payload={
+      user_email:emailAtual(),
+      captador_nome:nomeAtual(),
+      equipe:V('equipe'),
+      ponto_captacao:V('ponto_captacao'),
+      tipo_abordagem:'PESQUISA/FICHA',
+      estado_origem:V('estado_origem'),
+      cidade_origem:V('cidade_origem'),
+      convidado_1:V('convidado_1'),
+      idade_1:Number(V('idade_1'))||null,
+      profissao_1:profFinal('profissao_1','outra_profissao_1'),
+      convidado_2:V('convidado_2'),
+      idade_2:Number(V('idade_2'))||null,
+      profissao_2:profFinal('profissao_2','outra_profissao_2'),
+      estado_civil:V('estado_civil'),
+      tempo_juntos:V('tempo_juntos'),
+      renda_casal:toMoneyNumber(V('renda_casal')),
+      renda_bruta:toMoneyNumber(V('renda_bruta')),
+      renda_liquida:toMoneyNumber(V('renda_liquida')),
+      veiculo,
+      marca_carro:veiculo==='Sim'?labelSelect('marca_carro'):'',
+      modelo_carro:veiculo==='Sim'?labelSelect('modelo_carro'):'',
+      ano_veiculo:veiculo==='Sim'?labelSelect('ano_veiculo'):'',
+      valor_fipe:toMoneyNumber(V('valor_fipe_preview')),
+      cartao_credito:V('cartao_credito'),
+      casa_propria:V('casa_propria'),
+      multipropriedade:V('multipropriedade'),
+      brinde,
+      custo_brinde:custo||0,
+      contato:V('contato'),
+      observacoes:V('observacoes'),
+      status:q,
+      qualificacao_automatica:q,
+      motivo_qualificacao:motivo,
+      levou_sala:'Pendente',
+      sala_status:'Pendente',
+      sala_status_aprovacao:'Aguardando declaração',
+      latitude:(typeof latitude!=='undefined'&&latitude!==null)?Number(latitude):null,
+      longitude:(typeof longitude!=='undefined'&&longitude!==null)?Number(longitude):null,
+      horario_local:String(new Date().getHours()).padStart(2,'0')+':00',
+      tempo_no_ponto_minutos:tempo,
+      ficha_salva:true,
+      producao_conta:true,
+      created_at:new Date().toISOString()
+    };
+    Object.keys(payload).forEach(k=>{if(payload[k]===undefined)payload[k]=null});
+    return payload;
+  }
+
+  async function salvarAbordagemSupabase(obs){
+    const payload={
+      user_email:emailAtual(),
+      captador_nome:nomeAtual(),
+      equipe:V('equipe')||null,
+      ponto_captacao:V('ponto_captacao')||null,
+      ponto_oficial:V('ponto_oficial')||V('ponto_captacao')||null,
+      distancia_ponto_metros:Number(V('distancia_ponto_metros'))||null,
+      latitude:(typeof latitude!=='undefined'&&latitude!==null)?Number(latitude):null,
+      longitude:(typeof longitude!=='undefined'&&longitude!==null)?Number(longitude):null,
+      horario_local:String(new Date().getHours()).padStart(2,'0')+':00',
+      observacao:obs||'Abordagem registrada',
+      created_at:new Date().toISOString()
+    };
+    try{
+      await insertRobusto('abordagens',payload);
+      return true;
+    }catch(e){
+      const key='captapro_abordagens_pendentes';
+      const arr=JSON.parse(localStorage.getItem(key)||'[]');
+      arr.push(payload);
+      localStorage.setItem(key,JSON.stringify(arr));
+      console.warn('Abordagem não salvou no Supabase, ficou pendente local:',e);
+      return false;
+    }
+  }
+
+  async function contarAbordagemDaFicha(){
+    const chave='ficha_'+emailAtual()+'_'+hojeISO()+'_'+V('convidado_1')+'_'+V('contato');
+    if(sessionStorage.getItem(chave))return;
+    await salvarAbordagemSupabase('Contado automaticamente ao salvar ficha');
+    sessionStorage.setItem(chave,'1');
+    await atualizarContadorAbordagens();
+  }
+
+  window.salvarPesquisa=async function(){
+    syncUser();
+    if(window.__salvandoPesquisaFinal)return false;
+    window.__salvandoPesquisaFinal=true;
+    try{
+      if(!emailAtual()||!nomeAtual()){msgForm('Entre no app antes de salvar.',false);return false;}
+      try{ if(!jornada && typeof iniciarJornadaAutomatica==='function')await iniciarJornadaAutomatica(); }catch(e){}
+      try{ if(typeof calcularQualificacao==='function')calcularQualificacao(); }catch(e){}
+      if(!V('equipe')||!V('ponto_captacao')){msgForm('Preencha equipe e ponto.',false);return false;}
+      if(!V('convidado_1')){msgForm('Preencha o Nome 1.',false);return false;}
+      if(!V('brinde')){msgForm('Selecione o brinde liberado para esta qualificação.',false);return false;}
+      if(V('veiculo')==='Sim' && (!V('marca_carro')||!V('modelo_carro')||!V('ano_veiculo'))){msgForm('Selecione marca, modelo e ano do carro.',false);return false;}
+      const payload=montarPesquisaFinal();
+      const r=await insertRobusto('pesquisas',payload);
+      try{ultimaPesquisaSalva=r.data||payload}catch(e){}
+      try{if(typeof renderFichaSalva==='function')renderFichaSalva(r.data||payload)}catch(e){}
+      await contarAbordagemDaFicha();
+      msgForm('Ficha salva. Contou em pesquisas, produção e abordagem do dia.',true);
+      setTimeout(()=>{carregarProducaoHojeFix(); try{if(typeof carregarDashboard==='function')carregarDashboard()}catch(e){}},500);
+      window.__aguardandoCompartilharFicha73=true;
+      return true;
+    }catch(e){
+      console.error(e);
+      msgForm('Erro ao salvar no Supabase: '+(e.message||e),false);
+      return false;
+    }finally{
+      setTimeout(()=>{window.__salvandoPesquisaFinal=false},900);
+    }
+  };
+
+  window.registrarAbordagem55=async function(ev){
+    if(ev){ev.preventDefault();ev.stopPropagation();}
+    syncUser();
+    if(window.__abordagemFinalLock)return false;
+    window.__abordagemFinalLock=true;
+    setTimeout(()=>window.__abordagemFinalLock=false,700);
+    if(!emailAtual()){msgForm('Entre no app antes de registrar abordagem.',false);return false;}
+    const atual=Number($('abordagensHoje')?.textContent||0)||0;
+    if($('abordagensHoje'))$('abordagensHoje').textContent=atual+1;
+    const ok=await salvarAbordagemSupabase('Abordagem registrada sem pesquisa');
+    await atualizarContadorAbordagens();
+    msgForm(ok?'Abordagem salva no Supabase.':'Abordagem ficou pendente local. Confira a tabela abordagens/RLS no Supabase.',ok);
+    carregarProducaoHojeFix();
+    return false;
+  };
+
+  async function atualizarContadorAbordagens(){
+    try{
+      if(!emailAtual())return;
+      const r=await db.from('abordagens').select('*',{count:'exact',head:true})
+        .eq('user_email',emailAtual()).gte('created_at',inicioHoje()).lte('created_at',fimHoje());
+      let total=r.count||0;
+      if(r.error)throw r.error;
+      const pend=JSON.parse(localStorage.getItem('captapro_abordagens_pendentes')||'[]')
+        .filter(x=>String(x.user_email||'').toLowerCase()===emailAtual() && String(x.created_at||'').slice(0,10)===hojeISO()).length;
+      if($('abordagensHoje'))$('abordagensHoje').textContent=total+pend;
+    }catch(e){}
+  }
+
+  async function buscarHoje(tabela){
+    try{
+      const r=await db.from(tabela).select('*').gte('created_at',inicioHoje()).lte('created_at',fimHoje()).order('created_at',{ascending:false}).limit(5000);
+      if(r.error)throw r.error;
+      return r.data||[];
+    }catch(e){
+      console.warn('Erro buscando '+tabela,e);
+      return [];
+    }
+  }
+
+  function nomeLinha(x){
+    return String(x.captador_nome||x.nome||x.user_email||'Sem nome').trim() || 'Sem nome';
+  }
+
+  window.carregarProducaoHojeFix=async function(){
+    if(!isAdm() && $('producaoDia')){ $('producaoDia').classList.add('hidden'); return; }
+    const box=$('producaoDiaConteudo'); if(!box)return;
+    box.innerHTML='<div class="producaoStatusFix">Carregando produção do dia...</div>';
+    const [pesquisas,abordagens]=await Promise.all([buscarHoje('pesquisas'),buscarHoje('abordagens')]);
+    const pend=JSON.parse(localStorage.getItem('captapro_abordagens_pendentes')||'[]')
+      .filter(x=>String(x.created_at||'').slice(0,10)===hojeISO());
+    const mapa=new Map();
+    function item(nome,email){
+      const key=(email||nome||'sem').toLowerCase();
+      if(!mapa.has(key))mapa.set(key,{nome:nome||email||'Sem nome',email:email||'',abordagens:0,pesquisas:0,q:0,nq:0,sala:0,carros:0,brindes:0,ultima:'',pontos:{}});
+      return mapa.get(key);
+    }
+    abordagens.concat(pend).forEach(a=>{
+      const it=item(nomeLinha(a),String(a.user_email||''));
+      it.abordagens++;
+      if(a.ponto_captacao)it.pontos[a.ponto_captacao]=(it.pontos[a.ponto_captacao]||0)+1;
+      if(!it.ultima || String(a.created_at||'')>it.ultima)it.ultima=String(a.created_at||'');
+    });
+    pesquisas.forEach(p=>{
+      const it=item(nomeLinha(p),String(p.user_email||''));
+      it.pesquisas++;
+      const st=String(p.qualificacao_automatica||p.status||'').toUpperCase();
+      if(st==='Q')it.q++; else it.nq++;
+      const sala=String(p.sala_status||p.levou_sala||'').toLowerCase();
+      if(sala.includes('sim')||sala.includes('aprov')||sala.includes('confirm'))it.sala++;
+      if(String(p.veiculo||'').toLowerCase()==='sim')it.carros++;
+      if(p.brinde)it.brindes++;
+      if(p.ponto_captacao)it.pontos[p.ponto_captacao]=(it.pontos[p.ponto_captacao]||0)+1;
+      if(!it.ultima || String(p.created_at||'')>it.ultima)it.ultima=String(p.created_at||'');
+    });
+    const rows=[...mapa.values()].map(x=>{
+      const top=Object.entries(x.pontos).sort((a,b)=>b[1]-a[1])[0];
+      return {...x,conv:x.abordagens?Math.round((x.pesquisas/x.abordagens)*100)+'%':'0%',ponto:top?top[0]:'-',ultimaFmt:x.ultima?new Date(x.ultima).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'-'};
+    }).sort((a,b)=>b.abordagens-a.abordagens||b.pesquisas-a.pesquisas||b.q-a.q||a.nome.localeCompare(b.nome,'pt-BR'));
+    const totalAb=abordagens.length+pend.length,totalPesq=pesquisas.length,totalQ=pesquisas.filter(p=>String(p.qualificacao_automatica||p.status||'').toUpperCase()==='Q').length,totalSala=pesquisas.filter(p=>/sim|aprov|confirm/i.test(String(p.sala_status||p.levou_sala||''))).length;
+    const table=rows.length?'<div class="tableScroll"><table><thead><tr><th>#</th><th>Profissional</th><th>Abord.</th><th>Pesq.</th><th>Conv.</th><th>Q</th><th>NQ</th><th>Sala</th><th>Carros</th><th>Brindes</th><th>Ponto forte</th><th>Última</th></tr></thead><tbody>'+
+      rows.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r.nome)}</b></td><td>${r.abordagens}</td><td>${r.pesquisas}</td><td>${r.conv}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.sala}</td><td>${r.carros}</td><td>${r.brindes}</td><td>${esc(r.ponto)}</td><td>${r.ultimaFmt}</td></tr>`).join('')+
+      '</tbody></table></div>':'<p class="mini">Ainda não tem produção hoje.</p>';
+    box.innerHTML=`
+      <div class="producaoTopFix">
+        <div class="producaoCardFix"><span>Abordagens</span><b>${totalAb}</b></div>
+        <div class="producaoCardFix"><span>Pesquisas/Fichas</span><b>${totalPesq}</b></div>
+        <div class="producaoCardFix"><span>Q do dia</span><b>${totalQ}</b></div>
+        <div class="producaoCardFix"><span>Sala</span><b>${totalSala}</b></div>
+      </div>
+      <div class="producaoStatusFix">Ranking do dia por profissional. A ficha salva conta como pesquisa/produção e também conta 1 abordagem automática.</div>
+      ${table}
+    `;
+  };
+
+  function instalarAbaProducao(){
+    if(!$('producaoDia')){
+      const sec=document.createElement('section');
+      sec.id='producaoDia';
+      sec.className='card hidden admOnly';
+      sec.innerHTML='<h2>Produção Hoje</h2><p class="hint">Profissionais, ranking do dia, abordagens, pesquisas, Q/NQ, sala e informações do dia.</p><button class="secondary" type="button" onclick="carregarProducaoHojeFix()">Atualizar Produção Hoje</button><div id="producaoDiaConteudo"></div>';
+      const ref=$('dash')||$('pesquisa');
+      ref?.parentNode?.insertBefore(sec,ref.nextSibling);
+    }
+    if(!document.querySelector('.tabs button.producaoDiaBtnFix')){
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='admOnly producaoDiaBtnFix';
+      btn.textContent='Produção Hoje';
+      btn.onclick=function(){ if(typeof aba==='function')aba('producaoDia',btn); else {document.querySelectorAll('section.card').forEach(s=>s.classList.add('hidden')); $('producaoDia')?.classList.remove('hidden');} };
+      const tabs=document.querySelector('.tabs');
+      const dashBtn=[...document.querySelectorAll('.tabs button')].find(b=>String(b.getAttribute('onclick')||'').includes('dash'));
+      if(dashBtn)dashBtn.after(btn); else tabs?.appendChild(btn);
+    }
+  }
+
+  const oldAba=window.aba;
+  window.aba=function(id,b){
+    const adm=isAdm();
+    if(!adm && !['pesquisa','arenaSX','meuDesempenho'].includes(id))return;
+    const ids=['pesquisa','arenaSX','meuDesempenho','dash','producaoDia','ranking','excelResultados','comparativo','pulsador','metas','mapa','salaAdmin','historico','profissionais','ceo'];
+    ids.forEach(x=>$(x)?.classList.add('hidden'));
+    $(id)?.classList.remove('hidden');
+    document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+    b?.classList.add('active');
+    try{
+      if(id==='dash'&&typeof carregarDashboard==='function')carregarDashboard();
+      if(id==='producaoDia')carregarProducaoHojeFix();
+      if(id==='ranking'&&typeof carregarRanking==='function')carregarRanking();
+      if(id==='excelResultados'&&typeof carregarExcelResultados==='function')carregarExcelResultados();
+      if(id==='salaAdmin'&&typeof carregarSalaAdmin==='function')carregarSalaAdmin();
+      if(id==='ceo'&&typeof carregarCeo==='function')carregarCeo();
+      if(id==='arenaSX'&&typeof renderArenaSX==='function')renderArenaSX();
+    }catch(e){console.warn(e)}
+  };
+
+  const entrarBase=window.entrar;
+  if(typeof entrarBase==='function'&&!window.__entrarFinalFix){
+    window.__entrarFinalFix=true;
+    window.entrar=async function(){
+      const btn=document.querySelector('#loginBox button.main');
+      if(btn){btn.disabled=true;btn.textContent='Entrando...';}
+      try{
+        const r=await entrarBase.apply(this,arguments);
+        syncUser();
+        if(emailAtual()&&nomeAtual()){
+          localStorage.setItem('captapro_login_final',JSON.stringify({email:emailAtual(),nome:nomeAtual(),role:roleAtual(),t:Date.now()}));
+        }
+        setTimeout(()=>{instalarAbaProducao(); aplicarPermissoesFinal(); atualizarContadorAbordagens();},300);
+        return r;
+      }catch(e){
+        const lm=$('loginMsg'); if(lm)lm.innerHTML='<span class="erro">'+esc(e.message||e)+'</span>';
+      }finally{
+        if(btn){btn.disabled=false;btn.textContent='Entrar';}
+      }
+    };
+  }
+
+  function aplicarPermissoesFinal(){
+    const adm=isAdm();
+    document.querySelectorAll('.admOnly').forEach(el=>{el.style.display=adm?'block':'none';});
+    document.querySelectorAll('.promotorOnly').forEach(el=>{el.style.display=adm?'none':'block';});
+    const prodBtn=document.querySelector('.producaoDiaBtnFix'); if(prodBtn)prodBtn.style.display=adm?'block':'none';
+  }
+
+  function ligarBotoes(){
+    const b=$('btnRegistrarAbordagem55');
+    if(b && !b.__finalLigado){
+      b.__finalLigado=true;
+      b.removeAttribute('onclick');
+      b.addEventListener('click',window.registrarAbordagem55,{passive:false});
+    }
+  }
+
+  function autoLoginSeguro(){
+    try{
+      const saved=JSON.parse(localStorage.getItem('captapro_login_final')||localStorage.getItem('captapro_login_72')||'null');
+      if(saved && saved.email && saved.nome && !$('appBox')?.classList.contains('hidden'))return;
+      if(saved && saved.email && saved.nome){
+        if($('email'))$('email').value=saved.email;
+        if($('captadorNome'))$('captadorNome').value=saved.nome;
+      }
+    }catch(e){}
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    autoLoginSeguro();
+    instalarAbaProducao();
+    ligarBotoes();
+    aplicarPermissoesFinal();
+    setTimeout(()=>{syncUser();ligarBotoes();instalarAbaProducao();aplicarPermissoesFinal();atualizarContadorAbordagens();},800);
+  });
+  window.addEventListener('load',()=>{
+    setTimeout(()=>{syncUser();ligarBotoes();instalarAbaProducao();aplicarPermissoesFinal();atualizarContadorAbordagens();},1200);
+  });
+})();
+</script>
+
 </body>
 </html>
