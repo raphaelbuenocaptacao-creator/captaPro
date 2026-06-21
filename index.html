@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaptaPro Simples 1.9</title>
+<title>CaptaPro Simples 2.0</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
@@ -59,7 +59,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Simples 1.9</div><p class="mini">Pesquisa e Relatório • Criado pela empresa <b style="color:#00e676">Bueno Invest</b></p></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Simples 2.0</div><p class="mini">Pesquisa e Relatório • Criado pela empresa <b style="color:#00e676">Bueno Invest</b></p></div>
 
 <section id="loginBox" class="card">
 <h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
@@ -151,18 +151,31 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
 
 <section id="raking" class="card hidden">
-<h2>Raking</h2>
-<p class="hint">Ranking do mês atual com profissional, casais, vendas, VGV e eficiência.</p>
+<h2>Raking / Relatório</h2>
+<p class="hint">Relatório automático puxando direto das fichas e abordagens salvas no sistema.</p>
 <div class="rakingTools17">
   <input id="rakingDe" type="date">
   <input id="rakingAte" type="date">
 </div>
 <div class="grid" style="margin-bottom:8px">
-  <button class="main" onclick="carregarRaking()">Atualizar Raking</button>
+  <button class="main" onclick="carregarRaking()">Atualizar Relatório</button>
+</div>
+<div class="kpis" id="rakingKpis20">
+  <div class="kpi">Abordagens<b id="rkAbord20">0</b></div>
+  <div class="kpi">Pesquisas<b id="rkPesq20">0</b></div>
+  <div class="kpi">Sala<b id="rkSala20">0</b></div>
+  <div class="kpi">Conversão<b id="rkConv20">0%</b></div>
 </div>
 <div class="card scroll">
+  <h2>Ranking do Mês Atual</h2>
+  <p class="hint">Profissional, casais, vendas, VGV e eficiência.</p>
   <div id="rakingFonte17" class="mini" style="margin-top:6px"></div>
   <div id="rakingBox"></div>
+</div>
+<div class="card scroll">
+  <h2>Relatório da Equipe</h2>
+  <p class="hint">Profissional, abordagens, pesquisas, Q, NQ, 1 item, sala e conversão.</p>
+  <div id="rakingRelatorioEquipe20"></div>
 </div>
 </section>
 
@@ -888,6 +901,135 @@ document.addEventListener('DOMContentLoaded',()=>{
   try{localStorage.removeItem('ranking_csv_16');localStorage.removeItem('raking_csv_17');}catch(e){}
   setTimeout(()=>{renderRankingMesAtualCP19(); window.carregarRaking();},800);
 });
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro Simples 2.0 • Raking com relatório completo automático ===== */
+(function(){
+function $(id){return document.getElementById(id)}
+function setTxt(id,v){const el=$(id); if(el)el.innerText=v}
+function setHTML(id,v){const el=$(id); if(el)el.innerHTML=v}
+function dataISO(v){return String(v||'').slice(0,10)}
+function normal(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function moeda(n){return (Number(n||0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function parseValor(v){
+  let s=String(v||'').replace(/R\$|\s/g,'').trim();
+  if(!s)return 0;
+  s=s.replace(/[^0-9,.-]/g,'');
+  if(s.includes(','))return Number(s.replace(/\./g,'').replace(',', '.'))||0;
+  return Number(s.replace(/\./g,''))||0;
+}
+function venda(v){
+  const s=normal(v);
+  if(!s)return 0;
+  const hashes=(String(v).match(/#/g)||[]).length;
+  if(hashes>0)return hashes;
+  if(/\b(venda|vendido|vendeu|contrato|fechou|fechado)\b/.test(s))return 1;
+  const n=Number(String(v).replace(/[^0-9]/g,''));
+  return Number.isFinite(n)?n:0;
+}
+function ehSala(x){return normal(x.levou_sala||x.em_sala||x.sala||'').includes('sim')}
+function periodoPadrao(){
+  const de=$('rakingDe'), ate=$('rakingAte');
+  if(!de||!ate)return;
+  if(!de.value||!ate.value){
+    const now=new Date();
+    const y=now.getFullYear();
+    const m=String(now.getMonth()+1).padStart(2,'0');
+    const ultimo=new Date(y, now.getMonth()+1, 0).getDate();
+    de.value=`${y}-${m}-01`;
+    ate.value=`${y}-${m}-${String(ultimo).padStart(2,'0')}`;
+  }
+}
+function filtrarPeriodo(lista,de,ate){
+  return (lista||[]).filter(x=>{const d=dataISO(x.created_at); return (!de||d>=de)&&(!ate||d<=ate);});
+}
+function filtrarAcesso(lista){
+  try{
+    if(window.role==='ceo')return lista||[];
+    const email=window.usuarioEmail||'';
+    const eq=(typeof V==='function'?V('equipe'):'')||'';
+    return (lista||[]).filter(x=>x.user_email===email || (eq && x.equipe===eq));
+  }catch(e){return lista||[];}
+}
+async function lerTabela(tabela){
+  try{ if(typeof dados==='function')return await dados(tabela)||[]; }catch(e){}
+  try{return JSON.parse(localStorage.getItem(tabela==='pesquisas'?'pesquisasLocal':'abordagensLocal')||'[]')}catch(e){return []}
+}
+function montarRanking(pesquisas){
+  const map={};
+  (pesquisas||[]).forEach(x=>{
+    const nome=x.captador_nome||x.profissional||x.promotor||x.user_email||'Sem nome';
+    if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0};
+    map[nome].casais+=1;
+    map[nome].vendas+=venda(x.status||x.venda||x.vendas||x.status_venda);
+    map[nome].vgv+=parseValor(x.vgv||x.valor_vgv||x.valor||x.valor_venda||0);
+  });
+  return Object.values(map).sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv||a.nome.localeCompare(b.nome));
+}
+function tabelaRanking(arr){
+  if(!arr||!arr.length)return '<p class="mini">Sem fichas salvas nesse período para montar o ranking.</p>';
+  const total={casais:0,vendas:0,vgv:0};
+  const linhas=arr.map((r,i)=>{
+    total.casais+=r.casais; total.vendas+=r.vendas; total.vgv+=r.vgv;
+    const ef=r.casais?(r.vendas/r.casais*100):0;
+    return `<tr><td>${i+1}º ${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moeda(r.vgv)}</td><td>${ef.toFixed(1).replace('.',',')}%</td></tr>`;
+  }).join('');
+  const efT=total.casais?(total.vendas/total.casais*100):0;
+  return `<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${linhas}<tr><th>Total</th><th>${total.casais}</th><th>${total.vendas}</th><th>${moeda(total.vgv)}</th><th>${efT.toFixed(1).replace('.',',')}%</th></tr></table>`;
+}
+function montarRelatorioEquipe(pesquisas,abordagens){
+  const map={};
+  function base(x){
+    const nome=x.captador_nome||x.profissional||x.promotor||x.user_email||'Sem nome';
+    if(!map[nome])map[nome]={nome,equipe:x.equipe||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0};
+    if(x.equipe&&!map[nome].equipe)map[nome].equipe=x.equipe;
+    return map[nome];
+  }
+  (abordagens||[]).forEach(x=>{base(x).abord++;});
+  (pesquisas||[]).forEach(x=>{
+    const r=base(x); r.pesq++;
+    const st=normal(x.qualificacao_automatica||x.qualificacao||x.status_qualificacao||'');
+    if(st==='q')r.q++;
+    else if(st.includes('1'))r.nq1++;
+    else if(st.includes('nq'))r.nq++;
+    if(ehSala(x))r.sala++;
+  });
+  return Object.values(map).sort((a,b)=>b.pesq-a.pesq||b.abord-a.abord||b.sala-a.sala||a.nome.localeCompare(b.nome));
+}
+function tabelaRelatorio(rows){
+  if(!rows||!rows.length)return '<p class="mini">Sem dados nesse período.</p>';
+  return '<table><tr><th>Nome</th><th>Equipe</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th><th>Conv.</th></tr>'+rows.map(r=>{
+    const conv=r.pesq?Math.round(r.sala/r.pesq*100):0;
+    return `<tr><td>${r.nome}</td><td>${r.equipe||'-'}</td><td>${r.abord}</td><td>${r.pesq}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.sala}</td><td>${conv}%</td></tr>`;
+  }).join('')+'</table>';
+}
+async function carregarRaking20(){
+  try{localStorage.removeItem('ranking_csv_16');localStorage.removeItem('raking_csv_17');}catch(e){}
+  periodoPadrao();
+  const de=($('rakingDe')||{}).value||'', ate=($('rakingAte')||{}).value||'';
+  let pesquisas=filtrarAcesso(filtrarPeriodo(await lerTabela('pesquisas'),de,ate));
+  let abordagens=filtrarAcesso(filtrarPeriodo(await lerTabela('abordagens'),de,ate));
+  const sala=pesquisas.filter(ehSala).length;
+  setTxt('rkAbord20',abordagens.length);
+  setTxt('rkPesq20',pesquisas.length);
+  setTxt('rkSala20',sala);
+  setTxt('rkConv20',pesquisas.length?Math.round(sala/pesquisas.length*100)+'%':'0%');
+  setHTML('rakingFonte17','<span class="ok">Fonte: fichas e abordagens salvas no sistema.</span>');
+  setHTML('rakingBox',tabelaRanking(montarRanking(pesquisas)));
+  setHTML('rakingRelatorioEquipe20',tabelaRelatorio(montarRelatorioEquipe(pesquisas,abordagens)));
+}
+window.carregarRaking=carregarRaking20;
+const relatorioAnterior20=window.carregarRelatorio;
+window.carregarRelatorio=async function(){
+  let r;
+  if(typeof relatorioAnterior20==='function')r=await relatorioAnterior20.apply(this,arguments);
+  try{await carregarRaking20();}catch(e){}
+  return r;
+};
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(carregarRaking20,900);});
 })();
 </script>
 
