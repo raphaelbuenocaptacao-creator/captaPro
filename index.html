@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaptaPro Simples 2.0</title>
+<title>CaptaPro Simples 2.1</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
@@ -22,12 +22,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .fichaTitleFull b{display:block;font-size:22px}.fichaTitleFull small{color:#aaa}
 .fichaRodapeFull{border-top:1px solid #3b1b1b;margin-top:12px;padding-top:10px;color:#888;font-size:11px}
 
-/* CaptaPro Simples 1.9 */
+/* CaptaPro Simples 2.1 */
 #brinde{border-color:#00c2ff!important}
 .rankDestaque13{color:#00e676;font-weight:900}
 
 
-/* CaptaPro Simples 1.9 • organização pesquisa e CEO */
+/* CaptaPro Simples 2.1 • organização pesquisa e CEO */
 .pesquisaGrid14 input,.pesquisaGrid14 select{min-height:47px}
 .ceoPainel14{border:1px solid #5a1717;border-radius:16px;padding:12px;background:#080808}
 .ceoGrid14{grid-template-columns:repeat(3,1fr)}
@@ -36,18 +36,18 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:700px){.ceoGrid14{grid-template-columns:1fr}}
 
 
-/* CaptaPro Simples 1.9 • renda BRL + ranking mês */
+/* CaptaPro Simples 2.1 • renda BRL + ranking mês */
 #rankingMesAtual15{border-color:#00c2ff!important}
 #rankingMesAtual15 h2{border-left-color:#00c2ff!important}
 .rendaAjuda15{font-size:11px;color:#aaa;margin-top:-4px;margin-bottom:6px}
 
 
-/* CaptaPro Simples 1.9 • correção renda e CSV */
+/* CaptaPro Simples 2.1 • correção renda e CSV */
 #renda{border-color:#00c2ff!important}
 #csvRankingInput16{border-color:#00e676!important}
 
 
-/* CaptaPro Simples 1.9 • Aba Raking */
+/* CaptaPro Simples 2.1 • Aba Raking */
 #rakingBox table{min-width:650px}
 #rakingBox tr:nth-child(2) td:first-child{color:#ffd54f;font-weight:900}
 #rakingBox tr:nth-child(3) td:first-child{color:#cfd8dc;font-weight:900}
@@ -55,11 +55,20 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .rakingTools17{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 @media(max-width:700px){.rakingTools17{grid-template-columns:1fr}.tabs{grid-template-columns:1fr}body.ceo .tabs{grid-template-columns:1fr}}
 
+
+/* CaptaPro Simples 2.1 • versão limpa */
+#renda{border-color:#00c2ff!important}
+#csvRakingInput21{border-color:#00e676!important;margin:8px 0}
+#rakingBox table{min-width:650px}
+#rakingBox tr:nth-child(2) td:first-child{color:#ffd54f;font-weight:900}
+#rakingBox tr:nth-child(3) td:first-child{color:#cfd8dc;font-weight:900}
+#rakingBox tr:nth-child(4) td:first-child{color:#d7a36a;font-weight:900}
+
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Simples 2.0</div><p class="mini">Pesquisa e Relatório • Criado pela empresa <b style="color:#00e676">Bueno Invest</b></p></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Simples 2.1</div><p class="mini">Pesquisa e Relatório • Criado pela empresa <b style="color:#00e676">Bueno Invest</b></p></div>
 
 <section id="loginBox" class="card">
 <h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
@@ -136,46 +145,44 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <input id="contato" placeholder="WhatsApp / contato">
 </div>
 <textarea id="obs" style="margin-top:8px" placeholder="Observações"></textarea>
-<div class="grid" style="margin-top:8px"><button class="secondary" onclick="calcularQualificacao()">Calcular Q/NQ</button><button class="main" onclick="salvarPesquisa()">Salvar Pesquisa</button></div><p id="formMsg"></p><div id="resultado"></div>
+<div class="grid" style="margin-top:8px"><button class="secondary" onclick="calcularQualificacao()">Calcular Q/NQ</button><button class="main" onclick="salvarPesquisa()">Salvar Pesquisa</button></div><button class="secondary" style="margin-top:8px;background:#073a21;border-color:#0a7b43" onclick="confirmarSala21()">✅ COLOQUEI EM SALA</button><p id="formMsg"></p><div id="resultado"></div>
 <div id="fichaBox" class="card hidden"><h2>Ficha salva</h2><div id="fichaConteudo"></div><div class="grid"><button class="main" onclick="compartilharFicha()">Compartilhar imagem</button><button class="secondary" onclick="novaPesquisa()">Nova pesquisa</button></div></div>
 </section>
 
-<section id="relatorio" class="card hidden"><h2>Relatório</h2><div class="grid"><input id="relDe" type="date"><input id="relAte" type="date"></div><button class="main" style="margin-top:8px" onclick="carregarRelatorio()">Atualizar</button>
-<div class="kpis"><div class="kpi">Abordagens<b id="rAbord">0</b></div><div class="kpi">Pesquisas<b id="rPesq">0</b></div><div class="kpi">Sala<b id="rSala">0</b></div><div class="kpi">Conversão<b id="rConv">0%</b></div></div>
-<div class="card scroll" id="rankingMesAtual15">
-<h2>Ranking do Mês Atual</h2>
-<p class="hint">Junho: profissional, casais total, vendas, VGV e eficiência.</p>
-<div id="rankingMesBox15"></div>
-</div><div class="card scroll"><h2>Ranking da Equipe</h2><p class="hint">Profissional vê ranking da equipe. CEO vê todos.</p><div id="rankingEquipeBox13"></div></div><div id="rankingBox" class="hidden"></div><div class="card"><h2>Individual</h2><select id="profFiltro" onchange="mostrarIndividual()"><option value="">Escolha o profissional</option></select><div id="individualBox"></div></div>
+<section id="relatorio" class="card hidden">
+<h2>Relatório</h2>
+<div class="grid"><input id="relDe" type="date"><input id="relAte" type="date"></div>
+<button class="main" style="margin-top:8px" onclick="carregarRelatorio()">Atualizar</button>
+<div class="kpis">
+  <div class="kpi">Abordagens<b id="rAbord">0</b></div>
+  <div class="kpi">Pesquisas<b id="rPesq">0</b></div>
+  <div class="kpi">Q<b id="rQ">0</b></div>
+  <div class="kpi">NQ<b id="rNQ">0</b></div>
+  <div class="kpi">1 Item<b id="rNQ1">0</b></div>
+  <div class="kpi">Sala<b id="rSala">0</b></div>
+  <div class="kpi">Conversão<b id="rConv">0%</b></div>
+</div>
+<div class="card scroll"><h2>Ranking da Equipe</h2><div id="rankingEquipeBox13"></div></div>
+<div class="card"><h2>Individual</h2><select id="profFiltro" onchange="mostrarIndividual()"><option value="">Escolha o profissional</option></select><div id="individualBox"></div></div>
 </section>
 
-
 <section id="raking" class="card hidden">
-<h2>Raking / Relatório</h2>
-<p class="hint">Relatório automático puxando direto das fichas e abordagens salvas no sistema.</p>
+<h2>Raking / Ranking Geral</h2>
+<p class="hint">Ranking automático do mês atual. Lê as fichas salvas e também o arquivo <b>raking junho.csv</b> se estiver no GitHub.</p>
 <div class="rakingTools17">
   <input id="rakingDe" type="date">
   <input id="rakingAte" type="date">
 </div>
-<div class="grid" style="margin-bottom:8px">
-  <button class="main" onclick="carregarRaking()">Atualizar Relatório</button>
-</div>
-<div class="kpis" id="rakingKpis20">
-  <div class="kpi">Abordagens<b id="rkAbord20">0</b></div>
-  <div class="kpi">Pesquisas<b id="rkPesq20">0</b></div>
-  <div class="kpi">Sala<b id="rkSala20">0</b></div>
-  <div class="kpi">Conversão<b id="rkConv20">0%</b></div>
+<input id="csvRakingInput21" type="file" accept=".csv,text/csv" onchange="importarRakingCSV21(event)">
+<div class="grid" style="margin:8px 0">
+  <button class="main" onclick="carregarRaking()">Atualizar Raking</button>
+  <button class="secondary" onclick="limparRakingCSV21()">Usar dados do sistema/GitHub</button>
 </div>
 <div class="card scroll">
-  <h2>Ranking do Mês Atual</h2>
+  <h2>Ranking Geral Automático</h2>
   <p class="hint">Profissional, casais, vendas, VGV e eficiência.</p>
-  <div id="rakingFonte17" class="mini" style="margin-top:6px"></div>
+  <div id="rakingFonte21" class="mini"></div>
   <div id="rakingBox"></div>
-</div>
-<div class="card scroll">
-  <h2>Relatório da Equipe</h2>
-  <p class="hint">Profissional, abordagens, pesquisas, Q, NQ, 1 item, sala e conversão.</p>
-  <div id="rakingRelatorioEquipe20"></div>
 </div>
 </section>
 
@@ -206,722 +213,29 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <datalist id="cidades"><option value="Campos do Jordão"><option value="São Paulo"><option value="São José dos Campos"><option value="Taubaté"><option value="Pindamonhangaba"><option value="Campinas"><option value="Rio de Janeiro"></datalist>
 <datalist id="marcas"><option value="Chevrolet"><option value="Fiat"><option value="Ford"><option value="Honda"><option value="Hyundai"><option value="Jeep"><option value="Nissan"><option value="Renault"><option value="Toyota"><option value="Volkswagen"></datalist>
 
+
 <script>
 const SUPABASE_URL="https://veznreiamwstlulkpocz.supabase.co", SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlem5yZWlhbXdzdGx1bGtwb2N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODc1NDksImV4cCI6MjA5NzI2MzU0OX0.MeSqJZTZnk3zDKWgD920ccV2KUheH0W_BGD3TvhPXdM";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const CEOS=['raphaelbueno.captacao@gmail.com','marcel.dorado2@gmail.com'];let usuarioEmail='',usuarioNome='',role='profissional',ultimaFicha=null;
-function E(id){return document.getElementById(id)}function V(id){return (E(id)?.value||'').trim()}function H(id,v){E(id).innerHTML=v}function S(id,v){E(id).innerText=v}
-for(let i=18;i<=90;i++){E('idade1').innerHTML+=`<option>${i}</option>`;E('idade2').innerHTML+=`<option>${i}</option>`}
-function getCfg(){return JSON.parse(localStorage.getItem('cfg')||'{"idadeMin":30,"rendaMin":12000,"carro":"nao","cartao":"nao","casa":"nao","casado":"nao","tempoMin":"nao","multi":"nao"}')}
-function loadCfg(){let c=getCfg();E('cfgIdadeMin').value=c.idadeMin;E('cfgRendaMin').value=c.rendaMin;E('cfgCarro').value=c.carro||'nao';E('cfgCartao').value=c.cartao||'nao';E('cfgCasa').value=c.casa||'nao';E('cfgCasado').value=c.casado||'nao';E('cfgTempoMin').value=c.tempoMin||'nao';E('cfgMulti').value=c.multi||'nao'}
-async function entrar(){usuarioEmail=V('email').toLowerCase();usuarioNome=V('nome')||usuarioEmail;if(!usuarioEmail){H('loginMsg','<span class=erro>Informe o e-mail.</span>');return}try{let r=await db.from('approved_users').select('*').eq('email',usuarioEmail).maybeSingle();let u=r.data;if(!u&&CEOS.includes(usuarioEmail))u={role:'ceo',approved:true,name:usuarioNome};if(!u||u.approved===false){H('loginMsg','<span class=erro>E-mail não aprovado.</span>');return}role=u.role||'profissional';usuarioNome=u.name||usuarioNome}catch(e){role=CEOS.includes(usuarioEmail)?'ceo':'profissional'}document.body.classList.toggle('ceo',role==='ceo'||CEOS.includes(usuarioEmail));E('loginBox').classList.add('hidden');E('app').classList.remove('hidden');localStorage.setItem('loginSimples',JSON.stringify({email:usuarioEmail,nome:usuarioNome}));loadCfg();carregarAbordagensHoje();carregarRelatorio()}
-(function(){try{let l=JSON.parse(localStorage.getItem('loginSimples')||'null');if(l){E('email').value=l.email;E('nome').value=l.nome;setTimeout(entrar,300)}}catch(e){}})();
-function aba(id,b){['pesquisa','relatorio','raking','qualificacao'].forEach(x=>E(x).classList.add('hidden'));E(id).classList.remove('hidden');document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(id==='relatorio')carregarRelatorio();if(id==='raking')carregarRaking()}
-function salvarConfig(){let c={idadeMin:+V('cfgIdadeMin')||30,rendaMin:+V('cfgRendaMin')||12000,carro:V('cfgCarro'),cartao:V('cfgCartao'),casa:V('cfgCasa'),casado:V('cfgCasado'),tempoMin:V('cfgTempoMin'),multi:V('cfgMulti')};localStorage.setItem('cfg',JSON.stringify(c));H('cfgMsg','<span class=ok>Perfil completo salvo.</span>')}
-function qual(){let c=getCfg(),idade=Math.max(+V('idade1')||0,+V('idade2')||0),renda=+String(V('renda')).replace(/[^0-9]/g,'')||0,status='Q',m=[];function falha(txt){status=status==='Q'?'NQ 1 Item':status;m.push(txt)}if(idade<c.idadeMin){status='NQ';m.push('idade')}if(renda<c.rendaMin){falha('renda')}if(c.carro==='sim'&&!V('nomeCarro')){falha('carro')}if(c.cartao==='sim'&&V('cartao')!=='Sim'){falha('cartão')}if(c.casa==='sim'&&V('casa')!=='Sim'){falha('casa própria')}if(c.casado==='sim'&&!['Casados','União estável'].includes(V('relacionamento'))){falha('relacionamento')}if(c.multi==='sim'&&V('multi')!=='Sim'){falha('multipropriedade')}if(c.tempoMin&&c.tempoMin!=='nao'){let ordem={'Menos de 1 ano':0,'1 ano':1,'2 anos':2,'3 a 5 anos':3,'Mais de 5 anos':5};if((ordem[V('tempo')]||0)<Number(c.tempoMin)){falha('tempo juntos')}}return {status,motivo:m.join(', ')||'Perfil dentro da regra'}}
-function calcularQualificacao(){let q=qual();H('resultado',`<div class=card><span class=badge>${q.status}</span><p class=mini>${q.motivo}</p></div>`);return q}
-async function registrarAbordagem(){let p={user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),observacao:'Abordagem',created_at:new Date().toISOString()};try{await db.from('abordagens').insert(p)}catch(e){let a=JSON.parse(localStorage.getItem('abordagensLocal')||'[]');a.push(p);localStorage.setItem('abordagensLocal',JSON.stringify(a))}carregarAbordagensHoje();H('formMsg','<span class=ok>Abordagem registrada.</span>')}
-async function carregarAbordagensHoje(){let total=0,d=new Date().toISOString().slice(0,10);try{let r=await db.from('abordagens').select('*',{count:'exact',head:true}).eq('user_email',usuarioEmail).gte('created_at',d+'T00:00:00').lte('created_at',d+'T23:59:59');total=r.count||0}catch(e){total=JSON.parse(localStorage.getItem('abordagensLocal')||'[]').filter(x=>x.user_email===usuarioEmail&&x.created_at.slice(0,10)===d).length}S('abordagensHoje',total)}
-function payload(){let q=calcularQualificacao();return {user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),convidado_1:V('nome1'),convidado_2:V('nome2'),idade_1:+V('idade1')||0,idade_2:+V('idade2')||0,profissao_1:V('profissao1'),profissao_2:V('profissao2'),estado_origem:V('estado'),cidade_origem:V('cidade'),estado_civil:V('relacionamento'),tempo_juntos:V('tempo'),veiculo:V('nomeCarro')?'Sim':'Não',marca_carro:'',modelo_carro:V('nomeCarro'),ano_veiculo:V('anoCarro'),cartao_credito:V('cartao'),casa_propria:V('casa'),multipropriedade:V('multi'),renda_casal:V('renda'),brinde:V('brinde'),contato:V('contato'),observacoes:V('obs'),qualificacao_automatica:q.status,motivo_qualificacao:q.motivo,levou_sala:'Não',created_at:new Date().toISOString()}}
-async function salvarPesquisa(){let p=payload();if(!p.convidado_1){H('formMsg','<span class=erro>Informe o Nome 1.</span>');return}try{await db.from('pesquisas').insert(p);H('formMsg','<span class=ok>Ficha salva.</span>')}catch(e){let a=JSON.parse(localStorage.getItem('pesquisasLocal')||'[]');a.push(p);localStorage.setItem('pesquisasLocal',JSON.stringify(a));H('formMsg','<span class=warn>Ficha salva localmente.</span>')}ultimaFicha=p;renderFicha(p);carregarRelatorio()}
-function campoFicha(label,valor){return `<div class=campo><small>${label}</small>${valor||'-'}</div>`}
-function renderFicha(p){
-E('fichaBox').classList.remove('hidden');
-const carroTxt = `${p.modelo_carro||'-'} ${p.ano_veiculo||''}`.trim();
-H('fichaConteudo',`<div id=fichaImg class=ficha>
-<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Simples 1.9 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
-${campoFicha('Resultado da qualificação', `${p.qualificacao_automatica||'-'} • ${p.motivo_qualificacao||'Perfil dentro da regra'}`)}
-${campoFicha('Nome 1', p.convidado_1)}
-${campoFicha('Idade 1 / Profissão 1', `${p.idade_1||'-'} anos • ${p.profissao_1||'-'}`)}
-${campoFicha('Nome 2', p.convidado_2)}
-${campoFicha('Idade 2 / Profissão 2', `${p.idade_2||'-'} anos • ${p.profissao_2||'-'}`)}
-${campoFicha('Relacionamento', `${p.estado_civil||'-'} • ${p.tempo_juntos||'-'}`)}
-${campoFicha('Renda', p.renda_casal)}
-${campoFicha('Veículo / Ano', carroTxt)}
-${campoFicha('Cartão de crédito', p.cartao_credito)}
-${campoFicha('Casa própria', p.casa_propria)}
-${campoFicha('Estado / Cidade', `${p.estado_origem||'-'} • ${p.cidade_origem||'-'}`)}
-${campoFicha('Multipropriedade', p.multipropriedade)}
-${campoFicha('Cortesia escolhida', p.brinde)}
-${campoFicha('WhatsApp / Contato', p.contato)}
-${campoFicha('Entrada em sala', p.levou_sala||'Aguardando informação do promotor')}
-${campoFicha('Equipe / Ponto', `${p.equipe||'-'} • ${p.ponto_captacao||'-'}`)}
-${campoFicha('Profissional responsável', p.captador_nome)}
-${campoFicha('Observações', p.observacoes||'Sem observações')}
-<div class="fichaRodapeFull">Cliente(s): ${p.convidado_1||'-'} ${p.convidado_2?'e '+p.convidado_2:''}<br>Registro CaptaPro • Bueno Invest • Sala ${p.levou_sala||'pendente'}</div>
-</div>`);
-}
-async function compartilharFicha(){let node=E('fichaImg');if(!node)return;let c=await html2canvas(node,{scale:2,backgroundColor:'#090909'});c.toBlob(async b=>{let f=new File([b],'ficha-captapro.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'Ficha CaptaPro'});else{let a=document.createElement('a');a.href=c.toDataURL();a.download='ficha-captapro.png';a.click()}})}
-function novaPesquisa(){['nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade','relacionamento','tempo','nomeCarro','anoCarro','cartao','casa','multi','renda','brinde','contato','obs'].forEach(id=>E(id).value='');H('resultado','');H('formMsg','');E('fichaBox').classList.add('hidden');E('nome1').focus()}
-async function dados(t){try{let r=await db.from(t).select('*').order('created_at',{ascending:false}).limit(1000);return r.data||[]}catch(e){return JSON.parse(localStorage.getItem(t==='pesquisas'?'pesquisasLocal':'abordagensLocal')||'[]')}}
-function per(x,de,ate){let d=(x.created_at||'').slice(0,10);return(!de||d>=de)&&(!ate||d<=ate)}
-async function carregarRelatorio(){
-let de=V('relDe'),ate=V('relAte'),p=await dados('pesquisas'),a=await dados('abordagens');
-const minhaEquipe=V('equipe');
-if(role!=='ceo'){
-  if(minhaEquipe){
-    p=p.filter(x=>x.equipe===minhaEquipe || x.user_email===usuarioEmail);
-    a=a.filter(x=>x.equipe===minhaEquipe || x.user_email===usuarioEmail);
-  }else{
-    p=p.filter(x=>x.user_email===usuarioEmail);
-    a=a.filter(x=>x.user_email===usuarioEmail);
-  }
-}
-p=p.filter(x=>per(x,de,ate));a=a.filter(x=>per(x,de,ate));
-let minhasPesq=role==='ceo'?p:p.filter(x=>x.user_email===usuarioEmail);
-let minhasAb=role==='ceo'?a:a.filter(x=>x.user_email===usuarioEmail);
-let sala=minhasPesq.filter(x=>String(x.levou_sala||'').toLowerCase().includes('sim')).length;
-S('rAbord',minhasAb.length);S('rPesq',minhasPesq.length);S('rSala',sala);S('rConv',minhasPesq.length?Math.round(sala/minhasPesq.length*100)+'%':'0%');
-let m={};
-p.forEach(x=>{
- let n=x.captador_nome||x.user_email;
- if(!m[n])m[n]={nome:n,equipe:x.equipe||'',p:0,s:0,q:0,nq:0,nq1:0,a:0};
- m[n].p++;
- const st=String(x.qualificacao_automatica||'');
- if(st==='Q')m[n].q++; else if(st.includes('1'))m[n].nq1++; else m[n].nq++;
- if(String(x.levou_sala||'').toLowerCase().includes('sim'))m[n].s++;
-});
-a.forEach(x=>{
- let n=x.captador_nome||x.user_email;
- if(!m[n])m[n]={nome:n,equipe:x.equipe||'',p:0,s:0,q:0,nq:0,nq1:0,a:0};
- m[n].a++;
-});
-let rows=Object.values(m).sort((x,y)=>y.p-x.p||y.a-x.a||y.s-x.s);
-const geral='<table><tr><th>Nome</th><th>Equipe</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th><th>Conv.</th></tr>'+rows.map(r=>`<tr><td>${r.nome}</td><td>${r.equipe||'-'}</td><td>${r.a}</td><td>${r.p}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.s}</td><td>${r.p?Math.round(r.s/r.p*100):0}%</td></tr>`).join('')+'</table>';
-H('rankingBox',rows.length?geral:'<p class=mini>Sem dados.</p>');
-if(E('rankingEquipeBox13')){
- let equipeRows=minhaEquipe?rows.filter(r=>r.equipe===minhaEquipe || r.nome===usuarioNome):rows;
- H('rankingEquipeBox13',equipeRows.length?'<table><tr><th>Nome</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th></tr>'+equipeRows.map(r=>`<tr><td>${r.nome}</td><td>${r.a}</td><td>${r.p}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.s}</td></tr>`).join('')+'</table>':'<p class=mini>Sem dados da equipe.</p>');
-}
-H('profFiltro','<option value="">Escolha o profissional</option>'+rows.map(r=>`<option>${r.nome}</option>`).join(''));
-window.rowsRel=rows;mostrarIndividual()
-}
-function mostrarIndividual(){let r=(window.rowsRel||[]).find(x=>x.nome===V('profFiltro'));H('individualBox',r?`<div class=kpis><div class=kpi>Abord.<b>${r.a}</b></div><div class=kpi>Pesq.<b>${r.p}</b></div><div class=kpi>Q<b>${r.q}</b></div><div class=kpi>NQ<b>${r.nq}</b></div><div class=kpi>1 Item<b>${r.nq1}</b></div><div class=kpi>Sala<b>${r.s}</b></div><div class=kpi>Conv.<b>${r.p?Math.round(r.s/r.p*100):0}%</b></div></div>`:'<p class=mini>Escolha um profissional.</p>')}
-</script>
+const CEOS=['raphaelbueno.captacao@gmail.com','marcel.dorado2@gmail.com'];
+let usuarioEmail='', usuarioNome='', role='profissional', ultimaFicha=null;
 
-<script>
-/* ===== CaptaPro Simples 1.9 • renda R$, pesquisa organizada e CEO completo ===== */
-(function(){
-function E14(id){return document.getElementById(id)}
-function V14(id){return (E14(id)?.value||'').trim()}
-function moedaParaNumero14(v){return Number(String(v||'').replace(/\D/g,''))||0}
-function formatarBRL14(n){return (Number(n||0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-function aplicarMascaraMoeda14(id){
- const el=E14(id); if(!el||el.__moeda14||el.tagName==='SELECT')return; el.__moeda14=true;
- el.addEventListener('input',()=>{let n=moedaParaNumero14(el.value); el.value=n?formatarBRL14(n):''});
- el.addEventListener('blur',()=>{let n=moedaParaNumero14(el.value); if(n)el.value=formatarBRL14(n)});
-}
-function tempoValor14(t){return {'Menos de 1 ano':0,'1 ano':1,'2 anos':2,'3 a 5 anos':3,'Mais de 5 anos':5}[t]||0}
-function profBloqueada14(prof,cfg){
- const lista=String(cfg.profissoesBloqueadas||'').toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);
- const p=String(prof||'').toLowerCase();
- return lista.some(x=>p.includes(x));
-}
-
-window.getCfg=function(){
- try{
-  return JSON.parse(localStorage.getItem('cfg')||'{}');
- }catch(e){return {}}
-}
-
-window.loadCfg=function(){
- let c=getCfg();
- if(E14('cfgIdadeMin'))E14('cfgIdadeMin').value=c.idadeMin||25;
- if(E14('cfgIdadeMax'))E14('cfgIdadeMax').value=c.idadeMax||64;
- if(E14('cfgRendaMin'))E14('cfgRendaMin').value=formatarBRL14(c.rendaMin||15000);
- if(E14('cfgAnoMin'))E14('cfgAnoMin').value=c.anoMin||2011;
- if(E14('cfgTempoMinNumero'))E14('cfgTempoMinNumero').value=c.tempoMinNumero||2;
- if(E14('cfgTempoMaxNumero'))E14('cfgTempoMaxNumero').value=c.tempoMaxNumero||30;
- if(E14('cfgCasa'))E14('cfgCasa').value=c.casa||'sim';
- if(E14('cfgCartao'))E14('cfgCartao').value=c.cartao||'sim';
- if(E14('cfgProfObrigatoria'))E14('cfgProfObrigatoria').value=c.profObrigatoria||'sim';
- if(E14('cfgProfissoesBloqueadas'))E14('cfgProfissoesBloqueadas').value=c.profissoesBloqueadas||'Operador de caixa, Zelador, Secretária, Auxiliar, Assistente, Avon/Natura/Multinível, Gari, Vendedor ambulante, Motoboy, Do lar, Estoquista, Eletricista, Diarista, Doméstica, Garçom, Manicure, Pedreiro, Atendente, Balconista, Babá, Porteiro, Frentista, Estudante, Uber/App/Freelancer';
- if(E14('cfgObsCEO'))E14('cfgObsCEO').value=c.obsCEO||'';
-}
-
-window.salvarConfig=function(){
- let c={
-  rendaMin:moedaParaNumero14(V14('cfgRendaMin'))||15000,
-  anoMin:Number(V14('cfgAnoMin'))||2011,
-  idadeMin:Number(V14('cfgIdadeMin'))||25,
-  idadeMax:Number(V14('cfgIdadeMax'))||64,
-  tempoMinNumero:Number(V14('cfgTempoMinNumero'))||2,
-  tempoMaxNumero:Number(V14('cfgTempoMaxNumero'))||30,
-  casa:V14('cfgCasa')||'sim',
-  cartao:V14('cfgCartao')||'sim',
-  profObrigatoria:V14('cfgProfObrigatoria')||'sim',
-  profissoesBloqueadas:V14('cfgProfissoesBloqueadas'),
-  obsCEO:V14('cfgObsCEO')
- };
- localStorage.setItem('cfg',JSON.stringify(c));
- if(E14('cfgMsg'))E14('cfgMsg').innerHTML='<span class="ok">Perfil CEO salvo.</span>';
-}
-
-window.qual=function(){
- let c=getCfg();
- if(!c.rendaMin)c={rendaMin:15000,anoMin:2011,idadeMin:25,idadeMax:64,tempoMinNumero:2,casa:'sim',cartao:'sim',profObrigatoria:'sim',profissoesBloqueadas:'Operador de caixa, Zelador, Secretária, Auxiliar, Assistente, Estudante, Uber/App/Freelancer'};
- let idade1=Number(V14('idade1'))||0, idade2=Number(V14('idade2'))||0;
- let idade=Math.max(idade1,idade2), renda=moedaParaNumero14(V14('renda')), ano=Number(V14('anoCarro'))||0;
- let status='Q',m=[];
- function nq(txt){status='NQ';m.push(txt)}
- function item(txt){if(status==='Q')status='NQ 1 Item';m.push(txt)}
- if(idade<c.idadeMin||idade>c.idadeMax)nq('idade');
- if(renda<c.rendaMin)item('renda');
- if(c.anoMin&&ano&&ano<c.anoMin)item('ano do carro');
- if(c.casa==='sim'&&V14('casa')!=='Sim')item('casa própria');
- if(c.cartao==='sim'&&V14('cartao')!=='Sim')item('cartão');
- if(c.profObrigatoria==='sim'&&(!V14('profissao1')&&!V14('profissao2')))item('profissão');
- if(profBloqueada14(V14('profissao1'),c)||profBloqueada14(V14('profissao2'),c))nq('profissão fora do perfil');
- if(c.tempoMinNumero&&tempoValor14(V14('tempo'))<Number(c.tempoMinNumero))item('tempo juntos');
- return {status,motivo:m.join(', ')||'Perfil dentro da regra'};
-}
-
-const oldPayload14=window.payload;
-if(typeof oldPayload14==='function'&&!window.__payload14){
- window.__payload14=true;
- window.payload=function(){
-   let p=oldPayload14.apply(this,arguments);
-   p.renda_casal=V14('renda');
-   p.estado_origem=V14('estado');
-   p.cidade_origem=V14('cidade');
-   return p;
- }
-}
-
-const oldRel14=window.carregarRelatorio;
-if(typeof oldRel14==='function'&&!window.__rel14){
- window.__rel14=true;
- window.carregarRelatorio=async function(){
-   const r=await oldRel14.apply(this,arguments);
-   const rg=E14('rankingBox');
-   if(rg)rg.classList.add('hidden');
-   return r;
- }
-}
-
-document.addEventListener('DOMContentLoaded',()=>{
- setTimeout(()=>{aplicarMascaraMoeda14('renda');aplicarMascaraMoeda14('cfgRendaMin');loadCfg();},500);
-});
-})();
-</script>
-
-
-
-<script>
-/* ===== CaptaPro Simples 1.9 • renda correta + ranking CSV ===== */
-(function(){
-function E16(id){return document.getElementById(id)}
-function V16(id){return (E16(id)?.value||'').trim()}
-function setHTML16(id,v){if(E16(id))E16(id).innerHTML=v}
-function onlyDigits16(v){return String(v||'').replace(/\D/g,'')}
-function numeroBR16(v){return Number(onlyDigits16(v))||0}
-function moedaBR16(n){return (Number(n||0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-function rendaSemSimbolo16(n){return (Number(n||0)).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
-
-function aplicarRendaCorreta16(){
- const el=E16('renda'); if(!el || el.__renda16 || el.tagName==='SELECT')return; el.__renda16=true;
- el.addEventListener('focus',()=>{ el.dataset.editando='1'; });
- el.addEventListener('input',()=>{
-   // Durante digitação, NÃO fica reprocessando valor já formatado.
-   // Pega apenas os dígitos atuais e mostra como número inteiro com ,00.
-   const raw=onlyDigits16(el.value);
-   el.value = raw ? rendaSemSimbolo16(Number(raw)) : '';
- });
- el.addEventListener('blur',()=>{
-   const raw=onlyDigits16(el.value);
-   el.value = raw ? rendaSemSimbolo16(Number(raw)) : '';
- });
-}
-
-function aplicarRendaCEOCorreta16(){
- const el=E16('cfgRendaMin'); if(!el || el.__rendaCEO16)return; el.__rendaCEO16=true;
- el.addEventListener('input',()=>{
-   const raw=onlyDigits16(el.value);
-   el.value = raw ? rendaSemSimbolo16(Number(raw)) : '';
- });
- el.addEventListener('blur',()=>{
-   const raw=onlyDigits16(el.value);
-   el.value = raw ? rendaSemSimbolo16(Number(raw)) : '';
- });
-}
-
-// Sobrescreve as funções antigas usadas pelo cálculo
-window.moedaParaNumero14=function(v){return numeroBR16(v)}
-window.formatarBRL14=function(n){return rendaSemSimbolo16(n)}
-
-const oldPayload16=window.payload;
-if(typeof oldPayload16==='function'&&!window.__payload16){
- window.__payload16=true;
- window.payload=function(){
-   const p=oldPayload16.apply(this,arguments);
-   p.renda_casal=V16('renda');
-   return p;
- }
-}
-
-function csvSplit16(line){
- const out=[]; let cur='', q=false;
- for(let i=0;i<line.length;i++){
-   const c=line[i];
-   if(c === '"'){ q=!q; continue; }
-   if((c===',' || c===';' || c==='\t') && !q){ out.push(cur.trim()); cur=''; continue; }
-   cur+=c;
- }
- out.push(cur.trim());
- return out;
-}
-function normaliza16(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
-function parseCSV16(text){
- const lines=String(text||'').split(/\r?\n/).filter(l=>l.trim());
- if(lines.length<2)return [];
- const headers=csvSplit16(lines[0]).map(normaliza16);
- return lines.slice(1).map(line=>{
-   const cols=csvSplit16(line); const o={};
-   headers.forEach((h,i)=>o[h]=cols[i]||'');
-   return o;
- });
-}
-function pick16(o,names){
- for(const n of names){
-   const key=Object.keys(o).find(k=>normaliza16(k)===normaliza16(n) || normaliza16(k).includes(normaliza16(n)));
-   if(key)return o[key];
- }
- return '';
-}
-function numPlanilha16(v){return Number(String(v||'').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.'))||0}
-
-window.importarRankingCSV16=function(ev){
- const file=ev.target.files && ev.target.files[0];
- if(!file)return;
- const reader=new FileReader();
- reader.onload=function(){
-   const dados=parseCSV16(reader.result);
-   renderRankingCSV16(dados);
-   localStorage.setItem('ranking_csv_16', JSON.stringify(dados));
- };
- reader.readAsText(file,'utf-8');
-}
-
-function renderRankingCSV16(dados){
- const box=E16('rankingMesBox15'); if(!box)return;
- const map={};
- (dados||[]).forEach(r=>{
-   const nome=pick16(r,['profissional','captador','promotor','nome'])||'Sem nome';
-   if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0,sala:0};
-   map[nome].casais += numPlanilha16(pick16(r,['casais','casal','pesquisas'])) || 0;
-   map[nome].vendas += numPlanilha16(pick16(r,['vendas','venda'])) || 0;
-   map[nome].vgv += numPlanilha16(pick16(r,['vgv','valor','valor vgv'])) || 0;
-   map[nome].sala += numPlanilha16(pick16(r,['sala','em sala','casais sala'])) || 0;
- });
- const arr=Object.values(map).sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv);
- if(!arr.length){box.innerHTML='<p class="mini">CSV sem dados compatíveis.</p>';return}
- box.innerHTML='<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>'+
- arr.map(r=>{
-   const ef=r.casais?Math.round(r.vendas/r.casais*100):0;
-   return `<tr><td>${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moedaBR16(r.vgv)}</td><td>${ef}%</td></tr>`;
- }).join('')+'</table>';
-}
-
-// Mantém o ranking automático do banco, mas sem quebrar se tiver CSV salvo
-const oldCarregarRel16=window.carregarRelatorio;
-if(typeof oldCarregarRel16==='function'&&!window.__rel16){
- window.__rel16=true;
- window.carregarRelatorio=async function(){
-   const r=await oldCarregarRel16.apply(this,arguments);
-   try{
-     const salvo=JSON.parse(localStorage.getItem('ranking_csv_16')||'[]');
-     if(salvo.length)renderRankingCSV16(salvo);
-   }catch(e){}
-   const rg=E16('rankingBox'); if(rg)rg.classList.add('hidden');
-   return r;
- }
-}
-
-document.addEventListener('DOMContentLoaded',()=>{
- setTimeout(()=>{
-   aplicarRendaCorreta16();
-   aplicarRendaCEOCorreta16();
-   try{
-     const salvo=JSON.parse(localStorage.getItem('ranking_csv_16')||'[]');
-     if(salvo.length)renderRankingCSV16(salvo);
-   }catch(e){}
- },500);
-});
-})();
-</script>
-
-<script>
-/* ===== CaptaPro Simples 1.9 • Raking + renda digitável + cortesias ===== */
-function parseMoedaGlobalCP17(v){
+function E(id){return document.getElementById(id)}
+function V(id){return (E(id)?.value||'').trim()}
+function H(id,v){if(E(id))E(id).innerHTML=v}
+function S(id,v){if(E(id))E(id).innerText=v}
+function normal(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function onlyDigits(v){return String(v||'').replace(/\D/g,'')}
+function parseMoeda(v){
   let s=String(v||'').replace(/R\$|\s/g,'').trim();
   if(!s)return 0;
   s=s.replace(/[^0-9,.-]/g,'');
   if(s.includes(',')) return Number(s.replace(/\./g,'').replace(',', '.'))||0;
   return Number(s.replace(/\./g,''))||0;
 }
-function moedaGlobalCP17(n){return (Number(n||0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
-function numeroTelaCP17(n){return (Number(n||0)).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
-function valorTempoCP17(t){return {'Menos de 1 ano':0,'1 ano':1,'2 anos':2,'3 a 5 anos':3,'Mais de 5 anos':5}[t]||0;}
-function normalCP17(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();}
-function vendaCountCP17(v){
-  const s=normalCP17(v);
-  if(!s)return 0;
-  const hashes=(s.match(/#/g)||[]).length;
-  if(hashes>0)return hashes;
-  if(/\b(venda|vendido|vendeu|contrato|fechou|fechado)\b/.test(s))return 1;
-  const n=Number(String(v).replace(/[^0-9]/g,''));
-  return Number.isFinite(n)?n:0;
-}
-function brindeCustoEstimadoCP17(txt){
-  const s=String(txt||'');
-  const n=parseMoedaGlobalCP17(s);
-  if(n)return n;
-  if(normalCP17(s).includes('sem brinde'))return 0;
-  return 0;
-}
-function aplicarMascaraCustoBrinde17(){
- const el=E('custoBrinde'); if(!el||el.__cp17)return; el.__cp17=true;
- el.addEventListener('input',()=>{const n=String(el.value||'').replace(/\D/g,''); el.value=n?numeroTelaCP17(Number(n)/100):''});
- el.addEventListener('blur',()=>{const n=parseMoedaGlobalCP17(el.value); el.value=n?numeroTelaCP17(n):''});
-}
-
-window.qual = qual = function(){
- let c=getCfg();
- if(!c.rendaMin)c={rendaMin:15000,anoMin:2011,idadeMin:25,idadeMax:64,tempoMinNumero:2,casa:'sim',cartao:'sim',profObrigatoria:'sim',profissoesBloqueadas:'Operador de caixa, Zelador, Secretária, Auxiliar, Assistente, Estudante, Uber/App/Freelancer'};
- let idade1=Number(V('idade1'))||0, idade2=Number(V('idade2'))||0;
- let idade=Math.max(idade1,idade2), renda=parseMoedaGlobalCP17(V('renda')), ano=Number(V('anoCarro'))||0;
- let status='Q',m=[];
- function nq(txt){status='NQ';m.push(txt)}
- function item(txt){if(status==='Q')status='NQ 1 Item';m.push(txt)}
- const lista=String(c.profissoesBloqueadas||'').toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);
- const p1=String(V('profissao1')||'').toLowerCase(), p2=String(V('profissao2')||'').toLowerCase();
- const profBloq=lista.some(x=>p1.includes(x)||p2.includes(x));
- if(idade<c.idadeMin||idade>c.idadeMax)nq('idade');
- if(renda<c.rendaMin)item('renda');
- if(c.anoMin&&ano&&ano<c.anoMin)item('ano do carro');
- if(c.casa==='sim'&&V('casa')!=='Sim')item('casa própria');
- if(c.cartao==='sim'&&V('cartao')!=='Sim')item('cartão');
- if(c.profObrigatoria==='sim'&&(!V('profissao1')&&!V('profissao2')))item('profissão');
- if(profBloq)nq('profissão fora do perfil');
- if(c.tempoMinNumero&&valorTempoCP17(V('tempo'))<Number(c.tempoMinNumero))item('tempo juntos');
- return {status,motivo:m.join(', ')||'Perfil dentro da regra'};
-}
-
-const payloadBaseCP17 = window.payload;
-if(typeof payloadBaseCP17==='function' && !window.__payloadCP17){
- window.__payloadCP17=true;
- window.payload = payload = function(){
-   const p=payloadBaseCP17.apply(this,arguments);
-   p.renda_casal=V('renda');
-   p.vgv=parseMoedaGlobalCP17(p.vgv||0);
-   return p;
- }
-}
-
-window.aba = aba = function(id,b){
- ['pesquisa','relatorio','raking','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
- if(E(id))E(id).classList.remove('hidden');
- document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
- if(b)b.classList.add('active');
- if(id==='relatorio')carregarRelatorio();
- if(id==='raking')carregarRaking();
-}
-
-function csvSplitCP17(line){
- const out=[]; let cur='', q=false;
- for(let i=0;i<line.length;i++){
-   const c=line[i];
-   if(c==='"'){q=!q;continue;}
-   if((c===','||c===';'||c==='\t')&&!q){out.push(cur.trim());cur='';continue;}
-   cur+=c;
- }
- out.push(cur.trim()); return out;
-}
-function parseCSVCP17(text){
- const lines=String(text||'').split(/\r?\n/).filter(l=>l.trim());
- if(lines.length<2)return [];
- const headers=csvSplitCP17(lines[0]).map(normalCP17);
- return lines.slice(1).map(line=>{const cols=csvSplitCP17(line); const o={}; headers.forEach((h,i)=>o[h]=cols[i]||''); return o;});
-}
-function pickCP17(o,names){
- const keys=Object.keys(o||{});
- for(const n of names){
-  const nn=normalCP17(n);
-  const k=keys.find(x=>normalCP17(x)===nn || normalCP17(x).includes(nn));
-  if(k)return o[k];
- }
- return '';
-}
-function montarRakingDeCSVCP17(dados){
- const map={};
- (dados||[]).forEach(r=>{
-   const nome=pickCP17(r,['profissional','captador','promotor','nome','captador_nome'])||'Sem nome';
-   if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0,sala:0};
-   map[nome].casais += parseMoedaGlobalCP17(pickCP17(r,['casais','casal','pesquisas','fichas'])) || 0;
-   map[nome].vendas += parseMoedaGlobalCP17(pickCP17(r,['vendas','venda'])) || vendaCountCP17(pickCP17(r,['status']));
-   map[nome].vgv += parseMoedaGlobalCP17(pickCP17(r,['vgv','valor vgv','valor','volume geral'])) || 0;
-   map[nome].sala += parseMoedaGlobalCP17(pickCP17(r,['sala','em sala','casais sala','levou_sala'])) || 0;
- });
- return Object.values(map);
-}
-function montarRakingDePesquisasCP17(pesquisas){
- const map={};
- (pesquisas||[]).forEach(x=>{
-   const nome=x.captador_nome||x.profissional||x.user_email||'Sem nome';
-   if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0,sala:0};
-   map[nome].casais += 1;
-   map[nome].vendas += vendaCountCP17(x.status||x.venda||x.vendas);
-   map[nome].vgv += parseMoedaGlobalCP17(x.vgv||x.valor_vgv||0);
-   const entrouSala=normalCP17(x.levou_sala||x.sala||'').includes('sim') || x.sala===true || Number(x.sala)>0;
-   if(entrouSala)map[nome].sala += 1;
- });
- return Object.values(map);
-}
-function renderTabelaRakingCP17(arr,fonte){
- const box=E('rakingBox'); if(!box)return;
- arr=(arr||[]).filter(r=>r.nome).sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv||a.nome.localeCompare(b.nome));
- if(E('rakingFonte17'))E('rakingFonte17').innerHTML=fonte||'';
- if(!arr.length){box.innerHTML='<p class="mini">Sem dados para montar o Raking.</p>';return;}
- const total={casais:0,vendas:0,vgv:0,sala:0};
- arr.forEach(r=>{total.casais+=r.casais;total.vendas+=r.vendas;total.vgv+=r.vgv;total.sala+=r.sala});
- const linhas=arr.map((r,i)=>{
-   const ef=r.casais?((r.vendas/r.casais)*100):0;
-   const pos=i+1;
-   return `<tr><td>${pos}º ${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moedaGlobalCP17(r.vgv)}</td><td>${ef.toFixed(1).replace('.',',')}%</td></tr>`;
- }).join('');
- const efTotal=total.casais?((total.vendas/total.casais)*100):0;
- box.innerHTML=`<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${linhas}<tr><th>Total</th><th>${total.casais}</th><th>${total.vendas}</th><th>${moedaGlobalCP17(total.vgv)}</th><th>${efTotal.toFixed(1).replace('.',',')}%</th></tr></table>`;
-}
-function setPeriodoRakingCP17(){
- const de=E('rakingDe'), ate=E('rakingAte'); if(!de||!ate)return;
- if(!de.value||!ate.value){
-   const now=new Date();
-   const y=now.getFullYear(), m=String(now.getMonth()+1).padStart(2,'0');
-   const ultimo=new Date(y, now.getMonth()+1, 0).getDate();
-   de.value=`${y}-${m}-01`; ate.value=`${y}-${m}-${String(ultimo).padStart(2,'0')}`;
- }
-}
-window.importarRakingCSV17=function(ev){
- const file=ev.target.files&&ev.target.files[0]; if(!file)return;
- const reader=new FileReader();
- reader.onload=function(){
-   const dados=parseCSVCP17(reader.result);
-   localStorage.setItem('raking_csv_17',JSON.stringify(dados));
-   renderTabelaRakingCP17(montarRakingDeCSVCP17(dados),'<span class="ok">Fonte: CSV importado.</span>');
- };
- reader.readAsText(file,'utf-8');
-}
-window.limparRakingCSV17=function(){
- localStorage.removeItem('raking_csv_17');
- const inp=E('csvRakingInput17'); if(inp)inp.value='';
- carregarRaking(true);
-}
-async function tentarCSVRepositorioCP17(){
- try{
-   const urls=['./raking%20junho.csv','./raking junho.csv','raking%20junho.csv'];
-   for(const url of urls){
-    try{
-      const resp=await fetch(url,{cache:'no-store'});
-      if(resp.ok){const text=await resp.text(); const dados=parseCSVCP17(text); if(dados.length)return dados;}
-    }catch(e){}
-   }
- }catch(e){}
- return [];
-}
-window.carregarRaking = carregarRaking = async function(forcarBanco){
- setPeriodoRakingCP17();
- if(!forcarBanco){
-   try{const salvo=JSON.parse(localStorage.getItem('raking_csv_17')||'[]'); if(salvo.length){renderTabelaRakingCP17(montarRakingDeCSVCP17(salvo),'<span class="ok">Fonte: CSV importado.</span>'); return;}}catch(e){}
- }
- let de=V('rakingDe'), ate=V('rakingAte');
- let p=[];
- try{p=await dados('pesquisas')}catch(e){p=[]}
- p=(p||[]).filter(x=>{const d=String(x.created_at||'').slice(0,10); return (!de||d>=de)&&(!ate||d<=ate);});
- const arr=montarRakingDePesquisasCP17(p);
- if(arr.length){renderTabelaRakingCP17(arr,'<span class="ok">Fonte: fichas salvas no banco/local.</span>');return;}
- if(!forcarBanco){
-   const repo=await tentarCSVRepositorioCP17();
-   if(repo.length){renderTabelaRakingCP17(montarRakingDeCSVCP17(repo),'<span class="ok">Fonte: arquivo raking junho.csv do GitHub.</span>');return;}
- }
- renderTabelaRakingCP17([], '<span class="warn">Nenhum dado encontrado. Importe o CSV ou salve fichas no sistema.</span>');
-}
-const carregarRelatorioBaseCP17=window.carregarRelatorio;
-if(typeof carregarRelatorioBaseCP17==='function'&&!window.__relatorioCP17){
- window.__relatorioCP17=true;
- window.carregarRelatorio=carregarRelatorio=async function(){
-  const r=await carregarRelatorioBaseCP17.apply(this,arguments);
-  try{carregarRaking();}catch(e){}
-  return r;
- }
-}
-document.addEventListener('DOMContentLoaded',()=>{
- setTimeout(()=>{setPeriodoRakingCP17(); carregarRaking();},700);
-});
-</script>
-
-<script>
-/* ===== CaptaPro Simples 1.9 • máscara de renda digitável ===== */
-(function(){
-function E18(id){return document.getElementById(id)}
-function formataRendaCP18(digits){
-  digits=String(digits||'').replace(/\D/g,'');
-  return digits ? Number(digits).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '';
-}
-function aplicaRendaDigitavelCP18(){
-  const el=E18('renda'); if(!el || el.__rendaCP18)return;
-  el.__rendaCP18=true;
-  // impede máscaras antigas de colocarem R$ ou dobrarem os zeros
-  el.__moeda14=true;
-  el.__renda16=true;
-  let digits=String(el.value||'').split(',')[0].replace(/\D/g,'');
-  function render(){
-    el.value=formataRendaCP18(digits);
-    try{ const pos=Math.max(0, el.value.indexOf(',')>-1 ? el.value.indexOf(',') : el.value.length); el.setSelectionRange(pos,pos); }catch(e){}
-  }
-  el.addEventListener('focus',()=>{ digits=String(el.value||'').split(',')[0].replace(/\D/g,''); render(); });
-  el.addEventListener('beforeinput',(ev)=>{
-    if(ev.inputType==='insertText' && /^\d$/.test(ev.data||'')){
-      ev.preventDefault();
-      if(el.selectionStart===0 && el.selectionEnd===el.value.length)digits='';
-      digits += ev.data;
-      render();
-    }else if(ev.inputType==='deleteContentBackward'){
-      ev.preventDefault();
-      digits=digits.slice(0,-1);
-      render();
-    }else if(ev.inputType==='insertFromPaste'){
-      ev.preventDefault();
-      navigator.clipboard.readText().then(t=>{digits=String(t||'').replace(/\D/g,''); render();}).catch(()=>{});
-    }
-  });
-  el.addEventListener('input',()=>{
-    // fallback para navegadores sem beforeinput
-    if(!el.__fallbackCP18){
-      digits=String(el.value||'').split(',')[0].replace(/\D/g,'');
-      render();
-    }
-  });
-  el.addEventListener('blur',render);
-}
-function aplicaCortesiasCP18(){
-  const brinde=E18('brinde'); if(brinde)brinde.setAttribute('aria-label','Cortesia escolhida');
-}
-document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{aplicaRendaDigitavelCP18(); aplicaCortesiasCP18();},100);});
-})();
-</script>
-
-
-<script>
-/* ===== CaptaPro Simples 1.9 • Raking sem Excel / automático pelo banco ===== */
-(function(){
-function $(id){return document.getElementById(id)}
-function dataISO(d){return String(d||'').slice(0,10)}
-function normalCP19(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
-function parseValorCP19(v){
-  let s=String(v||'').replace(/R\$|\s/g,'').trim();
-  if(!s)return 0;
-  s=s.replace(/[^0-9,.-]/g,'');
-  if(s.includes(','))return Number(s.replace(/\./g,'').replace(',', '.'))||0;
-  return Number(s.replace(/\./g,''))||0;
-}
-function moedaCP19(n){return (Number(n||0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
-function vendaCP19(v){
-  const s=normalCP19(v);
-  if(!s)return 0;
-  const hashes=(String(v).match(/#/g)||[]).length;
-  if(hashes>0)return hashes;
-  if(/\b(venda|vendido|vendeu|contrato|fechou|fechado)\b/.test(s))return 1;
-  const n=Number(String(v).replace(/[^0-9]/g,''));
-  return Number.isFinite(n)?n:0;
-}
-function montarRankingCP19(pesquisas){
-  const map={};
-  (pesquisas||[]).forEach(x=>{
-    const nome=x.captador_nome||x.profissional||x.user_email||'Sem nome';
-    if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0};
-    map[nome].casais += 1;
-    map[nome].vendas += vendaCP19(x.status||x.venda||x.vendas);
-    map[nome].vgv += parseValorCP19(x.vgv||x.valor_vgv||x.valor||0);
-  });
-  return Object.values(map).sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv||a.nome.localeCompare(b.nome));
-}
-function tabelaCP19(arr){
-  arr=(arr||[]).filter(x=>x&&x.nome);
-  if(!arr.length)return '<p class="mini">Sem dados salvos para montar o Raking.</p>';
-  const total={casais:0,vendas:0,vgv:0};
-  const linhas=arr.map((r,i)=>{
-    total.casais+=r.casais; total.vendas+=r.vendas; total.vgv+=r.vgv;
-    const ef=r.casais?((r.vendas/r.casais)*100):0;
-    return `<tr><td>${i+1}º ${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moedaCP19(r.vgv)}</td><td>${ef.toFixed(1).replace('.',',')}%</td></tr>`;
-  }).join('');
-  const efT=total.casais?((total.vendas/total.casais)*100):0;
-  return `<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${linhas}<tr><th>Total</th><th>${total.casais}</th><th>${total.vendas}</th><th>${moedaCP19(total.vgv)}</th><th>${efT.toFixed(1).replace('.',',')}%</th></tr></table>`;
-}
-function setPeriodoMesAtualCP19(){
-  const de=$('rakingDe'), ate=$('rakingAte');
-  if(!de||!ate)return;
-  if(!de.value||!ate.value){
-    const now=new Date();
-    const y=now.getFullYear(), m=String(now.getMonth()+1).padStart(2,'0');
-    const ultimo=new Date(y, now.getMonth()+1, 0).getDate();
-    de.value=`${y}-${m}-01`;
-    ate.value=`${y}-${m}-${String(ultimo).padStart(2,'0')}`;
-  }
-}
-async function pesquisasPeriodoCP19(de,ate){
-  let p=[];
-  try{p=await dados('pesquisas')}catch(e){p=[]}
-  return (p||[]).filter(x=>{const d=dataISO(x.created_at); return (!de||d>=de)&&(!ate||d<=ate);});
-}
-async function renderRankingMesAtualCP19(){
-  const box=$('rankingMesBox15'); if(!box)return;
-  const now=new Date();
-  const y=now.getFullYear(), m=String(now.getMonth()+1).padStart(2,'0');
-  const ultimo=new Date(y, now.getMonth()+1, 0).getDate();
-  const p=await pesquisasPeriodoCP19(`${y}-${m}-01`, `${y}-${m}-${String(ultimo).padStart(2,'0')}`);
-  box.innerHTML=tabelaCP19(montarRankingCP19(p));
-}
-window.carregarRaking = async function(){
-  try{localStorage.removeItem('ranking_csv_16');localStorage.removeItem('raking_csv_17');}catch(e){}
-  setPeriodoMesAtualCP19();
-  const de=($('rakingDe')||{}).value||'', ate=($('rakingAte')||{}).value||'';
-  const p=await pesquisasPeriodoCP19(de,ate);
-  if($('rakingFonte17'))$('rakingFonte17').innerHTML='<span class="ok">Fonte: fichas salvas no banco/local.</span>';
-  if($('rakingBox'))$('rakingBox').innerHTML=tabelaCP19(montarRankingCP19(p));
-};
-const baseRelatorioCP19=window.carregarRelatorio;
-window.carregarRelatorio=async function(){
-  try{localStorage.removeItem('ranking_csv_16');localStorage.removeItem('raking_csv_17');}catch(e){}
-  let r;
-  if(typeof baseRelatorioCP19==='function')r=await baseRelatorioCP19.apply(this,arguments);
-  await renderRankingMesAtualCP19();
-  return r;
-};
-document.addEventListener('DOMContentLoaded',()=>{
-  try{localStorage.removeItem('ranking_csv_16');localStorage.removeItem('raking_csv_17');}catch(e){}
-  setTimeout(()=>{renderRankingMesAtualCP19(); window.carregarRaking();},800);
-});
-})();
-</script>
-
-
-<script>
-/* ===== CaptaPro Simples 2.0 • Raking com relatório completo automático ===== */
-(function(){
-function $(id){return document.getElementById(id)}
-function setTxt(id,v){const el=$(id); if(el)el.innerText=v}
-function setHTML(id,v){const el=$(id); if(el)el.innerHTML=v}
-function dataISO(v){return String(v||'').slice(0,10)}
-function normal(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
 function moeda(n){return (Number(n||0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-function parseValor(v){
-  let s=String(v||'').replace(/R\$|\s/g,'').trim();
-  if(!s)return 0;
-  s=s.replace(/[^0-9,.-]/g,'');
-  if(s.includes(','))return Number(s.replace(/\./g,'').replace(',', '.'))||0;
-  return Number(s.replace(/\./g,''))||0;
-}
-function venda(v){
+function rendaTela(n){return (Number(n||0)).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function vendaCount(v){
   const s=normal(v);
   if(!s)return 0;
   const hashes=(String(v).match(/#/g)||[]).length;
@@ -930,107 +244,229 @@ function venda(v){
   const n=Number(String(v).replace(/[^0-9]/g,''));
   return Number.isFinite(n)?n:0;
 }
-function ehSala(x){return normal(x.levou_sala||x.em_sala||x.sala||'').includes('sim')}
-function periodoPadrao(){
-  const de=$('rakingDe'), ate=$('rakingAte');
-  if(!de||!ate)return;
-  if(!de.value||!ate.value){
-    const now=new Date();
-    const y=now.getFullYear();
-    const m=String(now.getMonth()+1).padStart(2,'0');
-    const ultimo=new Date(y, now.getMonth()+1, 0).getDate();
-    de.value=`${y}-${m}-01`;
-    ate.value=`${y}-${m}-${String(ultimo).padStart(2,'0')}`;
-  }
-}
-function filtrarPeriodo(lista,de,ate){
-  return (lista||[]).filter(x=>{const d=dataISO(x.created_at); return (!de||d>=de)&&(!ate||d<=ate);});
-}
-function filtrarAcesso(lista){
-  try{
-    if(window.role==='ceo')return lista||[];
-    const email=window.usuarioEmail||'';
-    const eq=(typeof V==='function'?V('equipe'):'')||'';
-    return (lista||[]).filter(x=>x.user_email===email || (eq && x.equipe===eq));
-  }catch(e){return lista||[];}
-}
-async function lerTabela(tabela){
-  try{ if(typeof dados==='function')return await dados(tabela)||[]; }catch(e){}
-  try{return JSON.parse(localStorage.getItem(tabela==='pesquisas'?'pesquisasLocal':'abordagensLocal')||'[]')}catch(e){return []}
-}
-function montarRanking(pesquisas){
-  const map={};
-  (pesquisas||[]).forEach(x=>{
-    const nome=x.captador_nome||x.profissional||x.promotor||x.user_email||'Sem nome';
-    if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0};
-    map[nome].casais+=1;
-    map[nome].vendas+=venda(x.status||x.venda||x.vendas||x.status_venda);
-    map[nome].vgv+=parseValor(x.vgv||x.valor_vgv||x.valor||x.valor_venda||0);
-  });
-  return Object.values(map).sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv||a.nome.localeCompare(b.nome));
-}
-function tabelaRanking(arr){
-  if(!arr||!arr.length)return '<p class="mini">Sem fichas salvas nesse período para montar o ranking.</p>';
-  const total={casais:0,vendas:0,vgv:0};
-  const linhas=arr.map((r,i)=>{
-    total.casais+=r.casais; total.vendas+=r.vendas; total.vgv+=r.vgv;
-    const ef=r.casais?(r.vendas/r.casais*100):0;
-    return `<tr><td>${i+1}º ${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moeda(r.vgv)}</td><td>${ef.toFixed(1).replace('.',',')}%</td></tr>`;
-  }).join('');
-  const efT=total.casais?(total.vendas/total.casais*100):0;
-  return `<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${linhas}<tr><th>Total</th><th>${total.casais}</th><th>${total.vendas}</th><th>${moeda(total.vgv)}</th><th>${efT.toFixed(1).replace('.',',')}%</th></tr></table>`;
-}
-function montarRelatorioEquipe(pesquisas,abordagens){
-  const map={};
-  function base(x){
-    const nome=x.captador_nome||x.profissional||x.promotor||x.user_email||'Sem nome';
-    if(!map[nome])map[nome]={nome,equipe:x.equipe||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0};
-    if(x.equipe&&!map[nome].equipe)map[nome].equipe=x.equipe;
-    return map[nome];
-  }
-  (abordagens||[]).forEach(x=>{base(x).abord++;});
-  (pesquisas||[]).forEach(x=>{
-    const r=base(x); r.pesq++;
-    const st=normal(x.qualificacao_automatica||x.qualificacao||x.status_qualificacao||'');
-    if(st==='q')r.q++;
-    else if(st.includes('1'))r.nq1++;
-    else if(st.includes('nq'))r.nq++;
-    if(ehSala(x))r.sala++;
-  });
-  return Object.values(map).sort((a,b)=>b.pesq-a.pesq||b.abord-a.abord||b.sala-a.sala||a.nome.localeCompare(b.nome));
-}
-function tabelaRelatorio(rows){
-  if(!rows||!rows.length)return '<p class="mini">Sem dados nesse período.</p>';
-  return '<table><tr><th>Nome</th><th>Equipe</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th><th>Conv.</th></tr>'+rows.map(r=>{
-    const conv=r.pesq?Math.round(r.sala/r.pesq*100):0;
-    return `<tr><td>${r.nome}</td><td>${r.equipe||'-'}</td><td>${r.abord}</td><td>${r.pesq}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.sala}</td><td>${conv}%</td></tr>`;
-  }).join('')+'</table>';
-}
-async function carregarRaking20(){
-  try{localStorage.removeItem('ranking_csv_16');localStorage.removeItem('raking_csv_17');}catch(e){}
-  periodoPadrao();
-  const de=($('rakingDe')||{}).value||'', ate=($('rakingAte')||{}).value||'';
-  let pesquisas=filtrarAcesso(filtrarPeriodo(await lerTabela('pesquisas'),de,ate));
-  let abordagens=filtrarAcesso(filtrarPeriodo(await lerTabela('abordagens'),de,ate));
-  const sala=pesquisas.filter(ehSala).length;
-  setTxt('rkAbord20',abordagens.length);
-  setTxt('rkPesq20',pesquisas.length);
-  setTxt('rkSala20',sala);
-  setTxt('rkConv20',pesquisas.length?Math.round(sala/pesquisas.length*100)+'%':'0%');
-  setHTML('rakingFonte17','<span class="ok">Fonte: fichas e abordagens salvas no sistema.</span>');
-  setHTML('rakingBox',tabelaRanking(montarRanking(pesquisas)));
-  setHTML('rakingRelatorioEquipe20',tabelaRelatorio(montarRelatorioEquipe(pesquisas,abordagens)));
-}
-window.carregarRaking=carregarRaking20;
-const relatorioAnterior20=window.carregarRelatorio;
-window.carregarRelatorio=async function(){
-  let r;
-  if(typeof relatorioAnterior20==='function')r=await relatorioAnterior20.apply(this,arguments);
-  try{await carregarRaking20();}catch(e){}
-  return r;
-};
-document.addEventListener('DOMContentLoaded',()=>{setTimeout(carregarRaking20,900);});
-})();
-</script>
+function valorTempo(t){return {'Menos de 1 ano':0,'1 ano':1,'2 anos':2,'3 a 5 anos':3,'Mais de 5 anos':5}[t]||0}
 
+for(let i=18;i<=90;i++){ if(E('idade1'))E('idade1').innerHTML+=`<option>${i}</option>`; if(E('idade2'))E('idade2').innerHTML+=`<option>${i}</option>`; }
+
+function aplicarRendaDigitavel(){
+ const el=E('renda'); if(!el||el.__renda21)return; el.__renda21=true;
+ let digits=String(el.value||'').split(',')[0].replace(/\D/g,'');
+ function render(){ el.value = digits ? rendaTela(Number(digits)) : ''; try{ const p=el.value.indexOf(','); el.setSelectionRange(p>-1?p:el.value.length,p>-1?p:el.value.length); }catch(e){} }
+ el.addEventListener('focus',()=>{digits=String(el.value||'').split(',')[0].replace(/\D/g,''); render();});
+ el.addEventListener('beforeinput',(ev)=>{
+   if(ev.inputType==='insertText' && /^\d$/.test(ev.data||'')){ev.preventDefault(); if(el.selectionStart===0&&el.selectionEnd===el.value.length)digits=''; digits+=ev.data; render();}
+   else if(ev.inputType==='deleteContentBackward'){ev.preventDefault(); digits=digits.slice(0,-1); render();}
+ });
+ el.addEventListener('input',()=>{ if(!el.value.includes(',')){digits=onlyDigits(el.value); render();} });
+ el.addEventListener('blur',render);
+}
+function aplicarRendaCEO(){
+ const el=E('cfgRendaMin'); if(!el||el.__rendaCEO21)return; el.__rendaCEO21=true;
+ el.addEventListener('input',()=>{ const d=onlyDigits(el.value); el.value=d?rendaTela(Number(d)):''; });
+}
+
+function getCfg(){
+ try{return JSON.parse(localStorage.getItem('cfg')||'{}')}catch(e){return {}}
+}
+function loadCfg(){
+ const c=getCfg();
+ if(E('cfgIdadeMin'))E('cfgIdadeMin').value=c.idadeMin||25;
+ if(E('cfgIdadeMax'))E('cfgIdadeMax').value=c.idadeMax||64;
+ if(E('cfgRendaMin'))E('cfgRendaMin').value=rendaTela(c.rendaMin||15000);
+ if(E('cfgAnoMin'))E('cfgAnoMin').value=c.anoMin||2011;
+ if(E('cfgTempoMinNumero'))E('cfgTempoMinNumero').value=c.tempoMinNumero||2;
+ if(E('cfgTempoMaxNumero'))E('cfgTempoMaxNumero').value=c.tempoMaxNumero||30;
+ if(E('cfgCasa'))E('cfgCasa').value=c.casa||'sim';
+ if(E('cfgCartao'))E('cfgCartao').value=c.cartao||'sim';
+ if(E('cfgProfObrigatoria'))E('cfgProfObrigatoria').value=c.profObrigatoria||'sim';
+ if(E('cfgProfissoesBloqueadas'))E('cfgProfissoesBloqueadas').value=c.profissoesBloqueadas||'Operador de caixa, Zelador, Secretária, Auxiliar, Assistente, Estudante, Uber/App/Freelancer';
+ if(E('cfgObsCEO'))E('cfgObsCEO').value=c.obsCEO||'';
+}
+function salvarConfig(){
+ const c={
+   rendaMin:parseMoeda(V('cfgRendaMin'))||15000,
+   anoMin:Number(V('cfgAnoMin'))||2011,
+   idadeMin:Number(V('cfgIdadeMin'))||25,
+   idadeMax:Number(V('cfgIdadeMax'))||64,
+   tempoMinNumero:Number(V('cfgTempoMinNumero'))||2,
+   tempoMaxNumero:Number(V('cfgTempoMaxNumero'))||30,
+   casa:V('cfgCasa')||'sim',
+   cartao:V('cfgCartao')||'sim',
+   profObrigatoria:V('cfgProfObrigatoria')||'sim',
+   profissoesBloqueadas:V('cfgProfissoesBloqueadas'),
+   obsCEO:V('cfgObsCEO')
+ };
+ localStorage.setItem('cfg',JSON.stringify(c));
+ H('cfgMsg','<span class="ok">Perfil CEO salvo.</span>');
+}
+
+async function entrar(){
+ usuarioEmail=V('email').toLowerCase(); usuarioNome=V('nome')||usuarioEmail;
+ if(!usuarioEmail){H('loginMsg','<span class=erro>Informe o e-mail.</span>');return}
+ try{
+   const r=await db.from('approved_users').select('*').eq('email',usuarioEmail).maybeSingle();
+   let u=r.data;
+   if(!u&&CEOS.includes(usuarioEmail))u={role:'ceo',approved:true,name:usuarioNome};
+   if(!u||u.approved===false){H('loginMsg','<span class=erro>E-mail não aprovado.</span>');return}
+   role=u.role||'profissional'; usuarioNome=u.name||usuarioNome;
+ }catch(e){role=CEOS.includes(usuarioEmail)?'ceo':'profissional'}
+ document.body.classList.toggle('ceo',role==='ceo'||CEOS.includes(usuarioEmail));
+ E('loginBox').classList.add('hidden'); E('app').classList.remove('hidden');
+ localStorage.setItem('loginSimples',JSON.stringify({email:usuarioEmail,nome:usuarioNome}));
+ loadCfg(); aplicarRendaDigitavel(); aplicarRendaCEO(); carregarAbordagensHoje(); carregarRelatorio(); carregarRaking();
+}
+(function(){try{const l=JSON.parse(localStorage.getItem('loginSimples')||'null'); if(l){E('email').value=l.email;E('nome').value=l.nome;setTimeout(entrar,300)}}catch(e){}})();
+
+function aba(id,b){
+ ['pesquisa','relatorio','raking','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
+ if(E(id))E(id).classList.remove('hidden');
+ document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+ if(b)b.classList.add('active');
+ if(id==='relatorio')carregarRelatorio();
+ if(id==='raking')carregarRaking();
+}
+
+function qual(){
+ const c=getCfg(); const cfg=Object.assign({rendaMin:15000,anoMin:2011,idadeMin:25,idadeMax:64,tempoMinNumero:2,casa:'sim',cartao:'sim',profObrigatoria:'sim',profissoesBloqueadas:'Operador de caixa, Zelador, Secretária, Auxiliar, Assistente, Estudante, Uber/App/Freelancer'}, c);
+ const idade=Math.max(Number(V('idade1'))||0,Number(V('idade2'))||0);
+ const renda=parseMoeda(V('renda')); const ano=Number(V('anoCarro'))||0;
+ let status='Q', m=[];
+ function nq(txt){status='NQ';m.push(txt)}
+ function item(txt){if(status==='Q')status='NQ 1 Item';m.push(txt)}
+ const lista=String(cfg.profissoesBloqueadas||'').toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);
+ const p1=String(V('profissao1')||'').toLowerCase(), p2=String(V('profissao2')||'').toLowerCase();
+ if(idade<cfg.idadeMin||idade>cfg.idadeMax)nq('idade');
+ if(renda<cfg.rendaMin)item('renda');
+ if(cfg.anoMin&&ano&&ano<cfg.anoMin)item('ano do carro');
+ if(cfg.casa==='sim'&&V('casa')!=='Sim')item('casa própria');
+ if(cfg.cartao==='sim'&&V('cartao')!=='Sim')item('cartão');
+ if(cfg.profObrigatoria==='sim'&&(!V('profissao1')&&!V('profissao2')))item('profissão');
+ if(lista.some(x=>p1.includes(x)||p2.includes(x)))nq('profissão fora do perfil');
+ if(cfg.tempoMinNumero&&valorTempo(V('tempo'))<Number(cfg.tempoMinNumero))item('tempo juntos');
+ return {status,motivo:m.join(', ')||'Perfil dentro da regra'};
+}
+function calcularQualificacao(){const q=qual();H('resultado',`<div class=card><span class=badge>${q.status}</span><p class=mini>${q.motivo}</p></div>`);return q}
+
+async function registrarAbordagem(){
+ const p={user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),observacao:'Abordagem',created_at:new Date().toISOString()};
+ try{await db.from('abordagens').insert(p)}catch(e){const a=JSON.parse(localStorage.getItem('abordagensLocal')||'[]');a.push(p);localStorage.setItem('abordagensLocal',JSON.stringify(a))}
+ carregarAbordagensHoje(); H('formMsg','<span class=ok>Abordagem registrada.</span>');
+}
+async function carregarAbordagensHoje(){
+ let total=0,d=new Date().toISOString().slice(0,10);
+ try{const r=await db.from('abordagens').select('*',{count:'exact',head:true}).eq('user_email',usuarioEmail).gte('created_at',d+'T00:00:00').lte('created_at',d+'T23:59:59');total=r.count||0}
+ catch(e){total=JSON.parse(localStorage.getItem('abordagensLocal')||'[]').filter(x=>x.user_email===usuarioEmail&&String(x.created_at).slice(0,10)===d).length}
+ S('abordagensHoje',total);
+}
+function payload(){
+ const q=calcularQualificacao();
+ return {user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),convidado_1:V('nome1'),convidado_2:V('nome2'),idade_1:Number(V('idade1'))||0,idade_2:Number(V('idade2'))||0,profissao_1:V('profissao1'),profissao_2:V('profissao2'),estado_origem:V('estado'),cidade_origem:V('cidade'),estado_civil:V('relacionamento'),tempo_juntos:V('tempo'),veiculo:V('nomeCarro')?'Sim':'Não',marca_carro:'',modelo_carro:V('nomeCarro'),ano_veiculo:V('anoCarro'),cartao_credito:V('cartao'),casa_propria:V('casa'),multipropriedade:V('multi'),renda_casal:V('renda'),brinde:V('brinde'),contato:V('contato'),observacoes:V('obs'),qualificacao_automatica:q.status,motivo_qualificacao:q.motivo,levou_sala:'Não',created_at:new Date().toISOString()};
+}
+async function salvarPesquisa(){
+ const p=payload(); if(!p.convidado_1){H('formMsg','<span class=erro>Informe o Nome 1.</span>');return}
+ try{await db.from('pesquisas').insert(p);H('formMsg','<span class=ok>Ficha salva.</span>')}
+ catch(e){const a=JSON.parse(localStorage.getItem('pesquisasLocal')||'[]');a.push(p);localStorage.setItem('pesquisasLocal',JSON.stringify(a));H('formMsg','<span class=warn>Ficha salva localmente.</span>')}
+ ultimaFicha=p; renderFicha(p); carregarRelatorio(); carregarRaking();
+}
+function confirmarSala21(){
+ if(!ultimaFicha){H('formMsg','<span class=warn>Salve a ficha primeiro.</span>');return}
+ ultimaFicha.levou_sala='Sim';
+ const a=JSON.parse(localStorage.getItem('salasLocal21')||'[]');
+ a.push({...ultimaFicha,created_at:new Date().toISOString()});
+ localStorage.setItem('salasLocal21',JSON.stringify(a));
+ H('formMsg','<span class=ok>Sala confirmada pelo profissional.</span>');
+ carregarRelatorio(); carregarRaking();
+}
+function campoFicha(label,valor){return `<div class=campo><small>${label}</small>${valor||'-'}</div>`}
+function renderFicha(p){
+ E('fichaBox').classList.remove('hidden');
+ const carroTxt=`${p.modelo_carro||'-'} ${p.ano_veiculo||''}`.trim();
+ H('fichaConteudo',`<div id=fichaImg class=ficha>
+<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Simples 2.1 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
+${campoFicha('Resultado da qualificação', `${p.qualificacao_automatica||'-'} • ${p.motivo_qualificacao||'Perfil dentro da regra'}`)}
+${campoFicha('Nome 1', p.convidado_1)}${campoFicha('Idade 1 / Profissão 1', `${p.idade_1||'-'} anos • ${p.profissao_1||'-'}`)}
+${campoFicha('Nome 2', p.convidado_2)}${campoFicha('Idade 2 / Profissão 2', `${p.idade_2||'-'} anos • ${p.profissao_2||'-'}`)}
+${campoFicha('Relacionamento', `${p.estado_civil||'-'} • ${p.tempo_juntos||'-'}`)}
+${campoFicha('Renda', p.renda_casal)}${campoFicha('Veículo / Ano', carroTxt)}
+${campoFicha('Cartão de crédito', p.cartao_credito)}${campoFicha('Casa própria', p.casa_propria)}
+${campoFicha('Estado / Cidade', `${p.estado_origem||'-'} • ${p.cidade_origem||'-'}`)}
+${campoFicha('Multipropriedade', p.multipropriedade)}${campoFicha('Cortesia escolhida', p.brinde)}
+${campoFicha('WhatsApp / Contato', p.contato)}${campoFicha('Entrada em sala', p.levou_sala||'Aguardando informação do promotor')}
+${campoFicha('Equipe / Ponto', `${p.equipe||'-'} • ${p.ponto_captacao||'-'}`)}
+${campoFicha('Profissional responsável', p.captador_nome)}${campoFicha('Observações', p.observacoes||'Sem observações')}
+<div class="fichaRodapeFull">Cliente(s): ${p.convidado_1||'-'} ${p.convidado_2?'e '+p.convidado_2:''}<br>Registro CaptaPro • Bueno Invest • Sala ${p.levou_sala||'pendente'}</div></div>`);
+}
+async function compartilharFicha(){
+ const node=E('fichaImg'); if(!node)return;
+ const c=await html2canvas(node,{scale:2,backgroundColor:'#090909'});
+ c.toBlob(async b=>{const f=new File([b],'ficha-captapro.png',{type:'image/png'}); if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'Ficha CaptaPro'}); else{const a=document.createElement('a');a.href=c.toDataURL();a.download='ficha-captapro.png';a.click()}});
+}
+function novaPesquisa(){
+ ['nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade','relacionamento','tempo','nomeCarro','anoCarro','cartao','casa','multi','renda','brinde','contato','obs'].forEach(id=>{if(E(id))E(id).value=''});
+ H('resultado','');H('formMsg','');E('fichaBox').classList.add('hidden');ultimaFicha=null;E('nome1').focus();
+}
+async function dados(t){
+ try{const r=await db.from(t).select('*').order('created_at',{ascending:false}).limit(5000);return r.data||[]}
+ catch(e){return JSON.parse(localStorage.getItem(t==='pesquisas'?'pesquisasLocal':'abordagensLocal')||'[]')}
+}
+function per(x,de,ate){const d=String(x.created_at||'').slice(0,10);return(!de||d>=de)&&(!ate||d<=ate)}
+function isSala(x){return normal(x.levou_sala||x.sala||x.sala_status).includes('sim')||x.sala===true}
+async function carregarRelatorio(){
+ const de=V('relDe'),ate=V('relAte'); let p=await dados('pesquisas'), a=await dados('abordagens');
+ if(role!=='ceo'){const eq=V('equipe'); if(eq){p=p.filter(x=>x.equipe===eq||x.user_email===usuarioEmail);a=a.filter(x=>x.equipe===eq||x.user_email===usuarioEmail)} else {p=p.filter(x=>x.user_email===usuarioEmail);a=a.filter(x=>x.user_email===usuarioEmail)}}
+ p=p.filter(x=>per(x,de,ate)); a=a.filter(x=>per(x,de,ate));
+ const minhas=role==='ceo'?p:p.filter(x=>x.user_email===usuarioEmail), minhasAb=role==='ceo'?a:a.filter(x=>x.user_email===usuarioEmail);
+ const q=minhas.filter(x=>x.qualificacao_automatica==='Q').length, nq1=minhas.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length, nq=minhas.length-q-nq1, sala=minhas.filter(isSala).length;
+ S('rAbord',minhasAb.length);S('rPesq',minhas.length);S('rQ',q);S('rNQ',nq);S('rNQ1',nq1);S('rSala',sala);S('rConv',minhas.length?Math.round(sala/minhas.length*100)+'%':'0%');
+ const map={};
+ p.forEach(x=>{const n=x.captador_nome||x.user_email||'Sem nome'; if(!map[n])map[n]={nome:n,equipe:x.equipe||'',p:0,s:0,q:0,nq:0,nq1:0,a:0}; map[n].p++; if(x.qualificacao_automatica==='Q')map[n].q++; else if(String(x.qualificacao_automatica||'').includes('1'))map[n].nq1++; else map[n].nq++; if(isSala(x))map[n].s++;});
+ a.forEach(x=>{const n=x.captador_nome||x.user_email||'Sem nome'; if(!map[n])map[n]={nome:n,equipe:x.equipe||'',p:0,s:0,q:0,nq:0,nq1:0,a:0}; map[n].a++;});
+ const rows=Object.values(map).sort((x,y)=>y.p-x.p||y.a-x.a||y.s-x.s);
+ H('rankingEquipeBox13',rows.length?'<table><tr><th>Nome</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th></tr>'+rows.map(r=>`<tr><td>${r.nome}</td><td>${r.a}</td><td>${r.p}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.s}</td></tr>`).join('')+'</table>':'<p class=mini>Sem dados.</p>');
+ H('profFiltro','<option value="">Escolha o profissional</option>'+rows.map(r=>`<option>${r.nome}</option>`).join(''));
+ window.rowsRel=rows;mostrarIndividual();
+}
+function mostrarIndividual(){
+ const r=(window.rowsRel||[]).find(x=>x.nome===V('profFiltro'));
+ H('individualBox',r?`<div class=kpis><div class=kpi>Abord.<b>${r.a}</b></div><div class=kpi>Pesq.<b>${r.p}</b></div><div class=kpi>Q<b>${r.q}</b></div><div class=kpi>NQ<b>${r.nq}</b></div><div class=kpi>1 Item<b>${r.nq1}</b></div><div class=kpi>Sala<b>${r.s}</b></div><div class=kpi>Conv.<b>${r.p?Math.round(r.s/r.p*100):0}%</b></div></div>`:'<p class=mini>Escolha um profissional.</p>');
+}
+
+function csvSplit(line){const out=[];let cur='',q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){q=!q;continue}if((c===','||c===';'||c==='\t')&&!q){out.push(cur.trim());cur='';continue}cur+=c}out.push(cur.trim());return out}
+function parseCSV(text){const lines=String(text||'').split(/\r?\n/).filter(l=>l.trim());if(lines.length<2)return [];const headers=csvSplit(lines[0]).map(normal);return lines.slice(1).map(line=>{const cols=csvSplit(line),o={};headers.forEach((h,i)=>o[h]=cols[i]||'');return o})}
+function pick(o,names){for(const n of names){const nn=normal(n);const k=Object.keys(o||{}).find(x=>normal(x)===nn||normal(x).includes(nn));if(k)return o[k]}return ''}
+function montarCSV(dados){const map={};(dados||[]).forEach(r=>{const nome=pick(r,['profissional','promotor','captador','promotor de marketing','nome'])||'Sem nome';if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0};map[nome].casais+=parseMoeda(pick(r,['casais','casal','pesquisas','fichas']))||0;map[nome].vendas+=parseMoeda(pick(r,['vendas','venda']))||vendaCount(pick(r,['status']));map[nome].vgv+=parseMoeda(pick(r,['vgv','valor vendido','valor','valor vgv','volume geral']))||0;});return Object.values(map)}
+function montarPesquisas(p){const map={};(p||[]).forEach(x=>{const nome=x.captador_nome||x.profissional||x.user_email||'Sem nome';if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0};map[nome].casais++;map[nome].vendas+=vendaCount(x.status||x.venda||x.vendas);map[nome].vgv+=parseMoeda(x.vgv||x.valor_vgv||x.valor||0);});return Object.values(map)}
+function renderRaking(arr,fonte){
+ const box=E('rakingBox'); if(!box)return; arr=(arr||[]).filter(x=>x.nome).sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv||a.nome.localeCompare(b.nome));
+ if(E('rakingFonte21'))E('rakingFonte21').innerHTML=fonte||'';
+ if(!arr.length){box.innerHTML='<p class=mini>Sem dados para montar o Raking.</p>';return}
+ const total={casais:0,vendas:0,vgv:0};
+ const linhas=arr.map((r,i)=>{total.casais+=r.casais;total.vendas+=r.vendas;total.vgv+=r.vgv;const ef=r.casais?(r.vendas/r.casais*100):0;return `<tr><td>${i+1}º ${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moeda(r.vgv)}</td><td>${ef.toFixed(1).replace('.',',')}%</td></tr>`}).join('');
+ const efT=total.casais?(total.vendas/total.casais*100):0;
+ box.innerHTML=`<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${linhas}<tr><th>Total</th><th>${total.casais}</th><th>${total.vendas}</th><th>${moeda(total.vgv)}</th><th>${efT.toFixed(1).replace('.',',')}%</th></tr></table>`;
+}
+function setPeriodoMes(){
+ const de=E('rakingDe'),ate=E('rakingAte'); if(!de||!ate)return;
+ if(!de.value||!ate.value){const now=new Date(),y=now.getFullYear(),m=String(now.getMonth()+1).padStart(2,'0'),u=new Date(y,now.getMonth()+1,0).getDate();de.value=`${y}-${m}-01`;ate.value=`${y}-${m}-${String(u).padStart(2,'0')}`;}
+}
+async function tentarCSVRepo(){
+ for(const url of ['./raking%20junho.csv','./raking junho.csv','raking%20junho.csv']){try{const resp=await fetch(url,{cache:'no-store'});if(resp.ok){const dados=parseCSV(await resp.text());if(dados.length)return dados}}catch(e){}}
+ return [];
+}
+function importarRakingCSV21(ev){const file=ev.target.files&&ev.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const dados=parseCSV(reader.result);localStorage.setItem('raking_csv_21',JSON.stringify(dados));renderRaking(montarCSV(dados),'<span class=ok>Fonte: CSV importado.</span>')};reader.readAsText(file,'utf-8')}
+function limparRakingCSV21(){localStorage.removeItem('raking_csv_21');if(E('csvRakingInput21'))E('csvRakingInput21').value='';carregarRaking(true)}
+async function carregarRaking(forcarBanco){
+ setPeriodoMes();
+ if(!forcarBanco){try{const salvo=JSON.parse(localStorage.getItem('raking_csv_21')||'[]');if(salvo.length){renderRaking(montarCSV(salvo),'<span class=ok>Fonte: CSV importado.</span>');return}}catch(e){}}
+ const de=V('rakingDe'),ate=V('rakingAte'); let p=[];
+ try{p=await dados('pesquisas')}catch(e){p=[]}
+ p=(p||[]).filter(x=>per(x,de,ate));
+ const arr=montarPesquisas(p);
+ if(arr.length){renderRaking(arr,'<span class=ok>Fonte: fichas salvas no sistema.</span>');return}
+ if(!forcarBanco){const repo=await tentarCSVRepo();if(repo.length){renderRaking(montarCSV(repo),'<span class=ok>Fonte: raking junho.csv do GitHub.</span>');return}}
+ renderRaking([], '<span class=warn>Nenhum dado encontrado. Importe o CSV ou salve fichas.</span>');
+}
+
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{aplicarRendaDigitavel();aplicarRendaCEO();loadCfg();setPeriodoMes();carregarRaking();},500)});
+</script>
 </body></html>
