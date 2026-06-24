@@ -64,6 +64,17 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 #rakingBox tr:nth-child(3) td:first-child{color:#cfd8dc;font-weight:900}
 #rakingBox tr:nth-child(4) td:first-child{color:#d7a36a;font-weight:900}
 
+
+/* Elite 1.0 • layout do casal e ranking junho */
+.pessoaBox{grid-column:1/-1;background:#151515;border:1px solid #333;border-radius:16px;padding:12px;margin-top:2px}
+.pessoaBox b{display:block;color:#ff8585;margin-bottom:8px}
+.pessoaGrid{display:grid;grid-template-columns:1.4fr .7fr 1.3fr;gap:8px}
+.projBaixa{background:#c62828;color:#fff;font-weight:900;text-align:center}
+.projMeta{background:#8bc34a;color:#061006;font-weight:900;text-align:center}
+.projBoa{background:#00a651;color:#fff;font-weight:900;text-align:center}
+.projTop{background:#050505;color:#fff;font-weight:900;text-align:center}
+.rankTop{background:#4b4100!important}
+@media(max-width:700px){.pessoaGrid{grid-template-columns:1fr}.pessoaBox{padding:10px}}
 </style>
 </head>
 <body>
@@ -75,7 +86,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Raking</button><button class="adminOnly" onclick="aba('qualificacao',this)">Qualificação CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Junho</button><button class="adminOnly" onclick="aba('qualificacao',this)">Qualificação CEO</button></div>
 
 <section id="pesquisa" class="card">
 <h2>Pesquisa</h2><p class="hint">Abordagem → ficha → salvar → compartilhar → nova ficha.</p>
@@ -87,17 +98,25 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <!-- 2 ponto de captação -->
 <select id="ponto"><option value="">2. Ponto de captação</option><option>Porta dentro do Park</option><option>Park Dream House</option><option>Fábrica Spinassi</option><option>Corredor</option><option>Baden Baden</option><option>Djalma</option><option>Igreja</option><option>Renner</option><option>Guarda-chuvas</option><option>Posto Shell</option></select>
 
-<!-- 3 nome 1 e nome 2 -->
-<input id="nome1" placeholder="3. Nome 1">
-<input id="nome2" placeholder="3. Nome 2">
+<!-- 3 pessoa 1: nome, idade e profissão -->
+<div class="pessoaBox">
+  <b>3. Pessoa 1</b>
+  <div class="pessoaGrid">
+    <input id="nome1" placeholder="Nome">
+    <select id="idade1"><option value="">Idade</option></select>
+    <input id="profissao1" list="profissoes" placeholder="Profissão">
+  </div>
+</div>
 
-<!-- 4 idade 1 idade 2 -->
-<select id="idade1"><option value="">4. Idade 1</option></select>
-<select id="idade2"><option value="">4. Idade 2</option></select>
-
-<!-- 5 profissão 1 profissão 2 -->
-<input id="profissao1" list="profissoes" placeholder="5. Profissão 1">
-<input id="profissao2" list="profissoes" placeholder="5. Profissão 2">
+<!-- 4 pessoa 2: nome, idade e profissão -->
+<div class="pessoaBox">
+  <b>4. Pessoa 2</b>
+  <div class="pessoaGrid">
+    <input id="nome2" placeholder="Nome">
+    <select id="idade2"><option value="">Idade</option></select>
+    <input id="profissao2" list="profissoes" placeholder="Profissão">
+  </div>
+</div>
 
 <!-- 6 estado e cidade -->
 <select id="estado"><option value="">6. Estado</option><option>SP</option><option>RJ</option><option>MG</option><option>PR</option><option>SC</option><option>RS</option><option>GO</option><option>DF</option><option>BA</option><option>CE</option><option>PE</option><option>ES</option><option>MT</option><option>MS</option><option>PA</option><option>AM</option></select>
@@ -167,20 +186,20 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </section>
 
 <section id="raking" class="card hidden">
-<h2>Raking / Ranking Geral</h2>
-<p class="hint">Ranking automático do mês atual. Lê as fichas salvas e também o arquivo <b>raking junho.csv</b> se estiver no GitHub.</p>
+<h2>Ranking Junho 2026</h2>
+<p class="hint">Acompanhamento até 21/06 com casais, vendas, VGV, eficiência e projeção de casais para fechar junho.</p>
 <div class="rakingTools17">
   <input id="rakingDe" type="date">
   <input id="rakingAte" type="date">
 </div>
 <input id="csvRakingInput21" type="file" accept=".csv,text/csv" onchange="importarRakingCSV21(event)">
 <div class="grid" style="margin:8px 0">
-  <button class="main" onclick="carregarRaking()">Atualizar Raking</button>
-  <button class="secondary" onclick="limparRakingCSV21()">Usar dados do sistema/GitHub</button>
+  <button class="main" onclick="carregarRaking()">Atualizar Ranking</button>
+  <button class="secondary" onclick="limparRakingCSV21()">Usar Ranking Junho padrão</button>
 </div>
 <div class="card scroll">
-  <h2>Ranking Geral Automático</h2>
-  <p class="hint">Profissional, casais, vendas, VGV e eficiência.</p>
+  <h2>Ranking Junho até 21/06</h2>
+  <p class="hint">Cores da projeção: vermelho abaixo de 22, verde acima de 22, verde forte acima de 35 e preto acima de 50 casais.</p>
   <div id="rakingFonte21" class="mini"></div>
   <div id="rakingBox"></div>
 </div>
@@ -495,25 +514,55 @@ function parseCSV(text){const lines=String(text||'').split(/\r?\n/).filter(l=>l.
 function pick(o,names){for(const n of names){const nn=normal(n);const k=Object.keys(o||{}).find(x=>normal(x)===nn||normal(x).includes(nn));if(k)return o[k]}return ''}
 function montarCSV(dados){const map={};(dados||[]).forEach(r=>{const nome=pick(r,['profissional','promotor','captador','promotor de marketing','nome'])||'Sem nome';if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0};map[nome].casais+=parseMoeda(pick(r,['casais','casal','pesquisas','fichas']))||0;map[nome].vendas+=parseMoeda(pick(r,['vendas','venda']))||vendaCount(pick(r,['status']));map[nome].vgv+=parseMoeda(pick(r,['vgv','valor vendido','valor','valor vgv','volume geral']))||0;});return Object.values(map)}
 function montarPesquisas(p){const map={};(p||[]).forEach(x=>{const nome=x.captador_nome||x.profissional||x.user_email||'Sem nome';if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0};map[nome].casais++;map[nome].vendas+=vendaCount(x.status||x.venda||x.vendas);map[nome].vgv+=parseMoeda(x.vgv||x.valor_vgv||x.valor||0);});return Object.values(map)}
+
+const rankingJunhoPadrao21 = [
+ {nome:'ANA CAROLINE',casais:20,vendas:10,vgv:998000,projecao:29},
+ {nome:'JESSICA BARBOSA',casais:11,vendas:10,vgv:844000,projecao:16},
+ {nome:'JOSYENE FREITAS',casais:14,vendas:8,vgv:702000,projecao:20},
+ {nome:'JONATAS FRANÇA DA SILVA',casais:20,vendas:7,vgv:608000,projecao:29},
+ {nome:'RENAN MARCONDES JOHAS',casais:12,vendas:6,vgv:544000,projecao:17},
+ {nome:'ANDRE CARRIÇO',casais:15,vendas:5,vgv:440000,projecao:21},
+ {nome:'DANIELA MOURA',casais:11,vendas:5,vgv:432000,projecao:16},
+ {nome:'FELIPE DA SILVA RIBEIRO',casais:8,vendas:5,vgv:419830,projecao:11},
+ {nome:'IVANILSON LUIZ AGUIAR LIMA',casais:42,vendas:4,vgv:376000,projecao:60},
+ {nome:'ADRIANO MOREIRA',casais:9,vendas:4,vgv:362000,projecao:13},
+ {nome:'LARISSA RIBEIRO',casais:8,vendas:4,vgv:360000,projecao:11},
+ {nome:'ALEXANDRE PASQUALE JUNIOR',casais:10,vendas:4,vgv:358000,projecao:14},
+ {nome:'RICARDO MALTCHIK',casais:22,vendas:3,vgv:264000,projecao:31},
+ {nome:'JOSE ADEMIR SILVA TAVARES',casais:23,vendas:3,vgv:252700,projecao:33},
+ {nome:'PAULO VICTOR ORTIZ',casais:9,vendas:2,vgv:182100,projecao:50},
+ {nome:'PEDRO HENRIQUE GOMES SANTOS',casais:16,vendas:2,vgv:180000,projecao:23},
+ {nome:'REBECA BRAGA PINTO',casais:10,vendas:1,vgv:95000,projecao:14},
+ {nome:'MATHEUS ESLEY SILVA',casais:13,vendas:1,vgv:90000,projecao:19},
+ {nome:'MARCIO ALFAIA',casais:9,vendas:1,vgv:90000,projecao:13},
+ {nome:'MATHEUS DOMINGOS SANTOS',casais:7,vendas:1,vgv:88000,projecao:10},
+ {nome:'MATEUS SANTOS SANTA ROSA',casais:28,vendas:0,vgv:0,projecao:40},
+ {nome:'JOAO VITOR DA SILVA FRANCISCO',casais:8,vendas:0,vgv:0,projecao:11},
+ {nome:'SUENE CINTIA DA SILVA',casais:3,vendas:0,vgv:0,projecao:4}
+];
+function classeProj(p){p=Number(p)||0; if(p>=50)return 'projTop'; if(p>=35)return 'projBoa'; if(p>=22)return 'projMeta'; return 'projBaixa'}
+
 function renderRaking(arr,fonte){
- const box=E('rakingBox'); if(!box)return; arr=(arr||[]).filter(x=>x.nome).sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv||a.nome.localeCompare(b.nome));
+ const box=E('rakingBox'); if(!box)return; arr=(arr||[]).filter(x=>x.nome).sort((a,b)=>b.vendas-a.vendas||b.vgv-a.vgv||b.casais-a.casais||a.nome.localeCompare(b.nome));
  if(E('rakingFonte21'))E('rakingFonte21').innerHTML=fonte||'';
- if(!arr.length){box.innerHTML='<p class=mini>Sem dados para montar o Raking.</p>';return}
+ if(!arr.length){box.innerHTML='<p class=mini>Sem dados para montar o Ranking.</p>';return}
  const total={casais:0,vendas:0,vgv:0};
- const linhas=arr.map((r,i)=>{total.casais+=r.casais;total.vendas+=r.vendas;total.vgv+=r.vgv;const ef=r.casais?(r.vendas/r.casais*100):0;return `<tr><td>${i+1}º ${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moeda(r.vgv)}</td><td>${ef.toFixed(1).replace('.',',')}%</td></tr>`}).join('');
+ const linhas=arr.map((r,i)=>{total.casais+=Number(r.casais)||0;total.vendas+=Number(r.vendas)||0;total.vgv+=Number(r.vgv)||0;const ef=r.casais?(r.vendas/r.casais*100):0;const proj=r.projecao||Math.round((Number(r.casais)||0)/21*30);return `<tr class="${i<3?'rankTop':''}"><td>${i+1}º ${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moeda(r.vgv)}</td><td>${ef.toFixed(0)}%</td><td class="${classeProj(proj)}">${proj}</td></tr>`}).join('');
  const efT=total.casais?(total.vendas/total.casais*100):0;
- box.innerHTML=`<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${linhas}<tr><th>Total</th><th>${total.casais}</th><th>${total.vendas}</th><th>${moeda(total.vgv)}</th><th>${efT.toFixed(1).replace('.',',')}%</th></tr></table>`;
+ const projT=Math.round(total.casais/21*30);
+ box.innerHTML=`<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th><th>Projeção</th></tr>${linhas}<tr><th>Total</th><th>${total.casais}</th><th>${total.vendas}</th><th>${moeda(total.vgv)}</th><th>${efT.toFixed(0)}%</th><th>${projT}</th></tr></table>`;
 }
 function setPeriodoMes(){
  const de=E('rakingDe'),ate=E('rakingAte'); if(!de||!ate)return;
- if(!de.value||!ate.value){const now=new Date(),y=now.getFullYear(),m=String(now.getMonth()+1).padStart(2,'0'),u=new Date(y,now.getMonth()+1,0).getDate();de.value=`${y}-${m}-01`;ate.value=`${y}-${m}-${String(u).padStart(2,'0')}`;}
+ if(!de.value)de.value='2026-06-01';
+ if(!ate.value)ate.value='2026-06-21';
 }
 async function tentarCSVRepo(){
  for(const url of ['./raking%20junho.csv','./raking junho.csv','raking%20junho.csv']){try{const resp=await fetch(url,{cache:'no-store'});if(resp.ok){const dados=parseCSV(await resp.text());if(dados.length)return dados}}catch(e){}}
  return [];
 }
 function importarRakingCSV21(ev){const file=ev.target.files&&ev.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const dados=parseCSV(reader.result);localStorage.setItem('raking_csv_21',JSON.stringify(dados));renderRaking(montarCSV(dados),'<span class=ok>Fonte: CSV importado.</span>')};reader.readAsText(file,'utf-8')}
-function limparRakingCSV21(){localStorage.removeItem('raking_csv_21');if(E('csvRakingInput21'))E('csvRakingInput21').value='';carregarRaking(true)}
+function limparRakingCSV21(){localStorage.removeItem('raking_csv_21');if(E('csvRakingInput21'))E('csvRakingInput21').value='';renderRaking(rankingJunhoPadrao21, '<span class=ok>Fonte: Ranking Junho padrão até 21/06.</span>')}
 async function carregarRaking(forcarBanco){
  setPeriodoMes();
  if(!forcarBanco){try{const salvo=JSON.parse(localStorage.getItem('raking_csv_21')||'[]');if(salvo.length){renderRaking(montarCSV(salvo),'<span class=ok>Fonte: CSV importado.</span>');return}}catch(e){}}
@@ -523,7 +572,7 @@ async function carregarRaking(forcarBanco){
  const arr=montarPesquisas(p);
  if(arr.length){renderRaking(arr,'<span class=ok>Fonte: fichas salvas no sistema.</span>');return}
  if(!forcarBanco){const repo=await tentarCSVRepo();if(repo.length){renderRaking(montarCSV(repo),'<span class=ok>Fonte: raking junho.csv do GitHub.</span>');return}}
- renderRaking([], '<span class=warn>Nenhum dado encontrado. Importe o CSV ou salve fichas.</span>');
+ renderRaking(rankingJunhoPadrao21, '<span class=ok>Fonte: Ranking Junho padrão até 21/06.</span>');
 }
 
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{aplicarRendaDigitavel();aplicarRendaCEO();loadCfg();setPeriodoMes();carregarRaking();},500)});
