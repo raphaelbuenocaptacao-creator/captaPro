@@ -120,11 +120,14 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 #barraMetaFill20{height:100%;width:0%;background:linear-gradient(135deg,#00a651,#00e676);border-radius:999px;transition:.3s}
 
 
-/* Versão 2.0 • confirmação única após salvar */
-#fichaBox{display:none!important}
-#fichaBox.modoCompartilhar20{display:block!important;position:absolute!important;left:-9999px!important;top:0!important;width:420px!important}
-.confirmacaoFicha20{border:1px solid #00e676;background:#061d10;border-radius:16px;padding:14px;margin-top:10px}
-.confirmacaoFicha20 b{display:block;color:#00e676;font-size:20px;margin-bottom:4px}
+/* Versão 2.0 • metas individuais CEO */
+.metaMensalBox20{margin-top:12px;background:#080808;border:1px solid #333;border-radius:16px;padding:12px}
+.metaLinha20{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.metaLinha20 span{font-size:13px;color:#ccc;font-weight:900;text-transform:uppercase}
+.metaLinha20 b{font-size:22px;color:#00e676}
+.barraMeta20{height:16px;background:#222;border-radius:999px;overflow:hidden;margin-top:10px;border:1px solid #333}
+#barraMetaFill20{height:100%;width:0%;background:linear-gradient(135deg,#00a651,#00e676);border-radius:999px;transition:.3s}
+.metaTable20 button{padding:6px;border-radius:8px;font-size:12px}
 
 </style>
 </head>
@@ -327,6 +330,18 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
   <textarea id="cfgObsCEO" placeholder="Observações do CEO"></textarea>
   <button class="main" style="margin-top:8px" onclick="salvarConfig()">Salvar CEO</button>
   <p id="cfgMsg"></p>
+
+<div class="card adminOnly">
+  <h2>Metas Individuais</h2>
+  <p class="hint">Defina a meta mensal de pesquisas/casais por profissional. Ex.: Francisco = 50.</p>
+  <div class="grid">
+    <input id="metaProfNome20" placeholder="Nome do profissional. Ex: Francisco">
+    <input id="metaProfValor20" type="number" placeholder="Meta mensal. Ex: 50">
+  </div>
+  <button class="main" style="margin-top:8px" onclick="salvarMetaIndividual20()">Salvar meta individual</button>
+  <div id="metasIndividuaisBox20" style="margin-top:10px"></div>
+</div>
+
 </div>
 </section>
 </section></div>
@@ -629,7 +644,7 @@ function renderRaking(arr,fonte){
  const linhas=arr.map((r,i)=>{total.casais+=Number(r.casais)||0;total.vendas+=Number(r.vendas)||0;total.vgv+=Number(r.vgv)||0;const ef=r.casais?(r.vendas/r.casais*100):0;const proj=r.projecao||Math.round((Number(r.casais)||0)/21*30);return `<tr class="${i<3?'rankTop':''}"><td>${i+1}º ${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moeda(r.vgv)}</td><td>${ef.toFixed(0)}%</td><td class="${classeProj(proj)}">${proj}</td></tr>`}).join('');
  const efT=total.casais?(total.vendas/total.casais*100):0;
  const projT=Math.round(total.casais/21*30);
- box.innerHTML=`<table><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th><th>Projeção</th></tr>${linhas}<tr><th>Total</th><th>${total.casais}</th><th>${total.vendas}</th><th>${moeda(total.vgv)}</th><th>${efT.toFixed(0)}%</th><th>${projT}</th></tr></table>`;
+ box.innerHTML=`<table><tr><th>Profissional</th><th>Pesquisas</th><th>Vendas</th><th>VGV</th><th>Eficiência</th><th>Projeção</th></tr>${linhas}<tr><th>Total</th><th>${total.casais}</th><th>${total.vendas}</th><th>${moeda(total.vgv)}</th><th>${efT.toFixed(0)}%</th><th>${projT}</th></tr></table>`;
 }
 function setPeriodoMes(){
  const de=E('rakingDe'),ate=E('rakingAte'); if(!de||!ate)return;
@@ -1274,8 +1289,8 @@ if(typeof salvarBaseVisual20==='function'&&!window.__salvarVisual20){
       <span class="${cor}">Resultado: ${q.status}</span>
       <p class="mini">${q.motivo||''}</p>
       <div class="grid">
-        <button class="main" onclick="compartilharFicha()">Compartilhar imagem</button>
-        <button class="secondary" onclick="novaPesquisa()">Nova pesquisa</button>
+        <button class="main" onclick="compartilharFicha()">Compartilhar ficha</button>
+        <button class="secondary" onclick="novaPesquisa()">Nova ficha</button>
       </div>
     </div>`);
     return r;
@@ -1409,67 +1424,119 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>atualizarMetaMen
 
 
 <script>
-/* ===== Versão 2.0 • confirmação única e ficha oculta para compartilhar ===== */
+/* ===== Versão 2.0 • metas individuais por profissional ===== */
 (function(){
-function U(id){return document.getElementById(id)}
-function UH(id,v){if(U(id))U(id).innerHTML=v}
-function qAtual20(){
-  try{return typeof qual==='function'?qual():{status:'-',motivo:''}}catch(e){return {status:'-',motivo:''}}
+function IM(id){return document.getElementById(id)}
+function IMV(id){return (IM(id)?.value||'').trim()}
+function IMS(id,v){if(IM(id))IM(id).innerText=v}
+function IMH(id,v){if(IM(id))IM(id).innerHTML=v}
+function normIM(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function chaveProf20(nome,email){
+  return normIM(email||nome||'').replace(/[^a-z0-9@._-]/g,'_');
+}
+function getMetasIndividuais20(){
+  try{return JSON.parse(localStorage.getItem('metas_individuais_20')||'{}')}catch(e){return {}}
+}
+function setMetasIndividuais20(obj){localStorage.setItem('metas_individuais_20',JSON.stringify(obj||{}))}
+function metaDoProfissional20(nome,email){
+  const metas=getMetasIndividuais20();
+  const kEmail=chaveProf20('',email);
+  const kNome=chaveProf20(nome,'');
+  return Number(metas[kEmail]?.meta || metas[kNome]?.meta || metas[normIM(nome)]?.meta || 35);
+}
+function inicioMesIM(){
+  const d=new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`;
+}
+function fimMesIM(){
+  const d=new Date(), u=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(u).padStart(2,'0')}`;
+}
+async function pesquisasMesProf20(nome,email){
+  let p=[];
+  try{p=await dados('pesquisas')}catch(e){p=[]}
+  const ini=inicioMesIM(), fim=fimMesIM();
+  const e=email||window.usuarioEmail||usuarioEmail;
+  const n=normIM(nome||window.usuarioNome||usuarioNome);
+  return (p||[]).filter(x=>{
+    const d=String(x.created_at||'').slice(0,10);
+    return d>=ini && d<=fim && (x.user_email===e || normIM(x.captador_nome)===n);
+  }).length;
+}
+window.atualizarMetaMensalPainel20=async function(){
+  const nome=window.usuarioNome||usuarioNome||'';
+  const email=window.usuarioEmail||usuarioEmail||'';
+  const meta=metaDoProfissional20(nome,email);
+  const feitos=await pesquisasMesProf20(nome,email);
+  const faltam=Math.max(0,meta-feitos);
+  const pct=meta?Math.min(100,Math.round((feitos/meta)*100)):0;
+  IMS('homeMeta',`${feitos}/${meta}`);
+  IMS('metaMensalTexto20',`${feitos} / ${meta}`);
+  IMS('metaMensalInfo20',faltam>0?`${pct}% concluído • faltam ${faltam} pesquisas`:`Meta batida • ${pct}% concluído`);
+  if(IM('barraMetaFill20'))IM('barraMetaFill20').style.width=pct+'%';
 }
 
-// Substitui mensagem duplicada por uma só
-const salvarBaseUnico20=window.salvarPesquisa;
-if(typeof salvarBaseUnico20==='function'&&!window.__salvarUnico20){
-  window.__salvarUnico20=true;
-  window.salvarPesquisa=async function(){
-    const q=qAtual20();
-    const r=await salvarBaseUnico20.apply(this,arguments);
-    const cor=q.status==='Q'?'ok':(String(q.status).includes('1')?'warn':'erro');
-    UH('formMsg',`<div class="confirmacaoFicha20">
-      <b>✅ Ficha salva com sucesso</b>
-      <span class="${cor}">Resultado: ${q.status}</span>
-      <p class="mini">${q.motivo||''}</p>
-      <div class="grid">
-        <button class="main" onclick="compartilharFichaUnico20()">Compartilhar imagem</button>
-        <button class="secondary" onclick="novaPesquisa()">Nova pesquisa</button>
-      </div>
-    </div>`);
-    const box=U('fichaBox');
-    if(box)box.classList.remove('modoCompartilhar20');
+// CEO salva meta individual
+window.salvarMetaIndividual20=function(){
+  const nome=IMV('metaProfNome20');
+  const meta=Number(IMV('metaProfValor20'))||0;
+  if(!nome||!meta){IMH('metasIndividuaisBox20','<p class="erro">Informe nome e meta.</p>');return}
+  const metas=getMetasIndividuais20();
+  metas[chaveProf20(nome,'')]={nome,meta};
+  setMetasIndividuais20(metas);
+  IM('metaProfNome20').value='';
+  IM('metaProfValor20').value='';
+  renderMetasIndividuais20();
+  atualizarMetaMensalPainel20();
+}
+window.removerMetaIndividual20=function(k){
+  const metas=getMetasIndividuais20();
+  delete metas[k];
+  setMetasIndividuais20(metas);
+  renderMetasIndividuais20();
+  atualizarMetaMensalPainel20();
+}
+window.renderMetasIndividuais20=function(){
+  const box=IM('metasIndividuaisBox20'); if(!box)return;
+  const metas=getMetasIndividuais20();
+  const rows=Object.entries(metas);
+  if(!rows.length){box.innerHTML='<p class="mini">Nenhuma meta individual cadastrada. Padrão: 35.</p>';return}
+  box.innerHTML='<table class="metaTable20"><tr><th>Profissional</th><th>Meta mensal</th><th>Ação</th></tr>'+
+    rows.map(([k,v])=>`<tr><td>${v.nome}</td><td>${v.meta}</td><td><button class="secondary" onclick="removerMetaIndividual20('${k}')">Remover</button></td></tr>`).join('')+
+    '</table>';
+}
+
+// Integra com painel existente
+const painelBaseIM20=window.atualizarPainelInicial20;
+if(typeof painelBaseIM20==='function'&&!window.__painelMetaInd20){
+  window.__painelMetaInd20=true;
+  window.atualizarPainelInicial20=async function(){
+    const r=await painelBaseIM20.apply(this,arguments);
+    await atualizarMetaMensalPainel20();
     return r;
   }
 }
 
-// Compartilha usando a ficha oculta, sem mostrar duplicado
-window.compartilharFichaUnico20=async function(){
-  const box=U('fichaBox');
-  if(box)box.classList.add('modoCompartilhar20');
-  try{
-    if(typeof compartilharFicha==='function')await compartilharFicha();
-  }finally{
-    setTimeout(()=>{if(box)box.classList.remove('modoCompartilhar20')},1200);
-  }
-}
-
-// Se clicarem no botão antigo, mantém funcionamento e evita duplicidade
-const compartilharBaseUnico20=window.compartilharFicha;
-if(typeof compartilharBaseUnico20==='function'&&!window.__shareUnico20){
-  window.__shareUnico20=true;
-  window.compartilharFicha=async function(){
-    const box=U('fichaBox');
-    if(box)box.classList.add('modoCompartilhar20');
-    const r=await compartilharBaseUnico20.apply(this,arguments);
-    setTimeout(()=>{if(box)box.classList.remove('modoCompartilhar20')},1200);
+// Ajusta ranking para Pesquisas e Sala Confirmada quando renderizar
+const renderRakingBaseIM20=window.renderRaking;
+if(typeof renderRakingBaseIM20==='function'&&!window.__rankPesquisa20){
+  window.__rankPesquisa20=true;
+  window.renderRaking=function(arr,fonte){
+    const r=renderRakingBaseIM20.apply(this,arguments);
+    setTimeout(()=>{
+      const box=IM('rakingBox');
+      if(box){
+        box.innerHTML=box.innerHTML.replace(/<th>Casais<\/th>/g,'<th>Pesquisas</th>');
+      }
+    },50);
     return r;
   }
 }
 
-document.addEventListener('DOMContentLoaded',()=>{
-  setTimeout(()=>{
-    const box=U('fichaBox');
-    if(box)box.classList.remove('modoCompartilhar20');
-  },500);
-});
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
+  renderMetasIndividuais20();
+  atualizarMetaMensalPainel20();
+},900));
 })();
 </script>
 
