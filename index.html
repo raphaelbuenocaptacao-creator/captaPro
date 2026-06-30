@@ -85,11 +85,17 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 #rendaLiquida{border-color:#00e676!important}
 #rendaLiquida.hidden{display:none!important}
 
+
+/* Versão 2.0 • painel inicial e conferência de sala */
+#painelInicial{border-color:#00c2ff}
+#homeMeta{color:#00e676!important}
+#salaCEOBox20 table{min-width:900px}
+
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Versão 2.0</div><p class="mini">Versão 2.0 • Pesquisa, Relatório Diário e CEO • <b style="color:#00e676">Bueno Invest</b></p></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Versão 2.0</div><p class="mini"><b style="color:#00e676">Bueno Invest</b></p></div>
 
 <section id="loginBox" class="card">
 <h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
@@ -97,6 +103,24 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
 <section id="app" class="hidden">
 <div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Profissional</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button class="adminOnly" onclick="aba('qualificacao',this)">Qualificação CEO</button></div>
+
+
+<section id="painelInicial" class="card">
+<h2>Painel do Dia</h2>
+<p class="hint">Resumo automático de hoje para o profissional.</p>
+<div class="kpis">
+  <div class="kpi">Abordagens<b id="homeAbord">0</b></div>
+  <div class="kpi">Pesquisas<b id="homePesq">0</b></div>
+  <div class="kpi">Q<b id="homeQ">0</b></div>
+  <div class="kpi">NQ<b id="homeNQ">0</b></div>
+  <div class="kpi">Sala<b id="homeSala">0</b></div>
+  <div class="kpi">Meta do dia<b id="homeMeta">0</b></div>
+</div>
+<div class="grid" style="margin-top:8px">
+  <input id="metaDia" type="number" placeholder="Meta do dia. Ex: 5">
+  <button class="secondary" onclick="salvarMetaDia20()">Salvar meta</button>
+</div>
+</section>
 
 <section id="pesquisa" class="card">
 <h2>Pesquisa</h2><p class="hint">Abordagem → ficha → salvar → compartilhar → nova ficha.</p>
@@ -220,6 +244,14 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
   <div class="kpi">Conversão<b id="rConv">0%</b></div>
 </div>
 <div class="card scroll"><h2>Ranking da Equipe</h2><div id="rankingEquipeBox13"></div></div>
+
+<div class="card scroll adminOnly">
+  <h2>Conferência de Sala</h2>
+  <p class="hint">O profissional pode confirmar sala. O CEO pode corrigir caso esteja errado.</p>
+  <button class="main" onclick="carregarConferenciaSala20()">Atualizar sala</button>
+  <div id="salaCEOBox20" style="margin-top:8px"></div>
+</div>
+
 <div class="card"><h2>Individual</h2><select id="profFiltro" onchange="mostrarIndividual()"><option value="">Escolha o profissional</option></select><div id="individualBox"></div></div>
 </section>
 
@@ -1026,6 +1058,135 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
   },700);
 });
+})();
+</script>
+
+
+<script>
+/* ===== Versão 2.0 • obrigatórios + painel inicial + correção de sala CEO ===== */
+(function(){
+function P(id){return document.getElementById(id)}
+function PV(id){return (P(id)?.value||'').trim()}
+function PH(id,v){if(P(id))P(id).innerHTML=v}
+function PS(id,v){if(P(id))P(id).innerText=v}
+function hoje20(){return new Date().toISOString().slice(0,10)}
+function norm20(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function isSala20(x){return norm20(x.levou_sala||x.sala||x.sala_status||x.status_sala).includes('sim')||x.sala===true}
+function perHoje20(x){return String(x.created_at||'').slice(0,10)===hoje20()}
+
+window.salvarMetaDia20=function(){
+  const meta=Number(PV('metaDia'))||0;
+  localStorage.setItem('metaDia20_'+(window.usuarioEmail||usuarioEmail||''),String(meta));
+  PS('homeMeta',meta);
+  atualizarPainelInicial20();
+}
+
+window.atualizarPainelInicial20=async function(){
+  let p=[],a=[];
+  try{p=await dados('pesquisas')}catch(e){p=[]}
+  try{a=await dados('abordagens')}catch(e){a=[]}
+  const email=window.usuarioEmail||usuarioEmail;
+  p=(p||[]).filter(x=>x.user_email===email && perHoje20(x));
+  a=(a||[]).filter(x=>x.user_email===email && perHoje20(x));
+  const q=p.filter(x=>x.qualificacao_automatica==='Q').length;
+  const nq=p.filter(x=>x.qualificacao_automatica!=='Q').length;
+  const sala=p.filter(isSala20).length;
+  const meta=Number(localStorage.getItem('metaDia20_'+email)||0);
+  PS('homeAbord',a.length); PS('homePesq',p.length); PS('homeQ',q); PS('homeNQ',nq); PS('homeSala',sala); PS('homeMeta',meta);
+  if(P('metaDia')&&!P('metaDia').value&&meta)P('metaDia').value=meta;
+}
+
+// Validação antes de salvar ficha
+const salvarBaseObrig20=window.salvarPesquisa;
+if(typeof salvarBaseObrig20==='function'&&!window.__salvarObrig20){
+  window.__salvarObrig20=true;
+  window.salvarPesquisa=async function(){
+    const faltas=[];
+    if(!PV('equipe'))faltas.push('Equipe');
+    if(!PV('ponto'))faltas.push('Ponto de captação');
+    if(!PV('nome1'))faltas.push('Nome 1');
+    if(!PV('nome2'))faltas.push('Nome 2');
+    if(!PV('idade1'))faltas.push('Idade 1');
+    if(!PV('idade2'))faltas.push('Idade 2');
+    if(!PV('profissao1'))faltas.push('Profissão 1');
+    if(!PV('profissao2'))faltas.push('Profissão 2');
+    if(!PV('estado'))faltas.push('Estado');
+    if(!PV('cidade'))faltas.push('Cidade');
+    if(faltas.length){
+      PH('formMsg','<span class="erro">Preencha antes de salvar: '+faltas.join(', ')+'</span>');
+      const ids=['equipe','ponto','nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade'];
+      const primeiro=ids.find(id=>!PV(id));
+      if(P(primeiro))P(primeiro).focus();
+      return;
+    }
+    const r=await salvarBaseObrig20.apply(this,arguments);
+    setTimeout(()=>{atualizarPainelInicial20();},300);
+    return r;
+  }
+}
+
+// Atualiza painel após abordagem e sala
+const abordagemBase20=window.registrarAbordagem;
+if(typeof abordagemBase20==='function'&&!window.__abordPainel20){
+  window.__abordPainel20=true;
+  window.registrarAbordagem=async function(){
+    const r=await abordagemBase20.apply(this,arguments);
+    setTimeout(()=>{atualizarPainelInicial20();},300);
+    return r;
+  }
+}
+const salaBase20=window.confirmarSala21;
+if(typeof salaBase20==='function'&&!window.__salaPainel20){
+  window.__salaPainel20=true;
+  window.confirmarSala21=async function(){
+    const r=await salaBase20.apply(this,arguments);
+    setTimeout(()=>{atualizarPainelInicial20();},300);
+    return r;
+  }
+}
+
+// CEO corrige sala caso esteja errado
+window.carregarConferenciaSala20=async function(){
+  const box=P('salaCEOBox20'); if(!box)return;
+  let p=[];
+  try{p=await dados('pesquisas')}catch(e){p=[]}
+  p=(p||[]).filter(x=>String(x.created_at||'').slice(0,10)>=hoje20()).sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)));
+  if(!p.length){box.innerHTML='<p class="mini">Nenhuma ficha de hoje para conferir.</p>';return}
+  box.innerHTML='<table><tr><th>Data</th><th>Profissional</th><th>Casal</th><th>Q/NQ</th><th>Sala</th><th>Ação CEO</th></tr>'+
+    p.map((x,i)=>{
+      const casal=[x.convidado_1,x.convidado_2].filter(Boolean).join(' e ');
+      const sala=isSala20(x)?'Sim':'Não';
+      return `<tr><td>${String(x.created_at||'').slice(0,10)}</td><td>${x.captador_nome||x.user_email||'-'}</td><td>${casal||'-'}</td><td>${x.qualificacao_automatica||'-'}</td><td>${sala}</td><td><button class="secondary" onclick="corrigirSalaCEO20('${x.id||''}','${encodeURIComponent(x.user_email||'')}','${encodeURIComponent(x.created_at||'')}', '${sala==='Sim'?'Não':'Sim'}')">Marcar ${sala==='Sim'?'Não':'Sim'}</button></td></tr>`;
+    }).join('')+'</table>';
+}
+
+window.corrigirSalaCEO20=async function(id,emailEnc,createdEnc,novo){
+  const email=decodeURIComponent(emailEnc), created=decodeURIComponent(createdEnc);
+  try{
+    let r;
+    if(id)r=await db.from('pesquisas').update({levou_sala:novo,sala_status:novo}).eq('id',id);
+    else r=await db.from('pesquisas').update({levou_sala:novo,sala_status:novo}).eq('user_email',email).eq('created_at',created);
+    if(r.error)throw r.error;
+  }catch(e){
+    const arr=JSON.parse(localStorage.getItem('pesquisasLocal')||'[]');
+    const idx=arr.findIndex(x=>(id&&String(x.id)===String(id)) || (x.user_email===email&&x.created_at===created));
+    if(idx>=0){arr[idx].levou_sala=novo;arr[idx].sala_status=novo;localStorage.setItem('pesquisasLocal',JSON.stringify(arr));}
+  }
+  carregarConferenciaSala20();
+  if(typeof carregarRelatorio==='function')carregarRelatorio();
+}
+
+const entrarBasePainel20=window.entrar;
+if(typeof entrarBasePainel20==='function'&&!window.__entrarPainel20){
+  window.__entrarPainel20=true;
+  window.entrar=async function(){
+    const r=await entrarBasePainel20.apply(this,arguments);
+    setTimeout(()=>{atualizarPainelInicial20();},600);
+    return r;
+  }
+}
+
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{atualizarPainelInicial20();},1000));
 })();
 </script>
 
