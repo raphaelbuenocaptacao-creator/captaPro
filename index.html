@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaptaPro Elite 1.1</title>
+<title>CaptaPro Versão 2.0</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
@@ -22,12 +22,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .fichaTitleFull b{display:block;font-size:22px}.fichaTitleFull small{color:#aaa}
 .fichaRodapeFull{border-top:1px solid #3b1b1b;margin-top:12px;padding-top:10px;color:#888;font-size:11px}
 
-/* CaptaPro Elite 1.1 */
+/* CaptaPro Versão 2.0 */
 #brinde{border-color:#00c2ff!important}
 .rankDestaque13{color:#00e676;font-weight:900}
 
 
-/* CaptaPro Elite 1.1 • organização pesquisa e CEO */
+/* CaptaPro Versão 2.0 • organização pesquisa e CEO */
 .pesquisaGrid14 input,.pesquisaGrid14 select{min-height:47px}
 .ceoPainel14{border:1px solid #5a1717;border-radius:16px;padding:12px;background:#080808}
 .ceoGrid14{grid-template-columns:repeat(3,1fr)}
@@ -36,18 +36,18 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:700px){.ceoGrid14{grid-template-columns:1fr}}
 
 
-/* CaptaPro Elite 1.1 • renda BRL + ranking mês */
+/* CaptaPro Versão 2.0 • renda BRL + ranking mês */
 #rankingMesAtual15{border-color:#00c2ff!important}
 #rankingMesAtual15 h2{border-left-color:#00c2ff!important}
 .rendaAjuda15{font-size:11px;color:#aaa;margin-top:-4px;margin-bottom:6px}
 
 
-/* CaptaPro Elite 1.1 • correção renda e CSV */
+/* CaptaPro Versão 2.0 • correção renda e CSV */
 #renda{border-color:#00c2ff!important}
 #csvRankingInput16{border-color:#00e676!important}
 
 
-/* CaptaPro Elite 1.1 • Aba Raking */
+/* CaptaPro Versão 2.0 • Aba Raking */
 #rakingBox table{min-width:650px}
 #rakingBox tr:nth-child(2) td:first-child{color:#ffd54f;font-weight:900}
 #rakingBox tr:nth-child(3) td:first-child{color:#cfd8dc;font-weight:900}
@@ -56,7 +56,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:700px){.rakingTools17{grid-template-columns:1fr}.tabs{grid-template-columns:1fr}body.ceo .tabs{grid-template-columns:1fr}}
 
 
-/* CaptaPro Elite 1.1 • versão limpa */
+/* CaptaPro Versão 2.0 • versão limpa */
 #renda{border-color:#00c2ff!important}
 #csvRakingInput21{border-color:#00e676!important;margin:8px 0}
 #rakingBox table{min-width:650px}
@@ -65,7 +65,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 #rakingBox tr:nth-child(4) td:first-child{color:#d7a36a;font-weight:900}
 
 
-/* Elite 1.1 • layout do casal e ranking junho */
+/* Versão 2.0 • layout do casal e ranking junho */
 .pessoaBox{grid-column:1/-1;background:#151515;border:1px solid #333;border-radius:16px;padding:12px;margin-top:2px}
 .pessoaBox b{display:block;color:#ff8585;margin-bottom:8px}
 .pessoaGrid{display:grid;grid-template-columns:1.4fr .7fr 1.3fr;gap:8px}
@@ -76,7 +76,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .rankTop{background:#4b4100!important}
 @media(max-width:700px){.pessoaGrid{grid-template-columns:1fr}.pessoaBox{padding:10px}}
 
-/* CaptaPro Elite 1.1 • Relatório diário */
+/* CaptaPro Versão 2.0 • Relatório diário */
 #diario textarea{margin-top:10px;min-height:120px}
 #fechamentosCEOBox table{min-width:900px}
 
@@ -84,7 +84,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Elite 1.1 • Relatório diário</div><p class="mini">Elite 1.1 • Pesquisa, Relatório Diário e CEO • <b style="color:#00e676">Bueno Invest</b></p></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Versão 2.0</div><p class="mini">Versão 2.0 • Pesquisa, Relatório Diário e CEO • <b style="color:#00e676">Bueno Invest</b></p></div>
 
 <section id="loginBox" class="card">
 <h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
@@ -148,17 +148,13 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <select id="multi"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
 <select id="brinde">
 <option value="">Selecione a cortesia</option>
-<option>1 Museu de Cera</option>
 <option>2 Museu de Cera</option>
-<option>1 Mini Mundo</option>
 <option>2 Mini Mundo</option>
-<option>1 Vale dos Dinossauros</option>
 <option>2 Vale dos Dinossauros</option>
-<option>1 Terror</option>
 <option>2 Terror</option>
-<option>1 Espelho de Jordão</option>
-<option>2 Espelho de Jordão</option>
-<option>R$ 100,00 de consumo</option>
+<option>4 Espelho do Jordão</option>
+<option>R$ 120,00 de consumo</option>
+<option>Loja Parque R$ 150,00</option>
 <option>Rostie</option>
 <option>Vemaguet</option>
 <option>Armazém Brasil</option>
@@ -169,14 +165,14 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <input id="contato" placeholder="WhatsApp / contato">
 </div>
 <textarea id="obs" style="margin-top:8px" placeholder="Observações"></textarea>
-<div class="grid" style="margin-top:8px"><button class="secondary" onclick="calcularQualificacao()">Calcular Q/NQ</button><button class="main" onclick="salvarPesquisa()">Salvar Pesquisa</button></div><button class="secondary" style="margin-top:8px;background:#073a21;border-color:#0a7b43" onclick="confirmarSala21()">✅ COLOQUEI EM SALA</button><p id="formMsg"></p><div id="resultado"></div>
+<div style="margin-top:8px"><button class="main" onclick="salvarPesquisa()">Salvar Ficha</button></div><button class="secondary" style="margin-top:8px;background:#073a21;border-color:#0a7b43" onclick="confirmarSala21()">✅ Coloquei em sala</button><p id="formMsg"></p><div id="resultado" class="hidden"></div>
 <div id="fichaBox" class="card hidden"><h2>Ficha salva</h2><div id="fichaConteudo"></div><div class="grid"><button class="main" onclick="compartilharFicha()">Compartilhar imagem</button><button class="secondary" onclick="novaPesquisa()">Nova pesquisa</button></div></div>
 </section>
 
 
 <section id="diario" class="card hidden">
 <h2>Relatório Diário</h2>
-<p class="hint">No final do expediente, o profissional finaliza o dia com resumo automático + relatório escrito.</p>
+<p class="hint">No final do expediente, o profissional envia o relatório com resumo automático + relatório escrito.</p>
 <div class="grid">
   <input id="diarioData" type="date">
   <input id="diarioNome" placeholder="Nome do profissional" readonly>
@@ -195,7 +191,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <textarea id="diarioTexto" placeholder="Relatório escrito: conte como foi o dia, dificuldades, pontos positivos e o que pode melhorar amanhã."></textarea>
 <div class="grid" style="margin-top:8px">
   <button class="secondary" onclick="carregarDiario()">Atualizar números</button>
-  <button class="main" onclick="finalizarDiario()">✅ Finalizar meu dia</button>
+  <button class="main" onclick="finalizarDiario()">✅ Enviar meu relatório</button>
 </div>
 <p id="diarioMsg"></p>
 <div class="card scroll adminOnly">
@@ -225,7 +221,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
 <section id="raking" class="card hidden">
 <h2>Ranking Julho 2026</h2>
-<p class="hint">Acompanhamento de julho com casais, vendas, VGV, eficiência e projeção de resultados.</p>
+<p class="hint">Julho começa do zero. O ranking será formado pelas fichas salvas no sistema.</p>
 <div class="rakingTools17">
   <input id="rakingDe" type="date">
   <input id="rakingAte" type="date">
@@ -237,7 +233,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </div>
 <div class="card scroll">
   <h2>Ranking Julho até 21/06</h2>
-  <p class="hint">Cores da projeção: vermelho abaixo de 22, verde acima de 22, verde forte acima de 35 e preto acima de 50 casais.</p>
+  <p class="hint">Ranking automático por profissional, casais, vendas, VGV e eficiência.</p>
   <div id="rakingFonte21" class="mini"></div>
   <div id="rakingBox"></div>
 </div>
@@ -479,7 +475,7 @@ function renderFicha(p){
  E('fichaBox').classList.remove('hidden');
  const carroTxt=`${p.modelo_carro||'-'} ${p.ano_veiculo||''}`.trim();
  H('fichaConteudo',`<div id=fichaImg class=ficha>
-<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Elite 1.1 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
+<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Versão 2.0 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
 ${campoFicha('Resultado da qualificação', `${p.qualificacao_automatica||'-'} • ${p.motivo_qualificacao||'Perfil dentro da regra'}`)}
 ${campoFicha('Nome 1', p.convidado_1)}${campoFicha('Idade 1 / Profissão 1', `${p.idade_1||'-'} anos • ${p.profissao_1||'-'}`)}
 ${campoFicha('Nome 2', p.convidado_2)}${campoFicha('Idade 2 / Profissão 2', `${p.idade_2||'-'} anos • ${p.profissao_2||'-'}`)}
@@ -553,31 +549,7 @@ function pick(o,names){for(const n of names){const nn=normal(n);const k=Object.k
 function montarCSV(dados){const map={};(dados||[]).forEach(r=>{const nome=pick(r,['profissional','promotor','captador','promotor de marketing','nome'])||'Sem nome';if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0};map[nome].casais+=parseMoeda(pick(r,['casais','casal','pesquisas','fichas']))||0;map[nome].vendas+=parseMoeda(pick(r,['vendas','venda']))||vendaCount(pick(r,['status']));map[nome].vgv+=parseMoeda(pick(r,['vgv','valor vendido','valor','valor vgv','volume geral']))||0;});return Object.values(map)}
 function montarPesquisas(p){const map={};(p||[]).forEach(x=>{const nome=x.captador_nome||x.profissional||x.user_email||'Sem nome';if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0};map[nome].casais++;map[nome].vendas+=vendaCount(x.status||x.venda||x.vendas);map[nome].vgv+=parseMoeda(x.vgv||x.valor_vgv||x.valor||0);});return Object.values(map)}
 
-const rankingJunhoPadrao21 = [
- {nome:'ANA CAROLINE',casais:20,vendas:10,vgv:998000,projecao:29},
- {nome:'JESSICA BARBOSA',casais:11,vendas:10,vgv:844000,projecao:16},
- {nome:'JOSYENE FREITAS',casais:14,vendas:8,vgv:702000,projecao:20},
- {nome:'JONATAS FRANÇA DA SILVA',casais:20,vendas:7,vgv:608000,projecao:29},
- {nome:'RENAN MARCONDES JOHAS',casais:12,vendas:6,vgv:544000,projecao:17},
- {nome:'ANDRE CARRIÇO',casais:15,vendas:5,vgv:440000,projecao:21},
- {nome:'DANIELA MOURA',casais:11,vendas:5,vgv:432000,projecao:16},
- {nome:'FELIPE DA SILVA RIBEIRO',casais:8,vendas:5,vgv:419830,projecao:11},
- {nome:'IVANILSON LUIZ AGUIAR LIMA',casais:42,vendas:4,vgv:376000,projecao:60},
- {nome:'ADRIANO MOREIRA',casais:9,vendas:4,vgv:362000,projecao:13},
- {nome:'LARISSA RIBEIRO',casais:8,vendas:4,vgv:360000,projecao:11},
- {nome:'ALEXANDRE PASQUALE JUNIOR',casais:10,vendas:4,vgv:358000,projecao:14},
- {nome:'RICARDO MALTCHIK',casais:22,vendas:3,vgv:264000,projecao:31},
- {nome:'JOSE ADEMIR SILVA TAVARES',casais:23,vendas:3,vgv:252700,projecao:33},
- {nome:'PAULO VICTOR ORTIZ',casais:9,vendas:2,vgv:182100,projecao:50},
- {nome:'PEDRO HENRIQUE GOMES SANTOS',casais:16,vendas:2,vgv:180000,projecao:23},
- {nome:'REBECA BRAGA PINTO',casais:10,vendas:1,vgv:95000,projecao:14},
- {nome:'MATHEUS ESLEY SILVA',casais:13,vendas:1,vgv:90000,projecao:19},
- {nome:'MARCIO ALFAIA',casais:9,vendas:1,vgv:90000,projecao:13},
- {nome:'MATHEUS DOMINGOS SANTOS',casais:7,vendas:1,vgv:88000,projecao:10},
- {nome:'MATEUS SANTOS SANTA ROSA',casais:28,vendas:0,vgv:0,projecao:40},
- {nome:'JOAO VITOR DA SILVA FRANCISCO',casais:8,vendas:0,vgv:0,projecao:11},
- {nome:'SUENE CINTIA DA SILVA',casais:3,vendas:0,vgv:0,projecao:4}
-];
+const rankingJunhoPadrao21 = [];
 function classeProj(p){p=Number(p)||0; if(p>=50)return 'projTop'; if(p>=35)return 'projBoa'; if(p>=22)return 'projMeta'; return 'projBaixa'}
 
 function renderRaking(arr,fonte){
@@ -617,7 +589,7 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{aplicarRendaDi
 </script>
 
 <script>
-/* ===== CaptaPro Elite 1.1 • Relatório Diário + Aprovação ===== */
+/* ===== CaptaPro Versão 2.0 • Relatório Diário + Aprovação ===== */
 (function(){
 function D(id){return document.getElementById(id)}
 function DV(id){return (D(id)?.value||'').trim()}
@@ -657,11 +629,11 @@ window.carregarDiario=async function(){
 window.finalizarDiario=async function(){
  const data=DV('diarioData')||hojeISO();
  const r=await carregarDiario();
- const payload={nome:window.usuarioNome||usuarioNome||DV('diarioNome'),user_email:window.usuarioEmail||usuarioEmail,data,abordagens:r.abordagens,pesquisas:r.pesquisas,q:r.q,nq:r.nq,nq_1_item:r.nq1,sala:r.sala,eficiencia:r.eficiencia,conversao:r.conversao,projecao_resultados:r.projecao,relatorio_escrito:DV('diarioTexto'),status:'Finalizado',created_at:new Date().toISOString()};
+ const payload={nome:window.usuarioNome||usuarioNome||DV('diarioNome'),user_email:window.usuarioEmail||usuarioEmail,data,abordagens:r.abordagens,pesquisas:r.pesquisas,q:r.q,nq:r.nq,nq_1_item:r.nq1,sala:r.sala,eficiencia:r.eficiencia,conversao:r.conversao,projecao_resultados:r.projecao,relatorio_escrito:DV('diarioTexto'),status:'Enviado',created_at:new Date().toISOString()};
  try{
    const resp=await db.from('relatorios_diarios').upsert(payload,{onConflict:'user_email,data'});
    if(resp.error)throw resp.error;
-   DH('diarioMsg','<span class="ok">Relatório diário finalizado e enviado.</span>');
+   DH('diarioMsg','<span class="ok">Relatório enviado com sucesso.</span>');
  }catch(e){
    const arr=JSON.parse(localStorage.getItem('relatorios_diarios_local')||'[]');
    const idx=arr.findIndex(x=>x.user_email===payload.user_email&&x.data===payload.data);
@@ -704,6 +676,56 @@ if(typeof abaBase11==='function'&&!window.__abaDiario11){
  }
 }
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{if(D('diarioData'))D('diarioData').value=hojeISO();if(D('diarioNome'))D('diarioNome').value=window.usuarioNome||usuarioNome||'';},700));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro Versão 2.0 • salvar com qualificação automática sem botão calcular ===== */
+(function(){
+function EP(id){return document.getElementById(id)}
+function HP(id,v){if(EP(id))EP(id).innerHTML=v}
+const salvarBaseElite10 = window.salvarPesquisa;
+if(typeof salvarBaseElite10 === 'function' && !window.__salvarAutoQualificacaoElite10){
+  window.__salvarAutoQualificacaoElite10 = true;
+  window.salvarPesquisa = async function(){
+    const q = (typeof qual === 'function') ? qual() : {status:'-',motivo:''};
+    const r = await salvarBaseElite10.apply(this, arguments);
+    const cor = q.status === 'Q' ? 'ok' : (String(q.status).includes('1') ? 'warn' : 'erro');
+    HP('formMsg', `<span class="${cor}">Resultado: ${q.status}</span><br><span class="mini">${q.motivo || ''}</span><br><span class="ok">Ficha salva. Compartilhe a imagem ou inicie nova pesquisa.</span>`);
+    return r;
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const res = EP('resultado');
+  if(res)res.classList.add('hidden');
+});
+})();
+</script>
+
+
+<script>
+/* ===== Versão 2.0 • ajustes finais solicitados ===== */
+(function(){
+function A(id){return document.getElementById(id)}
+function AH(id,v){if(A(id))A(id).innerHTML=v}
+const baseSalvarV20 = window.salvarPesquisa;
+if(typeof baseSalvarV20 === 'function' && !window.__salvarV20Final){
+  window.__salvarV20Final = true;
+  window.salvarPesquisa = async function(){
+    const q = (typeof qual === 'function') ? qual() : {status:'-', motivo:''};
+    const r = await baseSalvarV20.apply(this, arguments);
+    const cor = q.status === 'Q' ? 'ok' : (String(q.status).includes('1') ? 'warn' : 'erro');
+    AH('formMsg', `<span class="${cor}">Resultado: ${q.status}</span><br><span class="ok">Ficha salva.</span>`);
+    return r;
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const res=A('resultado'); if(res)res.classList.add('hidden');
+  document.querySelectorAll('button').forEach(b=>{
+    if((b.innerText||'').trim()==='') b.style.display='none';
+  });
+});
 })();
 </script>
 
