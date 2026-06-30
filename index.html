@@ -27,7 +27,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .rankDestaque13{color:#00e676;font-weight:900}
 
 
-/* CaptaPro Versão 2.0 • organização pesquisa e CEO */
+/* Organização pesquisa e CEO */
 .pesquisaGrid14 input,.pesquisaGrid14 select{min-height:47px}
 .ceoPainel14{border:1px solid #5a1717;border-radius:16px;padding:12px;background:#080808}
 .ceoGrid14{grid-template-columns:repeat(3,1fr)}
@@ -36,18 +36,18 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:700px){.ceoGrid14{grid-template-columns:1fr}}
 
 
-/* CaptaPro Versão 2.0 • renda BRL + ranking mês */
+/* Renda e ranking */
 #rankingMesAtual15{border-color:#00c2ff!important}
 #rankingMesAtual15 h2{border-left-color:#00c2ff!important}
 .rendaAjuda15{font-size:11px;color:#aaa;margin-top:-4px;margin-bottom:6px}
 
 
-/* CaptaPro Versão 2.0 • correção renda e CSV */
+/* Correção renda e CSV */
 #renda{border-color:#00c2ff!important}
 #csvRankingInput16{border-color:#00e676!important}
 
 
-/* CaptaPro Versão 2.0 • Aba Raking */
+/* Aba Ranking */
 #rakingBox table{min-width:650px}
 #rakingBox tr:nth-child(2) td:first-child{color:#ffd54f;font-weight:900}
 #rakingBox tr:nth-child(3) td:first-child{color:#cfd8dc;font-weight:900}
@@ -56,7 +56,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:700px){.rakingTools17{grid-template-columns:1fr}.tabs{grid-template-columns:1fr}body.ceo .tabs{grid-template-columns:1fr}}
 
 
-/* CaptaPro Versão 2.0 • versão limpa */
+/* Versão limpa */
 #renda{border-color:#00c2ff!important}
 #csvRakingInput21{border-color:#00e676!important;margin:8px 0}
 #rakingBox table{min-width:650px}
@@ -214,7 +214,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <input id="contato" placeholder="WhatsApp / contato">
 </div>
 <textarea id="obs" style="margin-top:8px" placeholder="Observações"></textarea>
-<div style="margin-top:8px"><button class="main" onclick="salvarPesquisa()">Salvar Ficha</button></div><button class="secondary" style="margin-top:8px;background:#073a21;border-color:#0a7b43" onclick="confirmarSala21()">✅ Coloquei em sala</button><p id="formMsg"></p><div id="resultado" class="hidden"></div>
+<div style="margin-top:8px"><button class="main" onclick="salvarPesquisa()">Salvar Ficha</button></div><button class="secondary" style="margin-top:8px;background:#073a21;border-color:#0a7b43" onclick="confirmarSala21()">✅ Solicitar sala</button><p id="formMsg"></p><div id="resultado" class="hidden"></div>
 <div id="fichaBox" class="card hidden"><h2>Ficha salva</h2><div id="fichaConteudo"></div><div class="grid"><button class="main" onclick="compartilharFicha()">Compartilhar imagem</button><button class="secondary" onclick="novaPesquisa()">Nova pesquisa</button></div></div>
 </section>
 
@@ -230,7 +230,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
   <div class="painelCard20 verde"><span>Q</span><b id="homeQ">0</b></div>
   <div class="painelCard20 amarelo"><span>NQ</span><b id="homeNQ">0</b></div>
   <div class="painelCard20 roxo"><span>Sala</span><b id="homeSala">0</b></div>
-  <div class="painelCard20 preto"><span>Meta mensal (casais)</span><b id="homeMeta">0</b></div>
+  <div class="painelCard20 preto"><span>Meta mensal</span><b id="homeMeta">0/35</b></div>
+</div>
+<div class="metaMensalBox20">
+  <div class="metaLinha20"><span>Progresso da meta</span><b id="metaMensalTexto20">0 / 35</b></div>
+  <div class="barraMeta20"><div id="barraMetaFill20"></div></div>
+  <p class="mini" id="metaMensalInfo20">Faltam 35 pesquisas</p>
 </div>
 
 </section>
@@ -283,7 +288,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
 <div class="card scroll adminOnly">
   <h2>Conferência de Sala</h2>
-  <p class="hint">O profissional pode confirmar sala. O CEO pode corrigir caso esteja errado.</p>
+  <p class="hint">O profissional solicita sala. O CEO confirma ou corrige caso esteja errado.</p>
   <button class="main" onclick="carregarConferenciaSala20()">Atualizar sala</button>
   <div id="salaCEOBox20" style="margin-top:8px"></div>
 </div>
@@ -648,25 +653,25 @@ function renderRaking(arr,fonte){
 }
 function setPeriodoMes(){
  const de=E('rakingDe'),ate=E('rakingAte'); if(!de||!ate)return;
- if(!de.value)de.value='2026-06-01';
- if(!ate.value)ate.value='2026-06-21';
+ const now=new Date();
+ const y=now.getFullYear(), m=String(now.getMonth()+1).padStart(2,'0');
+ const hoje=now.toISOString().slice(0,10);
+ if(!de.value)de.value=`${y}-${m}-01`;
+ if(!ate.value)ate.value=hoje;
 }
 async function tentarCSVRepo(){
  for(const url of ['./raking%20junho.csv','./raking junho.csv','raking%20junho.csv']){try{const resp=await fetch(url,{cache:'no-store'});if(resp.ok){const dados=parseCSV(await resp.text());if(dados.length)return dados}}catch(e){}}
  return [];
 }
 function importarRakingCSV21(ev){const file=ev.target.files&&ev.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const dados=parseCSV(reader.result);localStorage.setItem('raking_csv_21',JSON.stringify(dados));renderRaking(montarCSV(dados),'<span class=ok>Fonte: CSV importado.</span>')};reader.readAsText(file,'utf-8')}
-function limparRakingCSV21(){localStorage.removeItem('raking_csv_21');if(E('csvRakingInput21'))E('csvRakingInput21').value='';renderRaking(rankingJunhoPadrao21, '<span class=ok>Fonte: Ranking Julho até 21/06.</span>')}
-async function carregarRaking(forcarBanco){
- setPeriodoMes();
- if(!forcarBanco){try{const salvo=JSON.parse(localStorage.getItem('raking_csv_21')||'[]');if(salvo.length){renderRaking(montarCSV(salvo),'<span class=ok>Fonte: CSV importado.</span>');return}}catch(e){}}
+function limparRakingCSV21(){localStorage.removeItem('raking_csv_21');if(E('csvRakingInput21'))E('csvRakingInput21').value='';renderRaking([], '<span class=warn>Julho começa do zero. Salve fichas para montar o ranking.</span>');return}}catch(e){}}
  const de=V('rakingDe'),ate=V('rakingAte'); let p=[];
  try{p=await dados('pesquisas')}catch(e){p=[]}
  p=(p||[]).filter(x=>per(x,de,ate));
  const arr=montarPesquisas(p);
  if(arr.length){renderRaking(arr,'<span class=ok>Fonte: fichas salvas de hoje em diante.</span>');return}
- if(!forcarBanco){const repo=await tentarCSVRepo();if(repo.length){renderRaking(montarCSV(repo),'<span class=ok>Fonte: raking junho.csv do GitHub.</span>');return}}
- renderRaking(rankingJunhoPadrao21, '<span class=ok>Fonte: Ranking Julho até 21/06.</span>');
+ 
+ renderRaking([], '<span class=warn>Julho começa do zero. Salve fichas para montar o ranking.</span>');
 }
 
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{aplicarRendaDigitavel();aplicarRendaCEO();loadCfg();setPeriodoMes();carregarRaking();},500)});
@@ -1711,6 +1716,149 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
   if(typeof renderMetasIndividuais20==='function')renderMetasIndividuais20();
   if(typeof atualizarMetaMensalPainel20==='function')atualizarMetaMensalPainel20();
 },1200));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro Versão 2.0 • patch final limpo ===== */
+(function(){
+function F(id){return document.getElementById(id)}
+function FV(id){return (F(id)?.value||'').trim()}
+function FH(id,v){if(F(id))F(id).innerHTML=v}
+function FS(id,v){if(F(id))F(id).innerText=v}
+function normF(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function keyF(s){return normF(s).replace(/[^a-z0-9@._-]/g,'_')}
+function hojeF(){return new Date().toISOString().slice(0,10)}
+function inicioMesF(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`}
+function fimMesF(){const d=new Date(),u=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(u).padStart(2,'0')}`}
+
+function getJSONF(k,def){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(def))}catch(e){return def}}
+function setJSONF(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+
+// Login permanente
+const entrarOriginalF=window.entrar;
+if(typeof entrarOriginalF==='function'&&!window.__loginFinalF){
+ window.__loginFinalF=true;
+ window.entrar=async function(){
+   const email=FV('email').toLowerCase(), nome=FV('nome')||email;
+   const sess=getJSONF('capta_login_persistente_final',null);
+   if(sess&&sess.email===email&&sess.approved){
+     window.usuarioEmail=usuarioEmail=email;
+     window.usuarioNome=usuarioNome=sess.nome||nome;
+     window.role=role=sess.role||'profissional';
+     document.body.classList.toggle('ceo',role==='ceo'||(typeof CEOS!=='undefined'&&CEOS.includes(email)));
+     if(F('loginBox'))F('loginBox').classList.add('hidden');
+     if(F('app'))F('app').classList.remove('hidden');
+     if(typeof loadCfg==='function')loadCfg();
+     if(typeof carregarAbordagensHoje==='function')carregarAbordagensHoje();
+     if(typeof carregarRelatorio==='function')carregarRelatorio();
+     if(typeof carregarRaking==='function')carregarRaking();
+     if(typeof atualizarPainelInicial20==='function')setTimeout(atualizarPainelInicial20,400);
+     if(typeof atualizarMetaMensalPainelFinal==='function')setTimeout(atualizarMetaMensalPainelFinal,600);
+     return;
+   }
+   const r=await entrarOriginalF.apply(this,arguments);
+   setTimeout(()=>{
+     if(F('app')&&!F('app').classList.contains('hidden')){
+       setJSONF('capta_login_persistente_final',{email,nome:window.usuarioNome||usuarioNome||nome,role:window.role||role||'profissional',approved:true});
+     }
+   },500);
+   return r;
+ }
+ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
+   const sess=getJSONF('capta_login_persistente_final',null);
+   if(sess&&sess.email&&F('loginBox')&&!F('loginBox').classList.contains('hidden')){
+     if(F('email'))F('email').value=sess.email;
+     if(F('nome'))F('nome').value=sess.nome||sess.email;
+     window.entrar();
+   }
+ },350));
+}
+
+// Meta individual por nome ou e-mail
+window.metaDoProfissionalFinal=function(nome,email){
+ const metas=getJSONF('metas_individuais_20',{});
+ const chaves=[keyF(email||''),keyF(nome||''),normF(email||''),normF(nome||'')].filter(Boolean);
+ for(const k of chaves){if(metas[k]?.meta)return Number(metas[k].meta)||35}
+ const n=normF(nome||'');
+ for(const k of Object.keys(metas)){
+   const mn=normF(metas[k].nome||k);
+   if(n&&(n.includes(mn)||mn.includes(n))&&metas[k].meta)return Number(metas[k].meta)||35;
+ }
+ return 35;
+}
+window.salvarMetaIndividual20=function(){
+ const nome=FV('metaProfNome20'), meta=Number(FV('metaProfValor20'))||0;
+ if(!nome||!meta){FH('metasIndividuaisBox20','<p class="erro">Informe nome/e-mail e meta.</p>');return}
+ const metas=getJSONF('metas_individuais_20',{});
+ metas[keyF(nome)]={nome,meta};
+ setJSONF('metas_individuais_20',metas);
+ if(F('metaProfNome20'))F('metaProfNome20').value='';
+ if(F('metaProfValor20'))F('metaProfValor20').value='';
+ if(typeof renderMetasIndividuais20==='function')renderMetasIndividuais20();
+ if(typeof atualizarMetaMensalPainelFinal==='function')atualizarMetaMensalPainelFinal();
+}
+window.atualizarMetaMensalPainelFinal=async function(){
+ let p=[]; try{p=await dados('pesquisas')}catch(e){p=[]}
+ const nome=window.usuarioNome||usuarioNome||'', email=window.usuarioEmail||usuarioEmail||'';
+ const meta=window.metaDoProfissionalFinal(nome,email);
+ const ini=inicioMesF(), fim=fimMesF();
+ const feitos=(p||[]).filter(x=>{
+   const d=String(x.created_at||'').slice(0,10);
+   return d>=ini&&d<=fim&&(x.user_email===email||normF(x.captador_nome)===normF(nome));
+ }).length;
+ const pct=meta?Math.min(100,Math.round(feitos/meta*100)):0, faltam=Math.max(0,meta-feitos);
+ FS('homeMeta',`${feitos}/${meta}`);
+ FS('metaMensalTexto20',`${feitos} / ${meta}`);
+ FS('metaMensalInfo20',faltam?`${pct}% concluído • faltam ${faltam} pesquisas`:`Meta batida • ${pct}% concluído`);
+ if(F('barraMetaFill20'))F('barraMetaFill20').style.width=pct+'%';
+}
+const painelBaseF=window.atualizarPainelInicial20;
+if(typeof painelBaseF==='function'&&!window.__painelMetaFinalF){
+ window.__painelMetaFinalF=true;
+ window.atualizarPainelInicial20=async function(){
+   const r=await painelBaseF.apply(this,arguments);
+   await atualizarMetaMensalPainelFinal();
+   return r;
+ }
+}
+
+// Sala: profissional solicita, CEO confirma/corrige
+const salaBaseF=window.confirmarSala21;
+if(typeof salaBaseF==='function'&&!window.__salaPendenteFinalF){
+ window.__salaPendenteFinalF=true;
+ window.confirmarSala21=async function(){
+   if(!window.ultimaFicha&&!ultimaFicha){FH('formMsg','<span class="warn">Salve a ficha primeiro.</span>');return}
+   const ficha=window.ultimaFicha||ultimaFicha;
+   ficha.levou_sala='Pendente';
+   ficha.sala_status='Pendente CEO';
+   try{
+     if(ficha.id)await db.from('pesquisas').update({levou_sala:'Pendente',sala_status:'Pendente CEO'}).eq('id',ficha.id);
+   }catch(e){}
+   FH('formMsg','<span class="warn">Sala solicitada. Aguardando confirmação do CEO.</span>');
+   if(typeof carregarRelatorio==='function')carregarRelatorio();
+ }
+}
+
+// Ranking: período do mês atual e sem dados antigos
+window.setPeriodoMes=function(){
+ const de=F('rakingDe'), ate=F('rakingAte');
+ if(de&&!de.value)de.value=inicioMesF();
+ if(ate&&!ate.value)ate.value=hojeF();
+}
+const carregarRakingBaseF=window.carregarRaking;
+window.carregarRaking=async function(forcarBanco){
+ if(F('rakingDe')&&!FV('rakingDe'))F('rakingDe').value=inicioMesF();
+ if(F('rakingAte')&&!FV('rakingAte'))F('rakingAte').value=hojeF();
+ try{localStorage.removeItem('raking_csv_21')}catch(e){}
+ if(carregarRakingBaseF)return carregarRakingBaseF.call(this,true);
+}
+
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
+ if(typeof renderMetasIndividuais20==='function')renderMetasIndividuais20();
+ if(typeof atualizarMetaMensalPainelFinal==='function')atualizarMetaMensalPainelFinal();
+},900));
 })();
 </script>
 
