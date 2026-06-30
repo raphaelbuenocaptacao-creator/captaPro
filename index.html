@@ -91,6 +91,25 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 #homeMeta{color:#00e676!important}
 #salaCEOBox20 table{min-width:900px}
 
+
+/* Versão 2.0 • painel limpo + validação visual */
+.painelClean20{border-color:#172b5a!important}
+.painelCards20{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.painelCard20{border-radius:18px;padding:18px;text-align:center;min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.12)}
+.painelCard20 span{font-size:13px;color:#eaeaea;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.painelCard20 b{font-size:38px;margin-top:6px;color:#fff}
+.painelCard20.azul{background:linear-gradient(135deg,#06336b,#0a6cff)}
+.painelCard20.vermelho{background:linear-gradient(135deg,#5a0707,#ef1b24)}
+.painelCard20.verde{background:linear-gradient(135deg,#06451f,#00a651)}
+.painelCard20.amarelo{background:linear-gradient(135deg,#5f4600,#ffb300);color:#111}
+.painelCard20.roxo{background:linear-gradient(135deg,#35105a,#8e24aa)}
+.painelCard20.preto{background:linear-gradient(135deg,#050505,#333)}
+.campoObrigatorioErro20{border:2px solid #ff5252!important;box-shadow:0 0 0 2px rgba(255,82,82,.16)!important;background:#210606!important}
+.confirmacaoFicha20{border:1px solid #00e676;background:#061d10;border-radius:16px;padding:14px;margin-top:10px}
+.confirmacaoFicha20 b{display:block;color:#00e676;font-size:20px;margin-bottom:4px}
+.confirmacaoFicha20 .grid{margin-top:10px}
+@media(max-width:700px){.painelCards20{grid-template-columns:1fr 1fr}.painelCard20{min-height:92px}.painelCard20 b{font-size:32px}}
+
 </style>
 </head>
 <body>
@@ -104,23 +123,6 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <section id="app" class="hidden">
 <div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Profissional</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button class="adminOnly" onclick="aba('qualificacao',this)">Qualificação CEO</button></div>
 
-
-<section id="painelInicial" class="card">
-<h2>Painel do Dia</h2>
-<p class="hint">Resumo automático de hoje para o profissional.</p>
-<div class="kpis">
-  <div class="kpi">Abordagens<b id="homeAbord">0</b></div>
-  <div class="kpi">Pesquisas<b id="homePesq">0</b></div>
-  <div class="kpi">Q<b id="homeQ">0</b></div>
-  <div class="kpi">NQ<b id="homeNQ">0</b></div>
-  <div class="kpi">Sala<b id="homeSala">0</b></div>
-  <div class="kpi">Meta do dia<b id="homeMeta">0</b></div>
-</div>
-<div class="grid" style="margin-top:8px">
-  <input id="metaDia" type="number" placeholder="Meta do dia. Ex: 5">
-  <button class="secondary" onclick="salvarMetaDia20()">Salvar meta</button>
-</div>
-</section>
 
 <section id="pesquisa" class="card">
 <h2>Pesquisa</h2><p class="hint">Abordagem → ficha → salvar → compartilhar → nova ficha.</p>
@@ -200,6 +202,24 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
 <section id="diario" class="card hidden">
 <h2>Profissional</h2>
+<section id="painelInicialProfissional20" class="card painelClean20">
+<h2>Painel do Dia</h2>
+<p class="hint">Resumo individual de hoje.</p>
+<div class="painelCards20">
+  <div class="painelCard20 azul"><span>Abordagens</span><b id="homeAbord">0</b></div>
+  <div class="painelCard20 vermelho"><span>Pesquisas</span><b id="homePesq">0</b></div>
+  <div class="painelCard20 verde"><span>Q</span><b id="homeQ">0</b></div>
+  <div class="painelCard20 amarelo"><span>NQ</span><b id="homeNQ">0</b></div>
+  <div class="painelCard20 roxo"><span>Sala</span><b id="homeSala">0</b></div>
+  <div class="painelCard20 preto"><span>Meta do dia</span><b id="homeMeta">0</b></div>
+</div>
+<div class="grid" style="margin-top:10px">
+  <input id="metaDia" type="number" placeholder="Meta do dia. Ex: 5">
+  <button class="secondary" onclick="salvarMetaDia20()">Salvar meta</button>
+</div>
+</section>
+
+
 <p class="hint">No final do expediente, o profissional acompanha seus próprios números e envia o relatório do dia.</p>
 <div class="grid">
   <input id="diarioData" type="date">
@@ -1187,6 +1207,102 @@ if(typeof entrarBasePainel20==='function'&&!window.__entrarPainel20){
 }
 
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{atualizarPainelInicial20();},1000));
+})();
+</script>
+
+
+<script>
+/* ===== Versão 2.0 • painel visual + confirmação de ficha ===== */
+(function(){
+function C(id){return document.getElementById(id)}
+function CV(id){return (C(id)?.value||'').trim()}
+function CH(id,v){if(C(id))C(id).innerHTML=v}
+const camposObrigatorios20=['equipe','ponto','nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade'];
+
+function limparObrigatorios20(){
+  camposObrigatorios20.forEach(id=>{if(C(id))C(id).classList.remove('campoObrigatorioErro20')});
+}
+function destacarFaltantes20(faltantesIds){
+  limparObrigatorios20();
+  faltantesIds.forEach(id=>{if(C(id))C(id).classList.add('campoObrigatorioErro20')});
+}
+
+camposObrigatorios20.forEach(id=>{
+  const el=C(id);
+  if(el&&!el.__limpaErro20){
+    el.__limpaErro20=true;
+    el.addEventListener('input',()=>{if(CV(id))el.classList.remove('campoObrigatorioErro20')});
+    el.addEventListener('change',()=>{if(CV(id))el.classList.remove('campoObrigatorioErro20')});
+  }
+});
+
+const salvarBaseVisual20=window.salvarPesquisa;
+if(typeof salvarBaseVisual20==='function'&&!window.__salvarVisual20){
+  window.__salvarVisual20=true;
+  window.salvarPesquisa=async function(){
+    const labels={
+      equipe:'Equipe',ponto:'Ponto de captação',nome1:'Nome 1',nome2:'Nome 2',
+      idade1:'Idade 1',idade2:'Idade 2',profissao1:'Profissão 1',profissao2:'Profissão 2',
+      estado:'Estado',cidade:'Cidade'
+    };
+    const faltantesIds=camposObrigatorios20.filter(id=>!CV(id));
+    if(faltantesIds.length){
+      destacarFaltantes20(faltantesIds);
+      CH('formMsg','<span class="erro">Preencha os campos destacados: '+faltantesIds.map(id=>labels[id]).join(', ')+'</span>');
+      if(C(faltantesIds[0]))C(faltantesIds[0]).focus();
+      return;
+    }
+    limparObrigatorios20();
+    const q=(typeof qual==='function')?qual():{status:'-',motivo:''};
+    const r=await salvarBaseVisual20.apply(this,arguments);
+    const cor=q.status==='Q'?'ok':(String(q.status).includes('1')?'warn':'erro');
+    CH('formMsg',`<div class="confirmacaoFicha20">
+      <b>✅ Ficha salva com sucesso</b>
+      <span class="${cor}">Resultado: ${q.status}</span>
+      <p class="mini">${q.motivo||''}</p>
+      <div class="grid">
+        <button class="main" onclick="compartilharFicha()">Compartilhar ficha</button>
+        <button class="secondary" onclick="novaPesquisa()">Nova ficha</button>
+      </div>
+    </div>`);
+    return r;
+  }
+}
+
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
+  // deixa o painel mais limpo visualmente mesmo se navegador estiver com cache
+  const painel=C('painelInicialProfissional20')||C('painelInicial');
+  if(painel)painel.classList.add('painelClean20');
+},600));
+})();
+</script>
+
+
+<script>
+/* ===== Versão 2.0 • painel somente na aba Profissional ===== */
+(function(){
+function X(id){return document.getElementById(id)}
+const abaBasePainelOnly20 = window.aba;
+if(typeof abaBasePainelOnly20==='function'&&!window.__painelOnly20){
+  window.__painelOnly20=true;
+  window.aba=function(id,b){
+    const r=abaBasePainelOnly20.apply(this,arguments);
+    const painel=X('painelInicialProfissional20')||X('painelInicial');
+    if(painel){
+      painel.style.display = (id==='diario') ? '' : 'none';
+    }
+    if(id==='diario' && typeof atualizarPainelInicial20==='function'){
+      setTimeout(()=>atualizarPainelInicial20(),150);
+    }
+    return r;
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    const painel=X('painelInicialProfissional20')||X('painelInicial');
+    if(painel) painel.style.display='none';
+  },500);
+});
 })();
 </script>
 
