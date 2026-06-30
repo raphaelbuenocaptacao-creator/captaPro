@@ -11,7 +11,7 @@
 .card{background:#101010;border:1px solid #2b2b2b;border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:0 0 16px rgba(239,27,36,.10)}h2{margin:0 0 12px;border-left:4px solid #ef1b24;padding-left:10px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}input,select,textarea,button{width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#050505;color:#fff;font-size:15px}textarea{min-height:70px}
 button{font-weight:900;cursor:pointer}.main{background:linear-gradient(135deg,#ef1b24,#ff3333);border:0}.secondary{background:#202020;border:1px solid #444}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.tabs button{background:#181818;border:0;padding:14px;border-radius:14px;color:#fff;font-weight:900}.tabs button.active{background:linear-gradient(135deg,#ef1b24,#ff3333)}
-.hidden{display:none!important}.adminOnly{display:none}body.ceo .adminOnly{display:block}body.ceo .tabs{grid-template-columns:repeat(5,1fr)}.ok{color:#00e676;font-weight:900}.erro{color:#ff5252;font-weight:900}.warn{color:#ffd54f;font-weight:900}.hint,.mini{color:#aaa;font-size:12px}
+.hidden{display:none!important}.adminOnly{display:none}body.ceo .adminOnly{display:block}body.ceo .tabs{grid-template-columns:repeat(6,1fr)}.ok{color:#00e676;font-weight:900}.erro{color:#ff5252;font-weight:900}.warn{color:#ffd54f;font-weight:900}.hint,.mini{color:#aaa;font-size:12px}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.kpi{background:#181818;border:1px solid #2d2d2d;border-radius:14px;padding:12px;text-align:center;color:#ccc}.kpi b{display:block;color:#ff3333;font-size:26px;margin-top:4px}
 table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #2b2b2b;padding:8px;text-align:left}th{color:#ff7777}.scroll{overflow:auto}.badge{display:inline-block;border-radius:999px;padding:6px 10px;background:#260000;border:1px solid #5b1111;color:#ff8585;font-weight:900}
 .ficha{background:linear-gradient(145deg,#090909,#180000);border:1px solid #5a1717;border-radius:18px;padding:18px}.campo{background:#101010;border:1px solid #292929;border-radius:12px;padding:10px;margin:6px 0}.campo small{display:block;color:#ff7777;text-transform:uppercase;font-weight:900;font-size:10px;margin-bottom:4px}
@@ -129,6 +129,16 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 #barraMetaFill20{height:100%;width:0%;background:linear-gradient(135deg,#00a651,#00e676);border-radius:999px;transition:.3s}
 .metaTable20 button{padding:6px;border-radius:8px;font-size:12px}
 
+
+/* Versão 2.0 • Arena SX + ranking performance + meta estável */
+#arena .kpi b{color:#00e676}
+.sxCoin{color:#00e676;font-weight:900}
+.sxPendente{color:#ffd54f;font-weight:900}
+.sxFinalizado{color:#00e676;font-weight:900}
+#sxRankingBox table,#sxDesafiosBox table,#sxCEOBox table{min-width:760px}
+#rakingBox table{min-width:760px}
+#homeMeta,#metaMensalTexto20{color:#00e676!important}
+
 </style>
 </head>
 <body>
@@ -140,7 +150,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Profissional</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button class="adminOnly" onclick="aba('qualificacao',this)">Qualificação CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Profissional</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button onclick="aba('arena',this)">Arena SX</button><button class="adminOnly" onclick="aba('qualificacao',this)">Qualificação CEO</button></div>
 
 
 <section id="pesquisa" class="card">
@@ -316,6 +326,56 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </div>
 </section>
 
+
+<section id="arena" class="card hidden">
+<h2>Arena SX</h2>
+<p class="hint">Moeda interna da operação: SX Coin. Pontos automáticos por performance e desafios entre promotores.</p>
+
+<div class="kpis">
+  <div class="kpi">Meu saldo SX<b id="sxMeuSaldo">0</b></div>
+  <div class="kpi">Pesquisas<b>+10</b></div>
+  <div class="kpi">Q<b>+100</b></div>
+  <div class="kpi">NQ<b>+20</b></div>
+  <div class="kpi">1 Item<b>+50</b></div>
+  <div class="kpi">Sala<b>+300</b></div>
+</div>
+
+<div class="card scroll">
+  <h2>Ranking SX Coin</h2>
+  <div id="sxRankingBox"></div>
+</div>
+
+<div class="card">
+  <h2>Criar Desafio</h2>
+  <p class="hint">Profissional desafia outro promotor e aposta SX. O CEO define o vencedor.</p>
+  <div class="grid">
+    <input id="sxDesafiante" placeholder="Seu nome" readonly>
+    <select id="sxAdversario"><option value="">Escolha o adversário</option></select>
+    <input id="sxAposta" type="number" placeholder="Quantidade de SX apostada. Ex: 100">
+    <select id="sxCriterio">
+      <option value="pesquisas">Por quantidade de pesquisas</option>
+      <option value="sala">Por quantidade de sala</option>
+      <option value="vendas">Por vendas</option>
+      <option value="dia">Resultado diário</option>
+      <option value="semana">Resultado semanal</option>
+    </select>
+  </div>
+  <button class="main" style="margin-top:8px" onclick="criarDesafioSX20()">Criar desafio</button>
+  <p id="sxMsg"></p>
+</div>
+
+<div class="card scroll">
+  <h2>Desafios SX</h2>
+  <div id="sxDesafiosBox"></div>
+</div>
+
+<div class="card scroll adminOnly">
+  <h2>CEO • Definir vencedor</h2>
+  <p class="hint">O CEO escolhe quem venceu. O vencedor recebe a aposta, o perdedor perde a aposta.</p>
+  <div id="sxCEOBox"></div>
+</div>
+</section>
+
 <section id="qualificacao" class="card hidden adminOnly">
 <h2>CEO • Perfil de Qualificação Completo</h2>
 <p class="hint">Somente CEO altera o perfil usado para calcular Q, NQ e NQ 1 Item.</p>
@@ -460,7 +520,7 @@ async function entrar(){
 (function(){try{const l=JSON.parse(localStorage.getItem('loginSimples')||'null'); if(l){E('email').value=l.email;E('nome').value=l.nome;setTimeout(entrar,300)}}catch(e){}})();
 
 function aba(id,b){
- ['pesquisa','diario','relatorio','raking','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
+ ['pesquisa','diario','relatorio','raking','arena','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
  if(E(id))E(id).classList.remove('hidden');
  document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
  if(b)b.classList.add('active');
@@ -1970,6 +2030,214 @@ document.addEventListener('DOMContentLoaded',()=>{
     }catch(e){}
   },500);
 });
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 2.0 • Arena SX + Ranking Performance + Meta Estável ===== */
+(function(){
+function X(id){return document.getElementById(id)}
+function XV(id){return (X(id)?.value||'').trim()}
+function XH(id,v){if(X(id))X(id).innerHTML=v}
+function XS(id,v){if(X(id))X(id).innerText=v}
+function normSX(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function todaySX(){return new Date().toISOString().slice(0,10)}
+function mesIniSX(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`}
+function mesFimSX(){const d=new Date(),u=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(u).padStart(2,'0')}`}
+function getJSONSX(k,def){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(def))}catch(e){return def}}
+function setJSONSX(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function keySX(s){return normSX(s).replace(/[^a-z0-9@._-]/g,'_')}
+function isSalaSX(x){
+  const s=normSX(x.levou_sala||x.sala||x.sala_status||x.status_sala||'');
+  return s.includes('sim') || s.includes('confirm');
+}
+
+// ---------- META ESTÁVEL ----------
+window.getMetaProfissional20 = function(nome,email){
+  const metas=getJSONSX('metas_individuais_20',{});
+  const ks=[keySX(email||''),keySX(nome||''),normSX(email||''),normSX(nome||'')].filter(Boolean);
+  for(const k of ks){ if(metas[k]?.meta) return Number(metas[k].meta)||35; }
+  const n=normSX(nome||'');
+  for(const k of Object.keys(metas)){
+    const mn=normSX(metas[k].nome||k);
+    if(n && (n.includes(mn)||mn.includes(n)) && metas[k].meta) return Number(metas[k].meta)||35;
+  }
+  try{const c=JSON.parse(localStorage.getItem('cfg')||'{}'); return Number(c.metaMensalCasais)||35;}catch(e){return 35}
+}
+window.salvarMetaIndividual20 = function(){
+  const nome=XV('metaProfNome20'), meta=Number(XV('metaProfValor20'))||0;
+  if(!nome||!meta){XH('metasIndividuaisBox20','<p class="erro">Informe nome/e-mail e meta.</p>');return}
+  const metas=getJSONSX('metas_individuais_20',{});
+  metas[keySX(nome)]={nome,meta};
+  setJSONSX('metas_individuais_20',metas);
+  if(X('metaProfNome20'))X('metaProfNome20').value='';
+  if(X('metaProfValor20'))X('metaProfValor20').value='';
+  if(typeof renderMetasIndividuais20==='function')renderMetasIndividuais20();
+  atualizarMetaPainelUnica20();
+}
+window.atualizarMetaPainelUnica20 = async function(){
+  let p=[]; try{p=await dados('pesquisas')}catch(e){p=[]}
+  const nome=window.usuarioNome||usuarioNome||'', email=window.usuarioEmail||usuarioEmail||'';
+  const meta=window.getMetaProfissional20(nome,email);
+  const ini=mesIniSX(), fim=mesFimSX();
+  const feitos=(p||[]).filter(x=>{
+    const d=String(x.created_at||'').slice(0,10);
+    return d>=ini && d<=fim && (x.user_email===email || normSX(x.captador_nome)===normSX(nome));
+  }).length;
+  const faltam=Math.max(0,meta-feitos), pct=meta?Math.min(100,Math.round(feitos/meta*100)):0;
+  XS('homeMeta',`${feitos}/${meta}`);
+  XS('metaMensalTexto20',`${feitos} / ${meta}`);
+  XS('metaMensalInfo20',faltam?`${pct}% concluído • faltam ${faltam} pesquisas`:`Meta batida • ${pct}% concluído`);
+  if(X('barraMetaFill20'))X('barraMetaFill20').style.width=pct+'%';
+}
+const painelBaseSX=window.atualizarPainelInicial20;
+window.atualizarPainelInicial20 = async function(){
+  let r;
+  if(typeof painelBaseSX==='function') r=await painelBaseSX.apply(this,arguments);
+  await atualizarMetaPainelUnica20();
+  return r;
+};
+
+// ---------- RANKING PERFORMANCE SEM VENDAS/VGV ----------
+window.montarPerformance20 = function(p){
+  const map={};
+  (p||[]).forEach(x=>{
+    const nome=x.captador_nome||x.profissional||x.user_email||'Sem nome';
+    if(!map[nome])map[nome]={nome,pesquisas:0,q:0,nq:0,nq1:0,sala:0};
+    map[nome].pesquisas++;
+    if(x.qualificacao_automatica==='Q')map[nome].q++;
+    else if(String(x.qualificacao_automatica||'').includes('1'))map[nome].nq1++;
+    else map[nome].nq++;
+    if(isSalaSX(x))map[nome].sala++;
+  });
+  return Object.values(map);
+}
+window.renderRaking = function(arr,fonte){
+  const box=X('rakingBox'); if(!box)return;
+  const perf=(arr&&arr.length&&arr[0].pesquisas!==undefined)?arr:window.montarPerformance20(arr||[]);
+  const ordenado=(perf||[]).sort((a,b)=>b.pesquisas-a.pesquisas||b.q-a.q||b.sala-a.sala||a.nome.localeCompare(b.nome));
+  if(X('rakingFonte21'))X('rakingFonte21').innerHTML=fonte||'<span class="ok">Fonte: performance dos profissionais.</span>';
+  if(!ordenado.length){box.innerHTML='<p class="mini">Sem dados para montar o Ranking.</p>';return}
+  const ini=mesIniSX(), hoje=todaySX();
+  const diaAtual=Math.max(1,new Date(hoje+'T12:00:00').getDate());
+  const diasMes=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate();
+  let total={pesquisas:0,q:0,nq:0,nq1:0,sala:0};
+  const linhas=ordenado.map((r,i)=>{
+    total.pesquisas+=r.pesquisas; total.q+=r.q; total.nq+=r.nq; total.nq1+=r.nq1; total.sala+=r.sala;
+    const eficiencia=r.pesquisas?Math.round((r.q/r.pesquisas)*100):0;
+    const proj=Math.round((r.pesquisas/diaAtual)*diasMes);
+    return `<tr class="${i<3?'rankTop':''}"><td>${i+1}º ${r.nome}</td><td>${r.pesquisas}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.sala}</td><td>${eficiencia}%</td><td class="${proj>=35?'projBoa':proj>=22?'projMeta':'projBaixa'}">${proj}</td></tr>`;
+  }).join('');
+  const efT=total.pesquisas?Math.round(total.q/total.pesquisas*100):0;
+  const projT=Math.round((total.pesquisas/diaAtual)*diasMes);
+  box.innerHTML=`<table><tr><th>Profissional</th><th>Pesquisas</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala Confirmada</th><th>Eficiência</th><th>Projeção</th></tr>${linhas}<tr><th>Total</th><th>${total.pesquisas}</th><th>${total.q}</th><th>${total.nq}</th><th>${total.nq1}</th><th>${total.sala}</th><th>${efT}%</th><th>${projT}</th></tr></table>`;
+}
+window.carregarRaking = async function(){
+  if(X('rakingDe')&&!XV('rakingDe'))X('rakingDe').value=mesIniSX();
+  if(X('rakingAte')&&!XV('rakingAte'))X('rakingAte').value=todaySX();
+  let p=[]; try{p=await dados('pesquisas')}catch(e){p=[]}
+  const de=XV('rakingDe')||mesIniSX(), ate=XV('rakingAte')||todaySX();
+  p=(p||[]).filter(x=>{const d=String(x.created_at||'').slice(0,10);return (!de||d>=de)&&(!ate||d<=ate)});
+  renderRaking(window.montarPerformance20(p),'<span class="ok">Fonte: performance dos profissionais.</span>');
+}
+
+// ---------- ARENA SX ----------
+function sxPontuacaoDePesquisa(x){
+  let pts=10; // pesquisa
+  if(x.qualificacao_automatica==='Q')pts+=100;
+  else if(String(x.qualificacao_automatica||'').includes('1'))pts+=50;
+  else pts+=20;
+  if(isSalaSX(x))pts+=300;
+  if(x.status && /venda|vendido|fechou|contrato/i.test(String(x.status)))pts+=1000;
+  return pts;
+}
+window.calcularSaldosSX20 = async function(){
+  let p=[]; try{p=await dados('pesquisas')}catch(e){p=[]}
+  const saldos={};
+  (p||[]).forEach(x=>{
+    const nome=x.captador_nome||x.user_email||'Sem nome';
+    if(!saldos[nome])saldos[nome]={nome,sx:0,pesquisas:0,q:0,nq:0,nq1:0,sala:0};
+    saldos[nome].sx+=sxPontuacaoDePesquisa(x);
+    saldos[nome].pesquisas++;
+    if(x.qualificacao_automatica==='Q')saldos[nome].q++;
+    else if(String(x.qualificacao_automatica||'').includes('1'))saldos[nome].nq1++;
+    else saldos[nome].nq++;
+    if(isSalaSX(x))saldos[nome].sala++;
+  });
+  // ajustes por desafios
+  const desafios=getJSONSX('arena_sx_desafios_20',[]);
+  desafios.forEach(d=>{
+    if(d.status==='Finalizado'&&d.vencedor){
+      const aposta=Number(d.aposta)||0;
+      if(!saldos[d.desafiante])saldos[d.desafiante]={nome:d.desafiante,sx:0,pesquisas:0,q:0,nq:0,nq1:0,sala:0};
+      if(!saldos[d.adversario])saldos[d.adversario]={nome:d.adversario,sx:0,pesquisas:0,q:0,nq:0,nq1:0,sala:0};
+      const perdedor=d.vencedor===d.desafiante?d.adversario:d.desafiante;
+      saldos[d.vencedor].sx+=aposta;
+      saldos[perdedor].sx=Math.max(0,saldos[perdedor].sx-aposta);
+    }
+  });
+  return Object.values(saldos).sort((a,b)=>b.sx-a.sx);
+}
+window.carregarArenaSX20 = async function(){
+  const saldos=await calcularSaldosSX20();
+  const meu=window.usuarioNome||usuarioNome||'';
+  const meuObj=saldos.find(x=>normSX(x.nome)===normSX(meu))||{sx:0};
+  XS('sxMeuSaldo',meuObj.sx||0);
+  XH('sxRankingBox',saldos.length?'<table><tr><th>Profissional</th><th>SX Coin</th><th>Pesquisas</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th></tr>'+saldos.map((r,i)=>`<tr><td>${i+1}º ${r.nome}</td><td><span class="sxCoin">${r.sx}</span></td><td>${r.pesquisas}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.sala}</td></tr>`).join('')+'</table>':'<p class="mini">Sem pontuação ainda.</p>');
+  if(X('sxDesafiante'))X('sxDesafiante').value=meu;
+  if(X('sxAdversario'))X('sxAdversario').innerHTML='<option value="">Escolha o adversário</option>'+saldos.filter(x=>normSX(x.nome)!==normSX(meu)).map(x=>`<option>${x.nome}</option>`).join('');
+  renderDesafiosSX20();
+}
+window.criarDesafioSX20=function(){
+  const desafiante=XV('sxDesafiante')||window.usuarioNome||usuarioNome||'';
+  const adversario=XV('sxAdversario');
+  const aposta=Number(XV('sxAposta'))||0;
+  const criterio=XV('sxCriterio')||'pesquisas';
+  if(!desafiante||!adversario||!aposta){XH('sxMsg','<span class="erro">Escolha adversário e quantidade de SX.</span>');return}
+  const desafios=getJSONSX('arena_sx_desafios_20',[]);
+  desafios.push({id:Date.now(),desafiante,adversario,aposta,criterio,status:'Pendente',created_at:new Date().toISOString()});
+  setJSONSX('arena_sx_desafios_20',desafios);
+  XH('sxMsg','<span class="ok">Desafio criado. Aguardando CEO definir vencedor.</span>');
+  if(X('sxAposta'))X('sxAposta').value='';
+  renderDesafiosSX20();
+}
+window.renderDesafiosSX20=function(){
+  const desafios=getJSONSX('arena_sx_desafios_20',[]).sort((a,b)=>b.id-a.id);
+  const tabela=desafios.length?'<table><tr><th>Desafiante</th><th>Adversário</th><th>Aposta</th><th>Critério</th><th>Status</th></tr>'+desafios.map(d=>`<tr><td>${d.desafiante}</td><td>${d.adversario}</td><td>${d.aposta} SX</td><td>${d.criterio}</td><td class="${d.status==='Finalizado'?'sxFinalizado':'sxPendente'}">${d.status}${d.vencedor?' • '+d.vencedor:''}</td></tr>`).join('')+'</table>':'<p class="mini">Nenhum desafio criado.</p>';
+  XH('sxDesafiosBox',tabela);
+  XH('sxCEOBox',desafios.length?'<table><tr><th>Desafio</th><th>Aposta</th><th>Status</th><th>CEO</th></tr>'+desafios.map(d=>`<tr><td>${d.desafiante} vs ${d.adversario}<br><span class="mini">${d.criterio}</span></td><td>${d.aposta} SX</td><td>${d.status}</td><td>${d.status==='Finalizado'?('Vencedor: '+d.vencedor):`<button class="secondary" onclick="finalizarDesafioSX20(${d.id},'${d.desafiante.replace(/'/g,"\\'")}')">${d.desafiante} venceu</button><button class="secondary" onclick="finalizarDesafioSX20(${d.id},'${d.adversario.replace(/'/g,"\\'")}')">${d.adversario} venceu</button>`}</td></tr>`).join('')+'</table>':'<p class="mini">Sem desafios.</p>');
+}
+window.finalizarDesafioSX20=function(id,vencedor){
+  const desafios=getJSONSX('arena_sx_desafios_20',[]);
+  const d=desafios.find(x=>String(x.id)===String(id));
+  if(d){d.status='Finalizado';d.vencedor=vencedor;d.finalizado_em=new Date().toISOString();}
+  setJSONSX('arena_sx_desafios_20',desafios);
+  carregarArenaSX20();
+}
+
+// abre Arena e atualiza meta/ranking
+const abaBaseSX=window.aba;
+if(typeof abaBaseSX==='function'&&!window.__abaArenaSX20){
+  window.__abaArenaSX20=true;
+  window.aba=function(id,b){
+    const r=abaBaseSX.apply(this,arguments);
+    if(id==='arena')setTimeout(()=>carregarArenaSX20(),120);
+    if(id==='raking')setTimeout(()=>carregarRaking(),120);
+    if(id==='diario')setTimeout(()=>atualizarMetaPainelUnica20(),120);
+    return r;
+  }
+}
+const salvarBaseSX=window.salvarPesquisa;
+if(typeof salvarBaseSX==='function'&&!window.__saveArenaSX20){
+  window.__saveArenaSX20=true;
+  window.salvarPesquisa=async function(){
+    const r=await salvarBaseSX.apply(this,arguments);
+    setTimeout(()=>{atualizarMetaPainelUnica20();carregarArenaSX20();carregarRaking();},500);
+    return r;
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{atualizarMetaPainelUnica20();carregarArenaSX20();},1000));
 })();
 </script>
 
