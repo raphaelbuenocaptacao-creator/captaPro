@@ -1540,4 +1540,178 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
 })();
 </script>
 
+
+<script>
+/* ===== Versão 2.0 • meta aparece para profissional + login permanente ===== */
+(function(){
+function L(id){return document.getElementById(id)}
+function LV(id){return (L(id)?.value||'').trim()}
+function LS(key,val){try{localStorage.setItem(key,JSON.stringify(val))}catch(e){}}
+function LG(key,def){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(def))}catch(e){return def}}
+function normLogin20(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function chave20(s){return normLogin20(s).replace(/[^a-z0-9@._-]/g,'_')}
+
+// Login permanente: guarda dados aprovados e não derruba se Supabase demorar/falhar
+const entrarBasePersist20=window.entrar;
+if(typeof entrarBasePersist20==='function'&&!window.__loginPersistente20){
+  window.__loginPersistente20=true;
+
+  window.entrar=async function(){
+    const email=LV('email').toLowerCase();
+    const nome=LV('nome')||email;
+    if(!email){
+      if(L('loginMsg'))L('loginMsg').innerHTML='<span class="erro">Informe o e-mail.</span>';
+      return;
+    }
+
+    // Se já tem sessão aprovada salva, entra direto e revalida depois.
+    const sess=LG('capta_login_persistente_20',null);
+    if(sess && sess.email===email && sess.approved){
+      window.usuarioEmail=email; usuarioEmail=email;
+      window.usuarioNome=sess.nome||nome; usuarioNome=sess.nome||nome;
+      window.role=sess.role||'profissional'; role=sess.role||'profissional';
+      document.body.classList.toggle('ceo',role==='ceo'||(typeof CEOS!=='undefined'&&CEOS.includes(email)));
+      if(L('loginBox'))L('loginBox').classList.add('hidden');
+      if(L('app'))L('app').classList.remove('hidden');
+      try{localStorage.setItem('loginSimples',JSON.stringify({email,nome:usuarioNome}))}catch(e){}
+      if(typeof loadCfg==='function')loadCfg();
+      if(typeof carregarAbordagensHoje==='function')carregarAbordagensHoje();
+      if(typeof carregarRelatorio==='function')carregarRelatorio();
+      if(typeof carregarRaking==='function')carregarRaking();
+      if(typeof atualizarPainelInicial20==='function')setTimeout(()=>atualizarPainelInicial20(),500);
+      if(typeof atualizarMetaMensalPainel20==='function')setTimeout(()=>atualizarMetaMensalPainel20(),700);
+
+      // Revalidação silenciosa
+      try{
+        const r=await db.from('approved_users').select('*').eq('email',email).maybeSingle();
+        if(r.data && r.data.approved!==false){
+          LS('capta_login_persistente_20',{email,nome:r.data.name||nome,role:r.data.role||'profissional',approved:true});
+        }
+      }catch(e){}
+      return;
+    }
+
+    // Login normal base
+    const r=await entrarBasePersist20.apply(this,arguments);
+
+    // Se entrou no app, grava sessão persistente
+    setTimeout(()=>{
+      if(L('app') && !L('app').classList.contains('hidden')){
+        LS('capta_login_persistente_20',{email,nome:window.usuarioNome||usuarioNome||nome,role:window.role||role||'profissional',approved:true});
+        try{localStorage.setItem('loginSimples',JSON.stringify({email,nome:window.usuarioNome||usuarioNome||nome}))}catch(e){}
+      }
+    },500);
+    return r;
+  }
+
+  // Auto-login mais forte ao abrir a página
+  document.addEventListener('DOMContentLoaded',()=>{
+    setTimeout(()=>{
+      const sess=LG('capta_login_persistente_20',null);
+      if(sess && sess.email && L('loginBox') && !L('loginBox').classList.contains('hidden')){
+        if(L('email'))L('email').value=sess.email;
+        if(L('nome'))L('nome').value=sess.nome||sess.email;
+        window.entrar();
+      }
+    },400);
+  });
+}
+
+// Meta individual: permite cadastrar por Nome ou E-mail; profissional logado recebe automaticamente
+const salvarMetaBase20=window.salvarMetaIndividual20;
+if(typeof salvarMetaBase20==='function'&&!window.__metaApareceProf20){
+  window.__metaApareceProf20=true;
+
+  window.salvarMetaIndividual20=function(){
+    const nomeCampo=LV('metaProfNome20');
+    const meta=Number(LV('metaProfValor20'))||0;
+    if(!nomeCampo||!meta){
+      if(L('metasIndividuaisBox20'))L('metasIndividuaisBox20').innerHTML='<p class="erro">Informe nome/e-mail e meta.</p>';
+      return;
+    }
+
+    const metas=LG('metas_individuais_20',{});
+    const chaveNome=chave20(nomeCampo);
+    metas[chaveNome]={nome:nomeCampo,meta};
+
+    // Se digitar e-mail, salva também como e-mail
+    if(nomeCampo.includes('@')){
+      metas[chave20(nomeCampo)]={nome:nomeCampo,meta,email:nomeCampo.toLowerCase()};
+    }
+
+    // Tenta achar no approved_users localmente/carregado por nome aproximado no futuro não necessário;
+    // para garantir, também grava com nome em minúsculo sem acentos.
+    localStorage.setItem('metas_individuais_20',JSON.stringify(metas));
+
+    if(L('metaProfNome20'))L('metaProfNome20').value='';
+    if(L('metaProfValor20'))L('metaProfValor20').value='';
+    if(typeof renderMetasIndividuais20==='function')renderMetasIndividuais20();
+    if(typeof atualizarMetaMensalPainel20==='function')atualizarMetaMensalPainel20();
+  }
+}
+
+// Corrige busca da meta para usar email OU nome logado
+window.metaDoProfissional20=function(nome,email){
+  const metas=LG('metas_individuais_20',{});
+  const keys=[
+    chave20(email||''),
+    chave20(nome||''),
+    normLogin20(nome||''),
+    normLogin20(email||'')
+  ].filter(Boolean);
+  for(const k of keys){
+    if(metas[k] && metas[k].meta)return Number(metas[k].meta)||35;
+  }
+
+  // busca aproximada pelo nome: se "Francisco Rodrigues" cadastrado como "Francisco"
+  const n=normLogin20(nome||'');
+  for(const k of Object.keys(metas)){
+    const mn=normLogin20(metas[k].nome||k);
+    if(n && (n.includes(mn)||mn.includes(n)) && metas[k].meta)return Number(metas[k].meta)||35;
+  }
+  return 35;
+}
+
+// Garante que o painel usa a meta corrigida
+window.atualizarMetaMensalPainel20 = async function(){
+  let p=[];
+  try{p=await dados('pesquisas')}catch(e){p=[]}
+  const nome=window.usuarioNome||usuarioNome||'';
+  const email=window.usuarioEmail||usuarioEmail||'';
+  const meta=window.metaDoProfissional20(nome,email);
+  const d=new Date();
+  const ini=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`;
+  const fim=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(new Date(d.getFullYear(),d.getMonth()+1,0).getDate()).padStart(2,'0')}`;
+  const feitos=(p||[]).filter(x=>{
+    const data=String(x.created_at||'').slice(0,10);
+    return data>=ini && data<=fim && (x.user_email===email || normLogin20(x.captador_nome)===normLogin20(nome));
+  }).length;
+  const faltam=Math.max(0,meta-feitos);
+  const pct=meta?Math.min(100,Math.round((feitos/meta)*100)):0;
+  if(L('homeMeta'))L('homeMeta').innerText=`${feitos}/${meta}`;
+  if(L('metaMensalTexto20'))L('metaMensalTexto20').innerText=`${feitos} / ${meta}`;
+  if(L('metaMensalInfo20'))L('metaMensalInfo20').innerText=faltam>0?`${pct}% concluído • faltam ${faltam} pesquisas`:`Meta batida • ${pct}% concluído`;
+  if(L('barraMetaFill20'))L('barraMetaFill20').style.width=pct+'%';
+}
+
+// Atualiza tabela de metas com dica
+const renderMetasBase20=window.renderMetasIndividuais20;
+if(typeof renderMetasBase20==='function'&&!window.__renderMetaDica20){
+  window.__renderMetaDica20=true;
+  window.renderMetasIndividuais20=function(){
+    renderMetasBase20.apply(this,arguments);
+    const box=L('metasIndividuaisBox20');
+    if(box && !box.innerHTML.includes('Dica:')){
+      box.insertAdjacentHTML('afterbegin','<p class="mini"><b>Dica:</b> coloque o nome igual ao cadastro ou o e-mail do profissional. Ex.: francisco@... = 50</p>');
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
+  if(typeof renderMetasIndividuais20==='function')renderMetasIndividuais20();
+  if(typeof atualizarMetaMensalPainel20==='function')atualizarMetaMensalPainel20();
+},1200));
+})();
+</script>
+
 </body></html>
