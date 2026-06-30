@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaptaPro Elite 1.0</title>
+<title>CaptaPro Elite 1.1</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
@@ -11,7 +11,7 @@
 .card{background:#101010;border:1px solid #2b2b2b;border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:0 0 16px rgba(239,27,36,.10)}h2{margin:0 0 12px;border-left:4px solid #ef1b24;padding-left:10px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}input,select,textarea,button{width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#050505;color:#fff;font-size:15px}textarea{min-height:70px}
 button{font-weight:900;cursor:pointer}.main{background:linear-gradient(135deg,#ef1b24,#ff3333);border:0}.secondary{background:#202020;border:1px solid #444}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.tabs button{background:#181818;border:0;padding:14px;border-radius:14px;color:#fff;font-weight:900}.tabs button.active{background:linear-gradient(135deg,#ef1b24,#ff3333)}
-.hidden{display:none!important}.adminOnly{display:none}body.ceo .adminOnly{display:block}body.ceo .tabs{grid-template-columns:repeat(4,1fr)}.ok{color:#00e676;font-weight:900}.erro{color:#ff5252;font-weight:900}.warn{color:#ffd54f;font-weight:900}.hint,.mini{color:#aaa;font-size:12px}
+.hidden{display:none!important}.adminOnly{display:none}body.ceo .adminOnly{display:block}body.ceo .tabs{grid-template-columns:repeat(5,1fr)}.ok{color:#00e676;font-weight:900}.erro{color:#ff5252;font-weight:900}.warn{color:#ffd54f;font-weight:900}.hint,.mini{color:#aaa;font-size:12px}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.kpi{background:#181818;border:1px solid #2d2d2d;border-radius:14px;padding:12px;text-align:center;color:#ccc}.kpi b{display:block;color:#ff3333;font-size:26px;margin-top:4px}
 table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #2b2b2b;padding:8px;text-align:left}th{color:#ff7777}.scroll{overflow:auto}.badge{display:inline-block;border-radius:999px;padding:6px 10px;background:#260000;border:1px solid #5b1111;color:#ff8585;font-weight:900}
 .ficha{background:linear-gradient(145deg,#090909,#180000);border:1px solid #5a1717;border-radius:18px;padding:18px}.campo{background:#101010;border:1px solid #292929;border-radius:12px;padding:10px;margin:6px 0}.campo small{display:block;color:#ff7777;text-transform:uppercase;font-weight:900;font-size:10px;margin-bottom:4px}
@@ -22,12 +22,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .fichaTitleFull b{display:block;font-size:22px}.fichaTitleFull small{color:#aaa}
 .fichaRodapeFull{border-top:1px solid #3b1b1b;margin-top:12px;padding-top:10px;color:#888;font-size:11px}
 
-/* CaptaPro Elite 1.0 */
+/* CaptaPro Elite 1.1 */
 #brinde{border-color:#00c2ff!important}
 .rankDestaque13{color:#00e676;font-weight:900}
 
 
-/* CaptaPro Elite 1.0 • organização pesquisa e CEO */
+/* CaptaPro Elite 1.1 • organização pesquisa e CEO */
 .pesquisaGrid14 input,.pesquisaGrid14 select{min-height:47px}
 .ceoPainel14{border:1px solid #5a1717;border-radius:16px;padding:12px;background:#080808}
 .ceoGrid14{grid-template-columns:repeat(3,1fr)}
@@ -36,18 +36,18 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:700px){.ceoGrid14{grid-template-columns:1fr}}
 
 
-/* CaptaPro Elite 1.0 • renda BRL + ranking mês */
+/* CaptaPro Elite 1.1 • renda BRL + ranking mês */
 #rankingMesAtual15{border-color:#00c2ff!important}
 #rankingMesAtual15 h2{border-left-color:#00c2ff!important}
 .rendaAjuda15{font-size:11px;color:#aaa;margin-top:-4px;margin-bottom:6px}
 
 
-/* CaptaPro Elite 1.0 • correção renda e CSV */
+/* CaptaPro Elite 1.1 • correção renda e CSV */
 #renda{border-color:#00c2ff!important}
 #csvRankingInput16{border-color:#00e676!important}
 
 
-/* CaptaPro Elite 1.0 • Aba Raking */
+/* CaptaPro Elite 1.1 • Aba Raking */
 #rakingBox table{min-width:650px}
 #rakingBox tr:nth-child(2) td:first-child{color:#ffd54f;font-weight:900}
 #rakingBox tr:nth-child(3) td:first-child{color:#cfd8dc;font-weight:900}
@@ -56,7 +56,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:700px){.rakingTools17{grid-template-columns:1fr}.tabs{grid-template-columns:1fr}body.ceo .tabs{grid-template-columns:1fr}}
 
 
-/* CaptaPro Elite 1.0 • versão limpa */
+/* CaptaPro Elite 1.1 • versão limpa */
 #renda{border-color:#00c2ff!important}
 #csvRakingInput21{border-color:#00e676!important;margin:8px 0}
 #rakingBox table{min-width:650px}
@@ -65,7 +65,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 #rakingBox tr:nth-child(4) td:first-child{color:#d7a36a;font-weight:900}
 
 
-/* Elite 1.0 • layout do casal e ranking junho */
+/* Elite 1.1 • layout do casal e ranking junho */
 .pessoaBox{grid-column:1/-1;background:#151515;border:1px solid #333;border-radius:16px;padding:12px;margin-top:2px}
 .pessoaBox b{display:block;color:#ff8585;margin-bottom:8px}
 .pessoaGrid{display:grid;grid-template-columns:1.4fr .7fr 1.3fr;gap:8px}
@@ -75,18 +75,23 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .projTop{background:#050505;color:#fff;font-weight:900;text-align:center}
 .rankTop{background:#4b4100!important}
 @media(max-width:700px){.pessoaGrid{grid-template-columns:1fr}.pessoaBox{padding:10px}}
+
+/* CaptaPro Elite 1.1 • Relatório diário */
+#diario textarea{margin-top:10px;min-height:120px}
+#fechamentosCEOBox table{min-width:900px}
+
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Elite 1.0 • Sala corrigida</div><p class="mini">Elite 1.0 • Pesquisa, Relatório e CEO • <b style="color:#00e676">Bueno Invest</b></p></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Elite 1.1 • Relatório diário</div><p class="mini">Elite 1.1 • Pesquisa, Relatório Diário e CEO • <b style="color:#00e676">Bueno Invest</b></p></div>
 
 <section id="loginBox" class="card">
 <h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Junho</button><button class="adminOnly" onclick="aba('qualificacao',this)">Qualificação CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Relatório Diário</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button class="adminOnly" onclick="aba('qualificacao',this)">Qualificação CEO</button></div>
 
 <section id="pesquisa" class="card">
 <h2>Pesquisa</h2><p class="hint">Abordagem → ficha → salvar → compartilhar → nova ficha.</p>
@@ -168,6 +173,39 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <div id="fichaBox" class="card hidden"><h2>Ficha salva</h2><div id="fichaConteudo"></div><div class="grid"><button class="main" onclick="compartilharFicha()">Compartilhar imagem</button><button class="secondary" onclick="novaPesquisa()">Nova pesquisa</button></div></div>
 </section>
 
+
+<section id="diario" class="card hidden">
+<h2>Relatório Diário</h2>
+<p class="hint">No final do expediente, o profissional finaliza o dia com resumo automático + relatório escrito.</p>
+<div class="grid">
+  <input id="diarioData" type="date">
+  <input id="diarioNome" placeholder="Nome do profissional" readonly>
+</div>
+<div class="kpis">
+  <div class="kpi">Abordagens<b id="dAbord">0</b></div>
+  <div class="kpi">Pesquisas<b id="dPesq">0</b></div>
+  <div class="kpi">Q<b id="dQ">0</b></div>
+  <div class="kpi">NQ<b id="dNQ">0</b></div>
+  <div class="kpi">NQ 1 Item<b id="dNQ1">0</b></div>
+  <div class="kpi">Sala<b id="dSala">0</b></div>
+  <div class="kpi">Eficiência<b id="dEfic">0%</b></div>
+  <div class="kpi">Conversão<b id="dConv">0%</b></div>
+  <div class="kpi">Projeção Mês<b id="dProj">0</b></div>
+</div>
+<textarea id="diarioTexto" placeholder="Relatório escrito: conte como foi o dia, dificuldades, pontos positivos e o que pode melhorar amanhã."></textarea>
+<div class="grid" style="margin-top:8px">
+  <button class="secondary" onclick="carregarDiario()">Atualizar números</button>
+  <button class="main" onclick="finalizarDiario()">✅ Finalizar meu dia</button>
+</div>
+<p id="diarioMsg"></p>
+<div class="card scroll adminOnly">
+  <h2>Fechamentos enviados</h2>
+  <p class="hint">Somente CEO visualiza todos os relatórios finalizados.</p>
+  <button class="main" onclick="carregarFechamentosCEO()">Atualizar fechamentos</button>
+  <div id="fechamentosCEOBox" style="margin-top:8px"></div>
+</div>
+</section>
+
 <section id="relatorio" class="card hidden">
 <h2>Relatório</h2>
 <div class="grid"><input id="relDe" type="date"><input id="relAte" type="date"></div>
@@ -186,8 +224,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </section>
 
 <section id="raking" class="card hidden">
-<h2>Ranking Junho 2026</h2>
-<p class="hint">Acompanhamento até 21/06 com casais, vendas, VGV, eficiência e projeção de casais para fechar junho.</p>
+<h2>Ranking Julho 2026</h2>
+<p class="hint">Acompanhamento de julho com casais, vendas, VGV, eficiência e projeção de resultados.</p>
 <div class="rakingTools17">
   <input id="rakingDe" type="date">
   <input id="rakingAte" type="date">
@@ -195,10 +233,10 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <input id="csvRakingInput21" type="file" accept=".csv,text/csv" onchange="importarRakingCSV21(event)">
 <div class="grid" style="margin:8px 0">
   <button class="main" onclick="carregarRaking()">Atualizar Ranking</button>
-  <button class="secondary" onclick="limparRakingCSV21()">Usar Ranking Junho padrão</button>
+  <button class="secondary" onclick="limparRakingCSV21()">Usar Ranking Julho padrão</button>
 </div>
 <div class="card scroll">
-  <h2>Ranking Junho até 21/06</h2>
+  <h2>Ranking Julho até 21/06</h2>
   <p class="hint">Cores da projeção: vermelho abaixo de 22, verde acima de 22, verde forte acima de 35 e preto acima de 50 casais.</p>
   <div id="rakingFonte21" class="mini"></div>
   <div id="rakingBox"></div>
@@ -337,7 +375,7 @@ async function entrar(){
 (function(){try{const l=JSON.parse(localStorage.getItem('loginSimples')||'null'); if(l){E('email').value=l.email;E('nome').value=l.nome;setTimeout(entrar,300)}}catch(e){}})();
 
 function aba(id,b){
- ['pesquisa','relatorio','raking','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
+ ['pesquisa','diario','relatorio','raking','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
  if(E(id))E(id).classList.remove('hidden');
  document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
  if(b)b.classList.add('active');
@@ -441,7 +479,7 @@ function renderFicha(p){
  E('fichaBox').classList.remove('hidden');
  const carroTxt=`${p.modelo_carro||'-'} ${p.ano_veiculo||''}`.trim();
  H('fichaConteudo',`<div id=fichaImg class=ficha>
-<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Elite 1.0 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
+<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Elite 1.1 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
 ${campoFicha('Resultado da qualificação', `${p.qualificacao_automatica||'-'} • ${p.motivo_qualificacao||'Perfil dentro da regra'}`)}
 ${campoFicha('Nome 1', p.convidado_1)}${campoFicha('Idade 1 / Profissão 1', `${p.idade_1||'-'} anos • ${p.profissao_1||'-'}`)}
 ${campoFicha('Nome 2', p.convidado_2)}${campoFicha('Idade 2 / Profissão 2', `${p.idade_2||'-'} anos • ${p.profissao_2||'-'}`)}
@@ -562,7 +600,7 @@ async function tentarCSVRepo(){
  return [];
 }
 function importarRakingCSV21(ev){const file=ev.target.files&&ev.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const dados=parseCSV(reader.result);localStorage.setItem('raking_csv_21',JSON.stringify(dados));renderRaking(montarCSV(dados),'<span class=ok>Fonte: CSV importado.</span>')};reader.readAsText(file,'utf-8')}
-function limparRakingCSV21(){localStorage.removeItem('raking_csv_21');if(E('csvRakingInput21'))E('csvRakingInput21').value='';renderRaking(rankingJunhoPadrao21, '<span class=ok>Fonte: Ranking Junho padrão até 21/06.</span>')}
+function limparRakingCSV21(){localStorage.removeItem('raking_csv_21');if(E('csvRakingInput21'))E('csvRakingInput21').value='';renderRaking(rankingJunhoPadrao21, '<span class=ok>Fonte: Ranking Julho padrão até 21/06.</span>')}
 async function carregarRaking(forcarBanco){
  setPeriodoMes();
  if(!forcarBanco){try{const salvo=JSON.parse(localStorage.getItem('raking_csv_21')||'[]');if(salvo.length){renderRaking(montarCSV(salvo),'<span class=ok>Fonte: CSV importado.</span>');return}}catch(e){}}
@@ -572,9 +610,101 @@ async function carregarRaking(forcarBanco){
  const arr=montarPesquisas(p);
  if(arr.length){renderRaking(arr,'<span class=ok>Fonte: fichas salvas no sistema.</span>');return}
  if(!forcarBanco){const repo=await tentarCSVRepo();if(repo.length){renderRaking(montarCSV(repo),'<span class=ok>Fonte: raking junho.csv do GitHub.</span>');return}}
- renderRaking(rankingJunhoPadrao21, '<span class=ok>Fonte: Ranking Junho padrão até 21/06.</span>');
+ renderRaking(rankingJunhoPadrao21, '<span class=ok>Fonte: Ranking Julho padrão até 21/06.</span>');
 }
 
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{aplicarRendaDigitavel();aplicarRendaCEO();loadCfg();setPeriodoMes();carregarRaking();},500)});
 </script>
+
+<script>
+/* ===== CaptaPro Elite 1.1 • Relatório Diário + Aprovação ===== */
+(function(){
+function D(id){return document.getElementById(id)}
+function DV(id){return (D(id)?.value||'').trim()}
+function DH(id,v){if(D(id))D(id).innerHTML=v}
+function DS(id,v){if(D(id))D(id).innerText=v}
+function hojeISO(){return new Date().toISOString().slice(0,10)}
+function normal11(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function isSala11(x){return normal11(x.levou_sala||x.sala||x.sala_status||x.status_sala).includes('sim')||x.sala===true}
+function perDia11(x,data){return String(x.created_at||'').slice(0,10)===data}
+function diasDoMesAteHoje11(data){const d=new Date(data+'T12:00:00');return d.getDate()||1}
+function diasNoMes11(data){const d=new Date(data+'T12:00:00');return new Date(d.getFullYear(),d.getMonth()+1,0).getDate()}
+
+async function resumoDiario11(data,email){
+ let p=[],a=[];
+ try{p=await dados('pesquisas')}catch(e){p=[]}
+ try{a=await dados('abordagens')}catch(e){a=[]}
+ p=(p||[]).filter(x=>perDia11(x,data)&&(!email||x.user_email===email));
+ a=(a||[]).filter(x=>perDia11(x,data)&&(!email||x.user_email===email));
+ const q=p.filter(x=>x.qualificacao_automatica==='Q').length;
+ const nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length;
+ const nq=p.length-q-nq1;
+ const sala=p.filter(isSala11).length;
+ const eficiencia=p.length?Math.round((q/p.length)*100):0;
+ const conversao=p.length?Math.round((sala/p.length)*100):0;
+ const proj=Math.round((p.length/diasDoMesAteHoje11(data))*diasNoMes11(data));
+ return {abordagens:a.length,pesquisas:p.length,q,nq,nq1,sala,eficiencia,conversao,projecao:proj};
+}
+window.carregarDiario=async function(){
+ const data=DV('diarioData')||hojeISO();
+ if(D('diarioData'))D('diarioData').value=data;
+ if(D('diarioNome'))D('diarioNome').value=window.usuarioNome||usuarioNome||'';
+ const r=await resumoDiario11(data,window.usuarioEmail||usuarioEmail);
+ DS('dAbord',r.abordagens);DS('dPesq',r.pesquisas);DS('dQ',r.q);DS('dNQ',r.nq);DS('dNQ1',r.nq1);DS('dSala',r.sala);
+ DS('dEfic',r.eficiencia+'%');DS('dConv',r.conversao+'%');DS('dProj',r.projecao);
+ return r;
+}
+window.finalizarDiario=async function(){
+ const data=DV('diarioData')||hojeISO();
+ const r=await carregarDiario();
+ const payload={nome:window.usuarioNome||usuarioNome||DV('diarioNome'),user_email:window.usuarioEmail||usuarioEmail,data,abordagens:r.abordagens,pesquisas:r.pesquisas,q:r.q,nq:r.nq,nq_1_item:r.nq1,sala:r.sala,eficiencia:r.eficiencia,conversao:r.conversao,projecao_resultados:r.projecao,relatorio_escrito:DV('diarioTexto'),status:'Finalizado',created_at:new Date().toISOString()};
+ try{
+   const resp=await db.from('relatorios_diarios').upsert(payload,{onConflict:'user_email,data'});
+   if(resp.error)throw resp.error;
+   DH('diarioMsg','<span class="ok">Relatório diário finalizado e enviado.</span>');
+ }catch(e){
+   const arr=JSON.parse(localStorage.getItem('relatorios_diarios_local')||'[]');
+   const idx=arr.findIndex(x=>x.user_email===payload.user_email&&x.data===payload.data);
+   if(idx>=0)arr[idx]=payload;else arr.push(payload);
+   localStorage.setItem('relatorios_diarios_local',JSON.stringify(arr));
+   DH('diarioMsg','<span class="warn">Relatório salvo localmente. Rode o SQL da tabela relatorios_diarios no Supabase.</span>');
+ }
+ carregarFechamentosCEO();
+}
+window.carregarFechamentosCEO=async function(){
+ const box=D('fechamentosCEOBox');if(!box)return;
+ let data=[];
+ try{const r=await db.from('relatorios_diarios').select('*').order('data',{ascending:false}).order('created_at',{ascending:false}).limit(200);data=r.data||[]}catch(e){data=JSON.parse(localStorage.getItem('relatorios_diarios_local')||'[]')}
+ if(!data.length){box.innerHTML='<p class="mini">Nenhum fechamento enviado ainda.</p>';return}
+ box.innerHTML='<table><tr><th>Nome</th><th>Data</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th><th>Efic.</th><th>Conv.</th><th>Projeção</th><th>Status</th><th>Relatório</th></tr>'+data.map(x=>`<tr><td>${x.nome||'-'}</td><td>${x.data||'-'}</td><td>${x.abordagens||0}</td><td>${x.pesquisas||0}</td><td>${x.q||0}</td><td>${x.nq||0}</td><td>${x.nq_1_item||0}</td><td>${x.sala||0}</td><td>${x.eficiencia||0}%</td><td>${x.conversao||0}%</td><td>${x.projecao_resultados||0}</td><td>${x.status||'-'}</td><td>${x.relatorio_escrito||''}</td></tr>`).join('')+'</table>';
+}
+const entrarBase11=window.entrar;
+if(typeof entrarBase11==='function'&&!window.__entradaAprovacao11){
+ window.__entradaAprovacao11=true;
+ window.entrar=async function(){
+   const email=DV('email').toLowerCase(),nome=DV('nome')||email;
+   try{
+     const r=await db.from('approved_users').select('*').eq('email',email).maybeSingle();
+     if(!r.data&&email&&!CEOS.includes(email)){
+       await db.from('approved_users').insert({email,name:nome,role:'captador',approved:false});
+       DH('loginMsg','<span class="warn">Cadastro enviado. Aguarde aprovação do CEO.</span>');
+       return;
+     }
+   }catch(e){}
+   return entrarBase11.apply(this,arguments);
+ }
+}
+const abaBase11=window.aba;
+if(typeof abaBase11==='function'&&!window.__abaDiario11){
+ window.__abaDiario11=true;
+ window.aba=function(id,b){
+   const r=abaBase11.apply(this,arguments);
+   if(id==='diario')setTimeout(()=>{carregarDiario();carregarFechamentosCEO();},100);
+   return r;
+ }
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{if(D('diarioData'))D('diarioData').value=hojeISO();if(D('diarioNome'))D('diarioNome').value=window.usuarioNome||usuarioNome||'';},700));
+})();
+</script>
+
 </body></html>
