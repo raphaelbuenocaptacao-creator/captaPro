@@ -163,6 +163,15 @@ body.appAberto #loginBox{display:none!important}
 body.appAberto #app{display:block!important}
 #app:not(.hidden) ~ #loginBox{display:none!important}
 
+
+/* CaptaPro 2.6 • CEO dashboard, sala Supabase, histórico e exportação */
+#csvRakingInput21{display:none!important}
+#ceoDashboard20{border-color:#00c2ff!important}
+#ceoResumoMesBox25 table{min-width:900px}
+.salaPendente25{color:#ffd54f;font-weight:900}
+.salaConfirmada25{color:#00e676;font-weight:900}
+.salaCorrigida25{color:#ff5252;font-weight:900}
+
 </style>
 </head>
 <body>
@@ -307,6 +316,27 @@ body.appAberto #app{display:block!important}
 
 <section id="relatorio" class="card hidden">
 <h2>Relatório</h2>
+
+<div class="card scroll adminOnly" id="ceoDashboard20">
+  <h2>CEO • Dashboard Geral</h2>
+  <p class="hint">Visão geral em tempo real da operação.</p>
+  <div class="kpis">
+    <div class="kpi">Abordagens Hoje<b id="ceoAbordHoje">0</b></div>
+    <div class="kpi">Pesquisas Hoje<b id="ceoPesqHoje">0</b></div>
+    <div class="kpi">Q Hoje<b id="ceoQHoje">0</b></div>
+    <div class="kpi">NQ Hoje<b id="ceoNQHoje">0</b></div>
+    <div class="kpi">Sala Confirmada<b id="ceoSalaHoje">0</b></div>
+    <div class="kpi">Sala Pendente<b id="ceoSalaPendente">0</b></div>
+    <div class="kpi">Eficiência<b id="ceoEficHoje">0%</b></div>
+    <div class="kpi">Conversão Sala<b id="ceoConvHoje">0%</b></div>
+  </div>
+  <div class="grid" style="margin-top:8px">
+    <button class="main" onclick="carregarDashboardCEO25()">Atualizar CEO</button>
+    <button class="secondary" onclick="exportarExcelCEO25()">Exportar Excel/CSV</button>
+  </div>
+  <div id="ceoResumoMesBox25" style="margin-top:10px"></div>
+</div>
+
 <div class="grid"><input id="relDe" type="date"><input id="relAte" type="date"></div>
 <button class="main" style="margin-top:8px" onclick="carregarRelatorio()">Atualizar</button>
 <div class="kpis">
@@ -3064,6 +3094,139 @@ if(typeof carregarRelBase25==='function'&&!window.__relMeta25){
     return r;
   }
 }
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 2.6 • melhorias CEO sem alterar o restante ===== */
+(function(){
+function Z26(id){return document.getElementById(id)}
+function ZV26(id){return (Z26(id)?.value||'').trim()}
+function ZH26(id,v){if(Z26(id))Z26(id).innerHTML=v}
+function ZS26(id,v){if(Z26(id))Z26(id).innerText=v}
+function norm26(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function hoje26(){return new Date().toISOString().slice(0,10)}
+function mesAtual26(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
+function inicioMes26(){return mesAtual26()+'-01'}
+function fimMes26(){const d=new Date();const u=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();return `${mesAtual26()}-${String(u).padStart(2,'0')}`}
+function isSalaConf26(x){const s=norm26(x.sala_status||x.levou_sala||'');return s.includes('confirm')||s==='sim'}
+function isSalaPend26(x){const s=norm26(x.sala_status||x.levou_sala||'');return s.includes('pendente')}
+function noDia26(x,d){return String(x.created_at||'').slice(0,10)===d}
+function noPeriodo26(x,de,ate){const d=String(x.created_at||'').slice(0,10);return (!de||d>=de)&&(!ate||d<=ate)}
+
+window.confirmarSala21=async function(){
+  const ficha=window.ultimaFicha||ultimaFicha;
+  if(!ficha){ZH26('formMsg','<span class="warn">Salve a ficha primeiro.</span>');return}
+  const agora=new Date().toISOString();
+  ficha.levou_sala='Pendente';
+  ficha.sala_status='Pendente CEO';
+  ficha.sala_solicitada_em=agora;
+  try{
+    let r;
+    if(ficha.id) r=await db.from('pesquisas').update({levou_sala:'Pendente',sala_status:'Pendente CEO',sala_solicitada_em:agora}).eq('id',ficha.id);
+    else r=await db.from('pesquisas').update({levou_sala:'Pendente',sala_status:'Pendente CEO',sala_solicitada_em:agora}).eq('user_email',ficha.user_email).eq('created_at',ficha.created_at);
+    if(r.error)throw r.error;
+    ZH26('formMsg','<span class="warn">Sala solicitada. Aguardando confirmação do CEO.</span>');
+  }catch(e){
+    const locais=JSON.parse(localStorage.getItem('pesquisasLocal')||'[]');
+    const idx=locais.findIndex(x=>(ficha.id&&String(x.id)===String(ficha.id))||(String(x.user_email)===String(ficha.user_email)&&String(x.created_at)===String(ficha.created_at)));
+    if(idx>=0)locais[idx]={...locais[idx],...ficha}; else locais.push({...ficha});
+    localStorage.setItem('pesquisasLocal',JSON.stringify(locais));
+    ZH26('formMsg','<span class="warn">Sala solicitada localmente. Rode o SQL se não aparecer para o CEO.</span>');
+  }
+  if(typeof renderFicha==='function')renderFicha(ficha);
+  if(typeof carregarRelatorio==='function')carregarRelatorio();
+  if(typeof atualizarMetaPainelUnica20==='function')atualizarMetaPainelUnica20();
+}
+
+window.carregarConferenciaSala20=async function(){
+  const box=Z26('salaCEOBox20'); if(!box)return;
+  let p=[]; try{p=await dados('pesquisas')}catch(e){p=[]}
+  p=(p||[]).filter(x=>noPeriodo26(x,inicioMes26(),fimMes26()) && (isSalaPend26(x)||isSalaConf26(x))).sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)));
+  if(!p.length){box.innerHTML='<p class="mini">Nenhuma solicitação de sala neste mês.</p>';return}
+  box.innerHTML='<table><tr><th>Data</th><th>Profissional</th><th>Casal</th><th>Q/NQ</th><th>Status Sala</th><th>Ação CEO</th></tr>'+
+  p.map(x=>{
+    const casal=[x.convidado_1,x.convidado_2].filter(Boolean).join(' e ')||'-';
+    const st=x.sala_status||x.levou_sala||'Não informado';
+    const cls=isSalaConf26(x)?'salaConfirmada25':(isSalaPend26(x)?'salaPendente25':'salaCorrigida25');
+    const key=encodeURIComponent(JSON.stringify({id:x.id||'',user_email:x.user_email,created_at:x.created_at}));
+    return `<tr><td>${String(x.created_at||'').slice(0,10)}</td><td>${x.captador_nome||x.user_email||'-'}</td><td>${casal}</td><td>${x.qualificacao_automatica||'-'}</td><td class="${cls}">${st}</td><td><button class="secondary" onclick="acaoSalaCEO26('${key}','Confirmada')">Confirmar</button><button class="secondary" onclick="acaoSalaCEO26('${key}','Corrigida')">Corrigir/Não sala</button></td></tr>`;
+  }).join('')+'</table>';
+}
+
+window.acaoSalaCEO26=async function(key,status){
+  const obj=JSON.parse(decodeURIComponent(key));
+  const payload={sala_status:status,levou_sala:status==='Confirmada'?'Sim':'Não',sala_confirmada_em:new Date().toISOString(),sala_confirmada_por:window.usuarioEmail||usuarioEmail||'CEO'};
+  try{
+    let r;
+    if(obj.id)r=await db.from('pesquisas').update(payload).eq('id',obj.id);
+    else r=await db.from('pesquisas').update(payload).eq('user_email',obj.user_email).eq('created_at',obj.created_at);
+    if(r.error)throw r.error;
+  }catch(e){}
+  await carregarConferenciaSala20();
+  await carregarDashboardCEO25();
+  if(typeof carregarRelatorio==='function')carregarRelatorio();
+}
+
+window.carregarDashboardCEO25=async function(){
+  let p=[],a=[]; try{p=await dados('pesquisas')}catch(e){} try{a=await dados('abordagens')}catch(e){}
+  const hoje=hoje26();
+  const ph=(p||[]).filter(x=>noDia26(x,hoje));
+  const ah=(a||[]).filter(x=>noDia26(x,hoje));
+  const q=ph.filter(x=>x.qualificacao_automatica==='Q').length;
+  const nq=ph.length-q;
+  const sala=ph.filter(isSalaConf26).length;
+  const pend=ph.filter(isSalaPend26).length;
+  ZS26('ceoAbordHoje',ah.length); ZS26('ceoPesqHoje',ph.length); ZS26('ceoQHoje',q); ZS26('ceoNQHoje',nq);
+  ZS26('ceoSalaHoje',sala); ZS26('ceoSalaPendente',pend);
+  ZS26('ceoEficHoje',ph.length?Math.round(q/ph.length*100)+'%':'0%');
+  ZS26('ceoConvHoje',ph.length?Math.round(sala/ph.length*100)+'%':'0%');
+
+  const meses={};
+  (p||[]).forEach(x=>{
+    const m=String(x.created_at||'').slice(0,7)||'Sem mês';
+    if(!meses[m])meses[m]={mes:m,pesq:0,q:0,nq:0,sala:0};
+    meses[m].pesq++; if(x.qualificacao_automatica==='Q')meses[m].q++; else meses[m].nq++; if(isSalaConf26(x))meses[m].sala++;
+  });
+  const rows=Object.values(meses).sort((x,y)=>String(y.mes).localeCompare(String(x.mes)));
+  ZH26('ceoResumoMesBox25',rows.length?'<h2>Histórico Mensal Automático</h2><table><tr><th>Mês</th><th>Pesquisas</th><th>Q</th><th>NQ</th><th>Sala Confirmada</th><th>Eficiência</th><th>Conversão Sala</th></tr>'+rows.map(r=>`<tr><td>${r.mes}</td><td>${r.pesq}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.sala}</td><td>${r.pesq?Math.round(r.q/r.pesq*100):0}%</td><td>${r.pesq?Math.round(r.sala/r.pesq*100):0}%</td></tr>`).join('')+'</table>':'');
+}
+
+window.exportarExcelCEO25=async function(){
+  let p=[],a=[]; try{p=await dados('pesquisas')}catch(e){} try{a=await dados('abordagens')}catch(e){}
+  const headers=['tipo','data','profissional','email','equipe','ponto','nome1','nome2','q_nq','sala_status','brinde','renda','observacoes'];
+  const linhas=[headers.join(';')];
+  (p||[]).forEach(x=>linhas.push(['pesquisa',String(x.created_at||'').slice(0,10),x.captador_nome||'',x.user_email||'',x.equipe||'',x.ponto_captacao||'',x.convidado_1||'',x.convidado_2||'',x.qualificacao_automatica||'',x.sala_status||x.levou_sala||'',x.brinde||'',x.renda_casal||'',String(x.observacoes||'').replace(/[\r\n;]/g,' ')].join(';')));
+  (a||[]).forEach(x=>linhas.push(['abordagem',String(x.created_at||'').slice(0,10),x.captador_nome||'',x.user_email||'',x.equipe||'',x.ponto_captacao||'','','','','','','',String(x.observacao||'').replace(/[\r\n;]/g,' ')].join(';')));
+  const blob=new Blob(["\ufeff"+linhas.join('\\n')],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a'); link.href=url; link.download='captapro_exportacao_'+hoje26()+'.csv'; link.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+window.importarRakingCSV21=function(){alert('Ranking agora é automático pelo sistema. Não precisa importar CSV.');}
+window.limparRakingCSV21=function(){if(typeof carregarRaking==='function')carregarRaking(true);}
+
+const relBase26=window.carregarRelatorio;
+if(typeof relBase26==='function'&&!window.__relDash26){
+  window.__relDash26=true;
+  window.carregarRelatorio=async function(){
+    const r=await relBase26.apply(this,arguments);
+    if(document.body.classList.contains('ceo'))setTimeout(()=>{carregarDashboardCEO25();carregarConferenciaSala20();},300);
+    return r;
+  }
+}
+const abaBase26=window.aba;
+if(typeof abaBase26==='function'&&!window.__abaDash26){
+  window.__abaDash26=true;
+  window.aba=function(id,b){
+    const r=abaBase26.apply(this,arguments);
+    if(id==='relatorio')setTimeout(()=>{carregarDashboardCEO25();carregarConferenciaSala20();},300);
+    return r;
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{if(document.body.classList.contains('ceo'))carregarDashboardCEO25();},1200));
 })();
 </script>
 
