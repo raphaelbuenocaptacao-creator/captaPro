@@ -80,6 +80,11 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 #diario textarea{margin-top:10px;min-height:120px}
 #fechamentosCEOBox table{min-width:900px}
 
+
+/* Versão 2.0 • renda líquida e relacionamento CEO */
+#rendaLiquida{border-color:#00e676!important}
+#rendaLiquida.hidden{display:none!important}
+
 </style>
 </head>
 <body>
@@ -142,7 +147,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <select id="cartao"><option value="">10. Cartão de crédito?</option><option>Sim</option><option>Não</option></select>
 
 <!-- 11 renda em reais -->
-<input id="renda" inputmode="numeric" autocomplete="off" placeholder="11. Renda do casal. Ex: 10000 vira 10.000,00">
+<input id="renda" inputmode="numeric" autocomplete="off" placeholder="11. Renda bruta do casal. Ex: 10000 vira 10.000,00"><input id="rendaLiquida" class="hidden" inputmode="numeric" autocomplete="off" placeholder="Renda líquida para Empresário/Comerciante. Ex: 8000 vira 8.000,00">
 
 <!-- demais campos necessários -->
 <select id="multi"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
@@ -157,7 +162,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <option>Vemaguet - 120,00 em consumo</option>
 <option>Armazém Brasil - 120,00 em consumo</option>
 <option>Combustível - 120,00 em consumo</option>
-<option>Chocolate Spinassi</option>
+<option>Chocolate Spinassi - 120,00 em consumo</option>
 <option>Loja Parque R$ 150,00</option>
 <option>Combo de experiência</option>
 </select>
@@ -251,7 +256,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
     <input id="cfgTempoMaxNumero" type="number" placeholder="Tempo máximo referência. Ex: 30">
     <select id="cfgCasa"><option value="nao">Casa obrigatória: Não</option><option value="sim">Casa obrigatória: Sim</option></select>
     <select id="cfgCartao"><option value="nao">Cartão obrigatório: Não</option><option value="sim">Cartão obrigatório: Sim</option></select>
-    <select id="cfgProfObrigatoria"><option value="nao">Profissão definida não obrigatória</option><option value="sim">Profissão definida obrigatória</option></select>
+    <select id="cfgProfObrigatoria"><option value="nao">Profissão definida não obrigatória</option><option value="sim">Profissão definida obrigatória</option></select><select id="cfgRelacionamento"><option value="nao">Relacionamento não obrigatório</option><option value="sim">Exigir casados/união estável</option></select>
   </div>
   <textarea id="cfgProfissoesBloqueadas" placeholder="Profissões que deixam NQ. Ex: Operador de caixa, Zelador, Estudante, Uber/App/Freelancer"></textarea>
   <textarea id="cfgObsCEO" placeholder="Observações do CEO"></textarea>
@@ -901,6 +906,125 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(typeof carregarRelatorio==='function')carregarRelatorio();
     if(typeof carregarRaking==='function')carregarRaking(true);
   },900);
+});
+})();
+</script>
+
+
+<script>
+/* ===== Versão 2.0 • renda líquida + relacionamento CEO ===== */
+(function(){
+function R(id){return document.getElementById(id)}
+function RV(id){return (R(id)?.value||'').trim()}
+function normalR(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function digitsR(v){return String(v||'').replace(/\D/g,'')}
+function rendaTelaR(n){return (Number(n||0)).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function ehEmpresarioComerciante(){
+  const p=(normalR(RV('profissao1'))+' '+normalR(RV('profissao2')));
+  return p.includes('empresario') || p.includes('empresaria') || p.includes('comerciante');
+}
+function aplicarMascaraRendaLiquida(){
+  const el=R('rendaLiquida'); if(!el || el.__liqMask)return; el.__liqMask=true;
+  let digits=digitsR(el.value);
+  function render(){el.value=digits?rendaTelaR(Number(digits)):''}
+  el.addEventListener('beforeinput',(ev)=>{
+    if(ev.inputType==='insertText' && /^\d$/.test(ev.data||'')){ev.preventDefault(); digits+=ev.data; render();}
+    else if(ev.inputType==='deleteContentBackward'){ev.preventDefault(); digits=digits.slice(0,-1); render();}
+  });
+  el.addEventListener('input',()=>{if(!el.value.includes(',')){digits=digitsR(el.value); render();}});
+}
+function atualizarRendaLiquida(){
+  const el=R('rendaLiquida'); if(!el)return;
+  if(ehEmpresarioComerciante())el.classList.remove('hidden');
+  else {el.classList.add('hidden'); el.value='';}
+}
+['profissao1','profissao2'].forEach(id=>{
+  const el=R(id); if(el && !el.__profLiq){el.__profLiq=true; el.addEventListener('input',atualizarRendaLiquida); el.addEventListener('change',atualizarRendaLiquida);}
+});
+
+// CEO relacionamento no load/salvar
+const loadCfgBaseR=window.loadCfg;
+if(typeof loadCfgBaseR==='function'&&!window.__loadRelCEO){
+  window.__loadRelCEO=true;
+  window.loadCfg=function(){
+    const r=loadCfgBaseR.apply(this,arguments);
+    try{
+      const c=getCfg();
+      if(R('cfgRelacionamento'))R('cfgRelacionamento').value=c.relacionamento||'nao';
+    }catch(e){}
+    return r;
+  }
+}
+const salvarConfigBaseR=window.salvarConfig;
+if(typeof salvarConfigBaseR==='function'&&!window.__saveRelCEO){
+  window.__saveRelCEO=true;
+  window.salvarConfig=function(){
+    const r=salvarConfigBaseR.apply(this,arguments);
+    try{
+      const c=getCfg();
+      c.relacionamento=RV('cfgRelacionamento')||'nao';
+      localStorage.setItem('cfg',JSON.stringify(c));
+    }catch(e){}
+    return r;
+  }
+}
+
+// Qualificação: se CEO exigir relacionamento, Q só com Casados/União estável
+const qualBaseR=window.qual;
+if(typeof qualBaseR==='function'&&!window.__qualRelCEO){
+  window.__qualRelCEO=true;
+  window.qual=function(){
+    const q=qualBaseR.apply(this,arguments);
+    try{
+      const c=getCfg();
+      if(c.relacionamento==='sim' && !['Casados','União estável'].includes(RV('relacionamento'))){
+        if(q.status==='Q')q.status='NQ 1 Item';
+        q.motivo = q.motivo && q.motivo !== 'Perfil dentro da regra' ? q.motivo+', relacionamento' : 'relacionamento';
+      }
+    }catch(e){}
+    return q;
+  }
+}
+
+// Payload: salva renda líquida quando aparecer
+const payloadBaseR=window.payload;
+if(typeof payloadBaseR==='function'&&!window.__payloadLiq){
+  window.__payloadLiq=true;
+  window.payload=function(){
+    const p=payloadBaseR.apply(this,arguments);
+    p.renda_liquida=RV('rendaLiquida');
+    return p;
+  }
+}
+
+// Ficha completa: acrescenta renda líquida sem alterar resto da ficha
+const renderFichaBaseR=window.renderFicha;
+if(typeof renderFichaBaseR==='function'&&!window.__renderLiq){
+  window.__renderLiq=true;
+  window.renderFicha=function(p){
+    const r=renderFichaBaseR.apply(this,arguments);
+    if(p && p.renda_liquida){
+      const box=R('fichaImg');
+      if(box && !box.innerHTML.includes('RENDA LÍQUIDA')){
+        const ref=[...box.querySelectorAll('.campo')].find(c=>String(c.innerText||'').toLowerCase().includes('renda'));
+        const div=document.createElement('div');
+        div.className='campo';
+        div.innerHTML='<small>RENDA LÍQUIDA</small>'+p.renda_liquida;
+        if(ref)ref.insertAdjacentElement('afterend',div); else box.appendChild(div);
+      }
+    }
+    return r;
+  }
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    aplicarMascaraRendaLiquida();
+    atualizarRendaLiquida();
+    if(R('cfgRelacionamento')){
+      try{const c=getCfg();R('cfgRelacionamento').value=c.relacionamento||'nao'}catch(e){}
+    }
+  },700);
 });
 })();
 </script>
