@@ -664,13 +664,17 @@ async function tentarCSVRepo(){
  return [];
 }
 function importarRakingCSV21(ev){const file=ev.target.files&&ev.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const dados=parseCSV(reader.result);localStorage.setItem('raking_csv_21',JSON.stringify(dados));renderRaking(montarCSV(dados),'<span class=ok>Fonte: CSV importado.</span>')};reader.readAsText(file,'utf-8')}
-function limparRakingCSV21(){localStorage.removeItem('raking_csv_21');if(E('csvRakingInput21'))E('csvRakingInput21').value='';renderRaking([], '<span class=warn>Julho começa do zero. Salve fichas para montar o ranking.</span>');return}}catch(e){}}
+function limparRakingCSV21(){localStorage.removeItem('raking_csv_21');if(E('csvRakingInput21'))E('csvRakingInput21').value='';renderRaking([], '<span class=warn>Julho começa do zero. Salve fichas para montar o ranking.</span>');return}
+async function carregarRaking(forcarBanco){
+ setPeriodoMes();
+ if(!forcarBanco){
+   try{const salvo=JSON.parse(localStorage.getItem('raking_csv_21')||'[]');if(salvo.length){renderRaking(montarCSV(salvo),'<span class=ok>Fonte: CSV importado.</span>');return}}catch(e){}
+ }
  const de=V('rakingDe'),ate=V('rakingAte'); let p=[];
  try{p=await dados('pesquisas')}catch(e){p=[]}
  p=(p||[]).filter(x=>per(x,de,ate));
  const arr=montarPesquisas(p);
  if(arr.length){renderRaking(arr,'<span class=ok>Fonte: fichas salvas de hoje em diante.</span>');return}
- 
  renderRaking([], '<span class=warn>Julho começa do zero. Salve fichas para montar o ranking.</span>');
 }
 
