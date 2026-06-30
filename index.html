@@ -91,7 +91,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Relatório Diário</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button class="adminOnly" onclick="aba('qualificacao',this)">Qualificação CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Profissional</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button class="adminOnly" onclick="aba('qualificacao',this)">Qualificação CEO</button></div>
 
 <section id="pesquisa" class="card">
 <h2>Pesquisa</h2><p class="hint">Abordagem → ficha → salvar → compartilhar → nova ficha.</p>
@@ -153,7 +153,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <option>2 Vale dos Dinossauros</option>
 <option>2 Terror</option>
 <option>4 Espelho do Jordão</option>
-<option>R$ 120,00 de consumo</option>
+<option>120,00 de consumo</option>
 <option>Loja Parque R$ 150,00</option>
 <option>Rostie</option>
 <option>Vemaguet</option>
@@ -171,8 +171,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
 
 <section id="diario" class="card hidden">
-<h2>Relatório Diário</h2>
-<p class="hint">No final do expediente, o profissional envia o relatório com resumo automático + relatório escrito.</p>
+<h2>Profissional</h2>
+<p class="hint">No final do expediente, o profissional acompanha seus próprios números e envia o relatório do dia.</p>
 <div class="grid">
   <input id="diarioData" type="date">
   <input id="diarioNome" placeholder="Nome do profissional" readonly>
@@ -188,7 +188,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
   <div class="kpi">Conversão<b id="dConv">0%</b></div>
   <div class="kpi">Projeção Mês<b id="dProj">0</b></div>
 </div>
-<textarea id="diarioTexto" placeholder="Relatório escrito: conte como foi o dia, dificuldades, pontos positivos e o que pode melhorar amanhã."></textarea>
+<textarea id="diarioTexto" placeholder="Relatório do profissional: conte como foi o dia, dificuldades, pontos positivos e o que pode melhorar amanhã."></textarea>
 <div class="grid" style="margin-top:8px">
   <button class="secondary" onclick="carregarDiario()">Atualizar números</button>
   <button class="main" onclick="finalizarDiario()">✅ Enviar meu relatório</button>
@@ -229,11 +229,11 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <input id="csvRakingInput21" type="file" accept=".csv,text/csv" onchange="importarRakingCSV21(event)">
 <div class="grid" style="margin:8px 0">
   <button class="main" onclick="carregarRaking()">Atualizar Ranking</button>
-  <button class="secondary" onclick="limparRakingCSV21()">Usar Ranking Julho padrão</button>
+  <button class="secondary" onclick="limparRakingCSV21()">Atualizar ranking</button>
 </div>
 <div class="card scroll">
-  <h2>Ranking Julho até 21/06</h2>
-  <p class="hint">Ranking automático por profissional, casais, vendas, VGV e eficiência.</p>
+  <h2>Ranking Julho</h2>
+  <p class="hint">Julho começa do zero. Mostra somente os dados salvos de agora em diante.</p>
   <div id="rakingFonte21" class="mini"></div>
   <div id="rakingBox"></div>
 </div>
@@ -572,7 +572,7 @@ async function tentarCSVRepo(){
  return [];
 }
 function importarRakingCSV21(ev){const file=ev.target.files&&ev.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const dados=parseCSV(reader.result);localStorage.setItem('raking_csv_21',JSON.stringify(dados));renderRaking(montarCSV(dados),'<span class=ok>Fonte: CSV importado.</span>')};reader.readAsText(file,'utf-8')}
-function limparRakingCSV21(){localStorage.removeItem('raking_csv_21');if(E('csvRakingInput21'))E('csvRakingInput21').value='';renderRaking(rankingJunhoPadrao21, '<span class=ok>Fonte: Ranking Julho padrão até 21/06.</span>')}
+function limparRakingCSV21(){localStorage.removeItem('raking_csv_21');if(E('csvRakingInput21'))E('csvRakingInput21').value='';renderRaking(rankingJunhoPadrao21, '<span class=ok>Fonte: Ranking Julho até 21/06.</span>')}
 async function carregarRaking(forcarBanco){
  setPeriodoMes();
  if(!forcarBanco){try{const salvo=JSON.parse(localStorage.getItem('raking_csv_21')||'[]');if(salvo.length){renderRaking(montarCSV(salvo),'<span class=ok>Fonte: CSV importado.</span>');return}}catch(e){}}
@@ -580,9 +580,9 @@ async function carregarRaking(forcarBanco){
  try{p=await dados('pesquisas')}catch(e){p=[]}
  p=(p||[]).filter(x=>per(x,de,ate));
  const arr=montarPesquisas(p);
- if(arr.length){renderRaking(arr,'<span class=ok>Fonte: fichas salvas no sistema.</span>');return}
+ if(arr.length){renderRaking(arr,'<span class=ok>Fonte: fichas salvas de julho em diante.</span>');return}
  if(!forcarBanco){const repo=await tentarCSVRepo();if(repo.length){renderRaking(montarCSV(repo),'<span class=ok>Fonte: raking junho.csv do GitHub.</span>');return}}
- renderRaking(rankingJunhoPadrao21, '<span class=ok>Fonte: Ranking Julho padrão até 21/06.</span>');
+ renderRaking(rankingJunhoPadrao21, '<span class=ok>Fonte: Ranking Julho até 21/06.</span>');
 }
 
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{aplicarRendaDigitavel();aplicarRendaCEO();loadCfg();setPeriodoMes();carregarRaking();},500)});
@@ -725,6 +725,100 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('button').forEach(b=>{
     if((b.innerText||'').trim()==='') b.style.display='none';
   });
+});
+})();
+</script>
+
+
+<script>
+/* ===== Versão 2.0 • ajustes profissional + julho do zero ===== */
+(function(){
+function Z(id){return document.getElementById(id)}
+function ZV(id){return (Z(id)?.value||'').trim()}
+function ZH(id,v){if(Z(id))Z(id).innerHTML=v}
+function hojeISO20(){return new Date().toISOString().slice(0,10)}
+function inicioJulho20(){
+  const hoje=new Date();
+  // Como a operação pedida é julho, se ainda estiver em junho usa 01/07/2026.
+  if(hoje.getFullYear()===2026 && hoje.getMonth()===5) return '2026-07-01';
+  return `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-01`;
+}
+function fimMes20(){
+  const hoje=new Date();
+  const ano = (hoje.getFullYear()===2026 && hoje.getMonth()===5) ? 2026 : hoje.getFullYear();
+  const mesIndex = (hoje.getFullYear()===2026 && hoje.getMonth()===5) ? 6 : hoje.getMonth();
+  const ultimo=new Date(ano,mesIndex+1,0).getDate();
+  return `${ano}-${String(mesIndex+1).padStart(2,'0')}-${String(ultimo).padStart(2,'0')}`;
+}
+
+// Aba Profissional mostra somente dados do profissional logado
+const carregarDiarioBase20=window.carregarDiario;
+if(typeof carregarDiarioBase20==='function'&&!window.__profissionalIndividual20){
+  window.__profissionalIndividual20=true;
+  window.carregarDiario=async function(){
+    const data=ZV('diarioData')||hojeISO20();
+    if(Z('diarioData'))Z('diarioData').value=data;
+    if(Z('diarioNome'))Z('diarioNome').value=window.usuarioNome||usuarioNome||'';
+    return carregarDiarioBase20.apply(this,arguments);
+  }
+}
+
+// Profissional não vê lista geral do CEO
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    if(document.body && !document.body.classList.contains('ceo')){
+      document.querySelectorAll('#diario .adminOnly').forEach(x=>x.style.display='none');
+    }
+  },700);
+});
+
+// Ranking Julho começa zerado e sem fallback antigo
+const carregarRakingBase20=window.carregarRaking;
+window.carregarRaking=async function(forcarBanco){
+  if(Z('rakingDe'))Z('rakingDe').value = Z('rakingDe').value || inicioJulho20();
+  if(Z('rakingAte'))Z('rakingAte').value = Z('rakingAte').value || fimMes20();
+
+  // Apaga qualquer CSV antigo salvo de junho, para começar limpo.
+  try{
+    const salvo=localStorage.getItem('raking_csv_21');
+    if(salvo && !localStorage.getItem('ranking_julho_confirmado_20')){
+      localStorage.removeItem('raking_csv_21');
+    }
+  }catch(e){}
+
+  if(typeof dados==='function' && typeof renderRaking==='function' && typeof montarPesquisas==='function' && typeof per==='function'){
+    let p=[];
+    try{p=await dados('pesquisas')}catch(e){p=[]}
+    const de=ZV('rakingDe')||inicioJulho20(), ate=ZV('rakingAte')||fimMes20();
+    p=(p||[]).filter(x=>per(x,de,ate));
+    const arr=montarPesquisas(p);
+    if(arr.length){renderRaking(arr,'<span class="ok">Fonte: fichas salvas de julho em diante.</span>');return}
+    renderRaking([],'<span class="warn">Julho começa do zero. Salve fichas para montar o ranking.</span>');
+    return;
+  }
+  if(carregarRakingBase20)return carregarRakingBase20.apply(this,arguments);
+}
+
+window.limparRakingCSV21=function(){
+  try{localStorage.removeItem('raking_csv_21');localStorage.setItem('ranking_julho_confirmado_20','1')}catch(e){}
+  if(Z('csvRakingInput21'))Z('csvRakingInput21').value='';
+  carregarRaking(true);
+}
+
+// Corrige textos que podem ter ficado antigos após carregar
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    document.querySelectorAll('h2,p,button').forEach(el=>{
+      el.innerHTML=el.innerHTML
+        .replace(/Ranking Julho até 21\/06/g,'Ranking Julho')
+        .replace(/Ranking Junho até 21\/06/g,'Ranking Julho')
+        .replace(/Relatório Diário/g,'Profissional')
+        .replace(/R\$ 120,00 de consumo/g,'120,00 de consumo');
+    });
+    if(Z('rakingDe'))Z('rakingDe').value=inicioJulho20();
+    if(Z('rakingAte'))Z('rakingAte').value=fimMes20();
+    carregarRaking(true);
+  },900);
 });
 })();
 </script>
