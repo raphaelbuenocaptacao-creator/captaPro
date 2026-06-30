@@ -153,14 +153,13 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <option>2 Vale dos Dinossauros</option>
 <option>2 Terror</option>
 <option>4 Espelho do Jordão</option>
-<option>120,00 de consumo</option>
-<option>Loja Parque R$ 150,00</option>
-<option>Rostie</option>
-<option>Vemaguet</option>
-<option>Armazém Brasil</option>
-<option>Combustível</option>
+<option>Rostie - 120,00 em consumo</option>
+<option>Vemaguet - 120,00 em consumo</option>
+<option>Armazém Brasil - 120,00 em consumo</option>
+<option>Combustível - 120,00 em consumo</option>
 <option>Chocolate Spinassi</option>
-<option>Sem cortesia</option>
+<option>Loja Parque R$ 150,00</option>
+<option>Combo de experiência</option>
 </select>
 <input id="contato" placeholder="WhatsApp / contato">
 </div>
@@ -233,7 +232,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </div>
 <div class="card scroll">
   <h2>Ranking Julho</h2>
-  <p class="hint">Julho começa do zero. Mostra somente os dados salvos de agora em diante.</p>
+  <p class="hint">Relatório zerado: mostra somente os dados salvos de hoje em diante.</p>
   <div id="rakingFonte21" class="mini"></div>
   <div id="rakingBox"></div>
 </div>
@@ -580,7 +579,7 @@ async function carregarRaking(forcarBanco){
  try{p=await dados('pesquisas')}catch(e){p=[]}
  p=(p||[]).filter(x=>per(x,de,ate));
  const arr=montarPesquisas(p);
- if(arr.length){renderRaking(arr,'<span class=ok>Fonte: fichas salvas de julho em diante.</span>');return}
+ if(arr.length){renderRaking(arr,'<span class=ok>Fonte: fichas salvas de hoje em diante.</span>');return}
  if(!forcarBanco){const repo=await tentarCSVRepo();if(repo.length){renderRaking(montarCSV(repo),'<span class=ok>Fonte: raking junho.csv do GitHub.</span>');return}}
  renderRaking(rankingJunhoPadrao21, '<span class=ok>Fonte: Ranking Julho até 21/06.</span>');
 }
@@ -792,8 +791,8 @@ window.carregarRaking=async function(forcarBanco){
     const de=ZV('rakingDe')||inicioJulho20(), ate=ZV('rakingAte')||fimMes20();
     p=(p||[]).filter(x=>per(x,de,ate));
     const arr=montarPesquisas(p);
-    if(arr.length){renderRaking(arr,'<span class="ok">Fonte: fichas salvas de julho em diante.</span>');return}
-    renderRaking([],'<span class="warn">Julho começa do zero. Salve fichas para montar o ranking.</span>');
+    if(arr.length){renderRaking(arr,'<span class="ok">Fonte: fichas salvas de hoje em diante.</span>');return}
+    renderRaking([],'<span class="warn">Tudo começa do zero a partir de hoje. Salve fichas para montar o ranking.</span>');
     return;
   }
   if(carregarRakingBase20)return carregarRakingBase20.apply(this,arguments);
@@ -813,11 +812,94 @@ document.addEventListener('DOMContentLoaded',()=>{
         .replace(/Ranking Julho até 21\/06/g,'Ranking Julho')
         .replace(/Ranking Junho até 21\/06/g,'Ranking Julho')
         .replace(/Relatório Diário/g,'Profissional')
-        .replace(/R\$ 120,00 de consumo/g,'120,00 de consumo');
+        .replace(/R\$ /g,'');
     });
     if(Z('rakingDe'))Z('rakingDe').value=inicioJulho20();
     if(Z('rakingAte'))Z('rakingAte').value=fimMes20();
     carregarRaking(true);
+  },900);
+});
+})();
+</script>
+
+
+<script>
+/* ===== Versão 2.0 • zerar relatórios de hoje em diante + brindes parceiros ===== */
+(function(){
+function G(id){return document.getElementById(id)}
+function GV(id){return (G(id)?.value||'').trim()}
+function hoje(){return new Date().toISOString().slice(0,10)}
+
+// Define todos os filtros de relatório/ranking para começar HOJE.
+function zerarFiltrosHoje(){
+  ['relDe','rakingDe'].forEach(id=>{if(G(id))G(id).value=hoje()});
+  ['relAte','rakingAte'].forEach(id=>{if(G(id))G(id).value=''});
+}
+
+// Sobrescreve período do ranking para hoje em diante.
+window.setPeriodoMes = function(){
+  if(G('rakingDe'))G('rakingDe').value = GV('rakingDe') || hoje();
+  if(G('rakingAte'))G('rakingAte').value = GV('rakingAte') || '';
+}
+
+// Limpa ranking CSV antigo e força dados do sistema a partir de hoje.
+const carregarRakingBaseZero20 = window.carregarRaking;
+window.carregarRaking = async function(forcarBanco){
+  try{
+    localStorage.removeItem('raking_csv_21');
+    localStorage.removeItem('ranking_csv_16');
+    localStorage.removeItem('raking_csv_17');
+  }catch(e){}
+  if(G('rakingDe'))G('rakingDe').value = GV('rakingDe') || hoje();
+  if(G('rakingAte'))G('rakingAte').value = GV('rakingAte') || '';
+
+  if(typeof dados==='function' && typeof renderRaking==='function' && typeof montarPesquisas==='function' && typeof per==='function'){
+    let p=[];
+    try{p=await dados('pesquisas')}catch(e){p=[]}
+    const de=GV('rakingDe')||hoje(), ate=GV('rakingAte');
+    p=(p||[]).filter(x=>per(x,de,ate));
+    const arr=montarPesquisas(p);
+    if(arr.length){renderRaking(arr,'<span class="ok">Fonte: fichas salvas de hoje em diante.</span>');return}
+    renderRaking([],'<span class="warn">Tudo começa do zero a partir de hoje. Salve fichas para montar o ranking.</span>');
+    return;
+  }
+  if(carregarRakingBaseZero20)return carregarRakingBaseZero20.apply(this,arguments);
+}
+
+// Relatório também abre a partir de hoje.
+const carregarRelatorioBaseZero20 = window.carregarRelatorio;
+if(typeof carregarRelatorioBaseZero20==='function'&&!window.__relHojeZero20){
+  window.__relHojeZero20=true;
+  window.carregarRelatorio = async function(){
+    if(G('relDe'))G('relDe').value = GV('relDe') || hoje();
+    return carregarRelatorioBaseZero20.apply(this,arguments);
+  }
+}
+
+// Botão/manual para zerar dados antigos no navegador do aparelho.
+window.zerarVisualHoje20=function(){
+  try{
+    localStorage.removeItem('raking_csv_21');
+    localStorage.removeItem('ranking_csv_16');
+    localStorage.removeItem('raking_csv_17');
+  }catch(e){}
+  zerarFiltrosHoje();
+  if(typeof carregarRelatorio==='function')carregarRelatorio();
+  if(typeof carregarRaking==='function')carregarRaking(true);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    zerarFiltrosHoje();
+    // Remove texto/option vazio de cortesia, se navegador cacheou.
+    const brinde=G('brinde');
+    if(brinde){
+      [...brinde.options].forEach(o=>{
+        if((o.textContent||'').trim()==='')o.remove();
+      });
+    }
+    if(typeof carregarRelatorio==='function')carregarRelatorio();
+    if(typeof carregarRaking==='function')carregarRaking(true);
   },900);
 });
 })();
