@@ -1862,4 +1862,111 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
 })();
 </script>
 
+
+<script>
+/* ===== CaptaPro Versão 2.0 • HOTFIX LOGIN ===== */
+(function(){
+function LG(id){return document.getElementById(id)}
+function LV(id){return (LG(id)?.value||'').trim()}
+function LH(id,v){if(LG(id))LG(id).innerHTML=v}
+function salvarSessao(email,nome,role){
+  try{
+    localStorage.setItem('loginSimples',JSON.stringify({email,nome}));
+    localStorage.setItem('capta_login_persistente_final',JSON.stringify({email,nome,role,approved:true}));
+  }catch(e){}
+}
+function abrirApp(email,nome,roleFinal){
+  try{
+    window.usuarioEmail=usuarioEmail=email;
+    window.usuarioNome=usuarioNome=nome||email;
+    window.role=role=roleFinal||'profissional';
+    document.body.classList.toggle('ceo',role==='ceo'||(typeof CEOS!=='undefined'&&CEOS.includes(email)));
+    if(LG('loginBox'))LG('loginBox').classList.add('hidden');
+    if(LG('app'))LG('app').classList.remove('hidden');
+    salvarSessao(email,usuarioNome,role);
+    if(typeof loadCfg==='function')loadCfg();
+    if(typeof aplicarRendaDigitavel==='function')aplicarRendaDigitavel();
+    if(typeof aplicarRendaCEO==='function')aplicarRendaCEO();
+    if(typeof carregarAbordagensHoje==='function')carregarAbordagensHoje();
+    if(typeof carregarRelatorio==='function')carregarRelatorio();
+    if(typeof carregarRaking==='function')carregarRaking(true);
+    if(typeof atualizarPainelInicial20==='function')setTimeout(()=>atualizarPainelInicial20(),400);
+    if(typeof atualizarMetaMensalPainelFinal==='function')setTimeout(()=>atualizarMetaMensalPainelFinal(),600);
+  }catch(e){
+    LH('loginMsg','<span class="erro">Erro ao abrir app: '+(e.message||e)+'</span>');
+  }
+}
+
+const entrarAnteriorHotfix = window.entrar;
+window.entrar = async function(){
+  const email=LV('email').toLowerCase();
+  const nome=LV('nome')||email;
+  if(!email){LH('loginMsg','<span class="erro">Informe o e-mail.</span>');return}
+
+  LH('loginMsg','<span class="warn">Verificando acesso...</span>');
+
+  // CEO entra direto, sem depender de resposta do Supabase.
+  const ceos=(typeof CEOS!=='undefined'?CEOS:['raphaelbueno.captacao@gmail.com','marcel.dorado2@gmail.com']);
+  if(ceos.includes(email)){
+    abrirApp(email,nome,'ceo');
+    return;
+  }
+
+  // Se já estava aprovado neste aparelho, entra direto.
+  try{
+    const sess=JSON.parse(localStorage.getItem('capta_login_persistente_final')||'null');
+    if(sess&&sess.email===email&&sess.approved){
+      abrirApp(email,sess.nome||nome,sess.role||'profissional');
+      return;
+    }
+  }catch(e){}
+
+  // Busca no Supabase.
+  try{
+    const r=await db.from('approved_users').select('*').eq('email',email).maybeSingle();
+    if(r.error)throw r.error;
+    const u=r.data;
+    if(!u){
+      try{
+        await db.from('approved_users').insert({email:email,name:nome,role:'captador',approved:false});
+        LH('loginMsg','<span class="warn">Cadastro enviado. Aguarde aprovação do CEO.</span>');
+      }catch(e2){
+        LH('loginMsg','<span class="erro">E-mail não aprovado.</span>');
+      }
+      return;
+    }
+    if(u.approved===false){
+      LH('loginMsg','<span class="erro">E-mail ainda não aprovado pelo CEO.</span>');
+      return;
+    }
+    abrirApp(email,u.name||nome,u.role||'profissional');
+    return;
+  }catch(e){
+    // Se falhar conexão mas já tinha login antigo simples, deixa entrar.
+    try{
+      const l=JSON.parse(localStorage.getItem('loginSimples')||'null');
+      if(l&&l.email===email){
+        abrirApp(email,l.nome||nome,'profissional');
+        return;
+      }
+    }catch(x){}
+    LH('loginMsg','<span class="erro">Não consegui validar o acesso. Confira internet/Supabase e se o e-mail está aprovado.</span>');
+  }
+};
+
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    try{
+      const sess=JSON.parse(localStorage.getItem('capta_login_persistente_final')||localStorage.getItem('loginSimples')||'null');
+      if(sess&&sess.email&&LG('loginBox')&&!LG('loginBox').classList.contains('hidden')){
+        if(LG('email'))LG('email').value=sess.email;
+        if(LG('nome'))LG('nome').value=sess.nome||sess.email;
+        window.entrar();
+      }
+    }catch(e){}
+  },500);
+});
+})();
+</script>
+
 </body></html>
