@@ -172,6 +172,27 @@ body.appAberto #app{display:block!important}
 .salaConfirmada25{color:#00e676;font-weight:900}
 .salaCorrigida25{color:#ff5252;font-weight:900}
 
+
+/* CaptaPro 2.7 • Arena SX enxuta oficial */
+.arenaCleanSX .card{margin-bottom:10px}
+.sxHero{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.sxHeroCard{background:linear-gradient(135deg,#111,#220606);border:1px solid #4b1515;border-radius:18px;padding:16px;text-align:center}
+.sxHeroCard span{display:block;color:#aaa;font-size:12px;text-transform:uppercase;font-weight:900;letter-spacing:.5px}
+.sxHeroCard b{display:block;color:#00e676;font-size:34px;margin:6px 0}
+.sxHeroCard small{color:#bbb}
+.sxBarBox{background:#080808;border:1px solid #333;border-radius:16px;padding:12px;margin:10px 0}
+.sxBarTop{display:flex;justify-content:space-between;font-weight:900;color:#ccc;margin-bottom:8px}
+.sxBar{height:16px;background:#222;border-radius:999px;overflow:hidden;border:1px solid #333}
+#sxBarFill{height:100%;width:0%;background:linear-gradient(135deg,#00a651,#00e676);border-radius:999px;transition:.3s}
+.sxBadge{display:inline-block;margin:4px;padding:9px 11px;border-radius:999px;background:#181818;border:1px solid #333;font-weight:900;color:#777}
+.sxBadge.ok{background:#06220f;border-color:#00e676;color:#00e676}
+.sxStatusPendente{color:#ffd54f;font-weight:900}.sxStatusVitoria{color:#00e676;font-weight:900}.sxStatusDerrota{color:#ff5252;font-weight:900}
+.sxModal{position:fixed;z-index:9999;inset:0;background:rgba(0,0,0,.76);padding:20px;display:flex;align-items:center;justify-content:center}
+.sxModalBox{background:#101010;border:1px solid #5a1717;border-radius:20px;padding:16px;max-width:560px;width:100%;box-shadow:0 0 30px rgba(239,27,36,.25)}
+#sxRankingBox table,#sxDesafiosBox table,#sxCEOBox table,#sxTrocasCEOBox table,#sxTemporadaBox table{min-width:720px}
+body.appAberto #loginBox{display:none!important}body.appAberto #app{display:block!important}
+@media(max-width:700px){.sxHero{grid-template-columns:1fr}.sxHeroCard b{font-size:30px}}
+
 </style>
 </head>
 <body>
@@ -276,7 +297,7 @@ body.appAberto #app{display:block!important}
   <div class="painelCard20 preto"><span>Meta de casais em sala</span><b id="homeMeta">0/35</b></div>
 </div>
 <div class="metaMensalBox20">
-  <div class="metaLinha20"><span>Progresso da meta de sala de sala</span><b id="metaMensalTexto20">0 / 35</b></div>
+  <div class="metaLinha20"><span>Progresso da meta de sala</span><b id="metaMensalTexto20">0 / 35</b></div>
   <div class="barraMeta20"><div id="barraMetaFill20"></div></div>
   <p class="mini" id="metaMensalInfo20">Faltam 35 casais em sala</p>
 </div>
@@ -381,120 +402,73 @@ body.appAberto #app{display:block!important}
 </section>
 
 
-<section id="arena" class="card hidden">
+
+<section id="arena" class="card hidden arenaCleanSX">
 <h2>Arena SX</h2>
-<p class="hint">Moeda interna da operação. Hoje começa zerado; SX Coin passa a contar a partir de amanhã.</p>
+<p class="hint">Tela enxuta para o profissional: saldo, nível, ranking, desafios e conquistas.</p>
 
-<div class="kpis">
-  <div class="kpi">Meu saldo SX<b id="sxMeuSaldo">0</b></div>
-  <div class="kpi">Meu nível<b id="sxMeuNivel">Iniciante</b></div>
-  <div class="kpi">Hoje<b id="sxHojeInfo">zerado</b></div>
+<div class="sxHero">
+  <div class="sxHeroCard"><span>Meu SX Coin</span><b id="sxMeuSaldo">0</b><small>SX disponíveis</small></div>
+  <div class="sxHeroCard"><span>Meu nível</span><b id="sxMeuNivel">Iniciante</b><small id="sxProximoNivel">Faltam 1.000 SX para evoluir</small></div>
 </div>
 
-<div class="card scroll">
-  <h2>Ranking SX Coin</h2>
-  <div id="sxRankingBox"></div>
+<div class="sxBarBox">
+  <div class="sxBarTop"><span>Evolução</span><b id="sxPctNivel">0%</b></div>
+  <div class="sxBar"><div id="sxBarFill"></div></div>
 </div>
 
-
-<div class="card scroll">
-  <h2>Evolução SX</h2>
-  <p class="hint">Níveis automáticos conforme o saldo SX.</p>
-  <div id="sxNivelBox"></div>
-</div>
-
+<div class="card scroll"><h2>🏆 Top 10 SX</h2><div id="sxRankingBox"></div><button class="secondary" style="margin-top:8px" onclick="toggleRankingCompletoSX()">Ver ranking completo</button></div>
 
 <div class="card">
-  <h2>Regras de Participação</h2>
-  <p class="hint">Raphael Bueno, Francisco e Marcel são liderança/direção e não entram nos desafios. A Arena SX de desafios é apenas para promotores.</p>
-</div>
-
-<div class="card">
-  <h2>Criar Desafio</h2>
-  <p class="hint">Promotores desafiam outros promotores e apostam SX. Líderes e diretor não participam dos desafios.</p>
+  <h2>⚔️ Criar Desafio</h2>
+  <p class="hint">Somente promotores participam. Liderança e direção apenas acompanham.</p>
   <div class="grid">
     <input id="sxDesafiante" placeholder="Seu nome" readonly>
     <select id="sxAdversario"><option value="">Escolha o adversário</option></select>
-    <input id="sxAposta" type="number" placeholder="Quantidade de SX apostada. Ex: 100">
+    <input id="sxAposta" type="number" placeholder="Aposta SX. Ex: 100">
     <select id="sxCriterio">
-      <option value="pesquisas">Por quantidade de pesquisas</option>
-      <option value="sala">Por quantidade de sala</option>
-      <option value="vendas">Por vendas</option>
-      <option value="dia">Resultado diário</option>
-      <option value="semana">Resultado semanal</option>
+      <option value="pesquisas">Por pesquisas</option>
+      <option value="q">Por Q</option>
+      <option value="sala">Por sala</option>
+      <option value="dia">Resultado do dia</option>
+      <option value="semana">Resultado da semana</option>
     </select>
   </div>
   <button class="main" style="margin-top:8px" onclick="criarDesafioSX20()">Criar desafio</button>
   <p id="sxMsg"></p>
 </div>
 
+<div class="card scroll"><h2>📋 Meus Desafios</h2><div id="sxDesafiosBox"></div></div>
+<div class="card scroll"><h2>🏅 Conquistas</h2><div id="sxConquistasBox"></div></div>
 
-<div class="card scroll">
-  <h2>Temporada Mensal SX</h2>
-  <p class="hint">Premiação automática da temporada pelo ranking SX do mês.</p>
-  <div class="kpis">
-    <div class="kpi">🥇 1º lugar<b>10.000 SX</b></div>
-    <div class="kpi">🥈 2º lugar<b>7.500 SX</b></div>
-    <div class="kpi">🥉 3º lugar<b>5.000 SX</b></div>
+<button class="secondary" onclick="abrirComoFuncionaSX()">❓ Como funciona o SX?</button>
+
+<div id="sxModalRegras" class="sxModal hidden">
+  <div class="sxModalBox">
+    <h2>Como funciona o SX?</h2>
+    <p class="hint">Pontuação automática da Arena SX.</p>
+    <div class="kpis">
+      <div class="kpi">Pesquisa<b>+10</b></div><div class="kpi">NQ<b>+20</b></div>
+      <div class="kpi">1 Item<b>+50</b></div><div class="kpi">Q<b>+100</b></div>
+      <div class="kpi">Sala<b>+300</b></div><div class="kpi">Venda<b>+1000</b></div>
+    </div>
+    <button class="main" style="margin-top:8px" onclick="fecharComoFuncionaSX()">Fechar</button>
   </div>
-  <div id="sxTemporadaBox" style="margin-top:10px"></div>
 </div>
 
-<div class="card">
-  <h2>Loja SX</h2>
-  <p class="hint">O profissional pode solicitar troca de SX. O CEO aprova ou recusa.</p>
+<div class="card scroll adminOnly">
+  <h2>CEO • Arena SX</h2>
+  <p class="hint">Administração da Arena: desafios, temporada e trocas SX.</p>
   <div class="grid">
-    <select id="sxBeneficio">
-      <option value="">Escolha o benefício</option>
-      <option value="Folga prêmio|10000">Folga prêmio - 10.000 SX</option>
-      <option value="Voucher especial|7500">Voucher especial - 7.500 SX</option>
-      <option value="Brinde extra|5000">Brinde extra - 5.000 SX</option>
-      <option value="Prioridade de ponto|3000">Prioridade de ponto - 3.000 SX</option>
-      <option value="Combo experiência|2500">Combo experiência - 2.500 SX</option>
-    </select>
-    <button class="main" onclick="solicitarTrocaSX20()">Solicitar troca</button>
+    <button class="main" onclick="carregarArenaSX20()">Atualizar Arena</button>
+    <button class="secondary" onclick="exportarArenaSXCSV()">Exportar Arena CSV</button>
   </div>
-  <p id="sxLojaMsg"></p>
-  <div id="sxTrocasBox"></div>
+  <div class="card scroll"><h2>Definir vencedor dos desafios</h2><div id="sxCEOBox"></div></div>
+  <div class="card scroll"><h2>Temporada Mensal SX</h2><div id="sxTemporadaBox"></div></div>
+  <div class="card scroll"><h2>Trocas SX</h2><div id="sxTrocasCEOBox"></div></div>
 </div>
-
-<div class="card scroll">
-  <h2>Conquistas SX</h2>
-  <p class="hint">Conquistas liberadas automaticamente pela performance.</p>
-  <div id="sxConquistasBox"></div>
-</div>
-
-<div class="card scroll adminOnly">
-  <h2>CEO • Trocas SX</h2>
-  <p class="hint">Aprove ou recuse as solicitações de benefícios.</p>
-  <div id="sxTrocasCEOBox"></div>
-</div>
-
-<div class="card scroll">
-  <h2>Desafios SX</h2>
-  <div id="sxDesafiosBox"></div>
-</div>
-
-<div class="card scroll adminOnly">
-  <h2>CEO • Definir vencedor</h2>
-  <p class="hint">O CEO escolhe quem venceu. O vencedor recebe a aposta, o perdedor perde a aposta.</p>
-  <div id="sxCEOBox"></div>
-</div>
-
-<div class="card">
-  <h2>Regras SX Coin</h2>
-  <p class="hint">A pontuação começa a contar a partir de amanhã. Hoje fica tudo zerado para iniciar limpo.</p>
-  <div class="kpis">
-    <div class="kpi">Pesquisa<b>+10</b></div>
-    <div class="kpi">Q<b>+100</b></div>
-    <div class="kpi">NQ<b>+20</b></div>
-    <div class="kpi">1 Item<b>+50</b></div>
-    <div class="kpi">Sala<b>+300</b></div>
-    <div class="kpi">Venda<b>+1000</b></div>
-  </div>
-</div>
-
 </section>
+
 
 <section id="qualificacao" class="card hidden adminOnly">
 <h2>CEO • Perfil de Qualificação Completo</h2>
@@ -2966,7 +2940,7 @@ window.atualizarMetaPainelUnica20 = async function(){
   const label=[...document.querySelectorAll('.painelCard20.preto span')][0];
   if(label)label.innerText='Meta de casais em sala';
   const prog=[...document.querySelectorAll('.metaLinha20 span')][0];
-  if(prog)prog.innerText='Progresso da meta de sala de sala';
+  if(prog)prog.innerText='Progresso da meta de sala';
 }
 
 // Se alguma rotina antiga tentar atualizar depois, reforça o texto e valor correto.
@@ -3227,6 +3201,46 @@ if(typeof abaBase26==='function'&&!window.__abaDash26){
   }
 }
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{if(document.body.classList.contains('ceo'))carregarDashboardCEO25();},1200));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 2.7 • Arena SX enxuta oficial ===== */
+(function(){
+function SX(id){return document.getElementById(id)}
+function V(id){return (SX(id)?.value||'').trim()}
+function H(id,v){if(SX(id))SX(id).innerHTML=v}
+function T(id,v){if(SX(id))SX(id).innerText=v}
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function key(s){return norm(s).replace(/[^a-z0-9@._-]/g,'_')}
+function getJ(k,d){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch(e){return d}}
+function setJ(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function sala(x){const s=norm(x.levou_sala||x.sala||x.sala_status||x.status_sala||'');return s.includes('sim')||s.includes('confirm')}
+function appAberto(){const app=SX('app'),login=SX('loginBox');if(app&&!app.classList.contains('hidden')){document.body.classList.add('appAberto');if(login)login.classList.add('hidden')}}
+setInterval(appAberto,1000);
+const LIDERES=['raphael bueno','raphael bueno da silva','raphaelbueno.captacao@gmail.com','francisco','francisco rodrigues','francisco antonio rodrigues','marcel','marcel dorado','marcel.dorado2@gmail.com'];
+function lider(nome,email){const n=norm(nome),e=norm(email);return LIDERES.some(x=>{const y=norm(x);return n===y||e===y||(y.length>6&&n.includes(y))})}
+function nivel(sx){sx=Number(sx)||0;let n='Iniciante',min=0,next=1000;if(sx>=1000){n='Aprendiz';min=1000;next=3000}if(sx>=3000){n='Avançado';min=3000;next=7500}if(sx>=7500){n='Pro SX';min=7500;next=15000}if(sx>=15000){n='Elite SX';min=15000;next=30000}if(sx>=30000){n='Mestre SX';min=30000;next=50000}if(sx>=50000){n='Lenda SX';min=50000;next=50000}const pct=next>min?Math.min(100,Math.round((sx-min)/(next-min)*100)):100;return{nome:n,pct,falta:Math.max(0,next-sx)}}
+function pts(x){let p=10;if(x.qualificacao_automatica==='Q')p+=100;else if(String(x.qualificacao_automatica||'').includes('1'))p+=50;else p+=20;if(sala(x))p+=300;if(x.status&&/venda|vendido|fechou|contrato/i.test(String(x.status)))p+=1000;return p}
+async function desafios(){try{const r=await db.from('arena_sx_desafios').select('*').order('created_at',{ascending:false}).limit(300);if(!r.error&&Array.isArray(r.data))return r.data}catch(e){}return getJ('arena_sx_desafios_20',[])}
+async function salvarDesafio(d){try{const r=await db.from('arena_sx_desafios').insert(d).select('*').single();if(!r.error)return r.data}catch(e){}const a=getJ('arena_sx_desafios_20',[]);a.push({...d,id:d.id||Date.now()});setJ('arena_sx_desafios_20',a);return d}
+async function updDesafio(id,p){try{const r=await db.from('arena_sx_desafios').update(p).eq('id',id);if(!r.error)return true}catch(e){}const a=getJ('arena_sx_desafios_20',[]),it=a.find(x=>String(x.id)===String(id));if(it)Object.assign(it,p);setJ('arena_sx_desafios_20',a);return true}
+window.calcularSaldosSX20=async function(){let p=[];try{p=await dados('pesquisas')}catch(e){}const s={};(p||[]).forEach(x=>{const nome=x.captador_nome||x.user_email||'Sem nome';if(!s[nome])s[nome]={nome,email:x.user_email||'',sx:0,pesquisas:0,q:0,nq:0,nq1:0,sala:0};s[nome].sx+=pts(x);s[nome].pesquisas++;if(x.qualificacao_automatica==='Q')s[nome].q++;else if(String(x.qualificacao_automatica||'').includes('1'))s[nome].nq1++;else s[nome].nq++;if(sala(x))s[nome].sala++});(await desafios()).forEach(d=>{if(d.status==='Finalizado'&&d.vencedor){const ap=Number(d.aposta)||0;if(!s[d.desafiante])s[d.desafiante]={nome:d.desafiante,sx:0,pesquisas:0,q:0,nq:0,nq1:0,sala:0};if(!s[d.adversario])s[d.adversario]={nome:d.adversario,sx:0,pesquisas:0,q:0,nq:0,nq1:0,sala:0};const perd=d.vencedor===d.desafiante?d.adversario:d.desafiante;s[d.vencedor].sx+=ap;s[perd].sx=Math.max(0,s[perd].sx-ap)}});return Object.values(s).sort((a,b)=>b.sx-a.sx)}
+async function profissionais(){const m={};function add(nome,email){nome=String(nome||email||'').trim();email=String(email||'').trim().toLowerCase();if(!nome)return;const k=email||key(nome);if(!m[k])m[k]={nome,email}}try{const r=await db.from('approved_users').select('email,name,approved').eq('approved',true).limit(500);if(!r.error)r.data.forEach(u=>add(u.name||u.email,u.email))}catch(e){}try{(await dados('pesquisas')||[]).forEach(x=>add(x.captador_nome||x.user_email,x.user_email))}catch(e){}return Object.values(m).filter(p=>!lider(p.nome,p.email))}
+async function preencherAdv(){const sel=SX('sxAdversario');if(!sel)return;const meu=window.usuarioNome||usuarioNome||'',email=window.usuarioEmail||usuarioEmail||'';if(SX('sxDesafiante'))SX('sxDesafiante').value=meu;const btn=[...document.querySelectorAll('button')].find(b=>(b.textContent||'').trim()==='Criar desafio');if(lider(meu,email)){sel.innerHTML='<option value="">Liderança não participa dos desafios</option>';if(SX('sxAposta'))SX('sxAposta').disabled=true;if(SX('sxCriterio'))SX('sxCriterio').disabled=true;if(btn)btn.disabled=true;H('sxMsg','<span class="warn">Líderes e direção acompanham a Arena, mas não criam desafios.</span>');return}const lista=await profissionais();if(SX('sxAposta'))SX('sxAposta').disabled=false;if(SX('sxCriterio'))SX('sxCriterio').disabled=false;if(btn)btn.disabled=false;const opts=lista.filter(p=>norm(p.nome)!==norm(meu)&&norm(p.email)!==norm(email)).sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>`<option value="${String(p.nome).replace(/"/g,'&quot;')}">${p.nome}</option>`).join('');sel.innerHTML='<option value="">Escolha o adversário</option>'+opts;if(!opts)sel.innerHTML='<option value="">Nenhum promotor disponível</option>'}
+window.toggleRankingCompletoSX=function(){localStorage.setItem('sx_ranking_completo_27',localStorage.getItem('sx_ranking_completo_27')==='sim'?'nao':'sim');carregarArenaSX20()}
+window.abrirComoFuncionaSX=function(){SX('sxModalRegras')?.classList.remove('hidden')}
+window.fecharComoFuncionaSX=function(){SX('sxModalRegras')?.classList.add('hidden')}
+window.criarDesafioSX20=async function(){const desafiante=V('sxDesafiante')||window.usuarioNome||usuarioNome||'',email=window.usuarioEmail||usuarioEmail||'',adv=V('sxAdversario'),ap=Number(V('sxAposta'))||0,crit=V('sxCriterio')||'pesquisas';if(lider(desafiante,email)){H('sxMsg','<span class="erro">Liderança não participa dos desafios.</span>');return}if(!adv||!ap){H('sxMsg','<span class="erro">Escolha adversário e aposta SX.</span>');return}if(lider(adv,'')){H('sxMsg','<span class="erro">Esse nome é liderança/direção e não pode ser desafiado.</span>');return}await salvarDesafio({desafiante,adversario:adv,aposta:ap,criterio:crit,status:'Pendente',created_at:new Date().toISOString()});if(SX('sxAposta'))SX('sxAposta').value='';H('sxMsg','<span class="ok">Desafio criado e enviado para o CEO.</span>');carregarArenaSX20()}
+window.finalizarDesafioSX20=async function(id,vencedor){await updDesafio(id,{status:'Finalizado',vencedor,finalizado_em:new Date().toISOString()});carregarArenaSX20()}
+function renderDes(d){const meu=window.usuarioNome||usuarioNome||'';const meus=d.filter(x=>norm(x.desafiante)===norm(meu)||norm(x.adversario)===norm(meu));H('sxDesafiosBox',meus.length?'<table><tr><th>Desafio</th><th>Aposta</th><th>Critério</th><th>Status</th></tr>'+meus.map(x=>{let st=x.status||'Pendente',cl='sxStatusPendente';if(st==='Finalizado'){if(norm(x.vencedor)===norm(meu)){st='Vitória';cl='sxStatusVitoria'}else{st='Derrota';cl='sxStatusDerrota'}}return`<tr><td>${x.desafiante} vs ${x.adversario}</td><td>${x.aposta} SX</td><td>${x.criterio||'-'}</td><td class="${cl}">${st}</td></tr>`}).join('')+'</table>':'<p class="mini">Você ainda não tem desafios.</p>');H('sxCEOBox',d.length?'<table><tr><th>Desafio</th><th>Aposta</th><th>Status</th><th>CEO</th></tr>'+d.map(x=>`<tr><td>${x.desafiante} vs ${x.adversario}<br><span class="mini">${x.criterio||'-'}</span></td><td>${x.aposta} SX</td><td>${x.status||'Pendente'}</td><td>${x.status==='Finalizado'?('Vencedor: '+x.vencedor):`<button class="secondary" onclick="finalizarDesafioSX20('${x.id}','${String(x.desafiante).replace(/'/g,"\\'")}')">${x.desafiante} venceu</button><button class="secondary" onclick="finalizarDesafioSX20('${x.id}','${String(x.adversario).replace(/'/g,"\\'")}')">${x.adversario} venceu</button>`}</td></tr>`).join('')+'</table>':'<p class="mini">Sem desafios pendentes.</p>')}
+function conquistas(meu){const c=[['Primeiro Q',(meu.q||0)>=1],['10 Q',(meu.q||0)>=10],['100 Pesquisas',(meu.pesquisas||0)>=100],['30 Salas',(meu.sala||0)>=30],['Capitão',(meu.sx||0)>=5000],['Lenda SX',(meu.sx||0)>=50000]];H('sxConquistasBox',c.map(([t,ok])=>`<span class="sxBadge ${ok?'ok':''}">${ok?'✅':'🔒'} ${t}</span>`).join(''))}
+window.carregarArenaSX20=async function(){const saldos=await calcularSaldosSX20(),meuNome=window.usuarioNome||usuarioNome||'',meu=saldos.find(x=>norm(x.nome)===norm(meuNome))||{nome:meuNome,sx:0,pesquisas:0,q:0,nq:0,nq1:0,sala:0},nv=nivel(meu.sx||0);T('sxMeuSaldo',meu.sx||0);T('sxMeuNivel',nv.nome);T('sxProximoNivel',nv.falta?`Faltam ${nv.falta.toLocaleString('pt-BR')} SX para evoluir`:'Nível máximo');T('sxPctNivel',nv.pct+'%');if(SX('sxBarFill'))SX('sxBarFill').style.width=nv.pct+'%';const completo=localStorage.getItem('sx_ranking_completo_27')==='sim',lista=completo?saldos:saldos.slice(0,10);H('sxRankingBox',lista.length?'<table><tr><th>#</th><th>Profissional</th><th>Nível</th><th>SX</th><th>Q</th><th>Sala</th></tr>'+lista.map((r,i)=>`<tr><td>${i+1}º</td><td>${r.nome}</td><td>${nivel(r.sx).nome}</td><td><span class="sxCoin">${r.sx}</span></td><td>${r.q}</td><td>${r.sala}</td></tr>`).join('')+'</table>':'<p class="mini">Ranking SX zerado.</p>');const top=saldos.slice(0,3),prem=[10000,7500,5000];H('sxTemporadaBox',top.length?'<table><tr><th>Posição</th><th>Profissional</th><th>SX</th><th>Prêmio</th></tr>'+top.map((r,i)=>`<tr><td>${i+1}º</td><td>${r.nome}</td><td>${r.sx}</td><td>${prem[i].toLocaleString('pt-BR')} SX</td></tr>`).join('')+'</table>':'<p class="mini">Temporada sem pontuação.</p>');renderDes(await desafios());conquistas(meu);preencherAdv()}
+window.exportarArenaSXCSV=async function(){const s=await calcularSaldosSX20();const csv=['Profissional,SX,Pesquisas,Q,NQ,1 Item,Sala,Nivel'].concat(s.map(r=>`"${r.nome}",${r.sx},${r.pesquisas},${r.q},${r.nq},${r.nq1},${r.sala},"${nivel(r.sx).nome}"`)).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='arena_sx.csv';a.click()}
+const abaBase=window.aba;if(typeof abaBase==='function'&&!window.__arenaClean27){window.__arenaClean27=true;window.aba=function(id,b){const r=abaBase.apply(this,arguments);appAberto();if(id==='arena')setTimeout(()=>carregarArenaSX20(),150);return r}}
+const entrarBase=window.entrar;if(typeof entrarBase==='function'&&!window.__loginClean27){window.__loginClean27=true;window.entrar=async function(){const r=await entrarBase.apply(this,arguments);setTimeout(appAberto,300);return r}}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{appAberto();carregarArenaSX20()},1200));
 })();
 </script>
 
