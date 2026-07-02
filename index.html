@@ -266,6 +266,12 @@ body.appAberto #btnSairFinal{display:block!important}
 .profMapa32 b{color:#fff}.profMapa32 small{display:block;color:#aaa;margin-top:4px}
 .semProf32{display:block;color:#777;font-size:12px;margin-top:8px}
 
+
+/* CaptaPro 3.3 • Portal CEO funcional */
+.portalHidden33{display:none!important}
+.portalBtnAtivo33{background:linear-gradient(135deg,#ef1b24,#ff3333)!important}
+.portalBox33{margin-top:10px}
+
 </style>
 </head>
 <body>
@@ -3942,6 +3948,177 @@ if(typeof oldSalvarPesquisa32==='function'&&!window.__saveMapa32){window.__saveM
 setInterval(salvarHeartbeat32,45000);
 document.addEventListener('click',()=>setTimeout(salvarHeartbeat32,300));
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{const saved=localStorage.getItem('captapro_ponto_atual_32');if(saved&&M32('pontoAtualProf32'))M32('pontoAtualProf32').value=saved;salvarHeartbeat32();carregarPortalCEO32()},1800));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 3.3 • Portal CEO 100% funcional ===== */
+(function(){
+function C33(id){return document.getElementById(id)}
+function CV33(id){return (C33(id)?.value||'').trim()}
+function CH33(id,v){if(C33(id))C33(id).innerHTML=v}
+function CT33(id,v){if(C33(id))C33(id).innerText=v}
+function norm33(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function hoje33(){return new Date().toISOString().slice(0,10)}
+function minAgo33(iso){if(!iso)return 99999;return Math.round((Date.now()-new Date(iso).getTime())/60000)}
+function online33(x){return minAgo33(x.last_seen||x.updated_at||x.created_at)<5}
+function sala33(x){const s=norm33(x.sala_status||x.levou_sala||x.status_sala||x.sala||'');return s.includes('sim')||s.includes('confirm')||x.sala===true}
+function pendente33(x){const s=norm33(x.sala_status||x.levou_sala||x.status_sala||'');return s.includes('pendente')||s.includes('aguard')||s.includes('solicit')}
+function dataHoje33(x){return String(x.created_at||'').slice(0,10)===hoje33()}
+function linhaVazia33(msg){return `<p class="mini">${msg}</p>`}
+const PONTOS33=['Porta dentro do Park','Park Dream House','Fábrica Spinassi','Corredor','Baden Baden','Djalma','Igreja','Renner','Guarda-chuvas','Posto Shell','Sem ponto informado'];
+
+async function get33(table){
+  try{
+    const r=await db.from(table).select('*').order('created_at',{ascending:false}).limit(3000);
+    if(!r.error&&Array.isArray(r.data))return r.data;
+  }catch(e){}
+  try{
+    if(typeof dados==='function'&&(table==='pesquisas'||table==='abordagens'))return await dados(table);
+  }catch(e){}
+  return JSON.parse(localStorage.getItem(table+'_local31')||localStorage.getItem(table+'Local')||'[]');
+}
+async function presenca33(){
+  try{
+    const r=await db.from('captapro_presence').select('*').order('last_seen',{ascending:false}).limit(500);
+    if(!r.error&&Array.isArray(r.data))return r.data;
+  }catch(e){}
+  return JSON.parse(localStorage.getItem('captapro_presence_local')||'[]');
+}
+function statPorPessoa33(pesq,abord){
+  const out={};
+  function key(email,nome){return (email||nome||'').toLowerCase()}
+  pesq.forEach(x=>{
+    const k=key(x.user_email,x.captador_nome);
+    if(!out[k])out[k]={nome:x.captador_nome||x.user_email||'Sem nome',email:x.user_email||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0};
+    out[k].pesq++;
+    if(x.qualificacao_automatica==='Q')out[k].q++;
+    else if(String(x.qualificacao_automatica||'').includes('1'))out[k].nq1++;
+    else out[k].nq++;
+    if(sala33(x))out[k].sala++;
+  });
+  abord.forEach(x=>{
+    const k=key(x.user_email,x.captador_nome);
+    if(!out[k])out[k]={nome:x.captador_nome||x.user_email||'Sem nome',email:x.user_email||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0};
+    out[k].abord++;
+  });
+  return out;
+}
+function statPessoa33(x,stats){
+  const k1=String(x.email||'').toLowerCase();
+  const k2=String(x.user_email||'').toLowerCase();
+  const k3=norm33(x.nome||x.captador_nome||'');
+  return stats[k1]||stats[k2]||Object.values(stats).find(s=>norm33(s.nome)===k3)||{abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0};
+}
+
+window.abrirPortalBloco30=function(id){
+  document.querySelectorAll('.portalBloco30').forEach(x=>x.classList.add('hidden'));
+  if(C33(id))C33(id).classList.remove('hidden');
+  document.querySelectorAll('.portalHero30 button').forEach(b=>b.classList.remove('portalBtnAtivo33'));
+  const btn=[...document.querySelectorAll('.portalHero30 button')].find(b=>String(b.getAttribute('onclick')||'').includes(id));
+  if(btn)btn.classList.add('portalBtnAtivo33');
+  setTimeout(()=>carregarPortalCEO33(),150);
+}
+
+window.carregarPortalCEO33=async function(){
+  let pesq=await get33('pesquisas'), abord=await get33('abordagens'), pres=await presenca33();
+  pesq=(pesq||[]).filter(dataHoje33);
+  abord=(abord||[]).filter(dataHoje33);
+  const stats=statPorPessoa33(pesq,abord);
+  const q=pesq.filter(x=>x.qualificacao_automatica==='Q').length;
+  const nq1=pesq.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length;
+  const nq=pesq.length-q-nq1;
+  const sala=pesq.filter(sala33).length;
+  const pend=pesq.filter(pendente33).length;
+  const on=pres.filter(online33), off=pres.filter(x=>!online33(x));
+
+  // Dashboard principal do Portal
+  CT33('p30Online',on.length); CT33('p30Offline',off.length);
+  CT33('p30Pesq',pesq.length); CT33('p30Q',q); CT33('p30NQ',nq);
+  CT33('p30Sala',sala); CT33('p30Pendente',pend);
+  CT33('p30Efic',pesq.length?Math.round(q/pesq.length*100)+'%':'0%');
+
+  // Dashboard antigo do Relatório também funciona
+  CT33('ceoAbordHoje',abord.length); CT33('ceoPesqHoje',pesq.length);
+  CT33('ceoQHoje',q); CT33('ceoNQHoje',nq);
+  CT33('ceoSalaHoje',sala); CT33('ceoSalaPendente',pend);
+  CT33('ceoEficHoje',pesq.length?Math.round(q/pesq.length*100)+'%':'0%');
+  CT33('ceoConvHoje',pesq.length?Math.round(sala/pesq.length*100)+'%':'0%');
+
+  function linhaPres(x){
+    const s=statPessoa33(x,stats), m=minAgo33(x.last_seen), isOn=online33(x);
+    return `<div class="portalLinha30"><b>${x.nome||x.email||'-'}</b><br>
+      <span class="${isOn?'online':'offline'}">${isOn?'🟢 Online':'🔴 Offline'}</span>
+      <span class="mini"> • ${m<=0?'agora':'há '+m+' min'} • 📍 ${x.ponto||'Sem ponto'} • ${x.equipe||'-'}</span><br>
+      <span class="mini">Abord: ${s.abord} | Pesq: ${s.pesq} | Q: ${s.q} | NQ: ${s.nq} | 1 Item: ${s.nq1} | Sala: ${s.sala}</span>
+    </div>`;
+  }
+  CH33('portalOnline30',on.length?on.map(linhaPres).join(''):linhaVazia33('Ninguém online agora.'));
+  CH33('portalOffline30',off.length?off.map(linhaPres).join(''):linhaVazia33('Nenhum offline listado.'));
+  CH33('ceoOnlineBox29',on.length?on.map(linhaPres).join(''):linhaVazia33('Ninguém online agora.'));
+  CH33('ceoOfflineBox29',off.length?off.map(linhaPres).join(''):linhaVazia33('Nenhum offline listado.'));
+  CT33('ceoOnlineAgora29',on.length); CT33('ceoOfflineAgora29',off.length);
+  CT33('ceoEmCampo29',pres.filter(x=>x.ponto).length); CT33('ceoSemPonto29',pres.filter(x=>!x.ponto).length);
+
+  // Mapa por ponto
+  const pontos={}; PONTOS33.forEach(p=>pontos[p]=[]);
+  pres.forEach(x=>{const p=x.ponto||'Sem ponto informado'; if(!pontos[p])pontos[p]=[]; pontos[p].push(x);});
+  const mapaHtml=Object.entries(pontos).map(([ponto,lista])=>{
+    let total={abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0};
+    lista.forEach(x=>{const s=statPessoa33(x,stats); total.abord+=s.abord; total.pesq+=s.pesq; total.q+=s.q; total.nq+=s.nq; total.nq1+=s.nq1; total.sala+=s.sala;});
+    const onlineQtd=lista.filter(online33).length, offlineQtd=lista.length-onlineQtd;
+    return `<div class="pontoCard30">
+      <h3>📍 ${ponto}</h3>
+      <div class="pontoStatus30"><span>🟢 ${onlineQtd} online</span><span>🔴 ${offlineQtd} offline</span></div>
+      <div class="pontoResumo32"><span>Pesq: ${total.pesq}</span><span>Q: ${total.q}</span><span>Sala: ${total.sala}</span></div>
+      ${lista.length?lista.map(x=>{
+        const s=statPessoa33(x,stats), isOn=online33(x), m=minAgo33(x.last_seen);
+        return `<span class="profMapa32 ${isOn?'online':'offline'}">
+          <b>${isOn?'🟢':'🔴'} ${x.nome||x.email}</b>
+          <small>📍 ${x.ponto||ponto} • ${m<=0?'agora':'há '+m+' min'}</small>
+          <small>Abord: ${s.abord} | Pesq: ${s.pesq} | Q: ${s.q} | NQ: ${s.nq} | Sala: ${s.sala}</small>
+        </span>`;
+      }).join(''):'<span class="semProf32">Sem profissional neste ponto</span>'}
+    </div>`;
+  }).join('');
+  CH33('portalMapaPontos30',mapaHtml);
+  CH33('ceoMapaPontosBox29',mapaHtml);
+
+  // Ranking equipe CEO/Relatório
+  const rows=Object.values(stats).sort((a,b)=>b.pesq-a.pesq||b.q-a.q||b.sala-a.sala);
+  const rankingHtml=rows.length?`<table><tr><th>Profissional</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th><th>Eficiência</th></tr>${rows.map(r=>`<tr><td>${r.nome}</td><td>${r.abord}</td><td>${r.pesq}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.sala}</td><td>${r.pesq?Math.round(r.q/r.pesq*100):0}%</td></tr>`).join('')}</table>`:linhaVazia33('Sem dados hoje.');
+  CH33('rankingEquipeBox13',rankingHtml);
+  CH33('ceoResumoMesBox25',rankingHtml);
+
+  // Sala pendente/confirmada
+  const salaRows=pesq.filter(x=>sala33(x)||pendente33(x)||norm33(x.levou_sala).includes('sim')).sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)));
+  const salaHtml=salaRows.length?`<table><tr><th>Profissional</th><th>Cliente</th><th>Ponto</th><th>Status</th><th>Hora</th></tr>${salaRows.map(x=>`<tr><td>${x.captador_nome||x.user_email||'-'}</td><td>${x.convidado_1||'-'} ${x.convidado_2||''}</td><td>${x.ponto_captacao||x.ponto||'-'}</td><td>${sala33(x)?'<span class="salaConfirmada25">Confirmada</span>':'<span class="salaPendente25">Pendente</span>'}</td><td>${String(x.created_at||'').slice(11,16)}</td></tr>`).join('')}</table>`:linhaVazia33('Nenhuma sala hoje.');
+  CH33('salaCEOBox20',salaHtml); CH33('portalSalaBox30',salaHtml);
+
+  // Relatórios, Arena e Admin lists ficam carregáveis
+  try{if(typeof carregarFechamentosCEO==='function')carregarFechamentosCEO()}catch(e){}
+  try{if(typeof admCarregarTudo31==='function')admCarregarTudo31()}catch(e){}
+  return true;
+}
+
+// Botões antigos chamam o novo painel também
+window.carregarDashboardCEO25=window.carregarPortalCEO33;
+window.carregarPresencaMapa29=window.carregarPortalCEO33;
+window.carregarConferenciaSala20=window.carregarPortalCEO33;
+
+// Sempre atualizar quando abrir Portal CEO/Relatório/Arena
+const oldAba33=window.aba;
+if(typeof oldAba33==='function'&&!window.__portalFunc33){
+  window.__portalFunc33=true;
+  window.aba=function(id,b){
+    const r=oldAba33.apply(this,arguments);
+    setTimeout(()=>{ if(['qualificacao','relatorio','arena'].includes(id))carregarPortalCEO33(); },350);
+    return r;
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(carregarPortalCEO33,1800));
+setInterval(()=>{if(document.body.classList.contains('ceo'))carregarPortalCEO33()},60000);
 })();
 </script>
 
