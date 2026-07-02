@@ -272,6 +272,15 @@ body.appAberto #btnSairFinal{display:block!important}
 .portalBtnAtivo33{background:linear-gradient(135deg,#ef1b24,#ff3333)!important}
 .portalBox33{margin-top:10px}
 
+
+/* CaptaPro 3.4 • Meta individual oficial */
+.metaOficial34{border-color:#00e676!important;background:linear-gradient(145deg,#07150d,#080808)}
+.metaOficial34 .metaNumero34{font-size:34px;color:#00e676;font-weight:900;text-align:center;margin:8px 0}
+.metaOficial34 .metaBar34{height:18px;background:#222;border:1px solid #333;border-radius:999px;overflow:hidden;margin:10px 0}
+.metaOficial34 .metaFill34{height:100%;width:0%;background:linear-gradient(135deg,#00a651,#00e676);border-radius:999px;transition:.3s}
+.metaOficial34 .metaStatus34{text-align:center;font-weight:900}
+.metaBatida34{color:#00e676}.metaFalta34{color:#ffd54f}.metaAcima34{color:#00c2ff}
+
 </style>
 </head>
 <body>
@@ -396,6 +405,15 @@ body.appAberto #btnSairFinal{display:block!important}
     <button class="main" onclick="salvarPontoAtual32()">Atualizar meu ponto</button>
   </div>
   <p id="pontoAtualMsg32" class="mini"></p>
+</div>
+
+
+<div class="card metaOficial34" id="metaOficialCard34">
+  <h2>🎯 Minha Meta Oficial de Sala</h2>
+  <p class="hint">Meta individual de casais em sala. Atualiza conforme suas salas confirmadas no mês.</p>
+  <div class="metaNumero34" id="metaNumero34">0 / 35</div>
+  <div class="metaBar34"><div id="metaFill34" class="metaFill34"></div></div>
+  <p class="metaStatus34" id="metaStatus34">Carregando meta...</p>
 </div>
 
 <p class="hint">No final do expediente, o profissional acompanha seus próprios números e envia o relatório do dia.</p>
@@ -4119,6 +4137,68 @@ if(typeof oldAba33==='function'&&!window.__portalFunc33){
 }
 document.addEventListener('DOMContentLoaded',()=>setTimeout(carregarPortalCEO33,1800));
 setInterval(()=>{if(document.body.classList.contains('ceo'))carregarPortalCEO33()},60000);
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 3.4 • Metas oficiais individuais ===== */
+(function(){
+const METAS_OFICIAIS_34 = {'adriano': 40, 'edson adriano': 40, 'alexandre': 35, 'ana caroline': 50, 'andre': 50, 'andré': 50, 'daniela': 30, 'felipe': 30, 'ivanilson': 100, 'jessica': 45, 'jéssica': 45, 'joao vitor': 35, 'joão vitor': 35, 'jonatas': 35, 'jose ademir': 100, 'josé ademir': 100, 'josyene': 50, 'larissa': 32, 'manara': 30, 'marcio vinicios': 35, 'márcio vinícios': 35, 'marcio vinicius': 35, 'márcio vinícius': 35, 'mateus esley': 35, 'matheus esley': 35, 'matheus domingos': 30, 'otavio': 30, 'otávio': 30, 'paulo': 100, 'pedro': 100, 'renam': 35, 'renan': 35, 'ricardo': 100, 'suenne': 30, 'suene': 30, 'mateus rosa': 100, 'matheus rosa': 100, 'clacion de souza': 45};
+function M34(id){return document.getElementById(id)}
+function MT34(id,v){if(M34(id))M34(id).innerText=v}
+function norm34(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function salaOK34(x){const s=norm34(x.sala_status||x.levou_sala||x.status_sala||x.sala||'');return s.includes('sim')||s.includes('confirm')||x.sala===true}
+function mesAtual34(x){const d=String(x.created_at||'').slice(0,7); return d===new Date().toISOString().slice(0,7)}
+function nomeMeta34(nome,email){
+  const n=norm34(nome);
+  if(METAS_OFICIAIS_34[n])return METAS_OFICIAIS_34[n];
+  for(const k in METAS_OFICIAIS_34){if(n.includes(k)||k.includes(n))return METAS_OFICIAIS_34[k]}
+  return 35;
+}
+async function metaSupabase34(nome,email){
+  try{
+    const r=await db.from('captapro_metas').select('*').or(`email.eq.${email},nome.ilike.%${nome}%`).limit(1);
+    if(!r.error&&r.data&&r.data[0]&&r.data[0].meta_sala)return Number(r.data[0].meta_sala)||nomeMeta34(nome,email);
+  }catch(e){}
+  return nomeMeta34(nome,email);
+}
+window.atualizarMetaOficial34=async function(){
+  const nome=window.usuarioNome||usuarioNome||'';
+  const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
+  const meta=await metaSupabase34(nome,email);
+  let p=[]; try{p=await dados('pesquisas')}catch(e){}
+  p=(p||[]).filter(x=>String(x.user_email||'').toLowerCase()===email && mesAtual34(x));
+  const feito=p.filter(salaOK34).length;
+  const pct=meta?Math.min(100,Math.round((feito/meta)*100)):0;
+  const falta=Math.max(0,meta-feito);
+  const acima=Math.max(0,feito-meta);
+  MT34('metaNumero34',feito+' / '+meta);
+  MT34('homeMeta',feito+'/'+meta);
+  MT34('metaMensalTexto20',feito+' / '+meta);
+  if(M34('metaFill34'))M34('metaFill34').style.width=pct+'%';
+  if(M34('barraMetaFill20'))M34('barraMetaFill20').style.width=pct+'%';
+  let msg = falta>0 ? `Faltam ${falta} casais para atingir sua meta. (${pct}%)` : (acima>0 ? `🔥 Meta batida! +${acima} acima da meta. (${Math.round((feito/meta)*100)}%)` : '🏆 META BATIDA! 100%');
+  MT34('metaStatus34',msg);
+  MT34('metaMensalInfo20',falta>0?'Faltam '+falta+' casais em sala':'Meta batida!');
+}
+const oldAba34=window.aba;
+if(typeof oldAba34==='function'&&!window.__meta34){
+  window.__meta34=true;
+  window.aba=function(id,b){const r=oldAba34.apply(this,arguments);setTimeout(()=>{if(id==='diario'||id==='pesquisa')atualizarMetaOficial34()},500);return r}
+}
+const oldSalvarPesquisa34=window.salvarPesquisa;
+if(typeof oldSalvarPesquisa34==='function'&&!window.__metaSave34){
+  window.__metaSave34=true;
+  window.salvarPesquisa=async function(){const r=await oldSalvarPesquisa34.apply(this,arguments);setTimeout(atualizarMetaOficial34,800);return r}
+}
+const oldSala34=window.confirmarSala21;
+if(typeof oldSala34==='function'&&!window.__metaSala34){
+  window.__metaSala34=true;
+  window.confirmarSala21=async function(){const r=await oldSala34.apply(this,arguments);setTimeout(atualizarMetaOficial34,800);return r}
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(atualizarMetaOficial34,1800));
+setInterval(()=>{try{atualizarMetaOficial34()}catch(e){}},60000);
 })();
 </script>
 
