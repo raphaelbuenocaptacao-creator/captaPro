@@ -256,6 +256,16 @@ body.appAberto #btnSairFinal{display:block!important}
 .adminErr31{color:#ff5252;font-weight:900}
 @media(max-width:700px){.adminGrid31{grid-template-columns:1fr}}
 
+
+/* CaptaPro 3.2 • Mapa Operacional por Ponto */
+.pontoAtual32{border-color:#00c2ff!important}
+.pontoResumo32{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.pontoResumo32 span{background:#111;border:1px solid #282828;border-radius:10px;padding:7px;text-align:center;font-size:12px;color:#ccc}
+.profMapa32{display:block;margin:7px 0;padding:10px;border-radius:12px;background:#111;border:1px solid #333}
+.profMapa32.online{border-color:#00e676}.profMapa32.offline{border-color:#ff5252}
+.profMapa32 b{color:#fff}.profMapa32 small{display:block;color:#aaa;margin-top:4px}
+.semProf32{display:block;color:#777;font-size:12px;margin-top:8px}
+
 </style>
 </head>
 <body>
@@ -367,6 +377,20 @@ body.appAberto #btnSairFinal{display:block!important}
 
 </section>
 
+
+
+<div class="card pontoAtual32">
+  <h2>📍 Meu ponto atual</h2>
+  <p class="hint">Escolha onde você está trabalhando agora. Isso aparece somente para o CEO no Mapa da Operação.</p>
+  <div class="grid">
+    <select id="pontoAtualProf32"><option value="">Escolha o ponto atual</option>
+<option>Porta dentro do Park</option><option>Park Dream House</option><option>Fábrica Spinassi</option>
+<option>Corredor</option><option>Baden Baden</option><option>Djalma</option><option>Igreja</option>
+<option>Renner</option><option>Guarda-chuvas</option><option>Posto Shell</option></select>
+    <button class="main" onclick="salvarPontoAtual32()">Atualizar meu ponto</button>
+  </div>
+  <p id="pontoAtualMsg32" class="mini"></p>
+</div>
 
 <p class="hint">No final do expediente, o profissional acompanha seus próprios números e envia o relatório do dia.</p>
 <div class="grid">
@@ -595,7 +619,7 @@ body.appAberto #btnSairFinal{display:block!important}
 
   <div id="portalMapa30" class="card scroll portalBloco30">
     <h2>📍 Mapa da Operação</h2>
-    <p class="hint">Mapa visual por ponto de captação. Mostra quem está online/offline em cada ponto.</p>
+    <p class="hint">Mapa operacional por ponto de captação. Mostra o nome, ponto atual, online/offline e resultado do dia.</p>
     <div id="portalMapaPontos30" class="mapaGrid30"></div>
     <div class="grid" style="margin-top:10px">
       <div class="card scroll"><h2>🟢 Online</h2><div id="portalOnline30"></div></div>
@@ -3826,5 +3850,99 @@ window.baixarRelatorioImagem30=async function(){const c=await canvasRel30();cons
 })();
 </script>
 
-</body></html>
 
+<script>
+/* ===== CaptaPro 3.2 • Ponto atual + Mapa Operacional ===== */
+(function(){
+function M32(id){return document.getElementById(id)}
+function MV32(id){return (M32(id)?.value||'').trim()}
+function MH32(id,v){if(M32(id))M32(id).innerHTML=v}
+function MT32(id,v){if(M32(id))M32(id).innerText=v}
+function norm32(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function hoje32(){return new Date().toISOString().slice(0,10)}
+function minAgo32(iso){if(!iso)return 99999;return Math.round((Date.now()-new Date(iso).getTime())/60000)}
+function isOnline32(x){return minAgo32(x.last_seen||x.updated_at||x.created_at)<3}
+function isSala32(x){const s=norm32(x.sala_status||x.levou_sala||x.status_sala||'');return s.includes('sim')||s.includes('confirm')}
+const PONTOS32=['Porta dentro do Park','Park Dream House','Fábrica Spinassi','Corredor','Baden Baden','Djalma','Igreja','Renner','Guarda-chuvas','Posto Shell'];
+
+window.salvarPontoAtual32=async function(){
+  const ponto=MV32('pontoAtualProf32') || MV32('ponto');
+  const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
+  const nome=window.usuarioNome||usuarioNome||email;
+  if(!email){MH32('pontoAtualMsg32','<span class="erro">Faça login primeiro.</span>');return}
+  if(!ponto){MH32('pontoAtualMsg32','<span class="erro">Escolha o ponto atual.</span>');return}
+  localStorage.setItem('captapro_ponto_atual_32',ponto);
+  if(M32('ponto'))M32('ponto').value=ponto;
+  const payload={email,nome,role:window.role||role||'profissional',equipe:MV32('equipe'),ponto,last_seen:new Date().toISOString(),updated_at:new Date().toISOString()};
+  let ok=false;
+  try{const r=await db.from('captapro_presence').upsert(payload,{onConflict:'email'}); if(r.error)throw r.error; ok=true}
+  catch(e){
+    let arr=JSON.parse(localStorage.getItem('captapro_presence_local')||'[]');
+    const i=arr.findIndex(x=>String(x.email).toLowerCase()===email);
+    if(i>=0)arr[i]=payload; else arr.push(payload);
+    localStorage.setItem('captapro_presence_local',JSON.stringify(arr));
+  }
+  MH32('pontoAtualMsg32',ok?'<span class="ok">Ponto atualizado para o CEO.</span>':'<span class="warn">Ponto salvo localmente.</span>');
+  try{carregarPortalCEO32()}catch(e){}
+}
+
+async function salvarHeartbeat32(){
+  const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
+  if(!email)return;
+  const ponto=MV32('pontoAtualProf32') || MV32('ponto') || localStorage.getItem('captapro_ponto_atual_32') || '';
+  if(!ponto)return;
+  const payload={email,nome:window.usuarioNome||usuarioNome||email,role:window.role||role||'profissional',equipe:MV32('equipe'),ponto,last_seen:new Date().toISOString(),updated_at:new Date().toISOString()};
+  try{await db.from('captapro_presence').upsert(payload,{onConflict:'email'})}
+  catch(e){
+    let arr=JSON.parse(localStorage.getItem('captapro_presence_local')||'[]');
+    const i=arr.findIndex(x=>String(x.email).toLowerCase()===email);
+    if(i>=0)arr[i]=payload; else arr.push(payload);
+    localStorage.setItem('captapro_presence_local',JSON.stringify(arr));
+  }
+}
+
+async function listarPresenca32(){
+  try{const r=await db.from('captapro_presence').select('*').order('last_seen',{ascending:false}).limit(500); if(!r.error&&Array.isArray(r.data))return r.data}catch(e){}
+  return JSON.parse(localStorage.getItem('captapro_presence_local')||'[]');
+}
+
+window.carregarPortalCEO32=async function(){
+  let pres=[], pesq=[];
+  try{pres=await listarPresenca32()}catch(e){}
+  try{pesq=await dados('pesquisas')}catch(e){}
+  const ph=(pesq||[]).filter(x=>String(x.created_at||'').slice(0,10)===hoje32());
+  const statsEmail={}, statsNome={};
+  ph.forEach(x=>{
+    const email=String(x.user_email||'').toLowerCase(), nome=x.captador_nome||email||'Sem nome';
+    const add=(obj,k)=>{if(!obj[k])obj[k]={pesq:0,q:0,nq:0,nq1:0,sala:0};obj[k].pesq++;if(x.qualificacao_automatica==='Q')obj[k].q++;else if(String(x.qualificacao_automatica||'').includes('1'))obj[k].nq1++;else obj[k].nq++;if(isSala32(x))obj[k].sala++}
+    add(statsEmail,email); add(statsNome,norm32(nome));
+  });
+  const online=pres.filter(isOnline32), offline=pres.filter(x=>!isOnline32(x));
+  MT32('p30Online',online.length);MT32('p30Offline',offline.length);MT32('p30Pesq',ph.length);
+  const q=ph.filter(x=>x.qualificacao_automatica==='Q').length, nq1=ph.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length;
+  MT32('p30Q',q);MT32('p30NQ',ph.length-q-nq1);MT32('p30Sala',ph.filter(isSala32).length);MT32('p30Efic',ph.length?Math.round(q/ph.length*100)+'%':'0%');
+  function st(x){return statsEmail[String(x.email||'').toLowerCase()]||statsNome[norm32(x.nome)]||{pesq:0,q:0,nq:0,sala:0}}
+  function linha(x){const s=st(x),m=minAgo32(x.last_seen),on=isOnline32(x);return `<div class="portalLinha30"><b>${x.nome||x.email||'-'}</b><br><span class="${on?'online':'offline'}">${on?'🟢 Online':'🔴 Offline'}</span><span class="mini"> • ${m<=0?'agora':'há '+m+' min'} • 📍 ${x.ponto||'Sem ponto'} • ${x.equipe||'-'}</span><br><span class="mini">Pesq: ${s.pesq} | Q: ${s.q} | NQ: ${s.nq} | Sala: ${s.sala}</span></div>`}
+  MH32('portalOnline30',online.length?online.map(linha).join(''):'<p class="mini">Ninguém online agora.</p>');
+  MH32('portalOffline30',offline.length?offline.map(linha).join(''):'<p class="mini">Nenhum offline listado.</p>');
+  const pontos={};PONTOS32.forEach(p=>pontos[p]=[]);pres.forEach(x=>{const p=x.ponto||'Sem ponto informado';if(!pontos[p])pontos[p]=[];pontos[p].push(x)});
+  MH32('portalMapaPontos30',Object.entries(pontos).map(([ponto,lista])=>{
+    let total={pesq:0,q:0,sala:0};lista.forEach(x=>{const s=st(x);total.pesq+=s.pesq;total.q+=s.q;total.sala+=s.sala});
+    const on=lista.filter(isOnline32).length,off=lista.length-on;
+    return `<div class="pontoCard30"><h3>📍 ${ponto}</h3><div class="pontoStatus30"><span>🟢 ${on} online</span><span>🔴 ${off} offline</span></div><div class="pontoResumo32"><span>Pesq: ${total.pesq}</span><span>Q: ${total.q}</span><span>Sala: ${total.sala}</span></div>${lista.length?lista.map(x=>{const s=st(x),m=minAgo32(x.last_seen),on=isOnline32(x);return `<span class="profMapa32 ${on?'online':'offline'}"><b>${on?'🟢':'🔴'} ${x.nome||x.email}</b><small>📍 ${x.ponto||ponto} • ${m<=0?'agora':'há '+m+' min'}</small><small>Pesq: ${s.pesq} | Q: ${s.q} | NQ: ${s.nq} | Sala: ${s.sala}</small></span>`}).join(''):'<span class="semProf32">Sem profissional neste ponto</span>'}</div>`;
+  }).join(''));
+}
+
+const oldPortal32=window.carregarPortalCEO30;
+window.carregarPortalCEO30=async function(){try{if(typeof oldPortal32==='function')await oldPortal32()}catch(e){}return carregarPortalCEO32()}
+const oldAba32=window.aba;
+if(typeof oldAba32==='function'&&!window.__mapa32){window.__mapa32=true;window.aba=function(id,b){const r=oldAba32.apply(this,arguments);setTimeout(()=>{const saved=localStorage.getItem('captapro_ponto_atual_32');if(saved&&M32('pontoAtualProf32'))M32('pontoAtualProf32').value=saved;if(id==='qualificacao')carregarPortalCEO32()},400);return r}}
+const oldSalvarPesquisa32=window.salvarPesquisa;
+if(typeof oldSalvarPesquisa32==='function'&&!window.__saveMapa32){window.__saveMapa32=true;window.salvarPesquisa=async function(){if(MV32('pontoAtualProf32')&&M32('ponto'))M32('ponto').value=MV32('pontoAtualProf32');const r=await oldSalvarPesquisa32.apply(this,arguments);setTimeout(()=>{salvarHeartbeat32();carregarPortalCEO32()},700);return r}}
+setInterval(salvarHeartbeat32,45000);
+document.addEventListener('click',()=>setTimeout(salvarHeartbeat32,300));
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{const saved=localStorage.getItem('captapro_ponto_atual_32');if(saved&&M32('pontoAtualProf32'))M32('pontoAtualProf32').value=saved;salvarHeartbeat32();carregarPortalCEO32()},1800));
+})();
+</script>
+
+</body></html>
