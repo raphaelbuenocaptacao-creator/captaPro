@@ -193,11 +193,42 @@ body.appAberto #app{display:block!important}
 body.appAberto #loginBox{display:none!important}body.appAberto #app{display:block!important}
 @media(max-width:700px){.sxHero{grid-template-columns:1fr}.sxHeroCard b{font-size:30px}}
 
+
+/* CaptaPro 2.8 • estabilidade final */
+body.appAberto #loginBox{display:none!important}
+body.appAberto #btnSairFinal{display:block!important}
+.salaOficialOK{color:#00e676;font-weight:900}
+.salaPendenteOK{color:#ffd54f;font-weight:900}
+.salaNaoOK{color:#ff5252;font-weight:900}
+#ceoDashboard20 .kpi b{color:#00e676}
+
+/* CaptaPro 2.9 • relatório e presença CEO */
+#ceoPresencaMapa29{border-color:#00e676!important}
+.pres29{padding:9px;border-bottom:1px solid #262626}
+.on29{color:#00e676;font-weight:900}.off29{color:#ff5252;font-weight:900}
+.ponto29{background:#080808;border:1px solid #333;border-radius:14px;padding:12px;margin:8px 0}
+.tag29{display:inline-block;margin:4px;padding:7px 9px;border-radius:999px;background:#181818;border:1px solid #333}
+.tag29.on{border-color:#00e676;color:#00e676}.tag29.off{border-color:#ff5252;color:#ff5252}
+.resumoRel29{border:1px solid #333;background:#080808;border-radius:14px;padding:12px;margin-top:10px}
+
+
+/* CaptaPro 3.0 • relatório diário em imagem */
+.relImg30{background:linear-gradient(145deg,#090909,#180000);border:1px solid #5a1717;border-radius:20px;padding:18px;color:#fff;max-width:520px;margin:auto}
+.relImgHead30{display:flex;align-items:center;gap:10px;border-bottom:1px solid #3b1b1b;padding-bottom:12px;margin-bottom:12px}
+.relImgLogo30{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,#ef1b24,#7a0000);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px}
+.relImgTitle30 b{display:block;font-size:22px}.relImgTitle30 small{color:#aaa}
+.relGrid30{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.relCampo30{background:#101010;border:1px solid #292929;border-radius:12px;padding:10px;margin:4px 0}
+.relCampo30 small{display:block;color:#ff7777;text-transform:uppercase;font-weight:900;font-size:10px;margin-bottom:4px}
+.relBig30{font-size:28px;color:#00e676;font-weight:900}
+.relFoot30{border-top:1px solid #3b1b1b;margin-top:12px;padding-top:10px;color:#aaa;font-size:11px;text-align:center}
+@media(max-width:700px){.relGrid30{grid-template-columns:1fr}.relImg30{padding:14px}}
+
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Versão 2.0</div><p class="mini"><b style="color:#00e676">Bueno Invest</b></p></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Versão 2.0 Oficial</div><p class="mini"><b style="color:#00e676">Bueno Invest</b></p><button id="btnSairFinal" class="secondary hidden" style="max-width:160px;margin:8px auto 0" onclick="sairCaptaProFinal()">Sair</button></div>
 
 <section id="loginBox" class="card">
 <h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
@@ -278,7 +309,7 @@ body.appAberto #loginBox{display:none!important}body.appAberto #app{display:bloc
 <input id="contato" placeholder="WhatsApp / contato">
 </div>
 <textarea id="obs" style="margin-top:8px" placeholder="Observações"></textarea>
-<div style="margin-top:8px"><button class="main" onclick="salvarPesquisa()">Salvar Ficha</button></div><button class="secondary" style="margin-top:8px;background:#073a21;border-color:#0a7b43" onclick="confirmarSala21()">✅ Solicitar sala</button><p id="formMsg"></p><div id="resultado" class="hidden"></div>
+<div style="margin-top:8px"><button class="main" onclick="salvarPesquisa()">Salvar Ficha</button></div><button class="secondary" style="margin-top:8px;background:#073a21;border-color:#0a7b43" onclick="confirmarSala21()">✅ Solicitar sala ao CEO</button><p id="formMsg"></p><div id="resultado" class="hidden"></div>
 <div id="fichaBox" class="card hidden"><h2>Ficha salva</h2><div id="fichaConteudo"></div><div class="grid"><button class="main" onclick="compartilharFicha()">Compartilhar imagem</button><button class="secondary" onclick="novaPesquisa()">Nova pesquisa</button></div></div>
 </section>
 
@@ -316,17 +347,26 @@ body.appAberto #loginBox{display:none!important}body.appAberto #app{display:bloc
   <div class="kpi">Q<b id="dQ">0</b></div>
   <div class="kpi">NQ<b id="dNQ">0</b></div>
   <div class="kpi">NQ 1 Item<b id="dNQ1">0</b></div>
-  <div class="kpi">Sala<b id="dSala">0</b></div>
+  <div class="kpi">Sala confirmada<b id="dSala">0</b></div>
   <div class="kpi">Eficiência<b id="dEfic">0%</b></div>
   <div class="kpi">Conversão<b id="dConv">0%</b></div>
   <div class="kpi">Projeção Mês<b id="dProj">0</b></div>
 </div>
-<textarea id="diarioTexto" placeholder="Relatório do profissional: conte como foi o dia, dificuldades, pontos positivos e o que pode melhorar amanhã."></textarea>
+<textarea id="diarioTexto" placeholder="Observações do dia (opcional)."></textarea>
 <div class="grid" style="margin-top:8px">
   <button class="secondary" onclick="carregarDiario()">Atualizar números</button>
   <button class="main" onclick="finalizarDiario()">✅ Enviar meu relatório</button>
 </div>
 <p id="diarioMsg"></p>
+
+<div id="relatorioImagemBox30" class="card hidden">
+  <h2>Imagem do Relatório Diário</h2>
+  <div id="relatorioImagemConteudo30"></div>
+  <div class="grid" style="margin-top:8px">
+    <button class="main" onclick="compartilharRelatorioImagem30()">Compartilhar imagem</button>
+    <button class="secondary" onclick="baixarRelatorioImagem30()">Salvar imagem</button>
+  </div>
+</div>
 <div class="card scroll adminOnly">
   <h2>Fechamentos enviados</h2>
   <p class="hint">Somente CEO visualiza todos os relatórios finalizados.</p>
@@ -358,6 +398,22 @@ body.appAberto #loginBox{display:none!important}body.appAberto #app{display:bloc
   <div id="ceoResumoMesBox25" style="margin-top:10px"></div>
 </div>
 
+<div class="card scroll adminOnly" id="ceoPresencaMapa29">
+  <h2>CEO • Online/Offline e Mapa dos Pontos</h2>
+  <p class="hint">Somente CEO: mostra quem está usando o app e em qual ponto está.</p>
+  <div class="kpis">
+    <div class="kpi">Online<b id="ceoOnlineAgora29">0</b></div>
+    <div class="kpi">Offline<b id="ceoOfflineAgora29">0</b></div>
+    <div class="kpi">Em campo<b id="ceoEmCampo29">0</b></div>
+    <div class="kpi">Sem ponto<b id="ceoSemPonto29">0</b></div>
+  </div>
+  <button class="main" style="margin-top:8px" onclick="carregarPresencaMapa29()">Atualizar presença/mapa</button>
+  <div class="grid" style="margin-top:10px">
+    <div class="card scroll"><h2>🟢 Online</h2><div id="ceoOnlineBox29"></div></div>
+    <div class="card scroll"><h2>🔴 Offline</h2><div id="ceoOfflineBox29"></div></div>
+  </div>
+  <div class="card scroll"><h2>📍 Pontos de Captação</h2><div id="ceoMapaPontosBox29"></div></div>
+</div>
 <div class="grid"><input id="relDe" type="date"><input id="relAte" type="date"></div>
 <button class="main" style="margin-top:8px" onclick="carregarRelatorio()">Atualizar</button>
 <div class="kpis">
@@ -366,7 +422,7 @@ body.appAberto #loginBox{display:none!important}body.appAberto #app{display:bloc
   <div class="kpi">Q<b id="rQ">0</b></div>
   <div class="kpi">NQ<b id="rNQ">0</b></div>
   <div class="kpi">1 Item<b id="rNQ1">0</b></div>
-  <div class="kpi">Sala<b id="rSala">0</b></div>
+  <div class="kpi">Sala confirmada<b id="rSala">0</b></div>
   <div class="kpi">Conversão<b id="rConv">0%</b></div>
 </div>
 <div class="card scroll"><h2>Ranking da Equipe</h2><div id="rankingEquipeBox13"></div></div>
@@ -3241,6 +3297,335 @@ window.exportarArenaSXCSV=async function(){const s=await calcularSaldosSX20();co
 const abaBase=window.aba;if(typeof abaBase==='function'&&!window.__arenaClean27){window.__arenaClean27=true;window.aba=function(id,b){const r=abaBase.apply(this,arguments);appAberto();if(id==='arena')setTimeout(()=>carregarArenaSX20(),150);return r}}
 const entrarBase=window.entrar;if(typeof entrarBase==='function'&&!window.__loginClean27){window.__loginClean27=true;window.entrar=async function(){const r=await entrarBase.apply(this,arguments);setTimeout(appAberto,300);return r}}
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{appAberto();carregarArenaSX20()},1200));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 2.8 • estabilidade final: login, sala oficial, CEO e ranking ===== */
+(function(){
+function F(id){return document.getElementById(id)}
+function V(id){return (F(id)?.value||'').trim()}
+function H(id,v){if(F(id))F(id).innerHTML=v}
+function T(id,v){if(F(id))F(id).innerText=v}
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function isSalaConfirmada(x){
+  const s=norm(x.sala_status||x.levou_sala||x.status_sala||'');
+  return s==='sim' || s.includes('confirmada') || s.includes('confirmado');
+}
+function isSalaPendente(x){
+  const s=norm(x.sala_status||x.levou_sala||x.status_sala||'');
+  return s.includes('pendente') || s.includes('aguard');
+}
+function hoje(){return new Date().toISOString().slice(0,10)}
+function inicioMes(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`}
+function fimMes(){const d=new Date();const u=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(u).padStart(2,'0')}`}
+function abrirApp(){
+  const app=F('app'),login=F('loginBox');
+  if(app && !app.classList.contains('hidden')){
+    document.body.classList.add('appAberto');
+    if(login)login.classList.add('hidden');
+    if(F('btnSairFinal'))F('btnSairFinal').classList.remove('hidden');
+  }
+}
+setInterval(abrirApp,1000);
+
+window.sairCaptaProFinal=function(){
+  try{
+    localStorage.removeItem('loginSimples');
+    localStorage.removeItem('capta_login_persistente_final');
+    localStorage.removeItem('capta_sessao_22');
+  }catch(e){}
+  location.reload();
+}
+
+// Login persistente final
+const entrarBaseFinal=window.entrar;
+if(typeof entrarBaseFinal==='function'&&!window.__loginFinal28){
+  window.__loginFinal28=true;
+  window.entrar=async function(){
+    const email=V('email').toLowerCase(), nome=V('nome')||email;
+    const sess=(()=>{try{return JSON.parse(localStorage.getItem('loginSimples')||'null')}catch(e){return null}})();
+    if(sess && sess.email===email && email){
+      window.usuarioEmail=usuarioEmail=email;
+      window.usuarioNome=usuarioNome=sess.nome||nome;
+    }
+    const r=await entrarBaseFinal.apply(this,arguments);
+    setTimeout(()=>{
+      abrirApp();
+      try{localStorage.setItem('loginSimples',JSON.stringify({email:window.usuarioEmail||usuarioEmail||email,nome:window.usuarioNome||usuarioNome||nome}))}catch(e){}
+      atualizarTudoFinal28();
+    },400);
+    return r;
+  }
+}
+
+// Sala oficial: profissional solicita; CEO confirma/corrige. Só confirmada entra na meta.
+window.confirmarSala21=async function(){
+  if(!window.ultimaFicha && typeof ultimaFicha!=='undefined' && !ultimaFicha){
+    H('formMsg','<span class="warn">Salve a ficha primeiro.</span>');
+    return;
+  }
+  const ficha=window.ultimaFicha || ultimaFicha;
+  if(!ficha){H('formMsg','<span class="warn">Salve a ficha primeiro.</span>');return}
+  ficha.levou_sala='Pendente';
+  ficha.sala_status='Pendente CEO';
+  ficha.sala_solicitada_em=new Date().toISOString();
+
+  try{
+    let r;
+    if(ficha.id) r=await db.from('pesquisas').update({levou_sala:'Pendente',sala_status:'Pendente CEO',sala_solicitada_em:ficha.sala_solicitada_em}).eq('id',ficha.id);
+    else r=await db.from('pesquisas').update({levou_sala:'Pendente',sala_status:'Pendente CEO',sala_solicitada_em:ficha.sala_solicitada_em}).eq('user_email',ficha.user_email).eq('created_at',ficha.created_at);
+    if(r.error)throw r.error;
+    H('formMsg','<span class="warn">Sala solicitada. Aguardando confirmação do CEO.</span>');
+  }catch(e){
+    const a=JSON.parse(localStorage.getItem('pesquisasLocal')||'[]');
+    const idx=a.findIndex(x=>(ficha.id&&String(x.id)===String(ficha.id))||(String(x.created_at)===String(ficha.created_at)&&String(x.user_email)===String(ficha.user_email)));
+    if(idx>=0)a[idx]={...a[idx],...ficha}; else a.push(ficha);
+    localStorage.setItem('pesquisasLocal',JSON.stringify(a));
+    H('formMsg','<span class="warn">Sala solicitada localmente. CEO deve conferir quando sincronizar.</span>');
+  }
+  atualizarTudoFinal28();
+}
+
+window.carregarConferenciaSala20=async function(){
+  const box=F('salaCEOBox20'); if(!box)return;
+  let p=[]; try{p=await dados('pesquisas')}catch(e){p=[]}
+  p=(p||[]).filter(x=>String(x.created_at||'').slice(0,10)>=inicioMes())
+          .sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||'')));
+  if(!p.length){box.innerHTML='<p class="mini">Nenhuma ficha para conferir.</p>';return}
+  box.innerHTML='<table><tr><th>Data</th><th>Profissional</th><th>Casal</th><th>Q/NQ</th><th>Status Sala</th><th>Ação CEO</th></tr>'+
+    p.map(x=>{
+      const casal=[x.convidado_1,x.convidado_2].filter(Boolean).join(' e ')||'-';
+      const st=isSalaConfirmada(x)?'<span class="salaOficialOK">Confirmada</span>':isSalaPendente(x)?'<span class="salaPendenteOK">Pendente</span>':'<span class="salaNaoOK">Não</span>';
+      const id=x.id||'';
+      const email=encodeURIComponent(x.user_email||'');
+      const created=encodeURIComponent(x.created_at||'');
+      return `<tr><td>${String(x.created_at||'').slice(0,10)}</td><td>${x.captador_nome||x.user_email||'-'}</td><td>${casal}</td><td>${x.qualificacao_automatica||'-'}</td><td>${st}</td><td><button class="secondary" onclick="ceoSalaFinal28('${id}','${email}','${created}','Confirmada')">Confirmar</button><button class="secondary" onclick="ceoSalaFinal28('${id}','${email}','${created}','Não')">Corrigir</button></td></tr>`;
+    }).join('')+'</table>';
+}
+
+window.ceoSalaFinal28=async function(id,emailEnc,createdEnc,status){
+  const email=decodeURIComponent(emailEnc), created=decodeURIComponent(createdEnc);
+  const patch=status==='Confirmada'
+    ? {levou_sala:'Sim',sala_status:'Confirmada CEO',sala_confirmada_em:new Date().toISOString()}
+    : {levou_sala:'Não',sala_status:'Corrigida CEO',sala_corrigida_em:new Date().toISOString()};
+  try{
+    let r;
+    if(id)r=await db.from('pesquisas').update(patch).eq('id',id);
+    else r=await db.from('pesquisas').update(patch).eq('user_email',email).eq('created_at',created);
+    if(r.error)throw r.error;
+  }catch(e){
+    const a=JSON.parse(localStorage.getItem('pesquisasLocal')||'[]');
+    const idx=a.findIndex(x=>(id&&String(x.id)===String(id))||(x.user_email===email&&x.created_at===created));
+    if(idx>=0)a[idx]={...a[idx],...patch};
+    localStorage.setItem('pesquisasLocal',JSON.stringify(a));
+  }
+  carregarConferenciaSala20();
+  atualizarTudoFinal28();
+}
+
+// Meta de sala confirmada
+window.atualizarMetaPainelUnica20=async function(){
+  let p=[]; try{p=await dados('pesquisas')}catch(e){p=[]}
+  const nome=window.usuarioNome||usuarioNome||'', email=window.usuarioEmail||usuarioEmail||'';
+  let meta=35;
+  try{
+    const metas=JSON.parse(localStorage.getItem('metas_individuais_20')||'{}');
+    const keys=[email,nome].map(x=>norm(x).replace(/[^a-z0-9@._-]/g,'_'));
+    for(const k of keys){if(metas[k]?.meta){meta=Number(metas[k].meta)||35;break}}
+  }catch(e){}
+  const ini=inicioMes(), fim=fimMes();
+  const salas=(p||[]).filter(x=>{
+    const d=String(x.created_at||'').slice(0,10);
+    return d>=ini&&d<=fim&&(x.user_email===email||norm(x.captador_nome)===norm(nome))&&isSalaConfirmada(x);
+  }).length;
+  const faltam=Math.max(0,meta-salas), pct=meta?Math.min(100,Math.round(salas/meta*100)):0;
+  T('homeMeta',`${salas}/${meta}`);
+  T('metaMensalTexto20',`${salas} / ${meta}`);
+  T('metaMensalInfo20',faltam?`${pct}% concluído • faltam ${faltam} casais em sala`:`Meta de sala batida • ${pct}% concluído`);
+  if(F('barraMetaFill20'))F('barraMetaFill20').style.width=pct+'%';
+}
+
+// Ranking performance oficial sem vendas/vgv
+window.carregarRaking=async function(){
+  if(F('rakingDe')&&!V('rakingDe'))F('rakingDe').value=inicioMes();
+  if(F('rakingAte')&&!V('rakingAte'))F('rakingAte').value=hoje();
+  let p=[];try{p=await dados('pesquisas')}catch(e){p=[]}
+  const de=V('rakingDe')||inicioMes(), ate=V('rakingAte')||hoje();
+  p=(p||[]).filter(x=>{const d=String(x.created_at||'').slice(0,10);return d>=de&&d<=ate});
+  const map={};
+  p.forEach(x=>{
+    const nome=x.captador_nome||x.user_email||'Sem nome';
+    if(!map[nome])map[nome]={nome,pesq:0,q:0,nq:0,nq1:0,sala:0};
+    map[nome].pesq++;
+    if(x.qualificacao_automatica==='Q')map[nome].q++;
+    else if(String(x.qualificacao_automatica||'').includes('1'))map[nome].nq1++;
+    else map[nome].nq++;
+    if(isSalaConfirmada(x))map[nome].sala++;
+  });
+  const rows=Object.values(map).sort((a,b)=>b.sala-a.sala||b.q-a.q||b.pesq-a.pesq);
+  const box=F('rakingBox'); if(!box)return;
+  if(F('rakingFonte21'))F('rakingFonte21').innerHTML='<span class="ok">Fonte: performance oficial dos profissionais.</span>';
+  if(!rows.length){box.innerHTML='<p class="mini">Sem dados para montar o ranking.</p>';return}
+  const dia=Math.max(1,new Date().getDate()), dias=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate();
+  let total={pesq:0,q:0,nq:0,nq1:0,sala:0};
+  box.innerHTML='<table><tr><th>Profissional</th><th>Pesquisas</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala Confirmada</th><th>Eficiência</th><th>Projeção</th></tr>'+
+    rows.map((r,i)=>{total.pesq+=r.pesq;total.q+=r.q;total.nq+=r.nq;total.nq1+=r.nq1;total.sala+=r.sala;const ef=r.pesq?Math.round(r.q/r.pesq*100):0;const proj=Math.round(r.sala/dia*dias);return `<tr class="${i<3?'rankTop':''}"><td>${i+1}º ${r.nome}</td><td>${r.pesq}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.sala}</td><td>${ef}%</td><td>${proj}</td></tr>`}).join('')+
+    `<tr><th>Total</th><th>${total.pesq}</th><th>${total.q}</th><th>${total.nq}</th><th>${total.nq1}</th><th>${total.sala}</th><th>${total.pesq?Math.round(total.q/total.pesq*100):0}%</th><th>${Math.round(total.sala/dia*dias)}</th></tr></table>`;
+}
+
+window.carregarDashboardCEO25=async function(){
+  let p=[],a=[];try{p=await dados('pesquisas')}catch(e){}try{a=await dados('abordagens')}catch(e){}
+  const h=hoje();
+  const ph=p.filter(x=>String(x.created_at||'').slice(0,10)===h);
+  const ah=a.filter(x=>String(x.created_at||'').slice(0,10)===h);
+  const q=ph.filter(x=>x.qualificacao_automatica==='Q').length;
+  const nq=ph.length-q-ph.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length;
+  const sala=ph.filter(isSalaConfirmada).length;
+  const pend=ph.filter(isSalaPendente).length;
+  T('ceoAbordHoje',ah.length);T('ceoPesqHoje',ph.length);T('ceoQHoje',q);T('ceoNQHoje',nq);T('ceoSalaHoje',sala);T('ceoSalaPendente',pend);
+  T('ceoEficHoje',ph.length?Math.round(q/ph.length*100)+'%':'0%');T('ceoConvHoje',ph.length?Math.round(sala/ph.length*100)+'%':'0%');
+}
+
+window.exportarExcelCEO25=async function(){
+  let p=[];try{p=await dados('pesquisas')}catch(e){}
+  const csv=['Data,Profissional,Equipe,Ponto,Nome1,Nome2,Q_NQ,Sala'].concat((p||[]).map(x=>`"${String(x.created_at||'').slice(0,10)}","${x.captador_nome||''}","${x.equipe||''}","${x.ponto_captacao||''}","${x.convidado_1||''}","${x.convidado_2||''}","${x.qualificacao_automatica||''}","${x.sala_status||x.levou_sala||''}"`)).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='captapro_relatorio.csv';a.click();
+}
+
+window.atualizarTudoFinal28=function(){
+  try{abrirApp()}catch(e){}
+  try{atualizarMetaPainelUnica20()}catch(e){}
+  try{carregarRaking()}catch(e){}
+  try{carregarDashboardCEO25()}catch(e){}
+  try{if(typeof carregarArenaSX20==='function')carregarArenaSX20()}catch(e){}
+}
+
+const salvarBase28=window.salvarPesquisa;
+if(typeof salvarBase28==='function'&&!window.__saveFinal28){
+  window.__saveFinal28=true;
+  window.salvarPesquisa=async function(){
+    const r=await salvarBase28.apply(this,arguments);
+    setTimeout(atualizarTudoFinal28,600);
+    return r;
+  }
+}
+const abaBase28=window.aba;
+if(typeof abaBase28==='function'&&!window.__abaFinal28){
+  window.__abaFinal28=true;
+  window.aba=function(id,b){
+    const r=abaBase28.apply(this,arguments);
+    setTimeout(()=>{abrirApp(); if(id==='relatorio')carregarDashboardCEO25(); if(id==='raking')carregarRaking(); if(id==='diario')atualizarMetaPainelUnica20();},200);
+    return r;
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(atualizarTudoFinal28,1200));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 2.9 • Relatório + Online/Offline CEO ===== */
+(function(){
+function G(id){return document.getElementById(id)}
+function Vv(id){return (G(id)?.value||'').trim()}
+function HH(id,v){if(G(id))G(id).innerHTML=v}
+function TT(id,v){if(G(id))G(id).innerText=v}
+function nn(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function hoje(){return new Date().toISOString().slice(0,10)}
+function agora(){return new Date().toISOString()}
+function minAgo(iso){if(!iso)return 99999;return Math.round((Date.now()-new Date(iso).getTime())/60000)}
+function online(x){return minAgo(x.last_seen||x.updated_at||x.created_at)<3}
+function salaOK(x){const s=nn(x.sala_status||x.levou_sala||'');return s.includes('sim')||s.includes('confirm')}
+async function resumoDia(data,email){
+ let p=[],a=[];try{p=await dados('pesquisas')}catch(e){}try{a=await dados('abordagens')}catch(e){}
+ p=(p||[]).filter(x=>String(x.created_at||'').slice(0,10)===data&&(!email||x.user_email===email));
+ a=(a||[]).filter(x=>String(x.created_at||'').slice(0,10)===data&&(!email||x.user_email===email));
+ const q=p.filter(x=>x.qualificacao_automatica==='Q').length;
+ const nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length;
+ const nq=p.length-q-nq1, sala=p.filter(salaOK).length;
+ const ef=p.length?Math.round(q/p.length*100):0, conv=p.length?Math.round(sala/p.length*100):0;
+ const sx=p.reduce((t,x)=>t+10+(x.qualificacao_automatica==='Q'?100:String(x.qualificacao_automatica||'').includes('1')?50:20)+(salaOK(x)?300:0),0);
+ return {abordagens:a.length,pesquisas:p.length,q,nq,nq1,sala,eficiencia:ef,conversao:conv,sxHoje:sx};
+}
+window.carregarDiario=async function(){
+ const data=Vv('diarioData')||hoje(); if(G('diarioData'))G('diarioData').value=data;
+ if(G('diarioNome'))G('diarioNome').value=window.usuarioNome||usuarioNome||'';
+ const r=await resumoDia(data,window.usuarioEmail||usuarioEmail);
+ TT('dAbord',r.abordagens);TT('dPesq',r.pesquisas);TT('dQ',r.q);TT('dNQ',r.nq);TT('dNQ1',r.nq1);TT('dSala',r.sala);TT('dEfic',r.eficiencia+'%');TT('dConv',r.conversao+'%');
+ const d=new Date(data+'T12:00:00'),dia=Math.max(1,d.getDate()),dias=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+ TT('dProj',Math.round((r.sala/dia)*dias));
+ return {...r,projecao:Math.round((r.sala/dia)*dias)};
+}
+window.finalizarDiario=async function(){
+ const data=Vv('diarioData')||hoje(), r=await carregarDiario();
+ const humor=Vv('diarioHumor'), dificuldade=Vv('diarioDificuldade'), texto=Vv('diarioTexto');
+ const analise=`Eficiência: ${r.eficiencia}% | Conversão sala: ${r.conversao}% | SX hoje: ${r.sxHoje} | Projeção sala: ${r.projecao}`;
+ const payload={nome:window.usuarioNome||usuarioNome||Vv('diarioNome'),user_email:window.usuarioEmail||usuarioEmail,data,abordagens:r.abordagens,pesquisas:r.pesquisas,q:r.q,nq:r.nq,nq_1_item:r.nq1,sala:r.sala,eficiencia:r.eficiencia,conversao:r.conversao,projecao_resultados:r.projecao,humor,dificuldade,sx_hoje:r.sxHoje,relatorio_escrito:`${texto}\n\nHumor: ${humor||'-'}\nDificuldade: ${dificuldade||'-'}\n${analise}`,status:'Enviado',created_at:agora()};
+ try{const resp=await db.from('relatorios_diarios').upsert(payload,{onConflict:'user_email,data'});if(resp.error)throw resp.error;HH('diarioMsg','<span class="ok">Relatório enviado.</span><div class="resumoRel29">'+analise+'</div>')}catch(e){const arr=JSON.parse(localStorage.getItem('relatorios_diarios_local')||'[]');arr.push(payload);localStorage.setItem('relatorios_diarios_local',JSON.stringify(arr));HH('diarioMsg','<span class="warn">Relatório salvo localmente.</span><div class="resumoRel29">'+analise+'</div>')}
+ if(typeof carregarFechamentosCEO==='function')carregarFechamentosCEO();
+}
+async function salvarPresenca(){
+ const email=window.usuarioEmail||usuarioEmail||''; if(!email)return;
+ const payload={email,nome:window.usuarioNome||usuarioNome||email,role:window.role||role||'profissional',equipe:Vv('equipe'),ponto:Vv('ponto'),last_seen:agora(),updated_at:agora()};
+ try{await db.from('captapro_presence').upsert(payload,{onConflict:'email'})}catch(e){let arr=JSON.parse(localStorage.getItem('captapro_presence_local')||'[]');const i=arr.findIndex(x=>x.email===email);if(i>=0)arr[i]=payload;else arr.push(payload);localStorage.setItem('captapro_presence_local',JSON.stringify(arr))}
+}
+async function listarPresenca(){
+ try{const r=await db.from('captapro_presence').select('*').order('last_seen',{ascending:false}).limit(500);if(!r.error&&Array.isArray(r.data))return r.data}catch(e){}
+ return JSON.parse(localStorage.getItem('captapro_presence_local')||'[]');
+}
+window.carregarPresencaMapa29=async function(){
+ const pres=await listarPresenca(); let p=[];try{p=await dados('pesquisas')}catch(e){}
+ const stats={};(p||[]).filter(x=>String(x.created_at||'').slice(0,10)===hoje()).forEach(x=>{const e=x.user_email||'';if(!stats[e])stats[e]={pesq:0,q:0,nq:0,sala:0};stats[e].pesq++;if(x.qualificacao_automatica==='Q')stats[e].q++;else stats[e].nq++;if(salaOK(x))stats[e].sala++});
+ const on=pres.filter(online), off=pres.filter(x=>!online(x));
+ TT('ceoOnlineAgora29',on.length);TT('ceoOfflineAgora29',off.length);TT('ceoEmCampo29',pres.filter(x=>x.ponto).length);TT('ceoSemPonto29',pres.filter(x=>!x.ponto).length);
+ function linha(x){const st=stats[x.email]||{pesq:0,q:0,nq:0,sala:0},m=minAgo(x.last_seen);return `<div class="pres29"><b>${x.nome||x.email}</b><br><span class="${online(x)?'on29':'off29'}">${online(x)?'🟢 Online':'🔴 Offline'}</span><span class="mini"> • ${m<=0?'agora':'há '+m+' min'} • ${x.ponto||'Sem ponto'} • ${x.equipe||'-'}</span><br><span class="mini">Pesq: ${st.pesq} | Q: ${st.q} | Sala: ${st.sala}</span></div>`}
+ HH('ceoOnlineBox29',on.length?on.map(linha).join(''):'<p class="mini">Ninguém online.</p>');
+ HH('ceoOfflineBox29',off.length?off.map(linha).join(''):'<p class="mini">Nenhum offline.</p>');
+ const pontos={};pres.forEach(x=>{const p=x.ponto||'Sem ponto informado';(pontos[p]=pontos[p]||[]).push(x)});
+ HH('ceoMapaPontosBox29',Object.entries(pontos).map(([p,l])=>`<div class="ponto29"><h3>📍 ${p}</h3>${l.map(x=>`<span class="tag29 ${online(x)?'on':'off'}">${online(x)?'🟢':'🔴'} ${x.nome||x.email}</span>`).join('')}</div>`).join('')||'<p class="mini">Sem pontos registrados.</p>');
+}
+setInterval(salvarPresenca,45000);document.addEventListener('click',()=>setTimeout(salvarPresenca,300));
+const abaBase=window.aba;if(typeof abaBase==='function'&&!window.__rel29){window.__rel29=true;window.aba=function(id,b){const r=abaBase.apply(this,arguments);setTimeout(()=>{salvarPresenca();if(id==='relatorio')carregarPresencaMapa29();if(id==='diario')carregarDiario()},300);return r}}
+const entrarBase=window.entrar;if(typeof entrarBase==='function'&&!window.__ent29){window.__ent29=true;window.entrar=async function(){const r=await entrarBase.apply(this,arguments);setTimeout(()=>{salvarPresenca();carregarPresencaMapa29()},1000);return r}}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{salvarPresenca();carregarPresencaMapa29()},1800));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 3.0 • Arena SX temporada desde 01/07/2026 ===== */
+(function(){
+const SX_TEMPORADA_INICIO_30='2026-07-01';
+function N30(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function sala30(x){const s=N30(x.sala_status||x.levou_sala||x.status_sala||'');return s.includes('sim')||s.includes('confirm')}
+function pts30(x){let p=10;if(x.qualificacao_automatica==='Q')p+=100;else if(String(x.qualificacao_automatica||'').includes('1'))p+=50;else p+=20;if(sala30(x))p+=300;if(x.status&&/venda|vendido|fechou|contrato/i.test(String(x.status)))p+=1000;return p}
+async function desafios30(){try{const r=await db.from('arena_sx_desafios').select('*').gte('created_at',SX_TEMPORADA_INICIO_30+'T00:00:00').order('created_at',{ascending:false}).limit(300);if(!r.error&&Array.isArray(r.data))return r.data}catch(e){}return (JSON.parse(localStorage.getItem('arena_sx_desafios_20')||'[]')||[]).filter(d=>String(d.created_at||'').slice(0,10)>=SX_TEMPORADA_INICIO_30)}
+window.calcularSaldosSX20=async function(){let p=[];try{p=await dados('pesquisas')}catch(e){}p=(p||[]).filter(x=>String(x.created_at||'').slice(0,10)>=SX_TEMPORADA_INICIO_30);const saldos={};p.forEach(x=>{const nome=x.captador_nome||x.user_email||'Sem nome';if(!saldos[nome])saldos[nome]={nome,email:x.user_email||'',sx:0,pesquisas:0,q:0,nq:0,nq1:0,sala:0};saldos[nome].sx+=pts30(x);saldos[nome].pesquisas++;if(x.qualificacao_automatica==='Q')saldos[nome].q++;else if(String(x.qualificacao_automatica||'').includes('1'))saldos[nome].nq1++;else saldos[nome].nq++;if(sala30(x))saldos[nome].sala++});(await desafios30()).forEach(d=>{if(d.status==='Finalizado'&&d.vencedor){const ap=Number(d.aposta)||0;if(!saldos[d.desafiante])saldos[d.desafiante]={nome:d.desafiante,sx:0,pesquisas:0,q:0,nq:0,nq1:0,sala:0};if(!saldos[d.adversario])saldos[d.adversario]={nome:d.adversario,sx:0,pesquisas:0,q:0,nq:0,nq1:0,sala:0};const perd=d.vencedor===d.desafiante?d.adversario:d.desafiante;saldos[d.vencedor].sx+=ap;saldos[perd].sx=Math.max(0,saldos[perd].sx-ap)}});return Object.values(saldos).sort((a,b)=>b.sx-a.sx)}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{const h=document.querySelector('#arena .hint');if(h)h.innerText='Temporada SX contando a partir de 01/07/2026.';if(typeof carregarArenaSX20==='function')carregarArenaSX20()},1400));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 3.0 • JS relatório diário em imagem ===== */
+(function(){
+function R30(id){return document.getElementById(id)}
+function RV30(id){return (R30(id)?.value||'').trim()}
+function RH30(id,v){if(R30(id))R30(id).innerHTML=v}
+function hoje30(){return new Date().toISOString().slice(0,10)}
+function norm30(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function salaOk30(x){const s=norm30(x.sala_status||x.levou_sala||'');return s.includes('sim')||s.includes('confirm')}
+async function resumoRel30(data,email){let p=[],a=[];try{p=await dados('pesquisas')}catch(e){}try{a=await dados('abordagens')}catch(e){}p=(p||[]).filter(x=>String(x.created_at||'').slice(0,10)===data&&(!email||x.user_email===email));a=(a||[]).filter(x=>String(x.created_at||'').slice(0,10)===data&&(!email||x.user_email===email));const q=p.filter(x=>x.qualificacao_automatica==='Q').length;const nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length;const nq=p.length-q-nq1;const sala=p.filter(salaOk30).length;const ef=p.length?Math.round(q/p.length*100):0;const conv=p.length?Math.round(sala/p.length*100):0;const sx=p.reduce((t,x)=>t+10+(x.qualificacao_automatica==='Q'?100:String(x.qualificacao_automatica||'').includes('1')?50:20)+(salaOk30(x)?300:0),0);const d=new Date(data+'T12:00:00'),dia=Math.max(1,d.getDate()),dias=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();return {abordagens:a.length,pesquisas:p.length,q,nq,nq1,sala,eficiencia:ef,conversao:conv,sxHoje:sx,projecao:Math.round((sala/dia)*dias)}}
+async function saldoNivel30(){try{if(typeof calcularSaldosSX20==='function'){const saldos=await calcularSaldosSX20();const nome=window.usuarioNome||usuarioNome||'';const meu=saldos.find(x=>norm30(x.nome)===norm30(nome))||{sx:0};let nivel='Iniciante';const sx=Number(meu.sx)||0;if(sx>=50000)nivel='Lenda SX';else if(sx>=30000)nivel='Mestre SX';else if(sx>=15000)nivel='Elite SX';else if(sx>=7500)nivel='Pro SX';else if(sx>=3000)nivel='Avançado';else if(sx>=1000)nivel='Aprendiz';return {sx,nivel}}}catch(e){}return {sx:0,nivel:'Iniciante'}}
+function campo30(t,v){return `<div class="relCampo30"><small>${t}</small>${v??'-'}</div>`}
+window.gerarRelatorioImagem30=async function(){const data=RV30('diarioData')||hoje30();const r=await resumoRel30(data,window.usuarioEmail||usuarioEmail);const sx=await saldoNivel30();const obs=RV30('diarioTexto')||'Sem observações.';const nome=window.usuarioNome||usuarioNome||RV30('diarioNome')||'-';const equipe=RV30('equipe')||'-';const ponto=RV30('ponto')||'-';RH30('relatorioImagemConteudo30',`<div id="relatorioImg30" class="relImg30"><div class="relImgHead30"><div class="relImgLogo30">CP</div><div class="relImgTitle30"><b>Relatório Diário</b><small>CaptaPro • Bueno Invest • ${new Date(data+'T12:00:00').toLocaleDateString('pt-BR')}</small></div></div>${campo30('Profissional',nome)}<div class="relGrid30">${campo30('Equipe',equipe)}${campo30('Ponto',ponto)}</div><div class="relGrid30">${campo30('Abordagens',`<span class="relBig30">${r.abordagens}</span>`)}${campo30('Pesquisas',`<span class="relBig30">${r.pesquisas}</span>`)}</div><div class="relGrid30">${campo30('Q',r.q)}${campo30('NQ',r.nq)}${campo30('1 Item',r.nq1)}${campo30('Sala Confirmada',r.sala)}</div><div class="relGrid30">${campo30('Eficiência',r.eficiencia+'%')}${campo30('Conversão Sala',r.conversao+'%')}${campo30('Projeção Mês',r.projecao)}${campo30('SX Hoje','+'+r.sxHoje)}</div><div class="relGrid30">${campo30('Saldo SX',sx.sx)}${campo30('Nível SX',sx.nivel)}</div>${campo30('Observações',obs)}<div class="relFoot30">Relatório gerado automaticamente pelo CaptaPro • Compartilhar no grupo da equipe</div></div>`);if(R30('relatorioImagemBox30'))R30('relatorioImagemBox30').classList.remove('hidden');return {r,sx}}
+window.finalizarDiario=async function(){const data=RV30('diarioData')||hoje30();const rel=await gerarRelatorioImagem30();const texto=RV30('diarioTexto')||'';const payload={nome:window.usuarioNome||usuarioNome||RV30('diarioNome'),user_email:window.usuarioEmail||usuarioEmail,data,abordagens:rel.r.abordagens,pesquisas:rel.r.pesquisas,q:rel.r.q,nq:rel.r.nq,nq_1_item:rel.r.nq1,sala:rel.r.sala,eficiencia:rel.r.eficiencia,conversao:rel.r.conversao,projecao_resultados:rel.r.projecao,sx_hoje:rel.r.sxHoje,relatorio_escrito:texto,status:'Enviado',created_at:new Date().toISOString()};try{await db.from('relatorios_diarios').upsert(payload,{onConflict:'user_email,data'});RH30('diarioMsg','<span class="ok">Relatório gerado. Agora compartilhe a imagem no grupo.</span>')}catch(e){RH30('diarioMsg','<span class="warn">Relatório gerado localmente. Compartilhe a imagem.</span>')}}
+async function canvasRel30(){if(!R30('relatorioImg30'))await gerarRelatorioImagem30();return await html2canvas(R30('relatorioImg30'),{scale:2,backgroundColor:'#090909'})}
+window.compartilharRelatorioImagem30=async function(){const c=await canvasRel30();c.toBlob(async b=>{const f=new File([b],'relatorio-diario-captapro.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'Relatório Diário CaptaPro'});else{const a=document.createElement('a');a.href=c.toDataURL();a.download='relatorio-diario-captapro.png';a.click()}})}
+window.baixarRelatorioImagem30=async function(){const c=await canvasRel30();const a=document.createElement('a');a.href=c.toDataURL();a.download='relatorio-diario-captapro.png';a.click()}
 })();
 </script>
 
