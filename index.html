@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaptaPro Versão 2.0</title>
+<title>CaptaPro Versão 3.0</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
@@ -22,7 +22,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .fichaTitleFull b{display:block;font-size:22px}.fichaTitleFull small{color:#aaa}
 .fichaRodapeFull{border-top:1px solid #3b1b1b;margin-top:12px;padding-top:10px;color:#888;font-size:11px}
 
-/* CaptaPro Versão 2.0 */
+/* CaptaPro Versão 3.0 */
 #brinde{border-color:#00c2ff!important}
 .rankDestaque13{color:#00e676;font-weight:900}
 
@@ -65,7 +65,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 #rakingBox tr:nth-child(4) td:first-child{color:#d7a36a;font-weight:900}
 
 
-/* Versão 2.0 • layout do casal e ranking junho */
+/* Versão 3.0 • layout do casal e ranking junho */
 .pessoaBox{grid-column:1/-1;background:#151515;border:1px solid #333;border-radius:16px;padding:12px;margin-top:2px}
 .pessoaBox b{display:block;color:#ff8585;margin-bottom:8px}
 .pessoaGrid{display:grid;grid-template-columns:1.4fr .7fr 1.3fr;gap:8px}
@@ -76,23 +76,23 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .rankTop{background:#4b4100!important}
 @media(max-width:700px){.pessoaGrid{grid-template-columns:1fr}.pessoaBox{padding:10px}}
 
-/* CaptaPro Versão 2.0 • Relatório diário */
+/* CaptaPro Versão 3.0 • Relatório diário */
 #diario textarea{margin-top:10px;min-height:120px}
 #fechamentosCEOBox table{min-width:900px}
 
 
-/* Versão 2.0 • renda líquida e relacionamento CEO */
+/* Versão 3.0 • renda líquida e relacionamento CEO */
 #rendaLiquida{border-color:#00e676!important}
 #rendaLiquida.hidden{display:none!important}
 
 
-/* Versão 2.0 • painel inicial e conferência de sala */
+/* Versão 3.0 • painel inicial e conferência de sala */
 #painelInicial{border-color:#00c2ff}
 #homeMeta{color:#00e676!important}
 #salaCEOBox20 table{min-width:900px}
 
 
-/* Versão 2.0 • painel limpo + validação visual */
+/* Versão 3.0 • painel limpo + validação visual */
 .painelClean20{border-color:#172b5a!important}
 .painelCards20{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .painelCard20{border-radius:18px;padding:18px;text-align:center;min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.12)}
@@ -111,7 +111,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:700px){.painelCards20{grid-template-columns:1fr 1fr}.painelCard20{min-height:92px}.painelCard20 b{font-size:32px}}
 
 
-/* Versão 2.0 • meta mensal pelo CEO */
+/* Versão 3.0 • meta mensal pelo CEO */
 .metaMensalBox20{margin-top:12px;background:#080808;border:1px solid #333;border-radius:16px;padding:12px}
 .metaLinha20{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .metaLinha20 span{font-size:13px;color:#ccc;font-weight:900;text-transform:uppercase}
@@ -120,7 +120,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 #barraMetaFill20{height:100%;width:0%;background:linear-gradient(135deg,#00a651,#00e676);border-radius:999px;transition:.3s}
 
 
-/* Versão 2.0 • metas individuais CEO */
+/* Versão 3.0 • metas individuais CEO */
 .metaMensalBox20{margin-top:12px;background:#080808;border:1px solid #333;border-radius:16px;padding:12px}
 .metaLinha20{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .metaLinha20 span{font-size:13px;color:#ccc;font-weight:900;text-transform:uppercase}
@@ -130,7 +130,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .metaTable20 button{padding:6px;border-radius:8px;font-size:12px}
 
 
-/* Versão 2.0 • Arena SX + ranking performance + meta estável */
+/* Versão 3.0 • Arena SX + ranking performance + meta estável */
 #arena .kpi b{color:#00e676}
 .sxCoin{color:#00e676;font-weight:900}
 .sxPendente{color:#ffd54f;font-weight:900}
@@ -224,18 +224,36 @@ body.appAberto #btnSairFinal{display:block!important}
 .relFoot30{border-top:1px solid #3b1b1b;margin-top:12px;padding-top:10px;color:#aaa;font-size:11px;text-align:center}
 @media(max-width:700px){.relGrid30{grid-template-columns:1fr}.relImg30{padding:14px}}
 
+
+/* CaptaPro 3.0 Oficial • Portal CEO e Mapa da Operação */
+.portalCEO30{border:1px solid #5a1717;border-radius:18px;padding:12px;background:#070707;margin-bottom:12px}
+.portalHero30{background:linear-gradient(135deg,#120000,#050505);border:1px solid #4b1515;border-radius:18px;padding:14px;margin-bottom:10px}
+.portalBloco30{border-color:#2d2d2d}
+.mapaGrid30{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.pontoCard30{background:#080808;border:1px solid #333;border-radius:16px;padding:12px}
+.pontoCard30 h3{margin:0 0 8px;color:#ff8585}
+.pontoStatus30{display:flex;justify-content:space-between;gap:8px;margin-bottom:8px;font-size:12px;color:#aaa}
+.profTag30{display:inline-block;margin:4px;padding:8px 10px;border-radius:999px;background:#181818;border:1px solid #333;font-weight:900}
+.profTag30.online{border-color:#00e676;color:#00e676}
+.profTag30.offline{border-color:#ff5252;color:#ff5252}
+.portalLinha30{padding:9px;border-bottom:1px solid #252525}
+.portalLinha30 b{color:#fff}
+.portalLinha30 .online{color:#00e676;font-weight:900}
+.portalLinha30 .offline{color:#ff5252;font-weight:900}
+@media(max-width:700px){.mapaGrid30{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Versão 2.0 Oficial</div><p class="mini"><b style="color:#00e676">Bueno Invest</b></p><button id="btnSairFinal" class="secondary hidden" style="max-width:160px;margin:8px auto 0" onclick="sairCaptaProFinal()">Sair</button></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Versão 3.0 Oficial</div><p class="mini"><b style="color:#00e676">Bueno Invest</b></p><button id="btnSairFinal" class="secondary hidden" style="max-width:160px;margin:8px auto 0" onclick="sairCaptaProFinal()">Sair</button></div>
 
 <section id="loginBox" class="card">
 <h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Profissional</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button onclick="aba('arena',this)">Arena SX</button><button class="adminOnly" onclick="aba('qualificacao',this)">Qualificação CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Profissional</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button onclick="aba('arena',this)">Arena SX</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
 
 
 <section id="pesquisa" class="card">
@@ -527,8 +545,78 @@ body.appAberto #btnSairFinal{display:block!important}
 
 
 <section id="qualificacao" class="card hidden adminOnly">
-<h2>CEO • Perfil de Qualificação Completo</h2>
-<p class="hint">Somente CEO altera o perfil usado para calcular Q, NQ e NQ 1 Item.</p>
+<h2>Portal CEO</h2>
+<p class="hint">Central do CEO: dashboard, mapa da operação, sala, Arena SX, metas e configurações.</p>
+
+<div class="portalCEO30">
+  <div class="portalHero30">
+    <h2>Portal CEO</h2>
+    <p class="hint">Central de gestão da operação: dashboard, mapa dos pontos, presença, sala, ranking, Arena SX e metas.</p>
+    <div class="grid">
+      <button class="main" onclick="abrirPortalBloco30('portalDashboard30')">📊 Dashboard</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalMapa30')">📍 Mapa da Operação</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalSala30')">✅ Sala</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalArena30')">🪙 Arena SX</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalRelatorios30')">📋 Relatórios</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalConfig30')">⚙️ Configurações</button>
+    </div>
+  </div>
+
+  <div id="portalDashboard30" class="card scroll portalBloco30">
+    <h2>📊 Dashboard da Operação</h2>
+    <p class="hint">Resumo geral do dia.</p>
+    <div class="kpis">
+      <div class="kpi">Online<b id="p30Online">0</b></div>
+      <div class="kpi">Offline<b id="p30Offline">0</b></div>
+      <div class="kpi">Pesquisas Hoje<b id="p30Pesq">0</b></div>
+      <div class="kpi">Q Hoje<b id="p30Q">0</b></div>
+      <div class="kpi">NQ Hoje<b id="p30NQ">0</b></div>
+      <div class="kpi">Sala Confirmada<b id="p30Sala">0</b></div>
+      <div class="kpi">Sala Pendente<b id="p30Pendente">0</b></div>
+      <div class="kpi">Eficiência<b id="p30Efic">0%</b></div>
+    </div>
+    <button class="main" style="margin-top:8px" onclick="carregarPortalCEO30()">Atualizar Portal CEO</button>
+  </div>
+
+  <div id="portalMapa30" class="card scroll portalBloco30">
+    <h2>📍 Mapa da Operação</h2>
+    <p class="hint">Mapa visual por ponto de captação. Mostra quem está online/offline em cada ponto.</p>
+    <div id="portalMapaPontos30" class="mapaGrid30"></div>
+    <div class="grid" style="margin-top:10px">
+      <div class="card scroll"><h2>🟢 Online</h2><div id="portalOnline30"></div></div>
+      <div class="card scroll"><h2>🔴 Offline</h2><div id="portalOffline30"></div></div>
+    </div>
+  </div>
+
+  <div id="portalSala30" class="card scroll portalBloco30">
+    <h2>✅ Confirmação de Sala</h2>
+    <p class="hint">O profissional solicita sala. O CEO confirma ou corrige.</p>
+    <button class="main" onclick="carregarConferenciaSala20()">Atualizar sala</button>
+    <div id="portalSalaBox30" style="margin-top:8px"></div>
+  </div>
+
+  <div id="portalArena30" class="card scroll portalBloco30">
+    <h2>🪙 Arena SX • Administração</h2>
+    <p class="hint">Aprovação de desafios, temporada, trocas e ranking SX.</p>
+    <button class="main" onclick="carregarArenaSX20()">Atualizar Arena SX</button>
+    <div class="card scroll"><h2>Definir vencedor dos desafios</h2><div id="portalSxCEOBox30"></div></div>
+    <div class="card scroll"><h2>Temporada Mensal SX</h2><div id="portalSxTemporadaBox30"></div></div>
+    <div class="card scroll"><h2>Trocas SX</h2><div id="portalSxTrocasBox30"></div></div>
+  </div>
+
+  <div id="portalRelatorios30" class="card scroll portalBloco30">
+    <h2>📋 Relatórios dos Profissionais</h2>
+    <p class="hint">Fechamentos enviados no final do dia.</p>
+    <button class="main" onclick="carregarFechamentosCEO()">Atualizar fechamentos</button>
+    <div id="portalFechamentos30" style="margin-top:8px"></div>
+  </div>
+
+  <div id="portalConfig30" class="card scroll portalBloco30">
+    <h2>⚙️ Configurações e Metas</h2>
+    <p class="hint">Perfil de qualificação, regras e metas individuais continuam abaixo.</p>
+  </div>
+</div>
+
 <div class="ceoPainel14">
   <div class="grid ceoGrid14">
     <input id="cfgRendaMin" inputmode="numeric" placeholder="R$ 15.000,00">
@@ -649,7 +737,7 @@ function salvarConfig(){
    obsCEO:V('cfgObsCEO')
  };
  localStorage.setItem('cfg',JSON.stringify(c));
- H('cfgMsg','<span class="ok">Perfil CEO salvo.</span>');
+ H('cfgMsg','<span class="ok">Portal CEO salvo.</span>');
 }
 
 async function entrar(){
@@ -774,7 +862,7 @@ function renderFicha(p){
  E('fichaBox').classList.remove('hidden');
  const carroTxt=`${p.modelo_carro||'-'} ${p.ano_veiculo||''}`.trim();
  H('fichaConteudo',`<div id=fichaImg class=ficha>
-<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Versão 2.0 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
+<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Versão 3.0 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
 ${campoFicha('Resultado da qualificação', `${p.qualificacao_automatica||'-'} • ${p.motivo_qualificacao||'Perfil dentro da regra'}`)}
 ${campoFicha('Nome 1', p.convidado_1)}${campoFicha('Idade 1 / Profissão 1', `${p.idade_1||'-'} anos • ${p.profissao_1||'-'}`)}
 ${campoFicha('Nome 2', p.convidado_2)}${campoFicha('Idade 2 / Profissão 2', `${p.idade_2||'-'} anos • ${p.profissao_2||'-'}`)}
@@ -892,7 +980,7 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{aplicarRendaDi
 </script>
 
 <script>
-/* ===== CaptaPro Versão 2.0 • Relatório Diário + Aprovação ===== */
+/* ===== CaptaPro Versão 3.0 • Relatório Diário + Aprovação ===== */
 (function(){
 function D(id){return document.getElementById(id)}
 function DV(id){return (D(id)?.value||'').trim()}
@@ -984,7 +1072,7 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{if(D('diarioDat
 
 
 <script>
-/* ===== CaptaPro Versão 2.0 • salvar com qualificação automática sem botão calcular ===== */
+/* ===== CaptaPro Versão 3.0 • salvar com qualificação automática sem botão calcular ===== */
 (function(){
 function EP(id){return document.getElementById(id)}
 function HP(id,v){if(EP(id))EP(id).innerHTML=v}
@@ -1008,7 +1096,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 <script>
-/* ===== Versão 2.0 • ajustes finais solicitados ===== */
+/* ===== Versão 3.0 • ajustes finais solicitados ===== */
 (function(){
 function A(id){return document.getElementById(id)}
 function AH(id,v){if(A(id))A(id).innerHTML=v}
@@ -1034,7 +1122,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 <script>
-/* ===== Versão 2.0 • ajustes profissional + julho do zero ===== */
+/* ===== Versão 3.0 • ajustes profissional + julho do zero ===== */
 (function(){
 function Z(id){return document.getElementById(id)}
 function ZV(id){return (Z(id)?.value||'').trim()}
@@ -1128,7 +1216,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 <script>
-/* ===== Versão 2.0 • zerar relatórios de hoje em diante + brindes parceiros ===== */
+/* ===== Versão 3.0 • zerar relatórios de hoje em diante + brindes parceiros ===== */
 (function(){
 function G(id){return document.getElementById(id)}
 function GV(id){return (G(id)?.value||'').trim()}
@@ -1211,7 +1299,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 <script>
-/* ===== Versão 2.0 • renda líquida + relacionamento CEO ===== */
+/* ===== Versão 3.0 • renda líquida + relacionamento CEO ===== */
 (function(){
 function R(id){return document.getElementById(id)}
 function RV(id){return (R(id)?.value||'').trim()}
@@ -1330,7 +1418,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 <script>
-/* ===== Versão 2.0 • obrigatórios + painel inicial + correção de sala CEO ===== */
+/* ===== Versão 3.0 • obrigatórios + painel inicial + correção de sala CEO ===== */
 (function(){
 function P(id){return document.getElementById(id)}
 function PV(id){return (P(id)?.value||'').trim()}
@@ -1459,7 +1547,7 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{atualizarPainel
 
 
 <script>
-/* ===== Versão 2.0 • painel visual + confirmação de ficha ===== */
+/* ===== Versão 3.0 • painel visual + confirmação de ficha ===== */
 (function(){
 function C(id){return document.getElementById(id)}
 function CV(id){return (C(id)?.value||'').trim()}
@@ -1526,7 +1614,7 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
 
 
 <script>
-/* ===== Versão 2.0 • painel somente na aba Profissional ===== */
+/* ===== Versão 3.0 • painel somente na aba Profissional ===== */
 (function(){
 function X(id){return document.getElementById(id)}
 const abaBasePainelOnly20 = window.aba;
@@ -1555,7 +1643,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 <script>
-/* ===== Versão 2.0 • meta mensal de casais definida pelo CEO ===== */
+/* ===== Versão 3.0 • meta mensal de casais definida pelo CEO ===== */
 (function(){
 function M(id){return document.getElementById(id)}
 function MV(id){return (M(id)?.value||'').trim()}
@@ -1643,7 +1731,7 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>atualizarMetaMen
 
 
 <script>
-/* ===== Versão 2.0 • metas individuais por profissional ===== */
+/* ===== Versão 3.0 • metas individuais por profissional ===== */
 (function(){
 function IM(id){return document.getElementById(id)}
 function IMV(id){return (IM(id)?.value||'').trim()}
@@ -1761,7 +1849,7 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
 
 
 <script>
-/* ===== Versão 2.0 • meta aparece para profissional + login permanente ===== */
+/* ===== Versão 3.0 • meta aparece para profissional + login permanente ===== */
 (function(){
 function L(id){return document.getElementById(id)}
 function LV(id){return (L(id)?.value||'').trim()}
@@ -1935,7 +2023,7 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
 
 
 <script>
-/* ===== CaptaPro Versão 2.0 • patch final limpo ===== */
+/* ===== CaptaPro Versão 3.0 • patch final limpo ===== */
 (function(){
 function F(id){return document.getElementById(id)}
 function FV(id){return (F(id)?.value||'').trim()}
@@ -2078,7 +2166,7 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
 
 
 <script>
-/* ===== CaptaPro Versão 2.0 • HOTFIX LOGIN ===== */
+/* ===== CaptaPro Versão 3.0 • HOTFIX LOGIN ===== */
 (function(){
 function LG(id){return document.getElementById(id)}
 function LV(id){return (LG(id)?.value||'').trim()}
