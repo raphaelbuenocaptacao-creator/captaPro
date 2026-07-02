@@ -242,6 +242,20 @@ body.appAberto #btnSairFinal{display:block!important}
 .portalLinha30 .offline{color:#ff5252;font-weight:900}
 @media(max-width:700px){.mapaGrid30{grid-template-columns:1fr}}
 
+
+/* CaptaPro 3.1 • Administração do Sistema no Portal CEO */
+.adminGrid31{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.adminBox31{background:#080808;border:1px solid #333;border-radius:16px;padding:12px;margin-top:10px}
+.adminBox31 h3{margin:0 0 8px;color:#ff8585}
+.adminList31{margin-top:8px}
+.adminItem31{padding:9px;border-bottom:1px solid #252525}
+.adminItem31 b{color:#fff}
+.adminItem31 small{color:#aaa}
+.adminOk31{color:#00e676;font-weight:900}
+.adminWarn31{color:#ffd54f;font-weight:900}
+.adminErr31{color:#ff5252;font-weight:900}
+@media(max-width:700px){.adminGrid31{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -559,6 +573,7 @@ body.appAberto #btnSairFinal{display:block!important}
       <button class="secondary" onclick="abrirPortalBloco30('portalArena30')">🪙 Arena SX</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalRelatorios30')">📋 Relatórios</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalConfig30')">⚙️ Configurações</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalAdmin31')">🛠️ Administração</button>
     </div>
   </div>
 
@@ -615,6 +630,100 @@ body.appAberto #btnSairFinal{display:block!important}
     <h2>⚙️ Configurações e Metas</h2>
     <p class="hint">Perfil de qualificação, regras e metas individuais continuam abaixo.</p>
   </div>
+
+  <div id="portalAdmin31" class="card scroll portalBloco30 hidden">
+    <h2>🛠️ Administração do Sistema</h2>
+    <p class="hint">Gerencie o CaptaPro sem precisar abrir o Supabase.</p>
+
+    <div class="adminGrid31">
+      <div class="adminBox31">
+        <h3>✅ Aprovar Usuários</h3>
+        <div class="grid">
+          <input id="admUserEmail31" placeholder="E-mail do usuário">
+          <input id="admUserNome31" placeholder="Nome do usuário">
+          <select id="admUserRole31">
+            <option value="profissional">Profissional</option>
+            <option value="gestor">Gestor</option>
+            <option value="ceo">CEO</option>
+          </select>
+          <select id="admUserApproved31">
+            <option value="true">Aprovado</option>
+            <option value="false">Bloqueado</option>
+          </select>
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarUsuario31()">Salvar usuário</button>
+        <div id="admUsuariosBox31" class="adminList31"></div>
+      </div>
+
+      <div class="adminBox31">
+        <h3>🎯 Metas Individuais</h3>
+        <div class="grid">
+          <input id="admMetaEmail31" placeholder="E-mail ou nome do profissional">
+          <input id="admMetaNome31" placeholder="Nome do profissional">
+          <input id="admMetaValor31" type="number" placeholder="Meta de sala. Ex: 35">
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarMeta31()">Salvar meta</button>
+        <div id="admMetasBox31" class="adminList31"></div>
+      </div>
+
+      <div class="adminBox31">
+        <h3>📍 Pontos de Captação</h3>
+        <div class="grid">
+          <input id="admPontoNome31" placeholder="Nome do ponto">
+          <select id="admPontoAtivo31"><option value="true">Ativo</option><option value="false">Inativo</option></select>
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarPonto31()">Salvar ponto</button>
+        <div id="admPontosBox31" class="adminList31"></div>
+      </div>
+
+      <div class="adminBox31">
+        <h3>🪙 Pontuação SX</h3>
+        <div class="grid">
+          <input id="admPtsPesquisa31" type="number" placeholder="Pesquisa +10">
+          <input id="admPtsQ31" type="number" placeholder="Q +100">
+          <input id="admPtsNQ31" type="number" placeholder="NQ +20">
+          <input id="admPtsItem31" type="number" placeholder="1 Item +50">
+          <input id="admPtsSala31" type="number" placeholder="Sala +300">
+          <input id="admPtsVenda31" type="number" placeholder="Venda +1000">
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarPontuacao31()">Salvar pontuação</button>
+        <div id="admPontuacaoBox31" class="adminList31"></div>
+      </div>
+
+      <div class="adminBox31">
+        <h3>🏆 Loja SX</h3>
+        <div class="grid">
+          <input id="admPremioNome31" placeholder="Prêmio. Ex: Voucher R$100">
+          <input id="admPremioCusto31" type="number" placeholder="Custo SX. Ex: 5000">
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarPremio31()">Salvar prêmio</button>
+        <div id="admPremiosBox31" class="adminList31"></div>
+      </div>
+
+      <div class="adminBox31">
+        <h3>📅 Temporada SX</h3>
+        <div class="grid">
+          <input id="admTempNome31" placeholder="Temporada. Ex: 2026-07">
+          <input id="admTempInicio31" type="date">
+          <input id="admTempFim31" type="date">
+          <select id="admTempAtiva31"><option value="true">Ativa</option><option value="false">Inativa</option></select>
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarTemporada31()">Salvar temporada</button>
+        <div id="admTemporadaBox31" class="adminList31"></div>
+      </div>
+    </div>
+
+    <div class="adminBox31">
+      <h3>📦 Backup rápido</h3>
+      <p class="hint">Exporta dados principais em JSON para conferência/backup.</p>
+      <div class="grid">
+        <button class="secondary" onclick="admExportarBackup31()">Exportar backup JSON</button>
+        <button class="secondary" onclick="admCarregarTudo31()">Atualizar listas</button>
+      </div>
+      <p id="admMsg31"></p>
+    </div>
+  </div>
+
 </div>
 
 <div class="ceoPainel14">
