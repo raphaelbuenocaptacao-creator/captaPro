@@ -273,13 +273,28 @@ body.appAberto #btnSairFinal{display:block!important}
 .portalBox33{margin-top:10px}
 
 
-/* CaptaPro 3.4 • Meta individual oficial */
-.metaOficial34{border-color:#00e676!important;background:linear-gradient(145deg,#07150d,#080808)}
-.metaOficial34 .metaNumero34{font-size:34px;color:#00e676;font-weight:900;text-align:center;margin:8px 0}
-.metaOficial34 .metaBar34{height:18px;background:#222;border:1px solid #333;border-radius:999px;overflow:hidden;margin:10px 0}
-.metaOficial34 .metaFill34{height:100%;width:0%;background:linear-gradient(135deg,#00a651,#00e676);border-radius:999px;transition:.3s}
-.metaOficial34 .metaStatus34{text-align:center;font-weight:900}
-.metaBatida34{color:#00e676}.metaFalta34{color:#ffd54f}.metaAcima34{color:#00c2ff}
+/* CaptaPro 3.5 • Fluxo final profissional/CEO */
+.metaCard35{border-color:#00e676!important;background:linear-gradient(145deg,#07150d,#080808)}
+.metaTitulo35{font-size:13px;text-transform:uppercase;color:#aaa;font-weight:900;text-align:center}
+.metaValor35{font-size:30px;color:#00e676;font-weight:900;text-align:center;margin:8px 0}
+.metaBar35{height:18px;background:#222;border:1px solid #333;border-radius:999px;overflow:hidden;margin:10px 0}
+.metaFill35{height:100%;width:0%;background:linear-gradient(135deg,#00a651,#00e676);border-radius:999px;transition:.3s}
+.metaInfo35{text-align:center;font-weight:900;color:#ffd54f}
+.pesquisasHoje35{border-color:#00c2ff!important}
+.fichaLinha35{background:#080808;border:1px solid #333;border-radius:14px;padding:12px;margin:8px 0}
+.fichaLinha35 b{display:block;color:#fff;margin-bottom:4px}
+.fichaLinha35 small{display:block;color:#aaa;margin:3px 0}
+.fichaSala35{border-color:#00e676;background:#061d10}
+.btnSala35{margin-top:8px;background:linear-gradient(135deg,#00a651,#00e676)!important;color:#061006!important}
+.portalCEO35 .portalBloco30{display:none}
+.portalCEO35 .portalBloco30.ativo35{display:block!important}
+.mapaSlim35{background:#080808;border:1px solid #333;border-radius:14px;padding:10px;margin:8px 0}
+.mapaSlim35 h3{margin:0;color:#ff8585;font-size:17px}
+.mapaPessoa35{display:inline-block;margin:5px 5px 0 0;padding:7px 9px;border-radius:999px;background:#151515;border:1px solid #333;font-weight:900;font-size:12px}
+.mapaPessoa35.on{border-color:#00e676;color:#00e676}
+.mapaPessoa35.off{border-color:#ff5252;color:#ff5252}
+.ceoSalaBtns35{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+@media(max-width:700px){.metaValor35{font-size:25px}}
 
 </style>
 </head>
@@ -292,7 +307,7 @@ body.appAberto #btnSairFinal{display:block!important}
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Profissional</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button onclick="aba('arena',this)">Arena SX</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Meu Profissional</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button onclick="aba('arena',this)">Arena SX</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
 
 
 <section id="pesquisa" class="card">
@@ -366,13 +381,13 @@ body.appAberto #btnSairFinal{display:block!important}
 <input id="contato" placeholder="WhatsApp / contato">
 </div>
 <textarea id="obs" style="margin-top:8px" placeholder="Observações"></textarea>
-<div style="margin-top:8px"><button class="main" onclick="salvarPesquisa()">Salvar Ficha</button></div><button class="secondary" style="margin-top:8px;background:#073a21;border-color:#0a7b43" onclick="confirmarSala21()">✅ Solicitar sala ao CEO</button><p id="formMsg"></p><div id="resultado" class="hidden"></div>
+<div style="margin-top:8px"><button class="main" onclick="salvarPesquisa()">Salvar Ficha</button></div><button class="secondary" style="margin-top:8px;background:#073a21;border-color:#0a7b43" onclick="confirmarSala21()">✅ Casal em Sala</button><p id="formMsg"></p><div id="resultado" class="hidden"></div>
 <div id="fichaBox" class="card hidden"><h2>Ficha salva</h2><div id="fichaConteudo"></div><div class="grid"><button class="main" onclick="compartilharFicha()">Compartilhar imagem</button><button class="secondary" onclick="novaPesquisa()">Nova pesquisa</button></div></div>
 </section>
 
 
 <section id="diario" class="card hidden">
-<h2>Profissional</h2>
+<h2>Meu Profissional</h2>
 <section id="painelInicialProfissional20" class="card painelClean20">
 <h2>Painel do Dia</h2>
 <p class="hint">Resumo individual de hoje.</p>
@@ -384,7 +399,15 @@ body.appAberto #btnSairFinal{display:block!important}
   <div class="painelCard20 roxo"><span>Sala</span><b id="homeSala">0</b></div>
   <div class="painelCard20 preto"><span>Meta de casais em sala</span><b id="homeMeta">0/35</b></div>
 </div>
-<div class="metaMensalBox20">
+
+<div class="card metaCard35">
+  <div class="metaTitulo35">🎯 Meta Mensal</div>
+  <div class="metaValor35" id="metaValor35">0 casais em sala</div>
+  <div class="metaBar35"><div class="metaFill35" id="metaFill35"></div></div>
+  <p class="metaInfo35" id="metaInfo35">Faltam 35 casais</p>
+</div>
+
+<div class="metaMensalBox20 hidden">
   <div class="metaLinha20"><span>Progresso da meta de sala</span><b id="metaMensalTexto20">0 / 35</b></div>
   <div class="barraMeta20"><div id="barraMetaFill20"></div></div>
   <p class="mini" id="metaMensalInfo20">Faltam 35 casais em sala</p>
@@ -407,16 +430,15 @@ body.appAberto #btnSairFinal{display:block!important}
   <p id="pontoAtualMsg32" class="mini"></p>
 </div>
 
+<p class="hint">No final do expediente, o profissional acompanha seus próprios números e envia o relatório do dia.</p>
 
-<div class="card metaOficial34" id="metaOficialCard34">
-  <h2>🎯 Minha Meta Oficial de Sala</h2>
-  <p class="hint">Meta individual de casais em sala. Atualiza conforme suas salas confirmadas no mês.</p>
-  <div class="metaNumero34" id="metaNumero34">0 / 35</div>
-  <div class="metaBar34"><div id="metaFill34" class="metaFill34"></div></div>
-  <p class="metaStatus34" id="metaStatus34">Carregando meta...</p>
+<div class="card pesquisasHoje35">
+  <h2>📋 Minhas Pesquisas de Hoje</h2>
+  <p class="hint">Quando o casal entrar na sala, toque em “Casal em Sala”.</p>
+  <button class="secondary" onclick="carregarMinhasPesquisas35()">Atualizar minhas pesquisas</button>
+  <div id="minhasPesquisas35" style="margin-top:8px"></div>
 </div>
 
-<p class="hint">No final do expediente, o profissional acompanha seus próprios números e envia o relatório do dia.</p>
 <div class="grid">
   <input id="diarioData" type="date">
   <input id="diarioNome" placeholder="Nome do profissional" readonly>
@@ -509,7 +531,7 @@ body.appAberto #btnSairFinal{display:block!important}
 
 <div class="card scroll adminOnly">
   <h2>Conferência de Sala</h2>
-  <p class="hint">O profissional solicita sala. O CEO confirma ou corrige caso esteja errado.</p>
+  <p class="hint">O profissional confirma casal em sala. O CEO pode corrigir/desfazer se necessário.</p>
   <button class="main" onclick="carregarConferenciaSala20()">Atualizar sala</button>
   <div id="salaCEOBox20" style="margin-top:8px"></div>
 </div>
@@ -610,18 +632,17 @@ body.appAberto #btnSairFinal{display:block!important}
 <h2>Portal CEO</h2>
 <p class="hint">Central do CEO: dashboard, mapa da operação, sala, Arena SX, metas e configurações.</p>
 
-<div class="portalCEO30">
+<div class="portalCEO30 portalCEO35">
   <div class="portalHero30">
     <h2>Portal CEO</h2>
     <p class="hint">Central de gestão da operação: dashboard, mapa dos pontos, presença, sala, ranking, Arena SX e metas.</p>
     <div class="grid">
       <button class="main" onclick="abrirPortalBloco30('portalDashboard30')">📊 Dashboard</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalMapa30')">📍 Mapa da Operação</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalSala30')">✅ Sala</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalArena30')">🪙 Arena SX</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalRelatorios30')">📋 Relatórios</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalConfig30')">⚙️ Configurações</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalAdmin31')">🛠️ Administração</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalMapa30')">📍 Operação</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalEquipe35')">👥 Equipe</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalSala30')">📋 Sala</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalArena30')">🏆 Arena SX</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalAdmin31')">⚙️ Administração</button>
     </div>
   </div>
 
@@ -651,9 +672,16 @@ body.appAberto #btnSairFinal{display:block!important}
     </div>
   </div>
 
+
+  <div id="portalEquipe35" class="card scroll portalBloco30">
+    <h2>👥 Equipe</h2>
+    <p class="hint">Resumo individual dos profissionais no dia.</p>
+    <div id="portalEquipeBox35"></div>
+  </div>
+
   <div id="portalSala30" class="card scroll portalBloco30">
     <h2>✅ Confirmação de Sala</h2>
-    <p class="hint">O profissional solicita sala. O CEO confirma ou corrige.</p>
+    <p class="hint">O profissional confirma casal em sala. O CEO pode corrigir/desfazer se necessário.</p>
     <button class="main" onclick="carregarConferenciaSala20()">Atualizar sala</button>
     <div id="portalSalaBox30" style="margin-top:8px"></div>
   </div>
@@ -4142,63 +4170,115 @@ setInterval(()=>{if(document.body.classList.contains('ceo'))carregarPortalCEO33(
 
 
 <script>
-/* ===== CaptaPro 3.4 • Metas oficiais individuais ===== */
+/* ===== CaptaPro 3.5 • Ajustes finais Raphael ===== */
 (function(){
-const METAS_OFICIAIS_34 = {'adriano': 40, 'edson adriano': 40, 'alexandre': 35, 'ana caroline': 50, 'andre': 50, 'andré': 50, 'daniela': 30, 'felipe': 30, 'ivanilson': 100, 'jessica': 45, 'jéssica': 45, 'joao vitor': 35, 'joão vitor': 35, 'jonatas': 35, 'jose ademir': 100, 'josé ademir': 100, 'josyene': 50, 'larissa': 32, 'manara': 30, 'marcio vinicios': 35, 'márcio vinícios': 35, 'marcio vinicius': 35, 'márcio vinícius': 35, 'mateus esley': 35, 'matheus esley': 35, 'matheus domingos': 30, 'otavio': 30, 'otávio': 30, 'paulo': 100, 'pedro': 100, 'renam': 35, 'renan': 35, 'ricardo': 100, 'suenne': 30, 'suene': 30, 'mateus rosa': 100, 'matheus rosa': 100, 'clacion de souza': 45};
-function M34(id){return document.getElementById(id)}
-function MT34(id,v){if(M34(id))M34(id).innerText=v}
-function norm34(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
-function salaOK34(x){const s=norm34(x.sala_status||x.levou_sala||x.status_sala||x.sala||'');return s.includes('sim')||s.includes('confirm')||x.sala===true}
-function mesAtual34(x){const d=String(x.created_at||'').slice(0,7); return d===new Date().toISOString().slice(0,7)}
-function nomeMeta34(nome,email){
-  const n=norm34(nome);
-  if(METAS_OFICIAIS_34[n])return METAS_OFICIAIS_34[n];
-  for(const k in METAS_OFICIAIS_34){if(n.includes(k)||k.includes(n))return METAS_OFICIAIS_34[k]}
-  return 35;
+const METAS35 = {"adriano": 40, "edson adriano": 40, "alexandre": 35, "ana caroline": 50, "andre": 50, "andré": 50, "daniela": 30, "felipe": 30, "ivanilson": 100, "jessica": 45, "jéssica": 45, "joao vitor": 35, "joão vitor": 35, "jonatas": 35, "jose ademir": 100, "josé ademir": 100, "josyene": 50, "larissa": 32, "manara": 30, "marcio vinicios": 35, "márcio vinícios": 35, "marcio vinicius": 35, "márcio vinícius": 35, "mateus esley": 35, "matheus esley": 35, "matheus domingos": 30, "otavio": 30, "otávio": 30, "paulo": 100, "pedro": 100, "renam": 35, "renan": 35, "ricardo": 100, "suenne": 30, "suene": 30, "mateus rosa": 100, "matheus rosa": 100, "clacion de souza": 45};
+function Q35(id){return document.getElementById(id)}
+function H35(id,v){if(Q35(id))Q35(id).innerHTML=v}
+function T35(id,v){if(Q35(id))Q35(id).innerText=v}
+function norm35(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function hoje35(){return new Date().toISOString().slice(0,10)}
+function dataHoje35(x){return String(x.created_at||'').slice(0,10)===hoje35()}
+function mes35(x){return String(x.created_at||'').slice(0,7)===new Date().toISOString().slice(0,7)}
+function sala35(x){const s=norm35(x.sala_status||x.levou_sala||x.status_sala||x.sala||'');return s.includes('sim')||s.includes('confirm')||x.sala===true}
+function metaNome35(nome){const n=norm35(nome);if(METAS35[n])return METAS35[n];for(const k in METAS35){if(n.includes(k)||k.includes(n))return METAS35[k]}return 35}
+function esc35(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+async function dadosLocal35(t){
+ try{if(typeof dados==='function')return await dados(t)}catch(e){}
+ try{const r=await db.from(t).select('*').limit(3000);if(!r.error)return r.data||[]}catch(e){}
+ return JSON.parse(localStorage.getItem(t+'Local')||'[]')
 }
-async function metaSupabase34(nome,email){
-  try{
-    const r=await db.from('captapro_metas').select('*').or(`email.eq.${email},nome.ilike.%${nome}%`).limit(1);
-    if(!r.error&&r.data&&r.data[0]&&r.data[0].meta_sala)return Number(r.data[0].meta_sala)||nomeMeta34(nome,email);
-  }catch(e){}
-  return nomeMeta34(nome,email);
+window.abrirPortalBloco30=function(id){
+ document.querySelectorAll('.portalBloco30').forEach(x=>x.classList.remove('ativo35'));
+ const el=Q35(id); if(el)el.classList.add('ativo35');
+ document.querySelectorAll('.portalHero30 button').forEach(b=>b.classList.remove('portalBtnAtivo33'));
+ const btn=[...document.querySelectorAll('.portalHero30 button')].find(b=>String(b.getAttribute('onclick')||'').includes(id));
+ if(btn)btn.classList.add('portalBtnAtivo33');
+ setTimeout(()=>{try{carregarPortalCEO35()}catch(e){}},250);
 }
-window.atualizarMetaOficial34=async function(){
-  const nome=window.usuarioNome||usuarioNome||'';
-  const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
-  const meta=await metaSupabase34(nome,email);
-  let p=[]; try{p=await dados('pesquisas')}catch(e){}
-  p=(p||[]).filter(x=>String(x.user_email||'').toLowerCase()===email && mesAtual34(x));
-  const feito=p.filter(salaOK34).length;
-  const pct=meta?Math.min(100,Math.round((feito/meta)*100)):0;
-  const falta=Math.max(0,meta-feito);
-  const acima=Math.max(0,feito-meta);
-  MT34('metaNumero34',feito+' / '+meta);
-  MT34('homeMeta',feito+'/'+meta);
-  MT34('metaMensalTexto20',feito+' / '+meta);
-  if(M34('metaFill34'))M34('metaFill34').style.width=pct+'%';
-  if(M34('barraMetaFill20'))M34('barraMetaFill20').style.width=pct+'%';
-  let msg = falta>0 ? `Faltam ${falta} casais para atingir sua meta. (${pct}%)` : (acima>0 ? `🔥 Meta batida! +${acima} acima da meta. (${Math.round((feito/meta)*100)}%)` : '🏆 META BATIDA! 100%');
-  MT34('metaStatus34',msg);
-  MT34('metaMensalInfo20',falta>0?'Faltam '+falta+' casais em sala':'Meta batida!');
+window.atualizarMeta35=async function(){
+ const nome=window.usuarioNome||usuarioNome||'';
+ const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
+ let meta=metaNome35(nome);
+ try{
+   const r=await db.from('captapro_metas').select('*').or(`email.eq.${email},nome.ilike.%${nome}%`).limit(1);
+   if(!r.error&&r.data&&r.data[0]&&r.data[0].meta_sala)meta=Number(r.data[0].meta_sala)||meta;
+ }catch(e){}
+ const p=(await dadosLocal35('pesquisas')).filter(x=>String(x.user_email||'').toLowerCase()===email&&mes35(x));
+ const feito=p.filter(sala35).length;
+ const pct=meta?Math.min(100,Math.round(feito/meta*100)):0;
+ const falta=Math.max(0,meta-feito), acima=Math.max(0,feito-meta);
+ T35('homeMeta',feito+' salas');
+ T35('metaValor35',feito+' casais em sala');
+ if(Q35('metaFill35'))Q35('metaFill35').style.width=pct+'%';
+ if(Q35('barraMetaFill20'))Q35('barraMetaFill20').style.width=pct+'%';
+ const msg=falta>0?'Faltam '+falta+' casais • '+pct+'%':(acima>0?'🔥 Meta batida • +'+acima+' acima':'🏆 Meta batida!');
+ T35('metaInfo35',msg); T35('metaMensalInfo20',msg);
 }
-const oldAba34=window.aba;
-if(typeof oldAba34==='function'&&!window.__meta34){
-  window.__meta34=true;
-  window.aba=function(id,b){const r=oldAba34.apply(this,arguments);setTimeout(()=>{if(id==='diario'||id==='pesquisa')atualizarMetaOficial34()},500);return r}
+window.carregarMinhasPesquisas35=async function(){
+ const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
+ const p=(await dadosLocal35('pesquisas')).filter(x=>String(x.user_email||'').toLowerCase()===email&&dataHoje35(x)).sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||'')));
+ if(!p.length){H35('minhasPesquisas35','<p class="mini">Nenhuma pesquisa salva hoje.</p>');return}
+ H35('minhasPesquisas35',p.map(x=>`<div class="fichaLinha35 ${sala35(x)?'fichaSala35':''}">
+ <b>${esc35(x.convidado_1||'Sem nome')}${x.convidado_2?' e '+esc35(x.convidado_2):''}</b>
+ <small>${x.qualificacao_automatica||'-'} • ${x.ponto_captacao||x.ponto||'-'} • ${String(x.created_at||'').slice(11,16)}</small>
+ <small>Status: ${sala35(x)?'✅ Casal em sala':'⏳ Pesquisa salva'}</small>
+ ${sala35(x)?'<button class="secondary" disabled>✅ Casal em Sala</button>':`<button class="main btnSala35" onclick="marcarCasalSala35('${x.id||''}','${x.created_at||''}')">✅ Casal em Sala</button>`}
+ </div>`).join(''));
 }
-const oldSalvarPesquisa34=window.salvarPesquisa;
-if(typeof oldSalvarPesquisa34==='function'&&!window.__metaSave34){
-  window.__metaSave34=true;
-  window.salvarPesquisa=async function(){const r=await oldSalvarPesquisa34.apply(this,arguments);setTimeout(atualizarMetaOficial34,800);return r}
+window.marcarCasalSala35=async function(id,created){
+ const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
+ const agora=new Date().toISOString();
+ try{
+   const q=id?db.from('pesquisas').update({levou_sala:'Sim',sala_status:'Sim',sala_confirmada_em:agora}).eq('id',id):
+              db.from('pesquisas').update({levou_sala:'Sim',sala_status:'Sim',sala_confirmada_em:agora}).eq('user_email',email).eq('created_at',created);
+   await q;
+ }catch(e){}
+ H35('diarioMsg','<span class="ok">Casal em sala confirmado.</span>');
+ carregarMinhasPesquisas35(); atualizarMeta35(); carregarPortalCEO35();
 }
-const oldSala34=window.confirmarSala21;
-if(typeof oldSala34==='function'&&!window.__metaSala34){
-  window.__metaSala34=true;
-  window.confirmarSala21=async function(){const r=await oldSala34.apply(this,arguments);setTimeout(atualizarMetaOficial34,800);return r}
+window.desfazerSalaCEO35=async function(id,created,email){
+ try{
+   const q=id?db.from('pesquisas').update({levou_sala:'Não',sala_status:'Não'}).eq('id',id):
+              db.from('pesquisas').update({levou_sala:'Não',sala_status:'Não'}).eq('user_email',email).eq('created_at',created);
+   await q;
+ }catch(e){}
+ carregarPortalCEO35();
 }
-document.addEventListener('DOMContentLoaded',()=>setTimeout(atualizarMetaOficial34,1800));
-setInterval(()=>{try{atualizarMetaOficial34()}catch(e){}},60000);
+window.confirmarSalaCEO35=async function(id,created,email){
+ try{
+   const q=id?db.from('pesquisas').update({levou_sala:'Sim',sala_status:'Sim',sala_confirmada_em:new Date().toISOString()}).eq('id',id):
+              db.from('pesquisas').update({levou_sala:'Sim',sala_status:'Sim',sala_confirmada_em:new Date().toISOString()}).eq('user_email',email).eq('created_at',created);
+   await q;
+ }catch(e){}
+ carregarPortalCEO35();
+}
+window.carregarPortalCEO35=async function(){
+ const p=(await dadosLocal35('pesquisas')).filter(dataHoje35);
+ const a=(await dadosLocal35('abordagens')).filter(dataHoje35);
+ const by={};
+ p.forEach(x=>{const k=x.user_email||x.captador_nome||'Sem nome';if(!by[k])by[k]={nome:x.captador_nome||k,email:x.user_email||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0};by[k].pesq++;if(x.qualificacao_automatica==='Q')by[k].q++;else if(String(x.qualificacao_automatica||'').includes('1'))by[k].nq1++;else by[k].nq++;if(sala35(x))by[k].sala++;});
+ a.forEach(x=>{const k=x.user_email||x.captador_nome||'Sem nome';if(!by[k])by[k]={nome:x.captador_nome||k,email:x.user_email||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0};by[k].abord++;});
+ const q=p.filter(x=>x.qualificacao_automatica==='Q').length,nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length,sala=p.filter(sala35).length;
+ T35('p30Pesq',p.length);T35('p30Q',q);T35('p30NQ',p.length-q-nq1);T35('p30Sala',sala);T35('p30Pendente',0);T35('p30Efic',p.length?Math.round(q/p.length*100)+'%':'0%');
+ T35('ceoPesqHoje',p.length);T35('ceoQHoje',q);T35('ceoNQHoje',p.length-q-nq1);T35('ceoSalaHoje',sala);T35('ceoSalaPendente',0);T35('ceoEficHoje',p.length?Math.round(q/p.length*100)+'%':'0%');T35('ceoConvHoje',p.length?Math.round(sala/p.length*100)+'%':'0%');
+ const rows=Object.values(by).sort((x,y)=>y.pesq-x.pesq||y.sala-x.sala);
+ const table=rows.length?`<table><tr><th>Profissional</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th><th>Meta</th></tr>${rows.map(r=>`<tr><td>${esc35(r.nome)}</td><td>${r.pesq}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.sala}</td><td>${r.sala}/${metaNome35(r.nome)}</td></tr>`).join('')}</table>`:'<p class="mini">Sem dados hoje.</p>';
+ H35('portalEquipeBox35',table);H35('rankingEquipeBox13',table);H35('ceoResumoMesBox25',table);
+ const salas=p.sort((x,y)=>String(y.created_at).localeCompare(String(x.created_at))).map(x=>`<div class="fichaLinha35 ${sala35(x)?'fichaSala35':''}"><b>${esc35(x.captador_nome||x.user_email)} • ${esc35(x.convidado_1||'-')} ${esc35(x.convidado_2||'')}</b><small>${sala35(x)?'✅ Casal em sala':'⏳ Pesquisa salva'} • ${x.ponto_captacao||'-'} • ${String(x.created_at||'').slice(11,16)}</small><div class="ceoSalaBtns35"><button class="main" onclick="confirmarSalaCEO35('${x.id||''}','${x.created_at||''}','${x.user_email||''}')">✅ Confirmar</button><button class="secondary" onclick="desfazerSalaCEO35('${x.id||''}','${x.created_at||''}','${x.user_email||''}')">❌ Desfazer</button></div></div>`).join('');
+ H35('portalSalaBox30',salas||'<p class="mini">Nenhuma ficha hoje.</p>');H35('salaCEOBox20',salas||'<p class="mini">Nenhuma ficha hoje.</p>');
+ let pres=[];try{const r=await db.from('captapro_presence').select('*').limit(500);pres=r.data||[]}catch(e){pres=JSON.parse(localStorage.getItem('captapro_presence_local')||'[]')}
+ const pontos={};pres.forEach(x=>{const pt=x.ponto||'Sem ponto';if(!pontos[pt])pontos[pt]=[];pontos[pt].push(x)});
+ H35('portalMapaPontos30',Object.entries(pontos).map(([pt,lista])=>`<div class="mapaSlim35"><h3>📍 ${esc35(pt)} (${lista.length})</h3>${lista.map(x=>{const on=(Date.now()-new Date(x.last_seen||0).getTime())/60000<5;return `<span class="mapaPessoa35 ${on?'on':'off'}">${on?'🟢':'🔴'} ${esc35(x.nome||x.email)}</span>`}).join('')}</div>`).join('')||'<p class="mini">Sem presença ainda.</p>');
+}
+const oldQual35=window.qual;
+if(typeof oldQual35==='function'&&!window.__qual35){window.__qual35=true;window.qual=function(){const cfg=JSON.parse(localStorage.getItem('cfg')||'{}');cfg.tempoMinNumero=0;localStorage.setItem('cfg',JSON.stringify(cfg));return oldQual35.apply(this,arguments)}}
+const oldAba35=window.aba;
+if(typeof oldAba35==='function'&&!window.__aba35){window.__aba35=true;window.aba=function(id,b){const r=oldAba35.apply(this,arguments);setTimeout(()=>{if(id==='diario'){carregarMinhasPesquisas35();atualizarMeta35()} if(id==='qualificacao'){abrirPortalBloco30('portalDashboard30');carregarPortalCEO35()}},500);return r}}
+const oldSalvar35=window.salvarPesquisa;
+if(typeof oldSalvar35==='function'&&!window.__save35){window.__save35=true;window.salvarPesquisa=async function(){const r=await oldSalvar35.apply(this,arguments);setTimeout(()=>{carregarMinhasPesquisas35();atualizarMeta35();carregarPortalCEO35()},700);return r}}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{atualizarMeta35();carregarMinhasPesquisas35();carregarPortalCEO35();abrirPortalBloco30('portalDashboard30')}catch(e){}},1800));
+setInterval(()=>{try{atualizarMeta35();carregarPortalCEO35()}catch(e){}},60000);
 })();
 </script>
 
