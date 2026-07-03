@@ -5,6 +5,8 @@
 <title>CaptaPro Versão 3.0</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#050505,#180000);color:#fff}.wrap{max-width:900px;margin:auto;padding:12px}
 .top{text-align:center;margin:12px 0}.logo{font-size:38px;font-weight:900}.logo span{color:#ff3333}.version{display:inline-block;background:#1b0505;border:1px solid #671818;color:#ff8585;border-radius:999px;padding:5px 13px;font-size:12px;font-weight:900}
@@ -321,6 +323,22 @@ body.appAberto #btnSairFinal{display:block!important}
 .salaCancelada36{color:#ff5252}
 @media(max-width:700px){.tempoGrid36,.portalDash36{grid-template-columns:1fr}.portalCard36 b{font-size:22px}}
 
+
+/* CaptaPro 3.7 • Tempo editável CEO + Mapa GPS real */
+#ceoPresencaMapa29{display:none!important}
+.tempoBox36{display:none!important}
+#mapaRealCEO37{width:100%;height:460px;border-radius:18px;border:1px solid #333;background:#050505;margin-top:10px}
+.mapFiltros37{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.mapAviso37{background:#100;border:1px solid #522;border-radius:12px;padding:10px;color:#bbb;font-size:12px}
+.gpsBtn37{background:linear-gradient(135deg,#00a651,#00e676)!important;color:#061006!important}
+.leaflet-popup-content{color:#111;font-weight:600}
+@media(max-width:700px){#mapaRealCEO37{height:380px}.mapFiltros37{grid-template-columns:1fr}}
+
+
+/* CaptaPro 3.8 • Casal em sala direto */
+.salaDireta38{color:#00e676;font-weight:900}
+.btnRemoveSala38{background:#202020!important;border:1px solid #ff5252!important;color:#ff8585!important}
+
 </style>
 </head>
 <body>
@@ -372,15 +390,21 @@ body.appAberto #btnSairFinal{display:block!important}
 <!-- 7 relacionamento e tempo -->
 <select id="relacionamento"><option value="">7. Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option></select>
 
-<div class="tempoBox36">
-  <b>7. Tempo de relacionamento</b>
-  <div class="tempoGrid36">
-    <input id="tempoDias36" type="number" min="0" placeholder="Dias">
-    <input id="tempoMeses36" type="number" min="0" placeholder="Meses">
-    <input id="tempoAnos36" type="number" min="0" placeholder="Anos">
-  </div>
-</div>
-<input id="tempo" class="hidden" value="">
+<select id="tempo">
+<option value="">7. Tempo juntos</option>
+<option>Menos de 1 ano</option>
+<option>1 ano</option>
+<option>2 anos</option>
+<option>3 anos</option>
+<option>4 anos</option>
+<option>5 anos</option>
+<option>6 anos</option>
+<option>7 anos</option>
+<option>8 anos</option>
+<option>9 anos</option>
+<option>10 anos</option>
+<option>Mais de 10 anos</option>
+</select>
 
 
 <!-- 8 carro e ano -->
@@ -461,6 +485,7 @@ body.appAberto #btnSairFinal{display:block!important}
 <option>Corredor</option><option>Baden Baden</option><option>Djalma</option><option>Igreja</option>
 <option>Renner</option><option>Guarda-chuvas</option><option>Posto Shell</option></select>
     <button class="main" onclick="salvarPontoAtual32()">Atualizar meu ponto</button>
+    <button class="main gpsBtn37" onclick="ativarGPS37()">📍 Ativar localização real</button>
   </div>
   <p id="pontoAtualMsg32" class="mini"></p>
 </div>
@@ -700,14 +725,25 @@ body.appAberto #btnSairFinal{display:block!important}
     <button class="main" style="margin-top:8px" onclick="carregarPortalCEO30()">Atualizar Portal CEO</button>
   </div>
 
+
   <div id="portalMapa30" class="card scroll portalBloco30">
-    <h2>📍 Mapa da Operação</h2>
-    <p class="hint">Mapa ao vivo por ponto: veja onde cada profissional está em tempo real.</p>
-    <div id="portalMapaPontos30" class="mapaGrid30"></div>
-    <div class="grid" style="margin-top:10px">
-      <div class="card scroll"><h2>🟢 Online</h2><div id="portalOnline30"></div></div>
-      <div class="card scroll"><h2>🔴 Offline</h2><div id="portalOffline30"></div></div>
+    <h2>📍 Mapa ao Vivo</h2>
+    <p class="hint">Mapa real com localização GPS dos profissionais. Cada celular precisa autorizar a localização.</p>
+    <div class="mapFiltros37">
+      <select id="mapEquipe37" onchange="carregarMapaReal37()">
+        <option value="">Todas as equipes</option>
+        <option value="PARK">PARK</option>
+        <option value="EXTERNA">EXTERNA</option>
+      </select>
+      <select id="mapStatus37" onchange="carregarMapaReal37()">
+        <option value="">Todos</option>
+        <option value="online">Somente online</option>
+        <option value="offline">Somente offline</option>
+      </select>
+      <button class="main" onclick="carregarMapaReal37()">Atualizar mapa</button>
     </div>
+    <div id="mapaRealCEO37"></div>
+    <div class="mapAviso37">Os pinos aparecem quando o profissional toca em “Ativar localização real”. O círculo mostra referência de 50 metros.</div>
   </div>
 
 
@@ -859,7 +895,12 @@ body.appAberto #btnSairFinal{display:block!important}
     <input id="cfgAnoMin" type="number" placeholder="Ano mínimo do carro. Ex: 2011">
     <input id="cfgIdadeMin" type="number" placeholder="Idade mínima. Ex: 25">
     <input id="cfgIdadeMax" type="number" placeholder="Idade máxima. Ex: 64">
-    <input id="cfgTempoMinNumero" type="number" placeholder="Tempo mínimo juntos. Ex: 2">
+    <input id="cfgTempoMinNumero" type="number" placeholder="Tempo mínimo. Ex: 1">
+    <select id="cfgTempoMinUnidade37">
+      <option value="dias">Dias</option>
+      <option value="meses">Meses</option>
+      <option value="anos" selected>Anos</option>
+    </select>
     <input id="cfgTempoMaxNumero" type="number" placeholder="Tempo máximo referência. Ex: 30"><input id="cfgMetaMensalCasais" type="number" placeholder="Meta de casais em sala. Ex: 100">
     <select id="cfgCasa"><option value="nao">Casa obrigatória: Não</option><option value="sim">Casa obrigatória: Sim</option></select>
     <select id="cfgCartao"><option value="nao">Cartão obrigatório: Não</option><option value="sim">Cartão obrigatório: Sim</option></select>
@@ -4330,6 +4371,254 @@ const oldSalvar35=window.salvarPesquisa;
 if(typeof oldSalvar35==='function'&&!window.__save35){window.__save35=true;window.salvarPesquisa=async function(){const r=await oldSalvar35.apply(this,arguments);setTimeout(()=>{carregarMinhasPesquisas35();atualizarMeta35();carregarPortalCEO35()},700);return r}}
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{atualizarMeta35();carregarMinhasPesquisas35();carregarPortalCEO35();abrirPortalBloco30('portalDashboard30')}catch(e){}},1800));
 setInterval(()=>{try{atualizarMeta35();carregarPortalCEO35()}catch(e){}},60000);
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 3.7 • Mapa real + tempo CEO editável ===== */
+(function(){
+function G37(id){return document.getElementById(id)}
+function GV37(id){return (G37(id)?.value||'').trim()}
+function GT37(id,v){if(G37(id))G37(id).innerText=v}
+function GH37(id,v){if(G37(id))G37(id).innerHTML=v}
+function norm37(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function minAgo37(iso){if(!iso)return 99999;return Math.round((Date.now()-new Date(iso).getTime())/60000)}
+function online37(x){return minAgo37(x.last_seen||x.updated_at||x.created_at)<5}
+function tempoDiasFicha37(){
+  const t=GV37('tempo');
+  if(t==='Menos de 1 ano')return 1;
+  if(t==='Mais de 10 anos')return 3650;
+  const n=Number(String(t).match(/\d+/)?.[0]||0);
+  return n*365;
+}
+function tempoMinDiasCfg37(){
+  const n=Number(GV37('cfgTempoMinNumero'))||0;
+  const u=GV37('cfgTempoMinUnidade37')||'anos';
+  if(u==='dias')return n;
+  if(u==='meses')return n*30;
+  return n*365;
+}
+const oldLoad37=window.loadCfg;
+if(typeof oldLoad37==='function'&&!window.__load37){
+  window.__load37=true;
+  window.loadCfg=function(){
+    oldLoad37.apply(this,arguments);
+    try{const c=JSON.parse(localStorage.getItem('cfg')||'{}'); if(G37('cfgTempoMinUnidade37'))G37('cfgTempoMinUnidade37').value=c.tempoMinUnidade37||'anos'}catch(e){}
+  }
+}
+const oldSalvarCfg37=window.salvarConfig;
+if(typeof oldSalvarCfg37==='function'&&!window.__cfg37){
+  window.__cfg37=true;
+  window.salvarConfig=function(){
+    oldSalvarCfg37.apply(this,arguments);
+    try{const c=JSON.parse(localStorage.getItem('cfg')||'{}'); c.tempoMinUnidade37=GV37('cfgTempoMinUnidade37')||'anos'; localStorage.setItem('cfg',JSON.stringify(c)); GH37('cfgMsg','<span class="ok">Portal CEO salvo.</span>')}catch(e){}
+  }
+}
+// Mantém a ficha como antes e deixa o CEO decidir o mínimo: dias, meses ou anos.
+const oldQual37=window.qual;
+if(typeof oldQual37==='function'&&!window.__qual37){
+  window.__qual37=true;
+  window.qual=function(){
+    const c=JSON.parse(localStorage.getItem('cfg')||'{}');
+    const saved=c.tempoMinNumero;
+    c.tempoMinNumero=0;
+    localStorage.setItem('cfg',JSON.stringify(c));
+    const res=oldQual37.apply(this,arguments);
+    c.tempoMinNumero=saved;
+    localStorage.setItem('cfg',JSON.stringify(c));
+    if((Number(saved)||0)>0 && tempoDiasFicha37()<tempoMinDiasCfg37()){
+      if(res.status==='Q')res.status='NQ 1 Item';
+      res.motivo=(res.motivo&&res.motivo!=='Perfil dentro da regra'?res.motivo+', ':'')+'tempo de relacionamento';
+    }
+    return res;
+  }
+}
+
+window.ativarGPS37=function(){
+  const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
+  const nome=window.usuarioNome||usuarioNome||email;
+  if(!navigator.geolocation){alert('Este celular não liberou GPS.');return}
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const lat=pos.coords.latitude, lng=pos.coords.longitude;
+    const payload={
+      email,nome,role:window.role||role||'profissional',
+      equipe:GV37('equipe')||'',
+      ponto:GV37('pontoAtualProf32')||GV37('ponto')||'',
+      lat,lng,accuracy:pos.coords.accuracy||0,
+      last_seen:new Date().toISOString(),
+      updated_at:new Date().toISOString()
+    };
+    try{await db.from('captapro_presence').upsert(payload,{onConflict:'email'})}catch(e){}
+    try{localStorage.setItem('captapro_gps37',JSON.stringify(payload))}catch(e){}
+    GH37('pontoAtualMsg32','<span class="ok">Localização real ativada e enviada ao CEO.</span>');
+  },err=>{
+    GH37('pontoAtualMsg32','<span class="erro">GPS não autorizado. Libere a localização no navegador.</span>');
+  },{enableHighAccuracy:true,timeout:10000,maximumAge:30000});
+}
+async function pres37(){
+  try{const r=await db.from('captapro_presence').select('*').order('last_seen',{ascending:false}).limit(500); if(!r.error)return r.data||[]}catch(e){}
+  try{return JSON.parse(localStorage.getItem('captapro_presence_local')||'[]')}catch(e){return []}
+}
+let map37=null, markers37=[];
+window.carregarMapaReal37=async function(){
+  const box=G37('mapaRealCEO37');
+  if(!box || !window.L)return;
+  const equipe=GV37('mapEquipe37'), st=GV37('mapStatus37');
+  let data=(await pres37()).filter(x=>x.lat&&x.lng);
+  if(equipe)data=data.filter(x=>String(x.equipe||'').toUpperCase()===equipe);
+  if(st==='online')data=data.filter(online37);
+  if(st==='offline')data=data.filter(x=>!online37(x));
+  if(!map37){
+    map37=L.map('mapaRealCEO37').setView([-22.739, -45.591], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map37);
+  }
+  markers37.forEach(m=>map37.removeLayer(m)); markers37=[];
+  if(!data.length){setTimeout(()=>map37.invalidateSize(),300);return}
+  const bounds=[];
+  data.forEach(x=>{
+    const isOn=online37(x);
+    const color=isOn?'#00e676':'#ff3333';
+    const icon=L.divIcon({className:'',html:`<div style="width:18px;height:18px;background:${color};border:3px solid #fff;border-radius:50%;box-shadow:0 0 10px ${color}"></div>`,iconSize:[18,18],iconAnchor:[9,9]});
+    const mk=L.marker([Number(x.lat),Number(x.lng)],{icon}).addTo(map37);
+    mk.bindPopup(`<b>${x.nome||x.email}</b><br>${isOn?'🟢 Online':'🔴 Offline'} • ${minAgo37(x.last_seen)<=0?'agora':'há '+minAgo37(x.last_seen)+' min'}<br>Equipe: ${x.equipe||'-'}<br>Ponto: ${x.ponto||'-'}<br>Precisão: ${Math.round(x.accuracy||0)}m`);
+    markers37.push(mk);
+    const circ=L.circle([Number(x.lat),Number(x.lng)],{radius:50,color,fillColor:color,fillOpacity:.08,weight:1}).addTo(map37);
+    markers37.push(circ);
+    bounds.push([Number(x.lat),Number(x.lng)]);
+  });
+  if(bounds.length)map37.fitBounds(bounds,{padding:[30,30]});
+  setTimeout(()=>map37.invalidateSize(),300);
+}
+const oldAbrir37=window.abrirPortalBloco30;
+if(typeof oldAbrir37==='function'&&!window.__abrir37){
+  window.__abrir37=true;
+  window.abrirPortalBloco30=function(id){
+    const r=oldAbrir37.apply(this,arguments);
+    if(id==='portalMapa30')setTimeout(carregarMapaReal37,500);
+    return r;
+  }
+}
+setInterval(()=>{try{const g=JSON.parse(localStorage.getItem('captapro_gps37')||'null'); if(g&&navigator.geolocation&&Date.now()-new Date(g.last_seen).getTime()>60000)ativarGPS37()}catch(e){}},90000);
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 3.8 • Captador confirma sala direto ===== */
+(function(){
+function R38(id){return document.getElementById(id)}
+function RH38(id,v){if(R38(id))R38(id).innerHTML=v}
+function RT38(id,v){if(R38(id))R38(id).innerText=v}
+function norm38(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function hoje38(){return new Date().toISOString().slice(0,10)}
+function dataHoje38(x){return String(x.created_at||'').slice(0,10)===hoje38()}
+function mesAtual38(x){return String(x.created_at||'').slice(0,7)===new Date().toISOString().slice(0,7)}
+function sala38(x){const s=norm38(x.sala_status||x.levou_sala||x.status_sala||x.sala||'');return s.includes('confirm')||s==='sim'||s.includes('sala')||x.sala===true}
+function esc38(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+async function dados38(t){try{if(typeof dados==='function')return await dados(t)}catch(e){}try{const r=await db.from(t).select('*').limit(4000);if(!r.error)return r.data||[]}catch(e){}try{return JSON.parse(localStorage.getItem(t+'Local')||'[]')}catch(e){return []}}
+function metaNome38(nome){try{if(typeof metaNome36==='function')return metaNome36(nome)}catch(e){}return 35}
+async function metaProf38(nome,email){try{if(typeof metaIndividual36==='function')return await metaIndividual36(nome,email)}catch(e){}return metaNome38(nome)}
+window.marcarCasalSala38=async function(id,created){
+  const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
+  const payload={levou_sala:'Sim',sala_status:'Confirmado',sala_confirmada_em:new Date().toISOString()};
+  try{
+    const q=id?db.from('pesquisas').update(payload).eq('id',id):
+               db.from('pesquisas').update(payload).eq('user_email',email).eq('created_at',created);
+    await q;
+  }catch(e){}
+  RH38('diarioMsg','<span class="ok">Casal em sala confirmado e já entrou no resultado.</span>');
+  carregarMinhasPesquisas38(); atualizarMeta38(); carregarPortalCEO38();
+}
+window.marcarCasalSala35=window.marcarCasalSala38;
+window.marcarCasalSala36=window.marcarCasalSala38;
+
+window.removerSalaCEO38=async function(id,created,email){
+  const payload={levou_sala:'Não',sala_status:'Removido'};
+  try{
+    const q=id?db.from('pesquisas').update(payload).eq('id',id):
+               db.from('pesquisas').update(payload).eq('user_email',email).eq('created_at',created);
+    await q;
+  }catch(e){}
+  carregarPortalCEO38();
+}
+window.desfazerSalaCEO35=window.removerSalaCEO38;
+window.desfazerSalaCEO36=window.removerSalaCEO38;
+
+window.carregarMinhasPesquisas38=async function(){
+  const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
+  const p=(await dados38('pesquisas')).filter(x=>String(x.user_email||'').toLowerCase()===email&&dataHoje38(x)).sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||'')));
+  if(!p.length){RH38('minhasPesquisas35','<p class="mini">Nenhuma pesquisa salva hoje.</p>');return}
+  RH38('minhasPesquisas35',p.map(x=>{
+    const ok=sala38(x);
+    return `<div class="fichaLinha35 ${ok?'fichaSala35':''}">
+      <b>${esc38(x.convidado_1||'Sem nome')}${x.convidado_2?' e '+esc38(x.convidado_2):''}</b>
+      <small>${x.qualificacao_automatica||'-'} • ${x.ponto_captacao||x.ponto||'-'} • ${String(x.created_at||'').slice(11,16)}</small>
+      <small>Status: ${ok?'<span class="salaDireta38">✅ Casal em sala confirmado</span>':'Pesquisa salva'}</small>
+      ${ok?'<button class="secondary" disabled>✅ Casal em Sala</button>':`<button class="main btnSala35" onclick="marcarCasalSala38('${x.id||''}','${x.created_at||''}')">✅ Casal em Sala</button>`}
+    </div>`;
+  }).join(''));
+}
+window.carregarMinhasPesquisas35=window.carregarMinhasPesquisas38;
+window.carregarMinhasPesquisas36=window.carregarMinhasPesquisas38;
+
+window.atualizarMeta38=async function(){
+  const nome=window.usuarioNome||usuarioNome||'';
+  const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
+  const meta=await metaProf38(nome,email);
+  const p=(await dados38('pesquisas')).filter(x=>String(x.user_email||'').toLowerCase()===email&&mesAtual38(x));
+  const feito=p.filter(sala38).length;
+  const pct=meta?Math.min(100,Math.round(feito/meta*100)):0;
+  const falta=Math.max(0,meta-feito), acima=Math.max(0,feito-meta);
+  RT38('metaValor35',feito+' casais em sala');
+  if(R38('metaFill35'))R38('metaFill35').style.width=pct+'%';
+  RT38('metaInfo35',falta>0?'Faltam '+falta+' casais • '+pct+'%':(acima>0?'🔥 Meta batida • +'+acima+' acima':'🏆 Meta batida!'));
+}
+window.atualizarMeta35=window.atualizarMeta38;
+window.atualizarMeta36=window.atualizarMeta38;
+
+window.carregarPortalCEO38=async function(){
+  const p=(await dados38('pesquisas')).filter(dataHoje38);
+  const a=(await dados38('abordagens')).filter(dataHoje38);
+  const q=p.filter(x=>x.qualificacao_automatica==='Q').length;
+  const nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length;
+  const sala=p.filter(sala38).length;
+  const efic=p.length?Math.round(sala/p.length*100):0;
+  ['p30Pesq','ceoPesqHoje','rPesq'].forEach(id=>RT38(id,p.length));
+  ['p30Q','ceoQHoje','rQ'].forEach(id=>RT38(id,q));
+  ['p30NQ','ceoNQHoje','rNQ'].forEach(id=>RT38(id,p.length-q-nq1));
+  ['p30Sala','ceoSalaHoje','rSala'].forEach(id=>RT38(id,sala));
+  ['p30Pendente','ceoSalaPendente'].forEach(id=>RT38(id,0));
+  RT38('rNQ1',nq1);
+  ['p30Efic','ceoEficHoje','ceoConvHoje','rConv'].forEach(id=>RT38(id,efic+'%'));
+  RH38('portalDashboardClean36',`<div class="portalCard36">Pesquisas<b>${p.length}</b></div><div class="portalCard36">Q<b>${q}</b></div><div class="portalCard36">Sala<b>${sala}</b></div><div class="portalCard36">Eficiência Sala<b>${efic}%</b></div><div class="portalCard36">Abordagens<b>${a.length}</b></div><div class="portalCard36">NQ<b>${p.length-q-nq1}</b></div><div class="portalCard36">1 Item<b>${nq1}</b></div><div class="portalCard36">Pendentes<b>0</b></div>`);
+  const by={};
+  p.forEach(x=>{const k=x.user_email||x.captador_nome||'Sem nome';if(!by[k])by[k]={nome:x.captador_nome||k,email:x.user_email||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0};by[k].pesq++;if(x.qualificacao_automatica==='Q')by[k].q++;else if(String(x.qualificacao_automatica||'').includes('1'))by[k].nq1++;else by[k].nq++;if(sala38(x))by[k].sala++;});
+  a.forEach(x=>{const k=x.user_email||x.captador_nome||'Sem nome';if(!by[k])by[k]={nome:x.captador_nome||k,email:x.user_email||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0};by[k].abord++;});
+  const rows=Object.values(by).sort((x,y)=>y.sala-x.sala||y.pesq-x.pesq);
+  const tabela=rows.length?`<table><tr><th>Profissional</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th><th>Eficiência</th><th>Meta</th></tr>${rows.map(r=>`<tr><td>${esc38(r.nome)}</td><td>${r.pesq}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.sala}</td><td>${r.pesq?Math.round(r.sala/r.pesq*100):0}%</td><td>${r.sala}/${metaNome38(r.nome)}</td></tr>`).join('')}</table>`:'<p class="mini">Sem dados hoje.</p>';
+  RH38('portalEquipeBox35',tabela);RH38('portalRankingBox36',tabela);RH38('rankingEquipeBox13',tabela);RH38('ceoResumoMesBox25',tabela);
+  RH38('portalMetasBox36',rows.length?rows.map(r=>{const meta=metaNome38(r.nome),pct=meta?Math.min(100,Math.round(r.sala/meta*100)):0,falta=Math.max(0,meta-r.sala);return `<div class="fichaLinha35"><b>${esc38(r.nome)}</b><small>${r.sala} casais em sala • meta ${meta} • ${pct}%</small><div class="metaBar35"><div class="metaFill35" style="width:${pct}%"></div></div><small>${falta>0?'Faltam '+falta+' casais':'🏆 Meta batida'}</small></div>`}).join(''):'<p class="mini">Sem metas hoje.</p>');
+  const salaHtml=p.sort((x,y)=>String(y.created_at).localeCompare(String(x.created_at))).map(x=>{const ok=sala38(x);return `<div class="fichaLinha35 ${ok?'fichaSala35':''}"><b>${esc38(x.captador_nome||x.user_email)} • ${esc38(x.convidado_1||'-')} ${esc38(x.convidado_2||'')}</b><small>${ok?'<span class="salaDireta38">✅ Casal em sala</span>':'Pesquisa salva'} • ${x.ponto_captacao||'-'} • ${String(x.created_at||'').slice(11,16)}</small><div class="ceoSalaBtns35">${ok?`<button class="secondary btnRemoveSala38" onclick="removerSalaCEO38('${x.id||''}','${x.created_at||''}','${x.user_email||''}')">❌ Remover Sala</button>`:`<button class="main" onclick="marcarCasalSala38('${x.id||''}','${x.created_at||''}')">✅ Marcar Sala</button>`}</div></div>`}).join('');
+  RH38('portalSalaBox30',salaHtml||'<p class="mini">Nenhuma ficha hoje.</p>');
+  RH38('salaCEOBox20',salaHtml||'<p class="mini">Nenhuma ficha hoje.</p>');
+  try{if(typeof carregarMapaReal37==='function')carregarMapaReal37()}catch(e){}
+}
+window.carregarPortalCEO36=window.carregarPortalCEO38;
+window.carregarPortalCEO30=window.carregarPortalCEO38;
+window.carregarDashboardCEO25=window.carregarPortalCEO38;
+window.carregarConferenciaSala20=window.carregarPortalCEO38;
+
+const oldAba38=window.aba;
+if(typeof oldAba38==='function'&&!window.__aba38){
+  window.__aba38=true;
+  window.aba=function(id,b){
+    const r=oldAba38.apply(this,arguments);
+    setTimeout(()=>{if(id==='diario'){carregarMinhasPesquisas38();atualizarMeta38()} if(id==='relatorio'||id==='qualificacao'){carregarPortalCEO38()}},500);
+    return r;
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{carregarMinhasPesquisas38();atualizarMeta38();carregarPortalCEO38()}catch(e){}},1800));
 })();
 </script>
 
