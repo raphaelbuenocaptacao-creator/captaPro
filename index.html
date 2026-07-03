@@ -339,6 +339,14 @@ body.appAberto #btnSairFinal{display:block!important}
 .salaDireta38{color:#00e676;font-weight:900}
 .btnRemoveSala38{background:#202020!important;border:1px solid #ff5252!important;color:#ff8585!important}
 
+
+/* CaptaPro 3.9 • GPS automático e mapa CEO */
+.gpsBtn37{display:none!important}
+#mapaRealCEO37{height:500px!important}
+.mapaLegenda39{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.mapaLegenda39 span{background:#111;border:1px solid #333;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:900}
+.leaflet-popup-content b{font-size:15px}
+
 </style>
 </head>
 <body>
@@ -478,7 +486,7 @@ body.appAberto #btnSairFinal{display:block!important}
 
 <div class="card pontoAtual32">
   <h2>📍 Meu ponto atual</h2>
-  <p class="hint">Escolha onde você está trabalhando agora. Isso aparece somente para o CEO no Mapa da Operação.</p>
+  <p class="hint">Escolha onde você está trabalhando agora.</p>
   <div class="grid">
     <select id="pontoAtualProf32"><option value="">Escolha o ponto atual</option>
 <option>Porta dentro do Park</option><option>Park Dream House</option><option>Fábrica Spinassi</option>
@@ -4619,6 +4627,131 @@ if(typeof oldAba38==='function'&&!window.__aba38){
   }
 }
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{carregarMinhasPesquisas38();atualizarMeta38();carregarPortalCEO38()}catch(e){}},1800));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 3.9 • Localização automática + pontinhos no CEO ===== */
+(function(){
+function A39(id){return document.getElementById(id)}
+function AV39(id){return (A39(id)?.value||'').trim()}
+function minAgo39(iso){if(!iso)return 99999;return Math.round((Date.now()-new Date(iso).getTime())/60000)}
+function online39(x){return minAgo39(x.last_seen||x.updated_at||x.created_at)<5}
+function esc39(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+
+async function salvarGPSAutomatico39(silencioso=true){
+  const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
+  if(!email || !navigator.geolocation)return;
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const payload={
+      email,
+      nome:window.usuarioNome||usuarioNome||email,
+      role:window.role||role||'profissional',
+      equipe:AV39('equipe')||'',
+      ponto:AV39('pontoAtualProf32')||AV39('ponto')||'',
+      lat:pos.coords.latitude,
+      lng:pos.coords.longitude,
+      accuracy:pos.coords.accuracy||0,
+      last_seen:new Date().toISOString(),
+      updated_at:new Date().toISOString()
+    };
+    try{await db.from('captapro_presence').upsert(payload,{onConflict:'email'})}catch(e){}
+    try{localStorage.setItem('captapro_gps37',JSON.stringify(payload))}catch(e){}
+    if(!silencioso && A39('pontoAtualMsg32'))A39('pontoAtualMsg32').innerHTML='<span class="ok">Localização atualizada.</span>';
+  },err=>{
+    if(!silencioso && A39('pontoAtualMsg32'))A39('pontoAtualMsg32').innerHTML='<span class="warn">Para aparecer no mapa, libere a localização do navegador.</span>';
+  },{enableHighAccuracy:true,timeout:10000,maximumAge:30000});
+}
+
+// sobrescreve botão antigo caso seja chamado por algum lugar
+window.ativarGPS37=function(){salvarGPSAutomatico39(false)};
+
+async function pres39(){
+  try{
+    const r=await db.from('captapro_presence').select('*').order('last_seen',{ascending:false}).limit(500);
+    if(!r.error)return r.data||[];
+  }catch(e){}
+  try{return JSON.parse(localStorage.getItem('captapro_presence_local')||'[]')}catch(e){return []}
+}
+
+let map39=null, markers39=[];
+window.carregarMapaReal39=async function(){
+  const box=A39('mapaRealCEO37');
+  if(!box || !window.L)return;
+  const equipe=AV39('mapEquipe37'), status=AV39('mapStatus37');
+  let data=(await pres39()).filter(x=>x.lat&&x.lng);
+  if(equipe)data=data.filter(x=>String(x.equipe||'').toUpperCase()===equipe);
+  if(status==='online')data=data.filter(online39);
+  if(status==='offline')data=data.filter(x=>!online39(x));
+  if(!map39){
+    map39=L.map('mapaRealCEO37').setView([-22.739,-45.591],13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map39);
+  }
+  markers39.forEach(m=>map39.removeLayer(m)); markers39=[];
+  if(!data.length){setTimeout(()=>map39.invalidateSize(),300);return}
+  const bounds=[];
+  data.forEach(x=>{
+    const isOn=online39(x);
+    const color=isOn?'#00e676':'#ff3333';
+    const pulse=isOn?'box-shadow:0 0 0 6px rgba(0,230,118,.20),0 0 14px #00e676;':'box-shadow:0 0 10px #ff3333;';
+    const icon=L.divIcon({
+      className:'',
+      html:`<div title="${esc39(x.nome||x.email)}" style="width:16px;height:16px;background:${color};border:3px solid #fff;border-radius:50%;${pulse}"></div>`,
+      iconSize:[16,16],
+      iconAnchor:[8,8]
+    });
+    const lat=Number(x.lat), lng=Number(x.lng);
+    const marker=L.marker([lat,lng],{icon}).addTo(map39);
+    marker.bindPopup(`<b>${esc39(x.nome||x.email)}</b><br>${isOn?'🟢 Online':'🔴 Offline'}<br>📍 ${esc39(x.ponto||'Sem ponto')}<br>Equipe: ${esc39(x.equipe||'-')}<br>Atualizado: ${minAgo39(x.last_seen)<=0?'agora':'há '+minAgo39(x.last_seen)+' min'}<br>Precisão: ${Math.round(x.accuracy||0)}m`);
+    markers39.push(marker);
+    bounds.push([lat,lng]);
+  });
+  if(bounds.length===1)map39.setView(bounds[0],16);
+  else map39.fitBounds(bounds,{padding:[30,30]});
+  setTimeout(()=>map39.invalidateSize(),300);
+}
+window.carregarMapaReal37=window.carregarMapaReal39;
+
+const oldEntrar39=window.entrar;
+if(typeof oldEntrar39==='function'&&!window.__entrar39){
+  window.__entrar39=true;
+  window.entrar=async function(){
+    const r=await oldEntrar39.apply(this,arguments);
+    setTimeout(()=>salvarGPSAutomatico39(true),1200);
+    return r;
+  }
+}
+const oldSalvarPonto39=window.salvarPontoAtual32;
+if(typeof oldSalvarPonto39==='function'&&!window.__ponto39){
+  window.__ponto39=true;
+  window.salvarPontoAtual32=async function(){
+    const r=await oldSalvarPonto39.apply(this,arguments);
+    setTimeout(()=>salvarGPSAutomatico39(true),600);
+    return r;
+  }
+}
+const oldSalvarPesquisa39=window.salvarPesquisa;
+if(typeof oldSalvarPesquisa39==='function'&&!window.__pesq39){
+  window.__pesq39=true;
+  window.salvarPesquisa=async function(){
+    const r=await oldSalvarPesquisa39.apply(this,arguments);
+    setTimeout(()=>salvarGPSAutomatico39(true),600);
+    return r;
+  }
+}
+const oldAbrir39=window.abrirPortalBloco30;
+if(typeof oldAbrir39==='function'&&!window.__abrir39b){
+  window.__abrir39b=true;
+  window.abrirPortalBloco30=function(id){
+    const r=oldAbrir39.apply(this,arguments);
+    if(id==='portalMapa30')setTimeout(carregarMapaReal39,500);
+    return r;
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>salvarGPSAutomatico39(true),2000));
+setInterval(()=>salvarGPSAutomatico39(true),90000);
+setInterval(()=>{try{if(!A39('portalMapa30')?.classList.contains('ativo35'))return;carregarMapaReal39()}catch(e){}},30000);
 })();
 </script>
 
