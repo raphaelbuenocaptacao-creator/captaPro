@@ -376,6 +376,20 @@ body.appAberto #btnSairFinal{display:block!important}
   .fichaShare40{width:1080px;max-width:1080px}
 }
 
+
+/* CaptaPro 4.1 • Ficha maior sem qualificação + mapa com pontos */
+.fichaShare40{width:1280px!important;max-width:1280px!important;padding:54px!important}
+.fichaTitle40 b{font-size:68px!important}
+.fichaTitle40 span{font-size:30px!important}
+.fichaLogo40{width:120px!important;height:120px!important;font-size:42px!important}
+.fichaResult40{display:none!important}
+.campoShare40{padding:30px!important;min-height:142px!important}
+.campoShare40 small{font-size:25px!important}
+.campoShare40 b{font-size:42px!important}
+.fichaFoot40{font-size:28px!important}
+#mapaRealCEO37{height:620px!important}
+.pontoFixo41{filter:drop-shadow(0 0 8px #00c2ff)}
+
 </style>
 </head>
 <body>
@@ -4840,7 +4854,7 @@ window.montarFichaImagem40=function(){
         <span>CaptaPro • Bueno Invest • ${dataBR40()}</span>
       </div>
     </div>
-    <div class="fichaResult40"><small>Resultado da Qualificação</small><b>${esc40(q)} • ${esc40(motivo)}</b></div>
+    
     <div class="fichaGrid40">
       <div class="campoShare40"><small>Nome 1</small><b>${esc40(nome1)}</b></div>
       <div class="campoShare40"><small>Nome 2</small><b>${esc40(nome2)}</b></div>
@@ -4892,6 +4906,84 @@ window.baixarFichaGrande40=async function(){
   const a=document.createElement('a');
   a.href=url;a.download='ficha-captaPro.png';a.click();
   setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 4.1 • Mapa aproximado com pontos fixos + captadores ===== */
+(function(){
+const PONTOS_FIXOS41=[
+  {nome:'Porta dentro do Park',lat:-22.74065,lng:-45.59230},
+  {nome:'Park Dream House',lat:-22.74080,lng:-45.59210},
+  {nome:'Fábrica Spinassi',lat:-22.73940,lng:-45.59130},
+  {nome:'Corredor',lat:-22.73990,lng:-45.59185},
+  {nome:'Baden Baden',lat:-22.73890,lng:-45.59100},
+  {nome:'Djalma',lat:-22.73795,lng:-45.59040},
+  {nome:'Igreja',lat:-22.73825,lng:-45.59275},
+  {nome:'Renner',lat:-22.73905,lng:-45.59330},
+  {nome:'Guarda-chuvas',lat:-22.74020,lng:-45.59070},
+  {nome:'Posto Shell',lat:-22.74120,lng:-45.59310}
+];
+function M41(id){return document.getElementById(id)}
+function MV41(id){return (M41(id)?.value||'').trim()}
+function minAgo41(iso){if(!iso)return 99999;return Math.round((Date.now()-new Date(iso).getTime())/60000)}
+function online41(x){return minAgo41(x.last_seen||x.updated_at||x.created_at)<5}
+function esc41(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+async function pres41(){
+  try{const r=await db.from('captapro_presence').select('*').order('last_seen',{ascending:false}).limit(500);if(!r.error)return r.data||[]}catch(e){}
+  try{return JSON.parse(localStorage.getItem('captapro_presence_local')||'[]')}catch(e){return []}
+}
+function pontoCoords41(nome){
+  const n=String(nome||'').toLowerCase();
+  return PONTOS_FIXOS41.find(p=>n.includes(p.nome.toLowerCase())||p.nome.toLowerCase().includes(n));
+}
+let map41=null,layers41=[];
+window.carregarMapaReal41=async function(){
+  const box=M41('mapaRealCEO37'); if(!box||!window.L)return;
+  const equipe=MV41('mapEquipe37'), status=MV41('mapStatus37');
+  let data=await pres41();
+  if(equipe)data=data.filter(x=>String(x.equipe||'').toUpperCase()===equipe);
+  if(status==='online')data=data.filter(online41);
+  if(status==='offline')data=data.filter(x=>!online41(x));
+  if(!map41){
+    map41=L.map('mapaRealCEO37').setView([-22.7395,-45.5917],15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map41);
+  }
+  layers41.forEach(l=>map41.removeLayer(l)); layers41=[];
+  const bounds=[];
+  // pontos fixos azuis
+  PONTOS_FIXOS41.forEach(p=>{
+    const icon=L.divIcon({className:'',html:`<div class="pontoFixo41" style="width:14px;height:14px;background:#00c2ff;border:3px solid #fff;border-radius:50%;box-shadow:0 0 14px #00c2ff"></div>`,iconSize:[14,14],iconAnchor:[7,7]});
+    const mk=L.marker([p.lat,p.lng],{icon}).addTo(map41).bindPopup(`<b>📍 ${esc41(p.nome)}</b><br>Ponto de captação`);
+    const circ=L.circle([p.lat,p.lng],{radius:50,color:'#00c2ff',fillColor:'#00c2ff',fillOpacity:.05,weight:1}).addTo(map41);
+    layers41.push(mk,circ); bounds.push([p.lat,p.lng]);
+  });
+  // captadores, usando GPS real; se não tiver GPS, cai no ponto escolhido
+  data.forEach(x=>{
+    let lat=Number(x.lat), lng=Number(x.lng);
+    if(!lat||!lng){const p=pontoCoords41(x.ponto); if(p){lat=p.lat+(Math.random()-.5)*0.00025; lng=p.lng+(Math.random()-.5)*0.00025;}}
+    if(!lat||!lng)return;
+    const isOn=online41(x), color=isOn?'#00e676':'#ff3333';
+    const icon=L.divIcon({className:'',html:`<div style="width:18px;height:18px;background:${color};border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 6px ${isOn?'rgba(0,230,118,.22)':'rgba(255,51,51,.16)'},0 0 14px ${color}"></div>`,iconSize:[18,18],iconAnchor:[9,9]});
+    const mk=L.marker([lat,lng],{icon}).addTo(map41);
+    mk.bindPopup(`<b>${esc41(x.nome||x.email)}</b><br>${isOn?'🟢 Online':'🔴 Offline'}<br>📍 ${esc41(x.ponto||'Sem ponto')}<br>Equipe: ${esc41(x.equipe||'-')}<br>${minAgo41(x.last_seen)<=0?'agora':'há '+minAgo41(x.last_seen)+' min'}`);
+    layers41.push(mk); bounds.push([lat,lng]);
+  });
+  if(bounds.length)map41.fitBounds(bounds,{padding:[35,35],maxZoom:16});
+  setTimeout(()=>map41.invalidateSize(),300);
+}
+window.carregarMapaReal37=window.carregarMapaReal41;
+window.carregarMapaReal39=window.carregarMapaReal41;
+const oldAbrir41=window.abrirPortalBloco30;
+if(typeof oldAbrir41==='function'&&!window.__abrir41){
+  window.__abrir41=true;
+  window.abrirPortalBloco30=function(id){
+    const r=oldAbrir41.apply(this,arguments);
+    if(id==='portalMapa30')setTimeout(carregarMapaReal41,500);
+    return r;
+  }
 }
 })();
 </script>
