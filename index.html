@@ -296,6 +296,31 @@ body.appAberto #btnSairFinal{display:block!important}
 .ceoSalaBtns35{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
 @media(max-width:700px){.metaValor35{font-size:25px}}
 
+
+/* CaptaPro 3.6 • Ajustes finais solicitados */
+#ceoPresencaMapa29{display:none!important}
+.tempoBox36{grid-column:1/-1;background:#151515;border:1px solid #333;border-radius:16px;padding:12px}
+.tempoBox36 b{display:block;color:#ff8585;margin-bottom:8px}
+.tempoGrid36{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.usoApp36{background:linear-gradient(135deg,#050505,#333)!important}
+.usoApp36 b{color:#00c2ff!important}
+.portalCEO36 .portalBloco30{display:none}
+.portalCEO36 .portalBloco30.ativo35{display:block!important}
+.portalDash36{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.portalCard36{background:#181818;border:1px solid #2d2d2d;border-radius:14px;padding:12px;text-align:center;color:#ccc}
+.portalCard36 b{display:block;color:#00e676;font-size:25px;margin-top:5px}
+.mapaLive36{display:grid;grid-template-columns:1fr;gap:8px}
+.pontoLive36{background:#080808;border:1px solid #333;border-radius:15px;padding:12px}
+.pontoLive36 h3{margin:0 0 8px;color:#ff8585}
+.profLive36{display:inline-block;margin:4px;padding:8px 10px;border-radius:999px;background:#151515;border:1px solid #333;font-weight:900}
+.profLive36.on{border-color:#00e676;color:#00e676}
+.profLive36.off{border-color:#ff5252;color:#ff5252}
+.salaStatus36{font-weight:900}
+.salaPendente36{color:#ffd54f}
+.salaConfirmada36{color:#00e676}
+.salaCancelada36{color:#ff5252}
+@media(max-width:700px){.tempoGrid36,.portalDash36{grid-template-columns:1fr}.portalCard36 b{font-size:22px}}
+
 </style>
 </head>
 <body>
@@ -346,7 +371,17 @@ body.appAberto #btnSairFinal{display:block!important}
 
 <!-- 7 relacionamento e tempo -->
 <select id="relacionamento"><option value="">7. Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option></select>
-<select id="tempo"><option value="">7. Tempo juntos</option><option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option><option>3 a 5 anos</option><option>Mais de 5 anos</option></select>
+
+<div class="tempoBox36">
+  <b>7. Tempo de relacionamento</b>
+  <div class="tempoGrid36">
+    <input id="tempoDias36" type="number" min="0" placeholder="Dias">
+    <input id="tempoMeses36" type="number" min="0" placeholder="Meses">
+    <input id="tempoAnos36" type="number" min="0" placeholder="Anos">
+  </div>
+</div>
+<input id="tempo" class="hidden" value="">
+
 
 <!-- 8 carro e ano -->
 <input id="nomeCarro" placeholder="8. Carro (Ex: Onix)">
@@ -397,7 +432,7 @@ body.appAberto #btnSairFinal{display:block!important}
   <div class="painelCard20 verde"><span>Q</span><b id="homeQ">0</b></div>
   <div class="painelCard20 amarelo"><span>NQ</span><b id="homeNQ">0</b></div>
   <div class="painelCard20 roxo"><span>Sala</span><b id="homeSala">0</b></div>
-  <div class="painelCard20 preto"><span>Meta de casais em sala</span><b id="homeMeta">0/35</b></div>
+  <div class="painelCard20 preto usoApp36"><span>Tempo de uso do app</span><b id="tempoUsoApp36">00h00</b></div>
 </div>
 
 <div class="card metaCard35">
@@ -632,23 +667,26 @@ body.appAberto #btnSairFinal{display:block!important}
 <h2>Portal CEO</h2>
 <p class="hint">Central do CEO: dashboard, mapa da operação, sala, Arena SX, metas e configurações.</p>
 
-<div class="portalCEO30 portalCEO35">
-  <div class="portalHero30">
+<div class="portalCEO30 portalCEO35 portalCEO36">
+  
+<div class="portalHero30">
     <h2>Portal CEO</h2>
-    <p class="hint">Central de gestão da operação: dashboard, mapa dos pontos, presença, sala, ranking, Arena SX e metas.</p>
+    <p class="hint">Central do CEO: dashboard, equipe, mapa ao vivo, salas, ranking, metas e administração.</p>
     <div class="grid">
       <button class="main" onclick="abrirPortalBloco30('portalDashboard30')">📊 Dashboard</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalMapa30')">📍 Operação</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalEquipe35')">👥 Equipe</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalSala30')">📋 Sala</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalArena30')">🏆 Arena SX</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalMapa30')">📍 Mapa ao Vivo</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalSala30')">✅ Salas</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalRanking36')">🏆 Ranking</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalMetas36')">📈 Metas</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalArena30')">🎮 Arena SX</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalAdmin31')">⚙️ Administração</button>
     </div>
   </div>
 
   <div id="portalDashboard30" class="card scroll portalBloco30">
     <h2>📊 Dashboard da Operação</h2>
-    <p class="hint">Resumo geral do dia.</p>
+    <p class="hint">Resumo geral do dia.</p><div id="portalDashboardClean36" class="portalDash36"></div>
     <div class="kpis">
       <div class="kpi">Online<b id="p30Online">0</b></div>
       <div class="kpi">Offline<b id="p30Offline">0</b></div>
@@ -664,7 +702,7 @@ body.appAberto #btnSairFinal{display:block!important}
 
   <div id="portalMapa30" class="card scroll portalBloco30">
     <h2>📍 Mapa da Operação</h2>
-    <p class="hint">Mapa operacional por ponto de captação. Mostra o nome, ponto atual, online/offline e resultado do dia.</p>
+    <p class="hint">Mapa ao vivo por ponto: veja onde cada profissional está em tempo real.</p>
     <div id="portalMapaPontos30" class="mapaGrid30"></div>
     <div class="grid" style="margin-top:10px">
       <div class="card scroll"><h2>🟢 Online</h2><div id="portalOnline30"></div></div>
@@ -677,6 +715,19 @@ body.appAberto #btnSairFinal{display:block!important}
     <h2>👥 Equipe</h2>
     <p class="hint">Resumo individual dos profissionais no dia.</p>
     <div id="portalEquipeBox35"></div>
+  </div>
+
+
+  <div id="portalRanking36" class="card scroll portalBloco30">
+    <h2>🏆 Ranking</h2>
+    <p class="hint">Ranking do dia por sala, pesquisas e eficiência.</p>
+    <div id="portalRankingBox36"></div>
+  </div>
+
+  <div id="portalMetas36" class="card scroll portalBloco30">
+    <h2>📈 Metas</h2>
+    <p class="hint">Acompanhamento das metas individuais.</p>
+    <div id="portalMetasBox36"></div>
   </div>
 
   <div id="portalSala30" class="card scroll portalBloco30">
