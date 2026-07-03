@@ -347,6 +347,35 @@ body.appAberto #btnSairFinal{display:block!important}
 .mapaLegenda39 span{background:#111;border:1px solid #333;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:900}
 .leaflet-popup-content b{font-size:15px}
 
+
+/* CaptaPro 4.0 • Ficha compartilhável grande */
+.fichaShare40{
+  width:1080px;
+  max-width:1080px;
+  background:linear-gradient(180deg,#070707,#160000);
+  border:4px solid #5a1717;
+  border-radius:42px;
+  padding:42px;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  box-shadow:0 0 50px rgba(239,27,36,.35);
+}
+.fichaShareHead40{display:flex;align-items:center;gap:24px;border-bottom:2px solid #3b1b1b;padding-bottom:26px;margin-bottom:28px}
+.fichaLogo40{width:96px;height:96px;border-radius:24px;background:linear-gradient(135deg,#ef1b24,#7a0000);display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900}
+.fichaTitle40 b{display:block;font-size:52px;line-height:1.05}
+.fichaTitle40 span{display:block;color:#bbb;font-size:24px;margin-top:8px}
+.fichaResult40{background:#111;border:2px solid #333;border-radius:24px;padding:24px;margin-bottom:20px}
+.fichaResult40 small,.campoShare40 small{display:block;color:#ff8585;text-transform:uppercase;font-size:20px;font-weight:900;margin-bottom:10px;letter-spacing:.6px}
+.fichaResult40 b{font-size:34px;color:#fff}
+.fichaGrid40{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.campoShare40{background:#101010;border:2px solid #292929;border-radius:24px;padding:22px;min-height:112px}
+.campoShare40 b{display:block;font-size:32px;line-height:1.18;color:#fff;word-break:break-word}
+.campoShare40.full40{grid-column:1/-1}
+.fichaFoot40{border-top:2px solid #3b1b1b;margin-top:24px;padding-top:18px;color:#aaa;font-size:22px}
+@media(max-width:700px){
+  .fichaShare40{width:1080px;max-width:1080px}
+}
+
 </style>
 </head>
 <body>
@@ -4752,6 +4781,118 @@ if(typeof oldAbrir39==='function'&&!window.__abrir39b){
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>salvarGPSAutomatico39(true),2000));
 setInterval(()=>salvarGPSAutomatico39(true),90000);
 setInterval(()=>{try{if(!A39('portalMapa30')?.classList.contains('ativo35'))return;carregarMapaReal39()}catch(e){}},30000);
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 4.0 • Imagem grande da ficha ===== */
+(function(){
+function F40(id){return document.getElementById(id)}
+function V40(id){return (F40(id)?.value||'').trim()}
+function esc40(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+function dataBR40(){return new Date().toLocaleString('pt-BR')}
+function getUltima40(){
+  let f=window.ultimaFicha||ultimaFicha||{};
+  return f||{};
+}
+function val40(f,keys,fallback='-'){
+  for(const k of keys){ if(f&&f[k]!==undefined&&f[k]!==null&&String(f[k]).trim()!=='')return f[k]; }
+  return fallback;
+}
+window.montarFichaImagem40=function(){
+  const f=getUltima40();
+  const q=val40(f,['qualificacao_automatica','status','qualificacao'],V40('resultado')||'-');
+  const motivo=val40(f,['motivo_qualificacao','motivo'],'Perfil dentro da regra');
+  const nome1=val40(f,['convidado_1','nome1'],V40('nome1'));
+  const nome2=val40(f,['convidado_2','nome2'],V40('nome2'));
+  const idade1=val40(f,['idade_1','idade1'],V40('idade1'));
+  const idade2=val40(f,['idade_2','idade2'],V40('idade2'));
+  const prof1=val40(f,['profissao_1','profissao1'],V40('profissao1'));
+  const prof2=val40(f,['profissao_2','profissao2'],V40('profissao2'));
+  const rel=val40(f,['relacionamento'],V40('relacionamento'));
+  const tempo=val40(f,['tempo_relacionamento','tempo'],V40('tempo'));
+  const renda=val40(f,['renda','renda_familiar'],V40('renda'));
+  const carro=val40(f,['carro','nome_carro'],V40('nomeCarro'));
+  const ano=val40(f,['ano_carro'],V40('anoCarro'));
+  const cartao=val40(f,['cartao'],V40('cartao'));
+  const casa=val40(f,['casa'],V40('casa'));
+  const estado=val40(f,['estado'],V40('estado'));
+  const cidade=val40(f,['cidade'],V40('cidade'));
+  const multi=val40(f,['multipropriedade','multi'],V40('multi'));
+  const brinde=val40(f,['brinde','cortesia'],V40('brinde'));
+  const contato=val40(f,['contato','telefone'],V40('contato'));
+  const sala=val40(f,['levou_sala','sala_status'],'Não');
+  const equipe=val40(f,['equipe'],V40('equipe'));
+  const ponto=val40(f,['ponto_captacao','ponto'],V40('ponto'));
+  const profissional=val40(f,['captador_nome','profissional'],window.usuarioNome||usuarioNome||'-');
+  const obs=val40(f,['observacoes','obs'],V40('obs'));
+  const box=document.createElement('div');
+  box.id='fichaShareTemp40';
+  box.style.position='fixed';
+  box.style.left='-99999px';
+  box.style.top='0';
+  box.innerHTML=`<div class="fichaShare40" id="fichaShare40">
+    <div class="fichaShareHead40">
+      <div class="fichaLogo40">CP</div>
+      <div class="fichaTitle40">
+        <b>Ficha Completa<br>do Casal</b>
+        <span>CaptaPro • Bueno Invest • ${dataBR40()}</span>
+      </div>
+    </div>
+    <div class="fichaResult40"><small>Resultado da Qualificação</small><b>${esc40(q)} • ${esc40(motivo)}</b></div>
+    <div class="fichaGrid40">
+      <div class="campoShare40"><small>Nome 1</small><b>${esc40(nome1)}</b></div>
+      <div class="campoShare40"><small>Nome 2</small><b>${esc40(nome2)}</b></div>
+      <div class="campoShare40"><small>Idade / Profissão 1</small><b>${esc40(idade1)} anos • ${esc40(prof1)}</b></div>
+      <div class="campoShare40"><small>Idade / Profissão 2</small><b>${esc40(idade2)} anos • ${esc40(prof2)}</b></div>
+      <div class="campoShare40"><small>Relacionamento</small><b>${esc40(rel)} • ${esc40(tempo)}</b></div>
+      <div class="campoShare40"><small>Renda</small><b>${esc40(renda)}</b></div>
+      <div class="campoShare40"><small>Veículo / Ano</small><b>${esc40(carro)} ${esc40(ano)}</b></div>
+      <div class="campoShare40"><small>Cartão de crédito</small><b>${esc40(cartao)}</b></div>
+      <div class="campoShare40"><small>Casa própria</small><b>${esc40(casa)}</b></div>
+      <div class="campoShare40"><small>Estado / Cidade</small><b>${esc40(estado)} • ${esc40(cidade)}</b></div>
+      <div class="campoShare40"><small>Multipropriedade</small><b>${esc40(multi)}</b></div>
+      <div class="campoShare40"><small>Cortesia escolhida</small><b>${esc40(brinde)}</b></div>
+      <div class="campoShare40"><small>WhatsApp / Contato</small><b>${esc40(contato)}</b></div>
+      <div class="campoShare40"><small>Entrada em sala</small><b>${esc40(sala)}</b></div>
+      <div class="campoShare40"><small>Equipe / Ponto</small><b>${esc40(equipe)} • ${esc40(ponto)}</b></div>
+      <div class="campoShare40"><small>Profissional responsável</small><b>${esc40(profissional)}</b></div>
+      <div class="campoShare40 full40"><small>Observações</small><b>${esc40(obs)}</b></div>
+    </div>
+    <div class="fichaFoot40">Cliente(s): ${esc40(nome1)} ${nome2?('e '+esc40(nome2)):''}<br>Registro CaptaPro • Bueno Invest • Sala ${esc40(sala)}</div>
+  </div>`;
+  document.body.appendChild(box);
+  return box;
+}
+async function gerarBlobFicha40(){
+  if(!window.html2canvas){alert('html2canvas não carregou.');return null}
+  const box=montarFichaImagem40();
+  const alvo=box.querySelector('#fichaShare40');
+  const canvas=await html2canvas(alvo,{backgroundColor:null,scale:2,useCORS:true});
+  return new Promise(resolve=>canvas.toBlob(blob=>{box.remove();resolve(blob)},'image/png',1));
+}
+window.compartilharFicha=async function(){
+  const blob=await gerarBlobFicha40();
+  if(!blob)return;
+  const file=new File([blob],'ficha-captaPro.png',{type:'image/png'});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    await navigator.share({files:[file],title:'Ficha CaptaPro',text:'Ficha completa do casal'});
+  }else{
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download='ficha-captaPro.png';a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),3000);
+  }
+}
+window.baixarFichaGrande40=async function(){
+  const blob=await gerarBlobFicha40();
+  if(!blob)return;
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='ficha-captaPro.png';a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
 })();
 </script>
 
