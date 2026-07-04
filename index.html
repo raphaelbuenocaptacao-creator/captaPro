@@ -466,6 +466,21 @@ body.appAberto #btnSairFinal{display:block!important}
 .resumoJulho46 b{display:block;color:#00e676;font-size:26px}
 @media(max-width:700px){.resumoJulho46{grid-template-columns:1fr}}
 
+
+/* CaptaPro 4.9 • Ranking atualizado + Resultado Profissional amarelo */
+.resultadoProf49{
+  background:linear-gradient(135deg,#5f4600,#ffb300)!important;
+  color:#111!important;
+  border-color:#ffd54f!important;
+}
+.resultadoProf49 span{color:#111!important}
+.resultadoProf49 b{color:#111!important;font-size:24px!important;line-height:1.15}
+.resultadoMini49{font-size:11px;font-weight:900;color:#1b1b1b;margin-top:4px}
+.rankingResumo49{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 12px}
+.rankingResumo49 div{background:#151515;border:1px solid #333;border-radius:14px;padding:12px;text-align:center}
+.rankingResumo49 b{display:block;color:#00e676;font-size:26px}
+@media(max-width:700px){.rankingResumo49{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -583,7 +598,7 @@ body.appAberto #btnSairFinal{display:block!important}
   <div class="painelCard20 verde"><span>Q</span><b id="homeQ">0</b></div>
   <div class="painelCard20 amarelo"><span>NQ</span><b id="homeNQ">0</b></div>
   <div class="painelCard20 roxo"><span>Sala</span><b id="homeSala">0</b></div>
-  <div class="painelCard20 preto usoApp36"><span>Tempo de uso do app</span><b id="tempoUsoApp36">00h00</b></div>
+  <div class="painelCard20 resultadoProf49"><span>Resultado Julho</span><b id="resultadoProf49">0 casal<br>0 venda</b><div class="resultadoMini49" id="resultadoProfMini49">R$ 0 • 0%</div></div>
 </div>
 
 <div class="card metaCard35">
@@ -1403,7 +1418,7 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{aplicarRendaDi
 (function(){
 "use strict";
 
-const BASE_JULHO_48 = [{"nome": "José Ademir Silva Tavares", "casais": 8, "vendas": 0, "vgv": 0}, {"nome": "Pedro Henrique Gomes Santos", "casais": 7, "vendas": 0, "vgv": 0}, {"nome": "Adriano Moreira", "casais": 7, "vendas": 0, "vgv": 0}, {"nome": "Paulo Victor Ortiz", "casais": 6, "vendas": 0, "vgv": 0}, {"nome": "Mateus Santos Santa Rosa", "casais": 6, "vendas": 0, "vgv": 0}, {"nome": "Ivanilson Luiz Aguiar Lima", "casais": 4, "vendas": 0, "vgv": 0}, {"nome": "Jessica Barbosa", "casais": 4, "vendas": 0, "vgv": 0}, {"nome": "Marcio Alfaia", "casais": 3, "vendas": 0, "vgv": 0}, {"nome": "João Vitor Da Silva Francisco", "casais": 3, "vendas": 0, "vgv": 0}, {"nome": "Renan Marcondes Johas", "casais": 2, "vendas": 0, "vgv": 0}, {"nome": "Josyene Freitas", "casais": 2, "vendas": 0, "vgv": 0}, {"nome": "Matheus Domingos Santos", "casais": 2, "vendas": 0, "vgv": 0}, {"nome": "Ana Caroline", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Andre Carriço", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Jonatas França Da Silva", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Otávio José De Oliveira Martin", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Matheus Esley Silva", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Ricardo Maltchik", "casais": 1, "vendas": 0, "vgv": 0}];
+const BASE_JULHO_48 = [{"nome": "José Ademir", "casais": 8, "vendas": 2, "vgv": 185880}, {"nome": "Pedro Henrique", "casais": 7, "vendas": 6, "vgv": 512400}, {"nome": "Adriano Moreira", "casais": 7, "vendas": 0, "vgv": 0}, {"nome": "Paulo Victor", "casais": 6, "vendas": 3, "vgv": 270500}, {"nome": "Mateus Santos", "casais": 6, "vendas": 2, "vgv": 180000}, {"nome": "Ivanilson", "casais": 4, "vendas": 0, "vgv": 0}, {"nome": "Jéssica Barbosa", "casais": 4, "vendas": 0, "vgv": 0}, {"nome": "João Vitor", "casais": 3, "vendas": 0, "vgv": 0}, {"nome": "Márcio Alfaia", "casais": 3, "vendas": 0, "vgv": 0}, {"nome": "Josyene Freitas", "casais": 2, "vendas": 0, "vgv": 0}, {"nome": "Matheus Domingos", "casais": 2, "vendas": 0, "vgv": 0}, {"nome": "Renan Marcondes", "casais": 2, "vendas": 0, "vgv": 0}, {"nome": "Ana Caroline", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "André Carriço", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Jonatas França", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Matheus Esley", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Otávio José", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Ricardo Maltchik", "casais": 1, "vendas": 0, "vgv": 0}];
 const PONTOS48=[
  {nome:'Porta dentro do Park',lat:-22.74075,lng:-45.59225},
  {nome:'Park Dream House',lat:-22.74050,lng:-45.59205},
@@ -1603,6 +1618,57 @@ window.limparRakingCSV21=function(){ window.carregarRaking(); };
 window.importarRakingCSV21=function(){ window.carregarRaking(); };
 
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{window.carregarRaking(); carregarRelatorio48(true); carregarPortalCEO48(true);}catch(e){}},1000));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 4.9 • Ranking Julho atualizado + resultado individual ===== */
+(function(){
+"use strict";
+const RANKING_JULHO_49 = [{"nome": "José Ademir", "casais": 8, "vendas": 2, "vgv": 185880}, {"nome": "Pedro Henrique", "casais": 7, "vendas": 6, "vgv": 512400}, {"nome": "Adriano Moreira", "casais": 7, "vendas": 0, "vgv": 0}, {"nome": "Paulo Victor", "casais": 6, "vendas": 3, "vgv": 270500}, {"nome": "Mateus Santos", "casais": 6, "vendas": 2, "vgv": 180000}, {"nome": "Ivanilson", "casais": 4, "vendas": 0, "vgv": 0}, {"nome": "Jéssica Barbosa", "casais": 4, "vendas": 0, "vgv": 0}, {"nome": "João Vitor", "casais": 3, "vendas": 0, "vgv": 0}, {"nome": "Márcio Alfaia", "casais": 3, "vendas": 0, "vgv": 0}, {"nome": "Josyene Freitas", "casais": 2, "vendas": 0, "vgv": 0}, {"nome": "Matheus Domingos", "casais": 2, "vendas": 0, "vgv": 0}, {"nome": "Renan Marcondes", "casais": 2, "vendas": 0, "vgv": 0}, {"nome": "Ana Caroline", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "André Carriço", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Jonatas França", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Matheus Esley", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Otávio José", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Ricardo Maltchik", "casais": 1, "vendas": 0, "vgv": 0}];
+
+function E49(id){return document.getElementById(id)}
+function H49(id,v){if(E49(id))E49(id).innerHTML=v}
+function T49(id,v){if(E49(id))E49(id).innerText=v}
+function esc49(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+function norm49(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function moeda49(v){return 'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function pct49(vendas,casais){return casais?((Number(vendas||0)/Number(casais||0))*100).toFixed(2).replace('.',',')+'%':'0,00%'}
+function acharProf49(nome,email){
+  const n=norm49(nome||''), e=norm49(email||'');
+  return RANKING_JULHO_49.find(r=>{
+    const rn=norm49(r.nome);
+    return rn===n || (n&&rn.includes(n)) || (n&&n.includes(rn)) || (e&&rn.includes(e.split('@')[0]));
+  }) || {nome:nome||'Profissional',casais:0,vendas:0,vgv:0};
+}
+window.carregarResultadoProf49=function(){
+  const nome=window.usuarioNome||usuarioNome||E49('diarioNome')?.value||'';
+  const email=window.usuarioEmail||usuarioEmail||'';
+  const r=acharProf49(nome,email);
+  const casalTxt=Number(r.casais||0)===1?'1 casal':(Number(r.casais||0)+' casais');
+  const vendaTxt=Number(r.vendas||0)===1?'1 venda':(Number(r.vendas||0)+' vendas');
+  H49('resultadoProf49',`${casalTxt}<br>${vendaTxt}`);
+  T49('resultadoProfMini49',`${moeda49(r.vgv)} • ${pct49(r.vendas,r.casais)}`);
+}
+window.carregarRaking=function(){
+  const rows=[...RANKING_JULHO_49].sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv);
+  const totalCasais=rows.reduce((s,x)=>s+Number(x.casais||0),0);
+  const totalVendas=rows.reduce((s,x)=>s+Number(x.vendas||0),0);
+  const totalVgv=rows.reduce((s,x)=>s+Number(x.vgv||0),0);
+  H49('rakingFonte21',`Ranking de captação — Julho • Dia 01 até agora`);
+  H49('rakingBox',`<div class="rankingResumo49"><div>Total de casais<b>${totalCasais}</b></div><div>Total de vendas<b>${totalVendas}</b></div><div>VGV Geral<b>${moeda49(totalVgv)}</b></div></div>
+  <table><tr><th>Pos.</th><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${rows.map((r,i)=>`<tr><td>${i+1}º</td><td>${esc49(r.nome)}</td><td class="salaInd47">${r.casais}</td><td>${r.vendas}</td><td>${moeda49(r.vgv)}</td><td>${pct49(r.vendas,r.casais)}</td></tr>`).join('')}</table>`);
+  H49('portalRankingBox36',`<table><tr><th>Pos.</th><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${rows.map((r,i)=>`<tr><td>${i+1}º</td><td>${esc49(r.nome)}</td><td class="salaInd47">${r.casais}</td><td>${r.vendas}</td><td>${moeda49(r.vgv)}</td><td>${pct49(r.vendas,r.casais)}</td></tr>`).join('')}</table>`);
+  carregarResultadoProf49();
+};
+const oldAba49=window.aba;
+window.aba=function(id,b){
+  const r=oldAba49?oldAba49.apply(this,arguments):undefined;
+  setTimeout(()=>{try{if(id==='raking'||id==='qualificacao')window.carregarRaking(); if(id==='diario')carregarResultadoProf49()}catch(e){}},500);
+  return r;
+};
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{window.carregarRaking();carregarResultadoProf49()}catch(e){}},1200));
 })();
 </script>
 
