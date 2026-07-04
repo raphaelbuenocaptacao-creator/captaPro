@@ -390,6 +390,11 @@ body.appAberto #btnSairFinal{display:block!important}
 #mapaRealCEO37{height:620px!important}
 .pontoFixo41{filter:drop-shadow(0 0 8px #00c2ff)}
 
+
+/* CaptaPro 4.2 • Correção de delay/sumiço dos dados */
+.kpi b.valorFirme42{color:#ff3333!important}
+.statusSync42{font-size:12px;color:#00e676;margin-top:6px}
+
 </style>
 </head>
 <body>
@@ -4985,6 +4990,117 @@ if(typeof oldAbrir41==='function'&&!window.__abrir41){
     return r;
   }
 }
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 4.2 • Relatórios estáveis sem sumir ===== */
+(function(){
+let LOCK42=false;
+let CACHE42={ts:0,pesquisas:[],abordagens:[]};
+
+function E42(id){return document.getElementById(id)}
+function T42(id,v){if(E42(id)){E42(id).innerText=v;E42(id).classList.add('valorFirme42')}}
+function H42(id,v){if(E42(id))E42(id).innerHTML=v}
+function norm42(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function hoje42(){return new Date().toISOString().slice(0,10)}
+function data42(x){return String(x.created_at||x.data||'').slice(0,10)}
+function sala42(x){const s=norm42(x.sala_status||x.levou_sala||x.status_sala||x.sala||'');return s==='sim'||s.includes('confirm')||s.includes('sala')||x.sala===true}
+function esc42(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+async function buscar42(tabela){
+  try{const r=await db.from(tabela).select('*').limit(5000); if(!r.error)return r.data||[]}catch(e){}
+  try{return JSON.parse(localStorage.getItem(tabela+'Local')||'[]')}catch(e){return []}
+}
+async function base42(force=false){
+  if(!force && Date.now()-CACHE42.ts<12000)return CACHE42;
+  const [pesquisas,abordagens]=await Promise.all([buscar42('pesquisas'),buscar42('abordagens')]);
+  CACHE42={ts:Date.now(),pesquisas,abordagens};
+  return CACHE42;
+}
+function filtraPeriodo42(arr,de,ate){
+  return (arr||[]).filter(x=>{
+    const d=data42(x);
+    if(!d)return false;
+    if(de && d<de)return false;
+    if(ate && d>ate)return false;
+    return true;
+  });
+}
+function montarTabela42(p,a){
+  const by={};
+  p.forEach(x=>{
+    const k=x.user_email||x.captador_nome||x.profissional||'Sem nome';
+    if(!by[k])by[k]={nome:x.captador_nome||x.profissional||k,abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0};
+    by[k].pesq++;
+    if(x.qualificacao_automatica==='Q')by[k].q++;
+    else if(String(x.qualificacao_automatica||'').includes('1'))by[k].nq1++;
+    else by[k].nq++;
+    if(sala42(x))by[k].sala++;
+  });
+  a.forEach(x=>{
+    const k=x.user_email||x.captador_nome||x.profissional||'Sem nome';
+    if(!by[k])by[k]={nome:x.captador_nome||x.profissional||k,abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0};
+    by[k].abord++;
+  });
+  const rows=Object.values(by).sort((x,y)=>y.sala-x.sala||y.pesq-x.pesq||x.nome.localeCompare(y.nome));
+  if(!rows.length)return '<p class="mini">Sem dados nesse período.</p>';
+  return `<table><tr><th>Profissional</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th><th>Eficiência</th></tr>${rows.map(r=>`<tr><td>${esc42(r.nome)}</td><td>${r.abord}</td><td>${r.pesq}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.sala}</td><td>${r.pesq?Math.round(r.sala/r.pesq*100):0}%</td></tr>`).join('')}</table>`;
+}
+window.carregarRelatorio42=async function(force=true){
+  if(LOCK42)return;
+  LOCK42=true;
+  try{
+    const de=E42('relDe')?.value||hoje42();
+    const ate=E42('relAte')?.value||de;
+    if(E42('relDe')&&!E42('relDe').value)E42('relDe').value=de;
+    if(E42('relAte')&&!E42('relAte').value)E42('relAte').value=ate;
+    const b=await base42(force);
+    const p=filtraPeriodo42(b.pesquisas,de,ate);
+    const a=filtraPeriodo42(b.abordagens,de,ate);
+    const q=p.filter(x=>x.qualificacao_automatica==='Q').length;
+    const nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length;
+    const sala=p.filter(sala42).length;
+    const conv=p.length?Math.round(sala/p.length*100):0;
+    T42('rAbord',a.length);T42('rPesq',p.length);T42('rQ',q);T42('rNQ',p.length-q-nq1);T42('rNQ1',nq1);T42('rSala',sala);T42('rConv',conv+'%');
+    T42('ceoAbordHoje',a.length);T42('ceoPesqHoje',p.length);T42('ceoQHoje',q);T42('ceoNQHoje',p.length-q-nq1);T42('ceoSalaHoje',sala);T42('ceoSalaPendente',0);T42('ceoEficHoje',conv+'%');T42('ceoConvHoje',conv+'%');
+    H42('rankingEquipeBox13',montarTabela42(p,a));
+    H42('ceoResumoMesBox25',montarTabela42(p,a));
+  }finally{setTimeout(()=>LOCK42=false,700)}
+}
+window.carregarRelatorio=window.carregarRelatorio42;
+window.carregarDashboardCEO25=window.carregarRelatorio42;
+
+window.carregarPortalCEO42=async function(force=false){
+  if(LOCK42)return;
+  const b=await base42(force);
+  const p=filtraPeriodo42(b.pesquisas,hoje42(),hoje42());
+  const a=filtraPeriodo42(b.abordagens,hoje42(),hoje42());
+  const q=p.filter(x=>x.qualificacao_automatica==='Q').length;
+  const nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length;
+  const sala=p.filter(sala42).length;
+  const conv=p.length?Math.round(sala/p.length*100):0;
+  T42('p30Pesq',p.length);T42('p30Q',q);T42('p30NQ',p.length-q-nq1);T42('p30Sala',sala);T42('p30Pendente',0);T42('p30Efic',conv+'%');
+  H42('portalDashboardClean36',`<div class="portalCard36">Pesquisas<b>${p.length}</b></div><div class="portalCard36">Q<b>${q}</b></div><div class="portalCard36">Sala<b>${sala}</b></div><div class="portalCard36">Eficiência Sala<b>${conv}%</b></div><div class="portalCard36">Abordagens<b>${a.length}</b></div><div class="portalCard36">NQ<b>${p.length-q-nq1}</b></div><div class="portalCard36">1 Item<b>${nq1}</b></div><div class="portalCard36">Pendentes<b>0</b></div>`);
+  H42('portalEquipeBox35',montarTabela42(p,a));
+  H42('portalRankingBox36',montarTabela42(p,a));
+  try{if(typeof carregarMapaReal41==='function')carregarMapaReal41()}catch(e){}
+}
+window.carregarPortalCEO30=window.carregarPortalCEO42;
+window.carregarPortalCEO36=window.carregarPortalCEO42;
+window.carregarPortalCEO38=window.carregarPortalCEO42;
+window.carregarConferenciaSala20=window.carregarPortalCEO42;
+
+const oldAba42=window.aba;
+if(typeof oldAba42==='function'&&!window.__aba42){
+  window.__aba42=true;
+  window.aba=function(id,b){
+    const r=oldAba42.apply(this,arguments);
+    setTimeout(()=>{if(id==='relatorio')carregarRelatorio42(true); if(id==='qualificacao')carregarPortalCEO42(true)},500);
+    return r;
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{carregarRelatorio42(true);carregarPortalCEO42(true)}catch(e){}},1500));
 })();
 </script>
 
