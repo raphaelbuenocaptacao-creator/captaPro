@@ -411,6 +411,19 @@ body.appAberto #btnSairFinal{display:block!important}
 .rankingAdm43 h2{border-left-color:#00c2ff!important}
 .relStatus43{color:#00e676;font-size:12px;font-weight:900;margin-top:8px}
 
+
+/* CaptaPro 4.4 • Portal CEO final */
+#relatorio .adminOnly#ceoDashboard20{display:none!important}
+.ceoDia44{border-color:#00c2ff!important}
+.ceoDia44 h2{border-left-color:#00c2ff!important}
+.ceoProfCard44{background:#080808;border:1px solid #333;border-radius:14px;padding:12px;margin:8px 0}
+.ceoProfCard44 b{font-size:16px}
+.ceoProfGrid44{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.ceoProfGrid44 span{background:#151515;border:1px solid #292929;border-radius:10px;padding:8px;text-align:center;font-size:12px;color:#ccc}
+.ceoProfGrid44 strong{display:block;color:#ff3333;font-size:18px}
+.profOnline44{color:#00e676;font-weight:900}.profOffline44{color:#ff5252;font-weight:900}
+@media(max-width:700px){.ceoProfGrid44{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 <body>
@@ -772,6 +785,7 @@ body.appAberto #btnSairFinal{display:block!important}
     <div class="grid">
       <button class="main" onclick="abrirPortalBloco30('portalDashboard30')">📊 Dashboard</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalEquipe35')">👥 Equipe</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalRelatorioDia44')">📋 Relatório do Dia</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalMapa30')">📍 Mapa ao Vivo</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalSala30')">✅ Salas</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalRanking36')">🏆 Ranking</button>
@@ -797,6 +811,19 @@ body.appAberto #btnSairFinal{display:block!important}
     <button class="main" style="margin-top:8px" onclick="carregarPortalCEO30()">Atualizar Portal CEO</button>
   </div>
 
+
+
+  <div id="portalRelatorioDia44" class="card scroll portalBloco30 ceoDia44">
+    <h2>📋 Relatório do Dia • CEO</h2>
+    <p class="hint">Somente CEO: resultado do dia, geral da equipe e profissionais.</p>
+    <div class="grid">
+      <input id="ceoDiaData44" type="date">
+      <button class="main" onclick="carregarRelatorioDiaCEO44()">Atualizar relatório do dia</button>
+    </div>
+    <div id="ceoDiaResumo44" class="kpis"></div>
+    <div class="card scroll"><h2>Resultado Geral da Equipe</h2><div id="ceoDiaEquipe44"></div></div>
+    <div class="card scroll"><h2>Profissionais do Dia</h2><div id="ceoDiaProfissionais44"></div></div>
+  </div>
 
   <div id="portalMapa30" class="card scroll portalBloco30">
     <h2>📍 Mapa ao Vivo</h2>
@@ -5236,6 +5263,79 @@ window.carregarMapaReal41=window.carregarMapaReal43;
 const oldAba43=window.aba;
 if(typeof oldAba43==='function'&&!window.__aba43){window.__aba43=true;window.aba=function(id,b){const r=oldAba43.apply(this,arguments);setTimeout(()=>{if(id==='relatorio')carregarRelatorio43(true);if(id==='raking')carregarRaking43();if(id==='qualificacao'){carregarPortalCEO43(true);setTimeout(carregarMapaReal43,300)}},500);return r}}
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{carregarRankingManual43();carregarRelatorio43(true)}catch(e){}},1500));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 4.4 • Portal CEO com relatório do dia funcionando ===== */
+(function(){
+function C44(id){return document.getElementById(id)}
+function CV44(id){return (C44(id)?.value||'').trim()}
+function CT44(id,v){if(C44(id))C44(id).innerText=v}
+function CH44(id,v){if(C44(id))C44(id).innerHTML=v}
+function hoje44(){return new Date().toISOString().slice(0,10)}
+function data44(x){return String(x.created_at||x.data||'').slice(0,10)}
+function norm44(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function sala44(x){const s=norm44(x.sala_status||x.levou_sala||x.status_sala||x.sala||'');return s==='sim'||s.includes('confirm')||s.includes('sala')||x.sala===true}
+function esc44(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+function minAgo44(iso){if(!iso)return 99999;return Math.round((Date.now()-new Date(iso).getTime())/60000)}
+function online44(x){return minAgo44(x.last_seen||x.updated_at||x.created_at)<5}
+async function get44(t){try{const r=await db.from(t).select('*').limit(5000);if(!r.error)return r.data||[]}catch(e){}try{return JSON.parse(localStorage.getItem(t+'Local')||'[]')}catch(e){return []}}
+function filtraDia44(arr,dia){return (arr||[]).filter(x=>data44(x)===dia)}
+function grupo44(p,a,pres){
+  const by={};
+  p.forEach(x=>{
+    const k=x.user_email||x.captador_nome||x.profissional||'Sem nome';
+    if(!by[k])by[k]={nome:x.captador_nome||x.profissional||k,email:x.user_email||'',equipe:x.equipe||'',ponto:x.ponto_captacao||x.ponto||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0,vendas:0,vgv:0,online:false};
+    by[k].pesq++; by[k].equipe=x.equipe||by[k].equipe; by[k].ponto=x.ponto_captacao||x.ponto||by[k].ponto;
+    if(x.qualificacao_automatica==='Q')by[k].q++; else if(String(x.qualificacao_automatica||'').includes('1'))by[k].nq1++; else by[k].nq++;
+    if(sala44(x))by[k].sala++;
+  });
+  a.forEach(x=>{
+    const k=x.user_email||x.captador_nome||x.profissional||'Sem nome';
+    if(!by[k])by[k]={nome:x.captador_nome||x.profissional||k,email:x.user_email||'',equipe:x.equipe||'',ponto:x.ponto||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0,vendas:0,vgv:0,online:false};
+    by[k].abord++;
+  });
+  (pres||[]).forEach(x=>{
+    const k=x.email||x.nome||'Sem nome';
+    if(!by[k])by[k]={nome:x.nome||k,email:x.email||'',equipe:x.equipe||'',ponto:x.ponto||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0,vendas:0,vgv:0,online:online44(x)};
+    by[k].online=online44(x); by[k].ponto=x.ponto||by[k].ponto; by[k].equipe=x.equipe||by[k].equipe;
+  });
+  return Object.values(by).sort((x,y)=>y.sala-x.sala||y.pesq-x.pesq||x.nome.localeCompare(y.nome));
+}
+window.carregarRelatorioDiaCEO44=async function(){
+  const dia=CV44('ceoDiaData44')||hoje44();
+  if(C44('ceoDiaData44'))C44('ceoDiaData44').value=dia;
+  const [pesquisas,abordagens,presenca]=await Promise.all([get44('pesquisas'),get44('abordagens'),get44('captapro_presence')]);
+  const p=filtraDia44(pesquisas,dia), a=filtraDia44(abordagens,dia), rows=grupo44(p,a,presenca);
+  const q=p.filter(x=>x.qualificacao_automatica==='Q').length,nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length,sala=p.filter(sala44).length,conv=p.length?Math.round(sala/p.length*100):0;
+  CH44('ceoDiaResumo44',`<div class="kpi">Abordagens<b>${a.length}</b></div><div class="kpi">Pesquisas<b>${p.length}</b></div><div class="kpi">Q<b>${q}</b></div><div class="kpi">NQ<b>${p.length-q-nq1}</b></div><div class="kpi">1 Item<b>${nq1}</b></div><div class="kpi">Casais em Sala<b>${sala}</b></div><div class="kpi">Eficiência<b>${conv}%</b></div><div class="kpi">Profissionais<b>${rows.length}</b></div>`);
+  const equipe={PARK:{abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0},EXTERNA:{abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0},GERAL:{abord:a.length,pesq:p.length,q,nq:p.length-q-nq1,nq1,sala}};
+  rows.forEach(r=>{const e=String(r.equipe||'').toUpperCase().includes('EXTERNA')?'EXTERNA':'PARK';['abord','pesq','q','nq','nq1','sala'].forEach(k=>equipe[e][k]+=Number(r[k]||0))});
+  CH44('ceoDiaEquipe44',`<table><tr><th>Equipe</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th><th>Eficiência</th></tr>${Object.entries(equipe).map(([n,r])=>`<tr><td>${n}</td><td>${r.abord}</td><td>${r.pesq}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.sala}</td><td>${r.pesq?Math.round(r.sala/r.pesq*100):0}%</td></tr>`).join('')}</table>`);
+  CH44('ceoDiaProfissionais44',rows.length?rows.map(r=>`<div class="ceoProfCard44"><b>${esc44(r.nome)}</b> <span class="${r.online?'profOnline44':'profOffline44'}">${r.online?'🟢 Online':'🔴 Offline'}</span><br><small class="mini">📍 ${esc44(r.ponto||'Sem ponto')} • ${esc44(r.equipe||'-')}</small><div class="ceoProfGrid44"><span>Abord.<strong>${r.abord}</strong></span><span>Pesq.<strong>${r.pesq}</strong></span><span>Q<strong>${r.q}</strong></span><span>NQ<strong>${r.nq}</strong></span><span>1 Item<strong>${r.nq1}</strong></span><span>Sala<strong>${r.sala}</strong></span><span>Eficiência<strong>${r.pesq?Math.round(r.sala/r.pesq*100):0}%</strong></span><span>Vendas<strong>${r.vendas||0}</strong></span></div></div>`).join(''):'<p class="mini">Nenhum profissional encontrado no dia.</p>');
+  CT44('p30Pesq',p.length);CT44('p30Q',q);CT44('p30NQ',p.length-q-nq1);CT44('p30Sala',sala);CT44('p30Pendente',0);CT44('p30Efic',conv+'%');
+}
+const oldAbrir44=window.abrirPortalBloco30;
+if(typeof oldAbrir44==='function'&&!window.__abrir44){
+  window.__abrir44=true;
+  window.abrirPortalBloco30=function(id){
+    const r=oldAbrir44.apply(this,arguments);
+    if(id==='portalRelatorioDia44'||id==='portalDashboard30'||id==='portalEquipe35')setTimeout(carregarRelatorioDiaCEO44,400);
+    return r;
+  }
+}
+const oldAba44=window.aba;
+if(typeof oldAba44==='function'&&!window.__aba44){
+ window.__aba44=true;
+ window.aba=function(id,b){
+  const r=oldAba44.apply(this,arguments);
+  if(id==='qualificacao')setTimeout(carregarRelatorioDiaCEO44,700);
+  return r;
+ }
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{if(C44('ceoDiaData44'))carregarRelatorioDiaCEO44()}catch(e){}},1600));
 })();
 </script>
 
