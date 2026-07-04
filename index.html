@@ -424,6 +424,16 @@ body.appAberto #btnSairFinal{display:block!important}
 .profOnline44{color:#00e676;font-weight:900}.profOffline44{color:#ff5252;font-weight:900}
 @media(max-width:700px){.ceoProfGrid44{grid-template-columns:1fr 1fr}}
 
+
+/* CaptaPro 4.5 • Ajustes Raphael: mapa com nomes, sem tempo/ponto profissional */
+.usoApp36,.pontoAtual32{display:none!important}
+.markerCaptadorNome45{
+  background:#00e676;color:#061006;border:3px solid #fff;border-radius:999px;
+  padding:6px 10px;font-weight:900;font-size:12px;box-shadow:0 0 16px #00e676;white-space:nowrap
+}
+.markerCaptadorNome45.off{background:#ff3333;color:#fff;box-shadow:0 0 16px #ff3333}
+.portalBloco30{min-height:120px}
+
 </style>
 </head>
 <body>
@@ -5336,6 +5346,106 @@ if(typeof oldAba44==='function'&&!window.__aba44){
  }
 }
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{if(C44('ceoDiaData44'))carregarRelatorioDiaCEO44()}catch(e){}},1600));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 4.5 • Mapa com nomes + Portal CEO funcional ===== */
+(function(){
+function P45(id){return document.getElementById(id)}
+function PV45(id){return (P45(id)?.value||'').trim()}
+function PH45(id,v){if(P45(id))P45(id).innerHTML=v}
+function PT45(id,v){if(P45(id))P45(id).innerText=v}
+function esc45(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+function norm45(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function hoje45(){return new Date().toISOString().slice(0,10)}
+function data45(x){return String(x.created_at||x.data||'').slice(0,10)}
+function sala45(x){const s=norm45(x.sala_status||x.levou_sala||x.status_sala||x.sala||'');return s==='sim'||s.includes('confirm')||s.includes('sala')||x.sala===true}
+function minAgo45(iso){if(!iso)return 99999;return Math.round((Date.now()-new Date(iso).getTime())/60000)}
+function online45(x){return minAgo45(x.last_seen||x.updated_at||x.created_at)<5}
+async function get45(t){try{const r=await db.from(t).select('*').limit(5000);if(!r.error)return r.data||[]}catch(e){}try{return JSON.parse(localStorage.getItem(t+'Local')||'[]')}catch(e){return []}}
+
+const PONTOS45=[
+ {nome:'Porta dentro do Park',lat:-22.74075,lng:-45.59225},
+ {nome:'Park Dream House',lat:-22.74050,lng:-45.59205},
+ {nome:'Fábrica Spinassi',lat:-22.73925,lng:-45.59110},
+ {nome:'Corredor',lat:-22.73985,lng:-45.59175},
+ {nome:'Baden Baden',lat:-22.73870,lng:-45.59100},
+ {nome:'Djalma',lat:-22.73815,lng:-45.59050},
+ {nome:'Igreja',lat:-22.73845,lng:-45.59260},
+ {nome:'Renner',lat:-22.73895,lng:-45.59310},
+ {nome:'Guarda-chuvas',lat:-22.74010,lng:-45.59070},
+ {nome:'Posto Shell',lat:-22.74110,lng:-45.59300}
+];
+function pontoCoord45(nome){const n=norm45(nome);return PONTOS45.find(p=>norm45(p.nome)===n||norm45(p.nome).includes(n)||n.includes(norm45(p.nome)))}
+let MAP45=null,LAYERS45=[];
+window.carregarMapaReal45=async function(){
+ const box=P45('mapaRealCEO37'); if(!box||!window.L)return;
+ const equipe=PV45('mapEquipe37'),status=PV45('mapStatus37');
+ let pres=await get45('captapro_presence');
+ if(equipe)pres=pres.filter(x=>String(x.equipe||'').toUpperCase()===equipe);
+ if(status==='online')pres=pres.filter(online45); if(status==='offline')pres=pres.filter(x=>!online45(x));
+ if(!MAP45){MAP45=L.map('mapaRealCEO37').setView([-22.7395,-45.5917],16);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(MAP45)}
+ LAYERS45.forEach(l=>MAP45.removeLayer(l)); LAYERS45=[];
+ const bounds=[];
+ PONTOS45.forEach(p=>{
+   const ic=L.divIcon({className:'',html:`<div class="markerPonto43">📍 ${esc45(p.nome)}</div>`,iconSize:[130,28],iconAnchor:[8,14]});
+   const mk=L.marker([p.lat,p.lng],{icon:ic}).addTo(MAP45).bindPopup(`<b>📍 ${esc45(p.nome)}</b><br>Ponto de captação`);
+   const c=L.circle([p.lat,p.lng],{radius:50,color:'#00c2ff',fillColor:'#00c2ff',fillOpacity:.05,weight:1}).addTo(MAP45);
+   LAYERS45.push(mk,c);bounds.push([p.lat,p.lng]);
+ });
+ pres.forEach(x=>{
+   let lat=Number(x.lat),lng=Number(x.lng);
+   if(!lat||!lng){const pc=pontoCoord45(x.ponto);if(pc){lat=pc.lat+(Math.random()-.5)*0.00016;lng=pc.lng+(Math.random()-.5)*0.00016}}
+   if(!lat||!lng)return;
+   const on=online45(x), nome=esc45(x.nome||x.email||'Profissional');
+   const ic=L.divIcon({className:'',html:`<div class="markerCaptadorNome45 ${on?'':'off'}">${on?'🟢':'🔴'} ${nome}</div>`,iconSize:[130,28],iconAnchor:[8,14]});
+   const mk=L.marker([lat,lng],{icon:ic}).addTo(MAP45).bindPopup(`<b>${nome}</b><br>${on?'🟢 Online':'🔴 Offline'}<br>📍 ${esc45(x.ponto||'Sem ponto')}<br>${minAgo45(x.last_seen)<=0?'agora':'há '+minAgo45(x.last_seen)+' min'}`);
+   LAYERS45.push(mk);bounds.push([lat,lng]);
+ });
+ if(bounds.length)MAP45.fitBounds(bounds,{padding:[25,25],maxZoom:17});
+ setTimeout(()=>MAP45.invalidateSize(),300);
+}
+window.carregarMapaReal37=window.carregarMapaReal45;
+window.carregarMapaReal39=window.carregarMapaReal45;
+window.carregarMapaReal41=window.carregarMapaReal45;
+window.carregarMapaReal43=window.carregarMapaReal45;
+
+window.carregarTodasColunasCEO45=async function(){
+ const dia=PV45('ceoDiaData44')||hoje45();
+ if(P45('ceoDiaData44'))P45('ceoDiaData44').value=dia;
+ const [p,a,pres]=await Promise.all([get45('pesquisas'),get45('abordagens'),get45('captapro_presence')]);
+ const pd=p.filter(x=>data45(x)===dia), ad=a.filter(x=>data45(x)===dia);
+ const q=pd.filter(x=>x.qualificacao_automatica==='Q').length, nq1=pd.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length, sala=pd.filter(sala45).length, conv=pd.length?Math.round(sala/pd.length*100):0;
+ PT45('p30Pesq',pd.length);PT45('p30Q',q);PT45('p30NQ',pd.length-q-nq1);PT45('p30Sala',sala);PT45('p30Pendente',0);PT45('p30Efic',conv+'%');
+ const by={};
+ pd.forEach(x=>{const k=x.user_email||x.captador_nome||'Sem nome';if(!by[k])by[k]={nome:x.captador_nome||k,email:x.user_email||'',equipe:x.equipe||'',ponto:x.ponto_captacao||x.ponto||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0,online:false};by[k].pesq++;if(x.qualificacao_automatica==='Q')by[k].q++;else if(String(x.qualificacao_automatica||'').includes('1'))by[k].nq1++;else by[k].nq++;if(sala45(x))by[k].sala++});
+ ad.forEach(x=>{const k=x.user_email||x.captador_nome||'Sem nome';if(!by[k])by[k]={nome:x.captador_nome||k,email:x.user_email||'',equipe:x.equipe||'',ponto:x.ponto||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0,online:false};by[k].abord++});
+ pres.forEach(x=>{const k=x.email||x.nome||'Sem nome';if(!by[k])by[k]={nome:x.nome||k,email:x.email||'',equipe:x.equipe||'',ponto:x.ponto||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0,online:online45(x)};by[k].online=online45(x);by[k].ponto=x.ponto||by[k].ponto;by[k].equipe=x.equipe||by[k].equipe});
+ const rows=Object.values(by).sort((x,y)=>y.sala-x.sala||y.pesq-x.pesq);
+ const tabela=rows.length?`<table><tr><th>Profissional</th><th>Status</th><th>Ponto</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th><th>Eficiência</th></tr>${rows.map(r=>`<tr><td>${esc45(r.nome)}</td><td>${r.online?'🟢':'🔴'}</td><td>${esc45(r.ponto||'-')}</td><td>${r.abord}</td><td>${r.pesq}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.sala}</td><td>${r.pesq?Math.round(r.sala/r.pesq*100):0}%</td></tr>`).join('')}</table>`:'<p class="mini">Sem profissionais no dia.</p>';
+ PH45('portalEquipeBox35',tabela);PH45('portalRankingBox36',tabela);
+ try{carregarRelatorioDiaCEO44()}catch(e){}
+}
+const oldAbrir45=window.abrirPortalBloco30;
+if(typeof oldAbrir45==='function'&&!window.__abrir45){
+ window.__abrir45=true;
+ window.abrirPortalBloco30=function(id){
+   const r=oldAbrir45.apply(this,arguments);
+   setTimeout(()=>{if(id==='portalMapa30')carregarMapaReal45();else carregarTodasColunasCEO45()},500);
+   return r;
+ }
+}
+const oldAba45=window.aba;
+if(typeof oldAba45==='function'&&!window.__aba45){
+ window.__aba45=true;
+ window.aba=function(id,b){
+   const r=oldAba45.apply(this,arguments);
+   if(id==='qualificacao')setTimeout(()=>{carregarTodasColunasCEO45();carregarMapaReal45()},800);
+   return r;
+ }
+}
 })();
 </script>
 
