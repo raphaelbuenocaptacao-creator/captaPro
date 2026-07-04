@@ -395,6 +395,22 @@ body.appAberto #btnSairFinal{display:block!important}
 .kpi b.valorFirme42{color:#ff3333!important}
 .statusSync42{font-size:12px;color:#00e676;margin-top:6px}
 
+
+/* CaptaPro 4.3 • Correção mapa, relatório e ranking ADM */
+#mapaRealCEO37{height:560px!important;min-height:560px!important;background:#050505!important}
+.markerPonto43{
+  background:#00c2ff;color:#001;border:3px solid #fff;border-radius:999px;
+  padding:5px 9px;font-weight:900;font-size:12px;box-shadow:0 0 16px #00c2ff;white-space:nowrap
+}
+.markerCaptador43{
+  width:22px;height:22px;border-radius:50%;border:4px solid #fff;background:#00e676;
+  box-shadow:0 0 0 8px rgba(0,230,118,.22),0 0 18px #00e676
+}
+.markerCaptador43.off{background:#ff3333;box-shadow:0 0 0 8px rgba(255,51,51,.18),0 0 18px #ff3333}
+.rankingAdm43{border-color:#00c2ff!important}
+.rankingAdm43 h2{border-left-color:#00c2ff!important}
+.relStatus43{color:#00e676;font-size:12px;font-weight:900;margin-top:8px}
+
 </style>
 </head>
 <body>
@@ -5101,6 +5117,125 @@ if(typeof oldAba42==='function'&&!window.__aba42){
   }
 }
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{carregarRelatorio42(true);carregarPortalCEO42(true)}catch(e){}},1500));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 4.3 • Mapa pontos visíveis + relatório firme + ranking ADM ===== */
+(function(){
+const PONTOS43=[
+ {nome:'Porta dentro do Park',lat:-22.74075,lng:-45.59225},
+ {nome:'Park Dream House',lat:-22.74050,lng:-45.59205},
+ {nome:'Fábrica Spinassi',lat:-22.73925,lng:-45.59110},
+ {nome:'Corredor',lat:-22.73985,lng:-45.59175},
+ {nome:'Baden Baden',lat:-22.73870,lng:-45.59100},
+ {nome:'Djalma',lat:-22.73815,lng:-45.59050},
+ {nome:'Igreja',lat:-22.73845,lng:-45.59260},
+ {nome:'Renner',lat:-22.73895,lng:-45.59310},
+ {nome:'Guarda-chuvas',lat:-22.74010,lng:-45.59070},
+ {nome:'Posto Shell',lat:-22.74110,lng:-45.59300}
+];
+let MAP43=null,LAYERS43=[],BUSY43=false,CACHE43={ts:0,pesquisas:[],abordagens:[],presenca:[]};
+
+function X43(id){return document.getElementById(id)}
+function XV43(id){return (X43(id)?.value||'').trim()}
+function XT43(id,v){if(X43(id))X43(id).innerText=v}
+function XH43(id,v){if(X43(id))X43(id).innerHTML=v}
+function norm43(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function hoje43(){return new Date().toISOString().slice(0,10)}
+function data43(x){return String(x.created_at||x.data||x.dia||'').slice(0,10)}
+function sala43(x){const s=norm43(x.sala_status||x.levou_sala||x.status_sala||x.sala||'');return s==='sim'||s.includes('confirm')||s.includes('sala')||x.sala===true}
+function esc43(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+function minAgo43(iso){if(!iso)return 99999;return Math.round((Date.now()-new Date(iso).getTime())/60000)}
+function online43(x){return minAgo43(x.last_seen||x.updated_at||x.created_at)<5}
+function pontoCoord43(nome){const n=norm43(nome);return PONTOS43.find(p=>norm43(p.nome)===n || norm43(p.nome).includes(n) || n.includes(norm43(p.nome)))}
+async function buscar43(t){try{const r=await db.from(t).select('*').limit(5000);if(!r.error)return r.data||[]}catch(e){}try{return JSON.parse(localStorage.getItem(t+'Local')||'[]')}catch(e){return []}}
+async function base43(force=false){
+ if(!force && Date.now()-CACHE43.ts<15000)return CACHE43;
+ const [pesquisas,abordagens,presenca]=await Promise.all([buscar43('pesquisas'),buscar43('abordagens'),buscar43('captapro_presence')]);
+ CACHE43={ts:Date.now(),pesquisas,abordagens,presenca};return CACHE43;
+}
+function periodo43(arr,de,ate){
+ return (arr||[]).filter(x=>{const d=data43(x);if(!d)return false;if(de&&d<de)return false;if(ate&&d>ate)return false;return true})
+}
+function tabela43(p,a,manual=[]){
+ const by={};
+ p.forEach(x=>{const k=x.user_email||x.captador_nome||x.profissional||'Sem nome';if(!by[k])by[k]={nome:x.captador_nome||x.profissional||k,abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0,vendas:0,vgv:0};by[k].pesq++;if(x.qualificacao_automatica==='Q')by[k].q++;else if(String(x.qualificacao_automatica||'').includes('1'))by[k].nq1++;else by[k].nq++;if(sala43(x))by[k].sala++;});
+ a.forEach(x=>{const k=x.user_email||x.captador_nome||x.profissional||'Sem nome';if(!by[k])by[k]={nome:x.captador_nome||x.profissional||k,abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0,vendas:0,vgv:0};by[k].abord++;});
+ manual.forEach(m=>{const k=m.nome;if(!by[k])by[k]={nome:k,abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0,vendas:0,vgv:0};by[k].sala+=Number(m.casais||0);by[k].vendas+=Number(m.vendas||0);by[k].vgv+=Number(m.vgv||0);});
+ const rows=Object.values(by).sort((x,y)=>y.sala-x.sala||y.vendas-x.vendas||y.pesq-x.pesq);
+ if(!rows.length)return '<p class="mini">Sem dados no período selecionado.</p>';
+ return `<table><tr><th>Profissional</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Casais/Sala</th><th>Vendas</th><th>Eficiência</th></tr>${rows.map(r=>`<tr><td>${esc43(r.nome)}</td><td>${r.abord}</td><td>${r.pesq}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.sala}</td><td>${r.vendas||0}</td><td>${r.pesq?Math.round(r.sala/r.pesq*100):0}%</td></tr>`).join('')}</table>`;
+}
+function manuais43(){try{return JSON.parse(localStorage.getItem('rankingManual43')||'[]')}catch(e){return []}}
+function salvarManuais43(arr){localStorage.setItem('rankingManual43',JSON.stringify(arr))}
+window.salvarRankingManual43=function(){
+ const nome=XV43('admRankNome43'); if(!nome){XH43('admRankMsg43','<span class="erro">Informe o nome.</span>');return}
+ const arr=manuais43(); arr.push({nome,casais:Number(XV43('admRankCasais43')||0),vendas:Number(XV43('admRankVendas43')||0),vgv:Number(XV43('admRankVGV43')||0),created_at:new Date().toISOString()});
+ salvarManuais43(arr); XH43('admRankMsg43','<span class="ok">Ranking manual salvo.</span>'); carregarRankingManual43(); carregarRaking43();
+}
+window.removerRankingManual43=function(i){const arr=manuais43();arr.splice(i,1);salvarManuais43(arr);carregarRankingManual43();carregarRaking43()}
+window.carregarRankingManual43=function(){
+ const arr=manuais43();
+ XH43('admRankLista43',arr.length?`<table><tr><th>Nome</th><th>Casais</th><th>Vendas</th><th></th></tr>${arr.map((x,i)=>`<tr><td>${esc43(x.nome)}</td><td>${x.casais}</td><td>${x.vendas}</td><td><button class="secondary" onclick="removerRankingManual43(${i})">Remover</button></td></tr>`).join('')}</table>`:'<p class="mini">Nenhum ajuste manual.</p>');
+}
+window.carregarRelatorio43=async function(force=true){
+ if(BUSY43)return;BUSY43=true;
+ try{
+  const de=XV43('relDe')||hoje43(), ate=XV43('relAte')||de;
+  if(X43('relDe')&&!XV43('relDe'))X43('relDe').value=de;
+  if(X43('relAte')&&!XV43('relAte'))X43('relAte').value=ate;
+  const b=await base43(force), p=periodo43(b.pesquisas,de,ate), a=periodo43(b.abordagens,de,ate);
+  const q=p.filter(x=>x.qualificacao_automatica==='Q').length,nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length,sala=p.filter(sala43).length,conv=p.length?Math.round(sala/p.length*100):0;
+  XT43('rAbord',a.length);XT43('rPesq',p.length);XT43('rQ',q);XT43('rNQ',p.length-q-nq1);XT43('rNQ1',nq1);XT43('rSala',sala);XT43('rConv',conv+'%');
+  XT43('ceoAbordHoje',a.length);XT43('ceoPesqHoje',p.length);XT43('ceoQHoje',q);XT43('ceoNQHoje',p.length-q-nq1);XT43('ceoSalaHoje',sala);XT43('ceoSalaPendente',0);XT43('ceoEficHoje',conv+'%');XT43('ceoConvHoje',conv+'%');
+  XH43('rankingEquipeBox13',tabela43(p,a,[])); XH43('ceoResumoMesBox25',tabela43(p,a,[]));
+  if(!X43('relStatus43'))X43('rankingEquipeBox13')?.insertAdjacentHTML('afterend','<div id="relStatus43" class="relStatus43"></div>');
+  XT43('relStatus43',`Atualizado ${new Date().toLocaleTimeString('pt-BR')} • ${de} até ${ate}`);
+ }finally{setTimeout(()=>BUSY43=false,600)}
+}
+window.carregarRaking43=async function(){
+ const de=XV43('rakingDe')||'2026-07-01', ate=XV43('rakingAte')||hoje43();
+ const b=await base43(true), p=periodo43(b.pesquisas,de,ate), a=periodo43(b.abordagens,de,ate);
+ XH43('rakingBox',tabela43(p,a,manuais43()));
+ XH43('rakingFonte21',`Dados do sistema + ajustes manuais ADM • ${de} até ${ate}`);
+ carregarRankingManual43();
+}
+window.carregarRaking=window.carregarRaking43;
+window.carregarRelatorio=window.carregarRelatorio43;
+window.carregarDashboardCEO25=window.carregarRelatorio43;
+window.carregarPortalCEO43=async function(force=true){
+ const b=await base43(force), p=periodo43(b.pesquisas,hoje43(),hoje43()), a=periodo43(b.abordagens,hoje43(),hoje43());
+ const q=p.filter(x=>x.qualificacao_automatica==='Q').length,nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length,sala=p.filter(sala43).length,conv=p.length?Math.round(sala/p.length*100):0;
+ XT43('p30Pesq',p.length);XT43('p30Q',q);XT43('p30NQ',p.length-q-nq1);XT43('p30Sala',sala);XT43('p30Pendente',0);XT43('p30Efic',conv+'%');
+ XH43('portalDashboardClean36',`<div class="portalCard36">Pesquisas<b>${p.length}</b></div><div class="portalCard36">Q<b>${q}</b></div><div class="portalCard36">Sala<b>${sala}</b></div><div class="portalCard36">Eficiência<b>${conv}%</b></div><div class="portalCard36">Abordagens<b>${a.length}</b></div><div class="portalCard36">NQ<b>${p.length-q-nq1}</b></div><div class="portalCard36">1 Item<b>${nq1}</b></div><div class="portalCard36">Pendentes<b>0</b></div>`);
+ XH43('portalEquipeBox35',tabela43(p,a,[]));XH43('portalRankingBox36',tabela43(p,a,manuais43()));
+}
+window.carregarPortalCEO30=window.carregarPortalCEO43;
+window.carregarPortalCEO36=window.carregarPortalCEO43;
+window.carregarPortalCEO38=window.carregarPortalCEO43;
+window.carregarPortalCEO42=window.carregarPortalCEO43;
+window.carregarConferenciaSala20=window.carregarPortalCEO43;
+
+window.carregarMapaReal43=async function(){
+ const box=X43('mapaRealCEO37');if(!box||!window.L)return;
+ const equipe=XV43('mapEquipe37'),status=XV43('mapStatus37');
+ const b=await base43(false);let data=(b.presenca||[]);
+ if(equipe)data=data.filter(x=>String(x.equipe||'').toUpperCase()===equipe);
+ if(status==='online')data=data.filter(online43); if(status==='offline')data=data.filter(x=>!online43(x));
+ if(!MAP43){MAP43=L.map('mapaRealCEO37').setView([-22.7395,-45.5917],16);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(MAP43)}
+ LAYERS43.forEach(l=>MAP43.removeLayer(l));LAYERS43=[]; const bounds=[];
+ PONTOS43.forEach(p=>{const icon=L.divIcon({className:'',html:`<div class="markerPonto43">📍 ${esc43(p.nome)}</div>`,iconSize:[120,28],iconAnchor:[8,14]});const mk=L.marker([p.lat,p.lng],{icon}).addTo(MAP43).bindPopup(`<b>📍 ${esc43(p.nome)}</b><br>Ponto de captação`);const c=L.circle([p.lat,p.lng],{radius:50,color:'#00c2ff',fillColor:'#00c2ff',fillOpacity:.06,weight:1}).addTo(MAP43);LAYERS43.push(mk,c);bounds.push([p.lat,p.lng])});
+ data.forEach(x=>{let lat=Number(x.lat),lng=Number(x.lng);if(!lat||!lng){const pc=pontoCoord43(x.ponto);if(pc){lat=pc.lat+(Math.random()-.5)*0.00015;lng=pc.lng+(Math.random()-.5)*0.00015}}if(!lat||!lng)return;const on=online43(x);const icon=L.divIcon({className:'',html:`<div class="markerCaptador43 ${on?'':'off'}"></div>`,iconSize:[22,22],iconAnchor:[11,11]});const mk=L.marker([lat,lng],{icon}).addTo(MAP43).bindPopup(`<b>${esc43(x.nome||x.email)}</b><br>${on?'🟢 Online':'🔴 Offline'}<br>📍 ${esc43(x.ponto||'Sem ponto')}<br>${minAgo43(x.last_seen)<=0?'agora':'há '+minAgo43(x.last_seen)+' min'}`);LAYERS43.push(mk);bounds.push([lat,lng])});
+ if(bounds.length)MAP43.fitBounds(bounds,{padding:[25,25],maxZoom:17});setTimeout(()=>MAP43.invalidateSize(),300);
+}
+window.carregarMapaReal37=window.carregarMapaReal43;
+window.carregarMapaReal39=window.carregarMapaReal43;
+window.carregarMapaReal41=window.carregarMapaReal43;
+const oldAba43=window.aba;
+if(typeof oldAba43==='function'&&!window.__aba43){window.__aba43=true;window.aba=function(id,b){const r=oldAba43.apply(this,arguments);setTimeout(()=>{if(id==='relatorio')carregarRelatorio43(true);if(id==='raking')carregarRaking43();if(id==='qualificacao'){carregarPortalCEO43(true);setTimeout(carregarMapaReal43,300)}},500);return r}}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{carregarRankingManual43();carregarRelatorio43(true)}catch(e){}},1500));
 })();
 </script>
 
