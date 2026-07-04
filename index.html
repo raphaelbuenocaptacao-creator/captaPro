@@ -434,6 +434,25 @@ body.appAberto #btnSairFinal{display:block!important}
 .markerCaptadorNome45.off{background:#ff3333;color:#fff;box-shadow:0 0 16px #ff3333}
 .portalBloco30{min-height:120px}
 
+
+/* CaptaPro 4.6 • Resultado de casais em sala Julho */
+.rankingJulho46{border-color:#00e676!important}
+.rankingJulho46 h2{border-left-color:#00e676!important}
+.resumoJulho46{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.resumoJulho46 div{background:#151515;border:1px solid #333;border-radius:14px;padding:12px;text-align:center}
+.resumoJulho46 b{display:block;color:#00e676;font-size:26px}
+@media(max-width:700px){.resumoJulho46{grid-template-columns:1fr}}
+
+
+/* CaptaPro 4.7 • Sala independente + mapa sem nomes sobre ponto */
+.markerCaptadorNome45{display:none!important}
+.markerCaptador47{
+  width:18px;height:18px;border-radius:50%;border:4px solid #fff;background:#00e676;
+  box-shadow:0 0 0 6px rgba(0,230,118,.22),0 0 16px #00e676
+}
+.markerCaptador47.off{background:#ff3333;box-shadow:0 0 0 6px rgba(255,51,51,.18),0 0 16px #ff3333}
+.salaInd47{color:#00e676!important;font-weight:900}
+
 </style>
 </head>
 <body>
@@ -5446,6 +5465,49 @@ if(typeof oldAba45==='function'&&!window.__aba45){
    return r;
  }
 }
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 4.6 • Resultado de casais em sala de Julho carregado ===== */
+(function(){
+const CASAIS_JULHO_46 = [{"nome": "José Ademir Silva Tavares", "casais": 8, "vendas": 0, "vgv": 0}, {"nome": "Pedro Henrique Gomes Santos", "casais": 7, "vendas": 0, "vgv": 0}, {"nome": "Adriano Moreira", "casais": 7, "vendas": 0, "vgv": 0}, {"nome": "Paulo Victor Ortiz", "casais": 6, "vendas": 0, "vgv": 0}, {"nome": "Mateus Santos Santa Rosa", "casais": 6, "vendas": 0, "vgv": 0}, {"nome": "Ivanilson Luiz Aguiar Lima", "casais": 4, "vendas": 0, "vgv": 0}, {"nome": "Jessica Barbosa", "casais": 4, "vendas": 0, "vgv": 0}, {"nome": "Marcio Alfaia", "casais": 3, "vendas": 0, "vgv": 0}, {"nome": "João Vitor Da Silva Francisco", "casais": 3, "vendas": 0, "vgv": 0}, {"nome": "Renan Marcondes Johas", "casais": 2, "vendas": 0, "vgv": 0}, {"nome": "Josyene Freitas", "casais": 2, "vendas": 0, "vgv": 0}, {"nome": "Matheus Domingos Santos", "casais": 2, "vendas": 0, "vgv": 0}, {"nome": "Ana Caroline", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Andre Carriço", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Jonatas França Da Silva", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Otávio José De Oliveira Martin", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Matheus Esley Silva", "casais": 1, "vendas": 0, "vgv": 0}, {"nome": "Ricardo Maltchik", "casais": 1, "vendas": 0, "vgv": 0}];
+function J46(id){return document.getElementById(id)}
+function JH46(id,v){if(J46(id))J46(id).innerHTML=v}
+function JT46(id,v){if(J46(id))J46(id).innerText=v}
+function esc46(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+function norm46(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function manuais46(){try{return JSON.parse(localStorage.getItem('rankingManual43')||'[]')}catch(e){return []}}
+function merge46(){
+  const by={};
+  CASAIS_JULHO_46.forEach(x=>{const k=norm46(x.nome);by[k]={nome:x.nome,casais:Number(x.casais||0),vendas:Number(x.vendas||0),vgv:Number(x.vgv||0),origem:'Planilha'}})
+  manuais46().forEach(x=>{
+    const k=norm46(x.nome);
+    if(!by[k])by[k]={nome:x.nome,casais:0,vendas:0,vgv:0,origem:'ADM'};
+    by[k].casais+=Number(x.casais||0);by[k].vendas+=Number(x.vendas||0);by[k].vgv+=Number(x.vgv||0);by[k].origem='Planilha + ADM';
+  });
+  return Object.values(by).sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||a.nome.localeCompare(b.nome));
+}
+window.carregarRaking46=function(){
+  const rows=merge46();
+  const totalCasais=rows.reduce((s,x)=>s+Number(x.casais||0),0);
+  const totalVendas=rows.reduce((s,x)=>s+Number(x.vendas||0),0);
+  const totalVgv=rows.reduce((s,x)=>s+Number(x.vgv||0),0);
+  JH46('rakingFonte21',`Resultado importado da planilha de controle de sala • Total: ${totalCasais} casais em sala`);
+  JH46('rakingBox',`<div class="resumoJulho46"><div>Casais em sala<b>${totalCasais}</b></div><div>Vendas<b>${totalVendas}</b></div><div>VGV<b>R$ ${totalVgv.toLocaleString('pt-BR')}</b></div></div>
+  <table><tr><th>Pos.</th><th>Profissional</th><th>Casais em Sala</th><th>Vendas</th><th>VGV</th><th>Origem</th></tr>${rows.map((r,i)=>`<tr><td>${i+1}º</td><td>${esc46(r.nome)}</td><td>${r.casais}</td><td>${r.vendas||0}</td><td>R$ ${(Number(r.vgv||0)).toLocaleString('pt-BR')}</td><td>${esc46(r.origem||'Planilha')}</td></tr>`).join('')}</table>`);
+  const tabelaPortal=`<table><tr><th>Profissional</th><th>Casais em Sala</th><th>Vendas</th><th>VGV</th></tr>${rows.map(r=>`<tr><td>${esc46(r.nome)}</td><td>${r.casais}</td><td>${r.vendas||0}</td><td>R$ ${(Number(r.vgv||0)).toLocaleString('pt-BR')}</td></tr>`).join('')}</table>`;
+  JH46('portalRankingBox36',tabelaPortal);
+  JH46('portalMetasBox36',rows.map(r=>`<div class="fichaLinha35"><b>${esc46(r.nome)}</b><small>${r.casais} casais em sala no mês</small><div class="metaBar35"><div class="metaFill35" style="width:${Math.min(100,Math.round((r.casais/35)*100))}%"></div></div></div>`).join(''));
+}
+window.carregarRaking=window.carregarRaking46;
+const oldAba46=window.aba;
+if(typeof oldAba46==='function'&&!window.__aba46){
+ window.__aba46=true;
+ window.aba=function(id,b){const r=oldAba46.apply(this,arguments); if(id==='raking')setTimeout(carregarRaking46,400); if(id==='qualificacao')setTimeout(carregarRaking46,900); return r}
+}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{carregarRaking46()}catch(e){}},1600));
 })();
 </script>
 
