@@ -516,6 +516,23 @@ body.appAberto #btnSairFinal{display:block!important}
 .cpProProfPin.off{background:#ff5252;box-shadow:0 0 0 8px rgba(255,82,82,.18),0 0 18px #ff5252}
 @media(max-width:700px){.cpProMapa{height:430px;min-height:430px}.cpProCleanTabs{grid-template-columns:1fr 1fr}}
 
+
+/* CAPTAPRO 1.0 PRO - MENU FINAL DO JEITO COMBINADO */
+.cpMenuFinal{display:grid!important;grid-template-columns:repeat(5,1fr)!important;gap:10px!important;margin:18px auto!important;max-width:1100px!important}
+.cpMenuFinal button{
+  min-height:86px!important;border-radius:18px!important;border:1px solid #333!important;
+  background:#181818!important;color:#fff!important;font-weight:900!important;font-size:18px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;
+  padding:12px!important
+}
+.cpMenuFinal button.active{background:linear-gradient(135deg,#ef1b24,#ff3333)!important;border:0!important}
+.cpMenuFinal button:hover{filter:brightness(1.15)}
+.cpHiddenFinal{display:none!important}
+.cpFinalTitle{max-width:1100px;margin:10px auto;background:#101010;border:1px solid #2b2b2b;border-radius:18px;padding:16px}
+.cpFinalTitle h2{font-size:28px;margin-bottom:6px}
+.cpFinalTitle p{color:#bbb;font-size:15px}
+@media(max-width:800px){.cpMenuFinal{grid-template-columns:1fr 1fr!important}.cpMenuFinal button{min-height:70px!important;font-size:15px!important}}
+
 </style>
 </head>
 <body>
@@ -6026,4 +6043,136 @@ document.addEventListener("DOMContentLoaded",function(){setTimeout(function(){tr
 })();
 </script>
 
+
+<script>
+/* CAPTAPRO 1.0 PRO - AJUSTE FINAL DO MENU E TELAS */
+(function(){
+"use strict";
+if(window.__CP_MENU_FINAL__) return;
+window.__CP_MENU_FINAL__ = true;
+
+function E(id){return document.getElementById(id)}
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+
+function montarMenuFinal(){
+  var oldButtons=[...document.querySelectorAll("button")].filter(function(b){
+    var t=norm(b.innerText);
+    return ["pesquisa","meu profissional","relatorio","relatório","ranking julho","arena sx","portal ceo"].some(function(x){return t===x || t.includes(x)})
+  });
+
+  if(!oldButtons.length) return;
+
+  var parent=oldButtons[0].parentElement;
+  if(!parent) return;
+
+  oldButtons.forEach(function(b){b.classList.add("cpHiddenFinal")});
+
+  if(document.getElementById("cpMenuFinal")) return;
+
+  var menu=document.createElement("div");
+  menu.id="cpMenuFinal";
+  menu.className="cpMenuFinal";
+  menu.innerHTML=
+    '<button data-aba="pesquisa" class="active">📋<br>Pesquisa</button>'+
+    '<button data-aba="relatorio">📊<br>Relatórios</button>'+
+    '<button data-aba="arena">🎮<br>Arena SX</button>'+
+    '<button data-aba="qualificacao">👑<br>Portal CEO</button>'+
+    '<button data-aba="diario">📡<br>Pulsador</button>';
+
+  parent.appendChild(menu);
+
+  menu.querySelectorAll("button").forEach(function(btn){
+    btn.onclick=function(){
+      menu.querySelectorAll("button").forEach(function(x){x.classList.remove("active")});
+      btn.classList.add("active");
+      var aba=btn.getAttribute("data-aba");
+      if(window.aba) window.aba(aba,btn);
+      setTimeout(function(){
+        if(aba==="diario" && window.renderPulsadorPro) window.renderPulsadorPro();
+        if(aba==="relatorio" && window.renderRelatorioPro) window.renderRelatorioPro();
+        if(aba==="qualificacao" && window.renderPortalPro) window.renderPortalPro();
+        if(aba==="arena" && window.renderArenaSXEtapa3) window.renderArenaSXEtapa3();
+      },500);
+    }
+  });
+}
+
+function ajustarTextos(){
+  var relBtn=[...document.querySelectorAll("button")].find(function(b){return norm(b.innerText)==="relatorio"||norm(b.innerText)==="relatório"});
+  if(relBtn) relBtn.innerHTML="📊<br>Relatórios";
+  var meuBtn=[...document.querySelectorAll("button")].find(function(b){return norm(b.innerText).includes("meu profissional")});
+  if(meuBtn) meuBtn.innerHTML="📡<br>Pulsador";
+  [...document.querySelectorAll("button")].forEach(function(b){
+    if(norm(b.innerText).includes("ranking julho")) b.classList.add("cpHiddenFinal");
+  });
+}
+
+function deixarPesquisaComoFicha(){
+  var pesquisa=E("pesquisa");
+  if(!pesquisa) return;
+  var h=pesquisa.querySelector("h2");
+  if(h) h.innerText="📋 Ficha de Pesquisa";
+  var p=pesquisa.querySelector("p");
+  if(p) p.innerText="Dados do casal, qualificação, sala e salvamento da ficha.";
+}
+
+function rodar(){
+  ajustarTextos();
+  montarMenuFinal();
+  deixarPesquisaComoFicha();
+}
+
+var oldAba=window.aba;
+window.aba=function(id,btn){
+  var r=oldAba?oldAba.apply(this,arguments):undefined;
+  setTimeout(rodar,300);
+  return r;
+};
+
+document.addEventListener("DOMContentLoaded",function(){
+  setTimeout(rodar,700);
+  setTimeout(rodar,1500);
+});
+setTimeout(rodar,500);
+})();
+</script>
+
+
+<script>
+(function(){
+function norm(s){return String(s||"").toLowerCase();}
+function fix(){
+ // esconder botão antigo "Meu Profissional"/Pulsador
+ document.querySelectorAll("button").forEach(b=>{
+   const t=norm(b.innerText);
+   if(t.includes("meu profissional")||t=="📡
+pulsador"||t.includes("pulsador")){
+      if(!b.closest("#cpMenuFinal")) b.style.display="none";
+   }
+ });
+ const menu=document.getElementById("cpMenuFinal");
+ if(menu){
+   menu.innerHTML=
+   '<button class="active" data-aba="pesquisa">📋<br>Pesquisa</button>'+
+   '<button data-aba="relatorio">📊<br>Relatórios</button>'+
+   '<button data-aba="arena">🎮<br>Arena SX</button>'+
+   '<button data-aba="qualificacao">👑<br>Portal CEO</button>'+
+   '<button data-aba="diario">📡<br>Pulsador</button>';
+   menu.querySelectorAll("button").forEach(btn=>{
+      btn.onclick=function(){
+        menu.querySelectorAll("button").forEach(x=>x.classList.remove("active"));
+        this.classList.add("active");
+        if(window.aba) window.aba(this.dataset.aba,this);
+      };
+   });
+ }
+ // esconder ranking julho antigo
+ document.querySelectorAll("button").forEach(b=>{
+   if(norm(b.innerText).includes("ranking julho")) b.style.display="none";
+ });
+}
+document.addEventListener("DOMContentLoaded",()=>setTimeout(fix,300));
+setTimeout(fix,1000);
+})();
+</script>
 </body></html>
