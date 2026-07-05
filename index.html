@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaptaPro 5.0 • Etapa 1 Ficha</title>
+<title>CaptaPro 1.0</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -396,11 +396,69 @@ body.appAberto #btnSairFinal{display:block!important}
 .cp50Resumo small{display:block;color:#aaa;font-size:11px;text-transform:uppercase;font-weight:900}.cp50Resumo b{display:block;color:#00e676;font-size:28px;margin-top:4px}
 @media(max-width:700px){.cp50Resumo,.cp50CeoGrid{grid-template-columns:1fr 1fr}.cp50Grid{grid-template-columns:1fr}}
 
+
+/* CAPTAPRO 5.0 ETAPA 2 RELATORIOS */
+.cp52Filtros{display:grid;grid-template-columns:1fr 1fr 1.2fr 1.2fr;gap:8px;margin:10px 0}
+.cp52Cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px;margin:10px 0}
+.cp52Card{background:#181818;border:1px solid #333;border-radius:16px;padding:13px;text-align:center}
+.cp52Card small{display:block;color:#aaa;font-size:11px;text-transform:uppercase;font-weight:900}
+.cp52Card b{display:block;color:#00e676;font-size:28px;margin-top:5px}
+.cp52Card.blue b{color:#00c2ff}.cp52Card.gold b{color:#ffd54f}.cp52Card.red b{color:#ff5252}
+.cp52TableWrap{overflow:auto;border:1px solid #2b2b2b;border-radius:14px;margin-top:10px}
+.cp52Table{width:100%;border-collapse:collapse;min-width:1000px;font-size:13px}
+.cp52Table th,.cp52Table td{padding:9px;border-bottom:1px solid #252525;text-align:left}
+.cp52Table th{color:#ff8585;background:#111;position:sticky;top:0}
+.cp52Section{background:#101010;border:1px solid #2b2b2b;border-radius:18px;padding:15px;margin:12px 0}
+.cp52Bar{height:12px;background:#222;border-radius:999px;overflow:hidden;border:1px solid #333}
+.cp52Fill{height:100%;background:linear-gradient(90deg,#00a651,#00e676)}
+.cp52Pill{display:inline-block;background:#181818;border:1px solid #333;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:900}
+@media(max-width:700px){.cp52Filtros{grid-template-columns:1fr}.cp52Cards{grid-template-columns:1fr 1fr}}
+
+
+/* CAPTAPRO 1.0 ETAPA 3 ARENA SX */
+.cp13ArenaHero{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:10px 0}
+.cp13HeroCard{background:linear-gradient(145deg,#111,#180000);border:1px solid #4b1515;border-radius:18px;padding:16px;text-align:center}
+.cp13HeroCard small{display:block;color:#aaa;font-size:11px;text-transform:uppercase;font-weight:900}
+.cp13HeroCard b{display:block;color:#00e676;font-size:32px;margin-top:6px}
+.cp13Box{background:#101010;border:1px solid #2b2b2b;border-radius:18px;padding:15px;margin:12px 0}
+.cp13Grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cp13Grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.cp13TableWrap{overflow:auto;border:1px solid #2b2b2b;border-radius:14px;margin-top:10px}
+.cp13Table{width:100%;border-collapse:collapse;min-width:850px;font-size:13px}
+.cp13Table th,.cp13Table td{padding:9px;border-bottom:1px solid #252525;text-align:left}
+.cp13Table th{color:#ff8585;background:#111}
+.cp13Badge{display:inline-block;border-radius:999px;padding:6px 9px;background:#181818;border:1px solid #333;font-weight:900;font-size:12px}
+.cp13Pendente{color:#ffd54f}.cp13Ativo{color:#00c2ff}.cp13Finalizado{color:#00e676}.cp13Bloqueado{color:#ff5252}
+@media(max-width:700px){.cp13Grid,.cp13Grid3{grid-template-columns:1fr}}
+
+
+/* CAPTAPRO 1.0 ETAPA 4 PORTAL CEO E MAPA */
+.cp14PortalGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+.cp14Card{background:#181818;border:1px solid #333;border-radius:16px;padding:14px;text-align:center}
+.cp14Card small{display:block;color:#aaa;font-size:11px;text-transform:uppercase;font-weight:900}
+.cp14Card b{display:block;color:#00e676;font-size:28px;margin-top:5px}
+.cp14Section{background:#101010;border:1px solid #2b2b2b;border-radius:18px;padding:15px;margin:12px 0}
+.cp14Tools{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}
+.cp14TableWrap{overflow:auto;border:1px solid #2b2b2b;border-radius:14px;margin-top:10px}
+.cp14Table{width:100%;border-collapse:collapse;min-width:950px;font-size:13px}
+.cp14Table th,.cp14Table td{padding:9px;border-bottom:1px solid #252525;text-align:left}
+.cp14Table th{color:#ff8585;background:#111}
+.cp14Ponto{background:#00c2ff;color:#001;border:3px solid #fff;border-radius:999px;padding:6px 10px;font-weight:900;font-size:12px;box-shadow:0 0 18px #00c2ff;white-space:nowrap}
+.cp14Prof{width:23px;height:23px;border-radius:50%;border:4px solid #fff;background:#00e676;box-shadow:0 0 0 8px rgba(0,230,118,.22),0 0 18px #00e676}
+.cp14Prof.off{background:#ff5252;box-shadow:0 0 0 8px rgba(255,82,82,.16),0 0 18px #ff5252}
+#cp14MapaCEO{width:100%;height:560px;min-height:560px;border:2px solid #00c2ff;border-radius:18px;background:#07110c;margin-top:10px;overflow:hidden}
+.cp14MetaBox{background:#080808;border:1px solid #333;border-radius:14px;padding:12px;margin:8px 0}
+.cp14MetaRow{display:grid;grid-template-columns:1.5fr .7fr .7fr;gap:8px;align-items:center;border-bottom:1px solid #222;padding:8px 0}
+.cp14MetaRow:last-child{border-bottom:0}
+.cp14MetaBar{height:10px;background:#222;border-radius:999px;overflow:hidden;margin-top:5px}
+.cp14MetaFill{height:100%;background:linear-gradient(90deg,#00a651,#00e676)}
+@media(max-width:700px){.cp14Tools,.cp14MetaRow{grid-template-columns:1fr}#cp14MapaCEO{height:420px;min-height:420px}}
+
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">CaptaPro 5.0 • Etapa 1 Ficha</div><p class="mini"><b style="color:#00e676">Bueno Invest</b></p><button id="btnSairFinal" class="secondary hidden" style="max-width:160px;margin:8px auto 0" onclick="sairCaptaProFinal()">Sair</button></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">CaptaPro 1.0</div><p class="mini"><b style="color:#00e676">Bueno Invest</b></p><button id="btnSairFinal" class="secondary hidden" style="max-width:160px;margin:8px auto 0" onclick="sairCaptaProFinal()">Sair</button></div>
 
 <section id="loginBox" class="card">
 <h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
@@ -4969,6 +5027,505 @@ var oldPortal=window.carregarPortalCEO30;window.carregarPortalCEO30=function(){t
 var oldSalaCEO=window.carregarConferenciaSala20;window.carregarConferenciaSala20=function(){try{if(oldSalaCEO)oldSalaCEO.apply(this,arguments)}catch(e){}renderCeoFichas()}
 var oldAba=window.aba;window.aba=function(id,btn){var r=oldAba?oldAba.apply(this,arguments):undefined;setTimeout(function(){initRenda();if(id==="diario")renderMinhasFichas();if(id==="qualificacao")renderCeoFichas()},400);return r}
 document.addEventListener("DOMContentLoaded",function(){setTimeout(function(){initRenda();try{renderMinhasFichas()}catch(e){}},800)})
+})();
+</script>
+
+
+<script>
+/* CAPTAPRO 5.0 ETAPA 2 RELATORIOS - NAO ALTERA ETAPA 1 */
+(function(){
+"use strict";
+function E(id){return document.getElementById(id)}
+function V(id){return (E(id)?.value||"").trim()}
+function H(id,v){if(E(id))E(id).innerHTML=v}
+function T(id,v){if(E(id))E(id).textContent=v}
+function esc(s){return String(s??"").replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+function hoje(){return new Date().toISOString().slice(0,10)}
+function moeda(n){return "R$ "+Number(n||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}
+function pct(a,b){return b?((Number(a||0)/Number(b||0))*100).toFixed(2).replace(".",",")+"%":"0,00%"}
+function getAllFichas52(){
+  var arr=[];
+  ["cp50_fichas","pesquisasLocal","fichas_offline"].forEach(function(k){
+    try{arr=arr.concat(JSON.parse(localStorage.getItem(k)||"[]"))}catch(e){}
+  });
+  return arr.filter(function(f,i,self){
+    return i===self.findIndex(function(x){return (x.id&&x.id===f.id)||(x.created_at&&x.created_at===f.created_at)})
+  });
+}
+function getAbordagens52(){
+  var total=0;
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i)||"";
+    if(k.indexOf("abordagens_")===0){
+      try{
+        var v=JSON.parse(localStorage.getItem(k)||"[]");
+        total+=Array.isArray(v)?v.length:Number(v||0);
+      }catch(e){total+=Number(localStorage.getItem(k)||0)||0}
+    }
+  }
+  return total;
+}
+function dataFicha(f){return f.data||String(f.created_at||"").slice(0,10)||hoje()}
+function profissional(f){return f.usuario||f.captador_nome||f.profissional||"Sem nome"}
+function qual(f){return f.qualificacao_automatica||f.qualificacao||f.status_qualificacao||"N/I"}
+function isQ(f){return norm(qual(f)).startsWith("q")}
+function isNQ(f){return norm(qual(f)).startsWith("nq")}
+function isItem(f){return norm(qual(f)).includes("1")}
+function isSala(f){var s=norm(f.levou_sala||f.sala_status||f.sala||"");return s.includes("sim")||s.includes("confirm")}
+function parseNum(v){return Number(String(v||"").replace(/[^\d,.-]/g,"").replace(/\./g,"").replace(",", "."))||0}
+function filtroFichas52(){
+  var de=V("cp52De")||"2026-07-01";
+  var ate=V("cp52Ate")||hoje();
+  var prof=V("cp52Prof");
+  var equipe=V("cp52Equipe");
+  return getAllFichas52().filter(function(f){
+    var d=dataFicha(f);
+    if(d<de||d>ate)return false;
+    if(prof&&profissional(f)!==prof)return false;
+    if(equipe&&(f.equipe||"")!==equipe)return false;
+    return true;
+  });
+}
+function resumo52(arr){
+  var pesquisas=arr.length;
+  var q=arr.filter(isQ).length;
+  var nq=arr.filter(isNQ).length;
+  var item=arr.filter(isItem).length;
+  var sala=arr.filter(isSala).length;
+  var abordagens=Math.max(getAbordagens52(),pesquisas);
+  var vendas=arr.reduce(function(s,f){return s+(Number(f.vendas||f.venda||0)||0)},0);
+  var vgv=arr.reduce(function(s,f){return s+parseNum(f.vgv||f.valor_vgv||0)},0);
+  return {abordagens:abordagens,pesquisas:pesquisas,q:q,nq:nq,item:item,sala:sala,vendas:vendas,vgv:vgv};
+}
+function profs52(arr){
+  var map={};
+  arr.forEach(function(f){
+    var p=profissional(f);
+    if(!map[p])map[p]={nome:p,abordagens:0,pesquisas:0,q:0,nq:0,item:0,sala:0,vendas:0,vgv:0,fichas:[]};
+    map[p].pesquisas++;
+    map[p].abordagens++;
+    if(isQ(f))map[p].q++;
+    if(isNQ(f))map[p].nq++;
+    if(isItem(f))map[p].item++;
+    if(isSala(f))map[p].sala++;
+    map[p].vendas+=Number(f.vendas||f.venda||0)||0;
+    map[p].vgv+=parseNum(f.vgv||f.valor_vgv||0);
+    map[p].fichas.push(f);
+  });
+  return Object.values(map).sort(function(a,b){return b.sala-a.sala||b.q-a.q||b.pesquisas-a.pesquisas});
+}
+function atualizarFiltros52(){
+  var arr=getAllFichas52();
+  var profs=[...new Set(arr.map(profissional).filter(Boolean))].sort();
+  var equipes=[...new Set(arr.map(function(f){return f.equipe}).filter(Boolean))].sort();
+  if(E("cp52Prof"))E("cp52Prof").innerHTML='<option value="">Todos profissionais</option>'+profs.map(function(p){return '<option>'+esc(p)+'</option>'}).join("");
+  if(E("cp52Equipe"))E("cp52Equipe").innerHTML='<option value="">Todas equipes</option>'+equipes.map(function(p){return '<option>'+esc(p)+'</option>'}).join("");
+}
+function cards52(r){
+  return '<div class="cp52Cards">'+
+  '<div class="cp52Card blue"><small>Abordagens</small><b>'+r.abordagens+'</b></div>'+
+  '<div class="cp52Card"><small>Pesquisas</small><b>'+r.pesquisas+'</b></div>'+
+  '<div class="cp52Card"><small>Q</small><b>'+r.q+'</b></div>'+
+  '<div class="cp52Card gold"><small>NQ</small><b>'+r.nq+'</b></div>'+
+  '<div class="cp52Card gold"><small>1 Item</small><b>'+r.item+'</b></div>'+
+  '<div class="cp52Card"><small>Casais em Sala</small><b>'+r.sala+'</b></div>'+
+  '<div class="cp52Card red"><small>Pesquisa → Sala</small><b>'+pct(r.sala,r.pesquisas)+'</b></div>'+
+  '<div class="cp52Card red"><small>Sala → Venda</small><b>'+pct(r.vendas,r.sala)+'</b></div>'+
+  '</div>';
+}
+function tabelaProfs52(lista){
+  return '<div class="cp52TableWrap"><table class="cp52Table"><thead><tr><th>Profissional</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th><th>Conv. Pesq→Sala</th><th>Venda</th><th>VGV</th></tr></thead><tbody>'+
+  lista.map(function(x){return '<tr><td>'+esc(x.nome)+'</td><td>'+x.abordagens+'</td><td>'+x.pesquisas+'</td><td>'+x.q+'</td><td>'+x.nq+'</td><td>'+x.item+'</td><td>'+x.sala+'</td><td>'+pct(x.sala,x.pesquisas)+'</td><td>'+x.vendas+'</td><td>'+moeda(x.vgv)+'</td></tr>'}).join("")+
+  '</tbody></table></div>';
+}
+function tabelaFichas52(arr){
+  return '<div class="cp52TableWrap"><table class="cp52Table"><thead><tr><th>Data</th><th>Profissional</th><th>Casal</th><th>Equipe</th><th>Ponto</th><th>Qualificação</th><th>Sala</th><th>Brinde</th></tr></thead><tbody>'+
+  arr.map(function(f){return '<tr><td>'+esc(dataFicha(f))+'</td><td>'+esc(profissional(f))+'</td><td>'+esc((f.nome1||f.convidado_1||"-")+" & "+(f.nome2||f.convidado_2||"-"))+'</td><td>'+esc(f.equipe||"-")+'</td><td>'+esc(f.ponto||f.ponto_captacao||"-")+'</td><td>'+esc(qual(f))+'</td><td>'+(isSala(f)?"Sim":"Não")+'</td><td>'+esc(f.brinde||"-")+'</td></tr>'}).join("")+
+  '</tbody></table></div>';
+}
+window.renderRelatoriosEtapa2=function(){
+  atualizarFiltros52();
+  var arr=filtroFichas52();
+  var r=resumo52(arr);
+  var lista=profs52(arr);
+  H("cp52RelatoriosBox",
+    '<div class="cp52Section"><h2>📊 Relatórios e Conversões</h2>'+
+    '<div class="cp52Filtros"><input id="cp52De" type="date" value="'+(V("cp52De")||"2026-07-01")+'" onchange="renderRelatoriosEtapa2()"><input id="cp52Ate" type="date" value="'+(V("cp52Ate")||hoje())+'" onchange="renderRelatoriosEtapa2()"><select id="cp52Prof" onchange="renderRelatoriosEtapa2()"></select><select id="cp52Equipe" onchange="renderRelatoriosEtapa2()"></select></div>'+
+    cards52(r)+
+    '<div class="cp52Section"><h2>👥 Resultado por Profissional</h2>'+tabelaProfs52(lista)+'</div>'+
+    '<div class="cp52Section"><h2>📋 Fichas Salvas</h2>'+tabelaFichas52(arr)+'</div>'+
+    '</div>'
+  );
+  var profAtual=V("cp52Prof"), equipeAtual=V("cp52Equipe");
+  atualizarFiltros52();
+  if(E("cp52Prof"))E("cp52Prof").value=profAtual;
+  if(E("cp52Equipe"))E("cp52Equipe").value=equipeAtual;
+}
+function inserirRelatorio52(){
+  var rel=E("relatorio");
+  if(!rel)return;
+  if(!E("cp52RelatoriosBox")){
+    rel.insertAdjacentHTML("afterbegin",'<div id="cp52RelatoriosBox"></div>');
+  }
+  renderRelatoriosEtapa2();
+}
+var oldCarregarRelatorio=window.carregarRelatorio;
+window.carregarRelatorio=function(){
+  try{if(oldCarregarRelatorio)oldCarregarRelatorio.apply(this,arguments)}catch(e){}
+  inserirRelatorio52();
+}
+var oldAba=window.aba;
+window.aba=function(id,btn){
+  var r=oldAba?oldAba.apply(this,arguments):undefined;
+  setTimeout(function(){if(id==="relatorio")inserirRelatorio52();},400);
+  return r;
+}
+document.addEventListener("DOMContentLoaded",function(){setTimeout(function(){if(!E("relatorio")?.classList.contains("hidden"))inserirRelatorio52();},800)});
+})();
+</script>
+
+
+<script>
+/* CAPTAPRO 1.0 ETAPA 3 ARENA SX - NAO ALTERA ETAPA 1 E 2 */
+(function(){
+"use strict";
+function E(id){return document.getElementById(id)}
+function V(id){return (E(id)?.value||"").trim()}
+function H(id,v){if(E(id))E(id).innerHTML=v}
+function esc(s){return String(s??"").replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+function hoje(){return new Date().toISOString().slice(0,10)}
+function semanaKey(d){
+  var dt=d?new Date(d):new Date();
+  var onejan=new Date(dt.getFullYear(),0,1);
+  var week=Math.ceil((((dt-onejan)/86400000)+onejan.getDay()+1)/7);
+  return dt.getFullYear()+"-S"+week;
+}
+function mesKey(d){var dt=d?new Date(d):new Date();return dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")}
+function usuarioNome(){return window.usuarioNome||V("nome")||localStorage.getItem("cp50_nome")||"Profissional"}
+function getFichas(){
+  var arr=[];
+  ["cp50_fichas","pesquisasLocal","fichas_offline"].forEach(function(k){
+    try{arr=arr.concat(JSON.parse(localStorage.getItem(k)||"[]"))}catch(e){}
+  });
+  return arr.filter(function(f,i,self){return i===self.findIndex(function(x){return (x.id&&x.id===f.id)||(x.created_at&&x.created_at===f.created_at)})});
+}
+function dataFicha(f){return f.data||String(f.created_at||"").slice(0,10)||hoje()}
+function profissional(f){return f.usuario||f.captador_nome||f.profissional||"Sem nome"}
+function qual(f){return f.qualificacao_automatica||f.qualificacao||f.status_qualificacao||"N/I"}
+function isQ(f){return norm(qual(f)).startsWith("q")}
+function isSala(f){var s=norm(f.levou_sala||f.sala_status||f.sala||"");return s.includes("sim")||s.includes("confirm")}
+function getVendasLocal(){
+  try{return JSON.parse(localStorage.getItem("cp13_vendas")||"{}")}catch(e){return {}}
+}
+function setVendasLocal(obj){localStorage.setItem("cp13_vendas",JSON.stringify(obj))}
+function getNoTourLocal(){
+  try{return JSON.parse(localStorage.getItem("cp13_notour")||"{}")}catch(e){return {}}
+}
+function setNoTourLocal(obj){localStorage.setItem("cp13_notour",JSON.stringify(obj))}
+function getApostas(){try{return JSON.parse(localStorage.getItem("cp13_apostas")||"[]")}catch(e){return []}}
+function setApostas(arr){localStorage.setItem("cp13_apostas",JSON.stringify(arr))}
+function profissionais(){
+  var names=[...new Set(getFichas().map(profissional).filter(Boolean))].sort();
+  var u=usuarioNome();
+  if(!names.includes(u))names.unshift(u);
+  return names;
+}
+function periodoMatch(f,periodo){
+  var d=dataFicha(f);
+  if(periodo==="diario")return d===hoje();
+  if(periodo==="semanal")return semanaKey(d)===semanaKey();
+  if(periodo==="mensal")return mesKey(d)===mesKey();
+  return true;
+}
+function metricasProf(nome,periodo){
+  var fichas=getFichas().filter(function(f){return profissional(f)===nome && periodoMatch(f,periodo)});
+  var vendas=getVendasLocal()[nome+"_"+periodo]||0;
+  var notour=getNoTourLocal()[nome+"_"+periodo]||0;
+  var q=fichas.filter(isQ).length;
+  var sala=fichas.filter(isSala).length;
+  var sx=(q*10)+(sala*100)+(vendas*500)-(notour*50);
+  return {nome:nome,pesquisas:fichas.length,q:q,sala:sala,vendas:vendas,notour:notour,sx:sx};
+}
+function saldoTotal(nome){
+  var periodos=["diario","semanal","mensal"];
+  var base=0;
+  periodos.forEach(function(p){base+=metricasProf(nome,p).sx});
+  var apostas=getApostas();
+  apostas.forEach(function(a){
+    if(a.status==="Finalizado"&&a.vencedor){
+      if(a.vencedor===nome)base+=Number(a.valor||0);
+      else if(a.eu===nome||a.contra===nome)base-=Number(a.valor||0);
+    }
+  });
+  return base;
+}
+function podeApostarDiario(nome){
+  var arr=getApostas();
+  return !arr.some(function(a){return a.periodo==="diario"&&a.data===hoje()&&(a.eu===nome||a.contra===nome)});
+}
+function renderSelectsArena(){
+  var nomes=profissionais();
+  var opts=nomes.map(function(n){return '<option>'+esc(n)+'</option>'}).join("");
+  if(E("cp13Eu"))E("cp13Eu").innerHTML=opts;
+  if(E("cp13Contra"))E("cp13Contra").innerHTML='<option value="">Escolha adversário</option>'+opts;
+  if(E("cp13VendaProf"))E("cp13VendaProf").innerHTML=opts;
+  if(E("cp13NoTourProf"))E("cp13NoTourProf").innerHTML=opts;
+}
+function criarArenaHTML(){
+  return '<div class="cp13Box"><h2>🎮 Arena SX</h2><p class="hint">Pontuação: Pesquisa Q +10 SX • Casal em sala +100 SX • Venda +500 SX • No Tour -50 SX • Cotoco 0 SX</p>'+
+  '<div id="cp13Resumo"></div>'+
+  '<div class="cp13Box"><h2>⚔️ Criar Desafio</h2><div class="cp13Grid3"><select id="cp13Eu"></select><select id="cp13Contra"></select><input id="cp13Valor" type="number" placeholder="Valor SX. Ex: 100"></div>'+
+  '<div class="cp13Grid3" style="margin-top:8px"><select id="cp13Tipo"><option value="casais">Quantidade de casais</option><option value="sala">Casais em sala</option><option value="vendas">Quantidade de vendas</option></select><select id="cp13Periodo"><option value="diario">Diário</option><option value="semanal">Semanal</option><option value="mensal">Mensal</option></select><button class="main" onclick="cp13CriarAposta()">Criar desafio</button></div><p id="cp13Msg"></p></div>'+
+  '<div class="cp13Box"><h2>✅ Lançamento rápido</h2><p class="hint">Enquanto não tiver vendas integradas, o CEO/profissional pode lançar venda e No Tour para contar SX.</p><div class="cp13Grid3"><select id="cp13VendaProf"></select><select id="cp13PeriodoLanc"><option value="diario">Diário</option><option value="semanal">Semanal</option><option value="mensal">Mensal</option></select><button class="main" onclick="cp13AddVenda()">+ Venda 500 SX</button></div><div class="cp13Grid3" style="margin-top:8px"><select id="cp13NoTourProf"></select><select id="cp13PeriodoNoTour"><option value="diario">Diário</option><option value="semanal">Semanal</option><option value="mensal">Mensal</option></select><button class="secondary" onclick="cp13AddNoTour()">+ No Tour -50 SX</button></div></div>'+
+  '<div class="cp13Box"><h2>📋 Desafios</h2><div id="cp13Apostas"></div></div>'+
+  '<div class="cp13Box"><h2>🏆 Ranking SX</h2><div id="cp13Ranking"></div></div></div>';
+}
+window.cp13CriarAposta=function(){
+  var eu=V("cp13Eu"),contra=V("cp13Contra"),valor=Number(V("cp13Valor")||0),tipo=V("cp13Tipo"),periodo=V("cp13Periodo");
+  if(!eu||!contra||eu===contra||!valor){H("cp13Msg",'<span class="erro">Preencha adversário e valor corretamente.</span>');return}
+  if(periodo==="diario"&&(!podeApostarDiario(eu)||!podeApostarDiario(contra))){
+    H("cp13Msg",'<span class="erro">Máximo de 1 aposta diária por profissional.</span>');return;
+  }
+  var arr=getApostas();
+  arr.unshift({id:"sx_"+Date.now(),eu:eu,contra:contra,valor:valor,tipo:tipo,periodo:periodo,data:hoje(),status:"Ativo",vencedor:""});
+  setApostas(arr);
+  H("cp13Msg",'<span class="ok">Desafio criado.</span>');
+  renderArenaSXEtapa3();
+}
+window.cp13AddVenda=function(){
+  var p=V("cp13VendaProf"),per=V("cp13PeriodoLanc"),obj=getVendasLocal(),k=p+"_"+per;
+  obj[k]=(obj[k]||0)+1;setVendasLocal(obj);renderArenaSXEtapa3();
+}
+window.cp13AddNoTour=function(){
+  var p=V("cp13NoTourProf"),per=V("cp13PeriodoNoTour"),obj=getNoTourLocal(),k=p+"_"+per;
+  obj[k]=(obj[k]||0)+1;setNoTourLocal(obj);renderArenaSXEtapa3();
+}
+window.cp13FinalizarAposta=function(id,vencedor){
+  var arr=getApostas().map(function(a){if(a.id===id){a.status="Finalizado";a.vencedor=vencedor}return a});
+  setApostas(arr);renderArenaSXEtapa3();
+}
+function renderResumo(){
+  var nome=usuarioNome();
+  var d=metricasProf(nome,"diario"),s=metricasProf(nome,"semanal"),m=metricasProf(nome,"mensal");
+  return '<div class="cp13ArenaHero"><div class="cp13HeroCard"><small>Meu saldo SX</small><b>'+saldoTotal(nome)+'</b></div><div class="cp13HeroCard"><small>Hoje</small><b>'+d.sx+'</b></div><div class="cp13HeroCard"><small>Semana</small><b>'+s.sx+'</b></div><div class="cp13HeroCard"><small>Mês</small><b>'+m.sx+'</b></div></div>';
+}
+function renderApostas(){
+  var arr=getApostas();
+  if(!arr.length)return '<p class="mini">Nenhum desafio criado ainda.</p>';
+  return '<div class="cp13TableWrap"><table class="cp13Table"><thead><tr><th>Data</th><th>Eu</th><th>Contra</th><th>SX</th><th>Tipo</th><th>Período</th><th>Status</th><th>Vencedor</th><th>Ação</th></tr></thead><tbody>'+
+  arr.map(function(a){
+    var acoes=a.status==="Finalizado"?"-":'<button class="secondary" onclick="cp13FinalizarAposta(\\''+a.id+'\\',\\''+esc(a.eu)+'\\')">'+esc(a.eu)+'</button><button class="secondary" onclick="cp13FinalizarAposta(\\''+a.id+'\\',\\''+esc(a.contra)+'\\')">'+esc(a.contra)+'</button>';
+    return '<tr><td>'+esc(a.data)+'</td><td>'+esc(a.eu)+'</td><td>'+esc(a.contra)+'</td><td>'+a.valor+'</td><td>'+esc(a.tipo)+'</td><td>'+esc(a.periodo)+'</td><td><span class="cp13Badge '+(a.status==="Finalizado"?"cp13Finalizado":"cp13Ativo")+'">'+esc(a.status)+'</span></td><td>'+esc(a.vencedor||"-")+'</td><td>'+acoes+'</td></tr>';
+  }).join("")+'</tbody></table></div>';
+}
+function renderRanking(){
+  var lista=profissionais().map(function(n){
+    var d=metricasProf(n,"diario"),s=metricasProf(n,"semanal"),m=metricasProf(n,"mensal");
+    return {nome:n,saldo:saldoTotal(n),q:m.q,sala:m.sala,vendas:m.vendas,notour:m.notour,mes:m.sx,semana:s.sx,hoje:d.sx};
+  }).sort(function(a,b){return b.saldo-a.saldo});
+  return '<div class="cp13TableWrap"><table class="cp13Table"><thead><tr><th>#</th><th>Profissional</th><th>Saldo SX</th><th>Hoje</th><th>Semana</th><th>Mês</th><th>Q mês</th><th>Sala mês</th><th>Vendas mês</th><th>No Tour mês</th></tr></thead><tbody>'+
+  lista.map(function(x,i){return '<tr><td>'+(i+1)+'º</td><td>'+esc(x.nome)+'</td><td>'+x.saldo+'</td><td>'+x.hoje+'</td><td>'+x.semana+'</td><td>'+x.mes+'</td><td>'+x.q+'</td><td>'+x.sala+'</td><td>'+x.vendas+'</td><td>'+x.notour+'</td></tr>'}).join("")+
+  '</tbody></table></div>';
+}
+window.renderArenaSXEtapa3=function(){
+  var arena=E("arena");
+  if(!arena)return;
+  if(!E("cp13Resumo"))arena.innerHTML=criarArenaHTML();
+  renderSelectsArena();
+  H("cp13Resumo",renderResumo());
+  H("cp13Apostas",renderApostas());
+  H("cp13Ranking",renderRanking());
+}
+var oldCarregarArena=window.carregarArenaSX20;
+window.carregarArenaSX20=function(){
+  try{if(oldCarregarArena)oldCarregarArena.apply(this,arguments)}catch(e){}
+  renderArenaSXEtapa3();
+}
+var oldAba=window.aba;
+window.aba=function(id,btn){
+  var r=oldAba?oldAba.apply(this,arguments):undefined;
+  setTimeout(function(){if(id==="arena")renderArenaSXEtapa3();},400);
+  return r;
+}
+document.addEventListener("DOMContentLoaded",function(){setTimeout(function(){if(E("arena")&&!E("arena").classList.contains("hidden"))renderArenaSXEtapa3();},800)});
+})();
+</script>
+
+
+<script>
+/* CAPTAPRO 1.0 ETAPA 4 PORTAL CEO E MAPA - NAO ALTERA ETAPAS 1,2,3 */
+(function(){
+"use strict";
+function E(id){return document.getElementById(id)}
+function V(id){return (E(id)?.value||"").trim()}
+function H(id,v){if(E(id))E(id).innerHTML=v}
+function esc(s){return String(s??"").replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+function hoje(){return new Date().toISOString().slice(0,10)}
+function pct(a,b){return b?((Number(a||0)/Number(b||0))*100).toFixed(2).replace(".",",")+"%":"0,00%"}
+function moeda(n){return "R$ "+Number(n||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}
+var PONTOS=[
+ {nome:"Porta dentro do Park",lat:-22.74075,lng:-45.59225},
+ {nome:"Park Dream House",lat:-22.74050,lng:-45.59205},
+ {nome:"Fábrica Spinassi",lat:-22.73925,lng:-45.59110},
+ {nome:"Corredor",lat:-22.73985,lng:-45.59175},
+ {nome:"Baden Baden",lat:-22.73870,lng:-45.59100},
+ {nome:"Djalma",lat:-22.73815,lng:-45.59050},
+ {nome:"Igreja",lat:-22.73845,lng:-45.59260},
+ {nome:"Renner",lat:-22.73895,lng:-45.59310},
+ {nome:"Guarda-chuvas",lat:-22.74010,lng:-45.59070},
+ {nome:"Posto Shell",lat:-22.74110,lng:-45.59300}
+];
+var MAP=null,LAYERS=[];
+function getFichas(){
+ var arr=[];
+ ["cp50_fichas","pesquisasLocal","fichas_offline"].forEach(function(k){
+   try{arr=arr.concat(JSON.parse(localStorage.getItem(k)||"[]"))}catch(e){}
+ });
+ return arr.filter(function(f,i,self){return i===self.findIndex(function(x){return (x.id&&x.id===f.id)||(x.created_at&&x.created_at===f.created_at)})});
+}
+function dataFicha(f){return f.data||String(f.created_at||"").slice(0,10)||hoje()}
+function profissional(f){return f.usuario||f.captador_nome||f.profissional||"Sem nome"}
+function qual(f){return f.qualificacao_automatica||f.qualificacao||f.status_qualificacao||"N/I"}
+function isQ(f){return norm(qual(f)).startsWith("q")}
+function isNQ(f){return norm(qual(f)).startsWith("nq")}
+function isItem(f){return norm(qual(f)).includes("1")}
+function isSala(f){var s=norm(f.levou_sala||f.sala_status||f.sala||"");return s.includes("sim")||s.includes("confirm")}
+function getMetas(){try{return JSON.parse(localStorage.getItem("cp14_metas")||"{}")}catch(e){return {}}}
+function setMetas(m){localStorage.setItem("cp14_metas",JSON.stringify(m))}
+function getCustos(){try{return JSON.parse(localStorage.getItem("cp14_custos")||"{}")}catch(e){return {}}}
+function setCustos(c){localStorage.setItem("cp14_custos",JSON.stringify(c))}
+function getLocs(){try{return JSON.parse(localStorage.getItem("cp14_locs")||"{}")}catch(e){return {}}}
+function setLocs(l){localStorage.setItem("cp14_locs",JSON.stringify(l))}
+function usuarios(){
+ var names=[...new Set(getFichas().map(profissional).filter(Boolean))].sort();
+ if(!names.length)names=["Profissional Teste"];
+ return names;
+}
+function resumoProf(){
+ var map={};
+ getFichas().forEach(function(f){
+   var p=profissional(f);
+   if(!map[p])map[p]={nome:p,pesquisas:0,q:0,nq:0,item:0,sala:0,vendas:0,vgv:0,ponto:f.ponto||f.ponto_captacao||""};
+   map[p].pesquisas++;
+   if(isQ(f))map[p].q++;
+   if(isNQ(f))map[p].nq++;
+   if(isItem(f))map[p].item++;
+   if(isSala(f))map[p].sala++;
+   map[p].ponto=f.ponto||f.ponto_captacao||map[p].ponto;
+ });
+ usuarios().forEach(function(n){if(!map[n])map[n]={nome:n,pesquisas:0,q:0,nq:0,item:0,sala:0,vendas:0,vgv:0,ponto:""}});
+ return Object.values(map).sort(function(a,b){return b.sala-a.sala||b.pesquisas-a.pesquisas});
+}
+function totalGeral(){
+ var l=resumoProf();
+ return l.reduce(function(a,x){a.pesquisas+=x.pesquisas;a.q+=x.q;a.nq+=x.nq;a.item+=x.item;a.sala+=x.sala;a.vendas+=x.vendas;a.vgv+=x.vgv;return a},{pesquisas:0,q:0,nq:0,item:0,sala:0,vendas:0,vgv:0});
+}
+function pontoObj(nome){
+ var n=norm(nome);
+ return PONTOS.find(function(p){return norm(p.nome)===n||norm(p.nome).includes(n)||n.includes(norm(p.nome))})||PONTOS[0];
+}
+window.cp14SalvarMeta=function(nome,val){
+ var m=getMetas();m[nome]=Number(val||0);setMetas(m);renderPortalCEOEtapa4();
+}
+window.cp14SalvarCusto=function(nome,tipo,val){
+ var c=getCustos();if(!c[nome])c[nome]={fixo:0,ajuda:0,carro:0,outros:0};
+ c[nome][tipo]=Number(val||0);setCustos(c);renderPortalCEOEtapa4();
+}
+window.cp14SalvarPontoManual=function(nome,val){
+ var loc=getLocs();if(!loc[nome])loc[nome]={};
+ var p=pontoObj(val);
+ loc[nome]={ponto:val,lat:p.lat,lng:p.lng,online:true,atualizado:new Date().toISOString()};
+ setLocs(loc);renderPortalCEOEtapa4();
+}
+window.cp14AtualizarMinhaLocalizacao=function(){
+ var nome=window.usuarioNome||V("nome")||localStorage.getItem("cp50_nome")||"Profissional";
+ var ponto=V("pontoAtualProf32")||V("ponto")||"Porta dentro do Park";
+ var p=pontoObj(ponto);
+ function salvar(lat,lng){
+   var loc=getLocs();
+   loc[nome]={ponto:ponto,lat:lat,lng:lng,online:true,atualizado:new Date().toISOString()};
+   setLocs(loc);
+   alert("Localização atualizada para o CEO.");
+ }
+ if(navigator.geolocation){
+   navigator.geolocation.getCurrentPosition(function(pos){salvar(pos.coords.latitude,pos.coords.longitude)},function(){salvar(p.lat,p.lng)},{enableHighAccuracy:true,timeout:5000});
+ }else salvar(p.lat,p.lng);
+}
+function cardsCEO(){
+ var t=totalGeral(),online=Object.values(getLocs()).filter(function(x){return x.online}).length;
+ return '<div class="cp14PortalGrid"><div class="cp14Card"><small>Pesquisas</small><b>'+t.pesquisas+'</b></div><div class="cp14Card"><small>Q</small><b>'+t.q+'</b></div><div class="cp14Card"><small>NQ</small><b>'+t.nq+'</b></div><div class="cp14Card"><small>1 Item</small><b>'+t.item+'</b></div><div class="cp14Card"><small>Sala</small><b>'+t.sala+'</b></div><div class="cp14Card"><small>Conv. Sala</small><b>'+pct(t.sala,t.pesquisas)+'</b></div><div class="cp14Card"><small>Online</small><b>'+online+'</b></div></div>';
+}
+function tabelaEquipe(){
+ var metas=getMetas(),custos=getCustos(),loc=getLocs();
+ return '<div class="cp14TableWrap"><table class="cp14Table"><thead><tr><th>Profissional</th><th>Pesquisas</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th><th>Conv.</th><th>Meta</th><th>Ponto</th><th>Custo total</th></tr></thead><tbody>'+
+ resumoProf().map(function(x){
+   var c=custos[x.nome]||{},ct=(+c.fixo||0)+(+c.ajuda||0)+(+c.carro||0)+(+c.outros||0);
+   var ponto=(loc[x.nome]&&loc[x.nome].ponto)||x.ponto||"-";
+   return '<tr><td>'+esc(x.nome)+'</td><td>'+x.pesquisas+'</td><td>'+x.q+'</td><td>'+x.nq+'</td><td>'+x.item+'</td><td>'+x.sala+'</td><td>'+pct(x.sala,x.pesquisas)+'</td><td>'+(metas[x.nome]||"-")+'</td><td>'+esc(ponto)+'</td><td>'+moeda(ct)+'</td></tr>';
+ }).join("")+'</tbody></table></div>';
+}
+function metasCustosHTML(){
+ var metas=getMetas(),custos=getCustos();
+ return '<div class="cp14MetaBox">'+resumoProf().map(function(x){
+   var meta=metas[x.nome]||0, pc=meta?Math.min(100,Math.round(x.sala/meta*100)):0, c=custos[x.nome]||{};
+   return '<div class="cp14MetaRow"><div><b>'+esc(x.nome)+'</b><small class="mini">'+x.sala+' sala atual</small><div class="cp14MetaBar"><div class="cp14MetaFill" style="width:'+pc+'%"></div></div></div><input type="number" value="'+(meta||"")+'" placeholder="Meta sala" onchange="cp14SalvarMeta(\\''+esc(x.nome)+'\\',this.value)"><span class="ok">'+(meta?x.sala+"/"+meta:"Sem meta")+'</span><input type="number" value="'+(c.fixo||"")+'" placeholder="Fixo/Mínimo" onchange="cp14SalvarCusto(\\''+esc(x.nome)+'\\',\\'fixo\\',this.value)"><input type="number" value="'+(c.ajuda||"")+'" placeholder="Ajuda" onchange="cp14SalvarCusto(\\''+esc(x.nome)+'\\',\\'ajuda\\',this.value)"><input type="number" value="'+(c.carro||"")+'" placeholder="Carro/Busca" onchange="cp14SalvarCusto(\\''+esc(x.nome)+'\\',\\'carro\\',this.value)"></div>';
+ }).join("")+'</div>';
+}
+function mapaHTML(){
+ return '<div class="cp14Section"><h2>📍 Mapa da Operação</h2><p class="hint">Pontos de captação + captadores. Clique nos pontos verdes para ver nome e resultado.</p><div class="cp14Tools"><select id="cp14FiltroPonto" onchange="renderMapaCEOEtapa4()"><option value="">Todos os pontos</option>'+PONTOS.map(function(p){return '<option>'+esc(p.nome)+'</option>'}).join("")+'</select><button class="main" onclick="renderMapaCEOEtapa4()">Atualizar mapa</button><button class="secondary" onclick="cp14AtualizarMinhaLocalizacao()">Atualizar minha localização</button></div><div id="cp14MapaCEO"></div></div>';
+}
+function portalHTML(){
+ return '<div class="cp14Section"><h2>👑 Portal CEO • Etapa 4</h2>'+cardsCEO()+'</div>'+
+ '<div class="cp14Section"><h2>👥 Equipe e Resultados</h2>'+tabelaEquipe()+'</div>'+
+ '<div class="cp14Section"><h2>🎯 Metas e Custos</h2><p class="hint">Aqui o CEO define meta, fixo/mínimo, ajuda de custo e carro/busca por profissional.</p>'+metasCustosHTML()+'</div>'+
+ mapaHTML();
+}
+window.renderPortalCEOEtapa4=function(){
+ var alvo=E("portalDashboard30")||E("qualificacao");
+ if(!alvo)return;
+ if(E("qualificacao"))H("qualificacao",portalHTML());
+ else H("portalDashboard30",portalHTML());
+ setTimeout(renderMapaCEOEtapa4,600);
+}
+window.renderMapaCEOEtapa4=function(){
+ var box=E("cp14MapaCEO"); if(!box||!window.L)return;
+ if(!MAP){MAP=L.map("cp14MapaCEO").setView([-22.7395,-45.5917],16);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(MAP)}
+ LAYERS.forEach(function(l){try{MAP.removeLayer(l)}catch(e){}});
+ LAYERS=[]; var bounds=[],filtro=V("cp14FiltroPonto"),loc=getLocs();
+ PONTOS.forEach(function(p){
+   if(filtro&&p.nome!==filtro)return;
+   var ic=L.divIcon({className:"",html:'<div class="cp14Ponto">📍 '+esc(p.nome)+'</div>',iconSize:[145,30],iconAnchor:[8,15]});
+   var m=L.marker([p.lat,p.lng],{icon:ic}).addTo(MAP).bindPopup("<b>"+esc(p.nome)+"</b><br>Ponto de captação");
+   LAYERS.push(m);bounds.push([p.lat,p.lng]);
+ });
+ resumoProf().forEach(function(r,i){
+   var l=loc[r.nome],p=l?{lat:l.lat,lng:l.lng,nome:l.ponto}:pontoObj(r.ponto||"");
+   if(filtro&&p.nome!==filtro&&l&&l.ponto!==filtro)return;
+   if(filtro&&!l&&p.nome!==filtro)return;
+   var lat=Number(p.lat)+((i%5)-2)*0.00012,lng=Number(p.lng)+(Math.floor(i/5)-1.5)*0.00012;
+   var online=!!l;
+   var ic=L.divIcon({className:"",html:'<div class="cp14Prof '+(online?"":"off")+'"></div>',iconSize:[23,23],iconAnchor:[11,11]});
+   var m=L.marker([lat,lng],{icon:ic}).addTo(MAP).bindPopup("<b>"+esc(r.nome)+"</b><br>📍 "+esc((l&&l.ponto)||r.ponto||"-")+"<br>Pesquisas: <b>"+r.pesquisas+"</b><br>Sala: <b>"+r.sala+"</b><br>Conv.: <b>"+pct(r.sala,r.pesquisas)+"</b>");
+   LAYERS.push(m);bounds.push([lat,lng]);
+ });
+ if(bounds.length)MAP.fitBounds(bounds,{padding:[30,30],maxZoom:17});
+ setTimeout(function(){MAP.invalidateSize(true)},300);
+}
+var oldPortal=window.carregarPortalCEO30;
+window.carregarPortalCEO30=function(){
+ try{if(oldPortal)oldPortal.apply(this,arguments)}catch(e){}
+ renderPortalCEOEtapa4();
+}
+var oldAba=window.aba;
+window.aba=function(id,btn){
+ var r=oldAba?oldAba.apply(this,arguments):undefined;
+ setTimeout(function(){if(id==="qualificacao")renderPortalCEOEtapa4();},500);
+ return r;
+}
+document.addEventListener("DOMContentLoaded",function(){setTimeout(function(){if(E("qualificacao")&&!E("qualificacao").classList.contains("hidden"))renderPortalCEOEtapa4()},900)});
 })();
 </script>
 
