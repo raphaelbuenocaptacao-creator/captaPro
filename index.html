@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CaptaPro 6.0 PRO</title>
+<title>CaptaPro 7.4 PRO</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -571,7 +571,7 @@ button[onclick*="ranking"]{display:none!important}
 
 <!-- ===== HEADER ===== -->
 <div class="top">
-  <div class="logo">Capta<span>Pro</span> <small>v6.0</small> <span class="badge">Bueno Invest</span></div>
+  <div class="logo">Capta<span>Pro</span> <small>v7.4</small> <span class="badge">Bueno Invest</span></div>
   <div class="user-info">
     <span class="name" id="userNameDisplay">Visitante</span>
     <span class="role" id="userRoleDisplay">Profissional</span>
@@ -2428,6 +2428,167 @@ window.compartilharFicha=async function(){
    alert('Não consegui gerar a imagem da ficha. Verifique se o navegador permite compartilhamento.');
  }
 };
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 7.4 • pedido Raphael ===== */
+(function(){
+"use strict";
+const R74 = [{"nome": "Pedro Henrique Gomes Santos", "casais": 14, "vendas": 6, "vgv": 512400, "ponto": "Porta dentro do Park"}, {"nome": "Ana Caroline", "casais": 3, "vendas": 5, "vgv": 460000, "ponto": "Park Dream House"}, {"nome": "Paulo Victor Ortiz", "casais": 12, "vendas": 3, "vgv": 270500, "ponto": "Corredor"}, {"nome": "José Ademir Silva Tavares", "casais": 13, "vendas": 2, "vgv": 185880, "ponto": "Corredor"}, {"nome": "José Neto", "casais": 1, "vendas": 2, "vgv": 184000, "ponto": "Park Dream House"}, {"nome": "Mateus Santos Santa Rosa", "casais": 7, "vendas": 2, "vgv": 180000, "ponto": "Fábrica Spinassi"}, {"nome": "Renan Marcondes Johas", "casais": 6, "vendas": 2, "vgv": 178000, "ponto": "Djalma"}, {"nome": "Ivanilson Luiz Aguiar Lima", "casais": 11, "vendas": 2, "vgv": 147700, "ponto": "Posto Shell"}, {"nome": "Marcio Alfaia", "casais": 5, "vendas": 1, "vgv": 77700, "ponto": "Baden Baden"}, {"nome": "Jessica Barbosa", "casais": 8, "vendas": 0, "vgv": 0, "ponto": "Porta dentro do Park"}, {"nome": "Adriano Moreira", "casais": 8, "vendas": 0, "vgv": 0, "ponto": "Baden Baden"}, {"nome": "Josyene Freitas", "casais": 5, "vendas": 0, "vgv": 0, "ponto": "Igreja"}, {"nome": "João Vitor da Silva Francisco", "casais": 4, "vendas": 0, "vgv": 0, "ponto": "Renner"}, {"nome": "Matheus Domingos Santos", "casais": 4, "vendas": 0, "vgv": 0, "ponto": "Guarda-chuvas"}, {"nome": "Felipe da Silva Ribeiro", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Guarda-chuvas"}, {"nome": "Otavio José de Oliveira Martin", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Renner"}, {"nome": "Matheus Esley Silva", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Fábrica Spinassi"}, {"nome": "Manara Alexandre Sousa", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Fábrica Spinassi"}, {"nome": "André Carriço", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Corredor"}, {"nome": "Ricardo Maltchik", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Posto Shell"}, {"nome": "Jonatas França da Silva", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Djalma"}];
+const E=id=>document.getElementById(id);
+const V=id=>(E(id)?.value||'').trim();
+const H=(id,v)=>{if(E(id))E(id).innerHTML=v};
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+const moeda=v=>'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const pct=(a,b)=>b?((Number(a||0)/Number(b||0))*100).toFixed(2).replace('.',',')+'%':'0,00%';
+function rows(){return [...R74].sort((a,b)=>b.vgv-a.vgv||b.vendas-a.vendas||b.casais-a.casais)}
+function total(){return R74.reduce((a,x)=>({casais:a.casais+x.casais,vendas:a.vendas+x.vendas,vgv:a.vgv+x.vgv,pesq:a.pesq+x.casais,abord:a.abord+x.casais}),{casais:0,vendas:0,vgv:0,pesq:0,abord:0})}
+function parseRenda(v){
+ const s=String(v||'').trim(); if(!s)return 0;
+ const x=s.replace(/[R$\s]/g,'');
+ if(x.includes(','))return Number(x.replace(/\./g,'').replace(',','.'))||0;
+ return Number(s.replace(/\D/g,''))||0;
+}
+function rendaSemRS(v){
+ const n=parseRenda(v);
+ return n?n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'';
+}
+function rendaComRS(v){
+ const n=parseRenda(v);
+ return n?'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'-';
+}
+function initRenda74(){
+ const r=E('renda'); if(!r)return;
+ r.placeholder='Ex: 10000 vira 10.000,00';
+ r.addEventListener('focus',()=>{const n=parseRenda(r.value);r.value=n?String(Math.round(n)):''});
+ r.addEventListener('blur',()=>{r.value=rendaSemRS(r.value)});
+}
+initRenda74();
+
+const oldSalvar74=window.salvarPesquisa;
+window.salvarPesquisa=async function(){
+ const r=E('renda'); if(r)r.value=rendaSemRS(r.value);
+ const ret=oldSalvar74?await oldSalvar74.apply(this,arguments):null;
+ if(r)r.value=rendaSemRS(r.value);
+ return ret;
+};
+
+function removerRanking74(){
+ document.querySelectorAll('button,.tab').forEach(b=>{
+   const t=norm(b.innerText||'');
+   if(t.includes('ranking')) b.style.display='none';
+ });
+ const rk=E('raking')||E('ranking'); if(rk)rk.style.display='none';
+}
+removerRanking74();
+
+window.renderPulsador74=function(){
+ const t=total();
+ return `<div class="section"><div class="section-title">📡 Pulsador da Operação</div>
+ <div class="pulsador74-grid">
+  <div class="pulsador74-card blue"><small>Abordagens</small><b>${t.abord}</b></div>
+  <div class="pulsador74-card"><small>Pesquisas</small><b>${t.pesq}</b></div>
+  <div class="pulsador74-card gold"><small>Casais</small><b>${t.casais}</b></div>
+  <div class="pulsador74-card"><small>Vendas</small><b>${t.vendas}</b></div>
+  <div class="pulsador74-card"><small>VGV</small><b>${moeda(t.vgv)}</b></div>
+  <div class="pulsador74-card red"><small>Eficiência</small><b>${pct(t.vendas,t.casais)}</b></div>
+ </div></div>`;
+};
+window.renderRelatorio=function(){
+ const c=E('relatorioContent');
+ if(c)c.innerHTML=window.renderPulsador74();
+};
+const oldPortal74=window.renderPortalCEO;
+window.renderPortalCEO=async function(){
+ if(oldPortal74)await oldPortal74.apply(this,arguments);
+ const c=E('portalContent');
+ if(c){
+   // tira a tabela grande do CEO e deixa só cards + áreas úteis que já existirem
+   const mapa = c.querySelector('#mapaCEO60,#mapaCEO71')?.closest('.section')?.outerHTML || '';
+   const metas = [...c.querySelectorAll('.section')].find(s=>norm(s.innerText).includes('metas por profissional'))?.outerHTML || '';
+   c.innerHTML = window.renderPulsador74() + metas + mapa;
+   if(window.renderMapa62) setTimeout(window.renderMapa62,600);
+   if(window.renderMapa70) setTimeout(window.renderMapa70,600);
+   if(window.renderMapa71) setTimeout(window.renderMapa71,600);
+ }
+ removerRanking74();
+};
+
+function fichaAtual74(){
+ return window.ultimaFicha || {
+   usuario:window.usuarioNome||V('nome')||'Profissional',
+   captador_nome:window.usuarioNome||V('nome')||'Profissional',
+   equipe:V('equipe'),ponto:V('ponto'),
+   nome1:V('nome1'),idade1:V('idade1'),profissao1:V('profissao1'),
+   nome2:V('nome2'),idade2:V('idade2'),profissao2:V('profissao2'),
+   relacionamento:V('relacionamento'),tempo:V('tempo'),
+   renda:V('renda'),carro:V('nomeCarro'),nome_carro:V('nomeCarro'),ano_carro:V('anoCarro'),
+   cartao:V('cartao'),casa:V('casa'),estado:V('estado'),cidade:V('cidade'),
+   multi:V('multi'),brinde:V('brinde'),contato:V('contato'),obs:V('obs'),
+   qualificacao_automatica:'Q • Perfil dentro da regra',
+   levou_sala:'Não',created_at:new Date().toISOString()
+ };
+}
+function ficha30HTML74(f){
+ const data=new Date(f.created_at||Date.now()).toLocaleString('pt-BR');
+ const rel=[f.relacionamento||'',f.tempo||''].filter(Boolean).join(' • ')||'-';
+ const veic=[f.carro||f.nome_carro||'',f.ano_carro||''].filter(Boolean).join(' ')||'-';
+ const equipe=[f.equipe||'',f.ponto||f.ponto_captacao||''].filter(Boolean).join(' • ')||'-';
+ const prof=f.usuario||f.captador_nome||window.usuarioNome||V('nome')||'-';
+ const sala=f.levou_sala||f.sala_status||'Não';
+ return `<div class="ficha30Share74" id="ficha30Img74">
+  <div class="ficha30Head74"><div class="ficha30Logo74">CP</div><div class="ficha30Title74"><b>Ficha Completa<br>do Casal</b><small>CaptaPro • Bueno Invest • ${esc(data)}</small></div></div>
+  <div class="ficha30Qual74"><small>Resultado da qualificação</small><b>${esc(f.qualificacao_automatica||'Q • Perfil dentro da regra')}</b></div>
+  <div class="ficha30Grid74">
+    <div class="ficha30Field74"><small>Nome 1</small><b>${esc(f.nome1||f.convidado_1||'-')}</b></div>
+    <div class="ficha30Field74"><small>Nome 2</small><b>${esc(f.nome2||f.convidado_2||'-')}</b></div>
+    <div class="ficha30Field74"><small>Idade / Profissão 1</small><b>${esc(f.idade1||f.idade_1||'-')} anos • ${esc(f.profissao1||f.profissao_1||'-')}</b></div>
+    <div class="ficha30Field74"><small>Idade / Profissão 2</small><b>${esc(f.idade2||f.idade_2||'-')} anos • ${esc(f.profissao2||f.profissao_2||'-')}</b></div>
+    <div class="ficha30Field74"><small>Relacionamento</small><b>${esc(rel)}</b></div>
+    <div class="ficha30Field74"><small>Renda</small><b>${esc(rendaComRS(f.renda))}</b></div>
+    <div class="ficha30Field74"><small>Veículo / Ano</small><b>${esc(veic)}</b></div>
+    <div class="ficha30Field74"><small>Cartão de crédito</small><b>${esc(f.cartao||'-')}</b></div>
+    <div class="ficha30Field74"><small>Casa própria</small><b>${esc(f.casa||'-')}</b></div>
+    <div class="ficha30Field74"><small>Estado / Cidade</small><b>${esc(f.estado||'-')} • ${esc(f.cidade||'-')}</b></div>
+    <div class="ficha30Field74"><small>Multipropriedade</small><b>${esc(f.multi||'-')}</b></div>
+    <div class="ficha30Field74"><small>Cortesia escolhida</small><b>${esc(f.brinde||'-')}</b></div>
+    <div class="ficha30Field74"><small>WhatsApp / Contato</small><b>${esc(f.contato||'-')}</b></div>
+    <div class="ficha30Field74"><small>Entrada em sala</small><b>${esc(sala)}</b></div>
+    <div class="ficha30Field74"><small>Equipe / Ponto</small><b>${esc(equipe)}</b></div>
+    <div class="ficha30Field74"><small>Profissional responsável</small><b>${esc(prof)}</b></div>
+    <div class="ficha30Field74 full"><small>Observações</small><b>${esc(f.obs||f.observacoes||'-')}</b></div>
+  </div>
+  <div class="ficha30Foot74">Cliente(s): ${esc((f.nome1||f.convidado_1||'-')+' e '+(f.nome2||f.convidado_2||'-'))}<br>Registro CaptaPro • Bueno Invest • Sala ${esc(sala)}</div>
+ </div>`;
+}
+window.compartilharFicha=async function(){
+ const f=fichaAtual74();
+ const holder=document.createElement('div');
+ holder.style.position='fixed';holder.style.left='-99999px';holder.style.top='0';
+ holder.innerHTML=ficha30HTML74(f);
+ document.body.appendChild(holder);
+ try{
+   const alvo=holder.querySelector('#ficha30Img74');
+   const canvas=await html2canvas(alvo,{backgroundColor:null,scale:2,useCORS:true,width:1080,windowWidth:1280});
+   canvas.toBlob(async blob=>{
+     const file=new File([blob],'ficha-captaPro.png',{type:'image/png'});
+     if(navigator.canShare&&navigator.canShare({files:[file]})) await navigator.share({files:[file],title:'Ficha CaptaPro'});
+     else{const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='ficha-captaPro.png';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);}
+     holder.remove();
+   },'image/png',1);
+ }catch(e){holder.remove();alert('Erro ao gerar a imagem da ficha.');}
+};
+const oldAba74=window.aba;
+window.aba=function(id,b){
+ removerRanking74();
+ const r=oldAba74?oldAba74.apply(this,arguments):undefined;
+ setTimeout(()=>{removerRanking74(); if(id==='relatorio')window.renderRelatorio(); if(id==='qualificacao')window.renderPortalCEO(); initRenda74();},500);
+ return r;
+};
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{removerRanking74();initRenda74();},800));
 })();
 </script>
 
