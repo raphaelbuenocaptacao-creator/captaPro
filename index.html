@@ -1,144 +1,366 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaptaPro 6.0 PRO Estável</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CaptaPro 6.0 PRO</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-/* ===== TODOS OS ESTILOS MANTIDOS ===== */
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#050505,#180000);color:#fff}.wrap{max-width:900px;margin:auto;padding:12px}
-.top{text-align:center;margin:12px 0}.logo{font-size:38px;font-weight:900}.logo span{color:#ff3333}.version{display:inline-block;background:#1b0505;border:1px solid #671818;color:#ff8585;border-radius:999px;padding:5px 13px;font-size:12px;font-weight:900}
-.card{background:#101010;border:1px solid #2b2b2b;border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:0 0 16px rgba(239,27,36,.10)}h2{margin:0 0 12px;border-left:4px solid #ef1b24;padding-left:10px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}input,select,textarea,button{width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#050505;color:#fff;font-size:15px}textarea{min-height:70px}
-button{font-weight:900;cursor:pointer}.main{background:linear-gradient(135deg,#ef1b24,#ff3333);border:0}.secondary{background:#202020;border:1px solid #444}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.tabs button{background:#181818;border:0;padding:14px;border-radius:14px;color:#fff;font-weight:900}.tabs button.active{background:linear-gradient(135deg,#ef1b24,#ff3333)}
-.hidden{display:none!important}.adminOnly{display:none}body.ceo .adminOnly{display:block}body.ceo .tabs{grid-template-columns:repeat(6,1fr)}.ok{color:#00e676;font-weight:900}.erro{color:#ff5252;font-weight:900}.warn{color:#ffd54f;font-weight:900}.hint,.mini{color:#aaa;font-size:12px}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.kpi{background:#181818;border:1px solid #2d2d2d;border-radius:14px;padding:12px;text-align:center;color:#ccc}.kpi b{display:block;color:#ff3333;font-size:26px;margin-top:4px}
-table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #2b2b2b;padding:8px;text-align:left}th{color:#ff7777}.scroll{overflow:auto}.badge{display:inline-block;border-radius:999px;padding:6px 10px;background:#260000;border:1px solid #5b1111;color:#ff8585;font-weight:900}
-.ficha{background:linear-gradient(145deg,#090909,#180000);border:1px solid #5a1717;border-radius:18px;padding:18px}.campo{background:#101010;border:1px solid #292929;border-radius:12px;padding:10px;margin:6px 0}.campo small{display:block;color:#ff7777;text-transform:uppercase;font-weight:900;font-size:10px;margin-bottom:4px}
-@media(max-width:700px){.grid,.kpis{grid-template-columns:1fr}input,select,textarea,button{font-size:14px;padding:11px}.logo{font-size:32px}}
-.fichaHeaderFull{display:flex;align-items:center;gap:10px;border-bottom:1px solid #3b1b1b;padding-bottom:12px;margin-bottom:12px}
-.fichaLogoFull{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#ef1b24,#7a0000);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px}
-.fichaTitleFull b{display:block;font-size:22px}.fichaTitleFull small{color:#aaa}
-.fichaRodapeFull{border-top:1px solid #3b1b1b;margin-top:12px;padding-top:10px;color:#888;font-size:11px}
+/* ===== RESET & BASE ===== */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(180deg,#050505,#180000);color:#e8e8e8;min-height:100vh}
+.wrap{max-width:1100px;margin:0 auto;padding:12px}
 
-/* ===== ESTILOS CAPTAPRO 6.0 ===== */
-.capta60Hero{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin:10px 0}.capta60HeroBox{background:linear-gradient(145deg,#0b0b0b,#190202);border:1px solid #451515;border-radius:22px;padding:18px;box-shadow:0 0 18px rgba(239,27,36,.12)}.capta60HeroBox h3{margin:0 0 8px;font-size:22px}.capta60HeroBox p{color:#bbb;font-size:13px;line-height:1.35;margin:6px 0}.capta60Grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0}.capta60Card{background:#121212;border:1px solid #2d2d2d;border-radius:18px;padding:14px;text-align:center;min-height:92px;display:flex;flex-direction:column;justify-content:center}.capta60Card span{display:block;color:#aaa;font-size:11px;text-transform:uppercase;font-weight:900;letter-spacing:.4px}.capta60Card b{display:block;color:#00e676;font-size:24px;margin-top:6px;line-height:1.1}.capta60Card.blue b{color:#00c2ff}.capta60Card.gold b{color:#ffd54f}.capta60Card.red b{color:#ff5252}.capta60Card.dark b{color:#fff}.capta60Section{background:#0d0d0d;border:1px solid #2b2b2b;border-radius:20px;padding:16px;margin:12px 0}.capta60Section h3{margin:0 0 10px;color:#fff}.capta60Top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.capta60Pill{display:inline-block;padding:8px 11px;border-radius:999px;background:#06220f;border:1px solid #00e676;color:#00e676;font-weight:900;font-size:12px;margin:3px}.capta60Pill.blue{background:#061620;border-color:#00c2ff;color:#00c2ff}.capta60Pill.gold{background:#271f00;border-color:#ffd54f;color:#ffd54f}.capta60Pill.red{background:#280808;border-color:#ff5252;color:#ff8585}.capta60Bar{height:18px;background:#222;border:1px solid #333;border-radius:999px;overflow:hidden;margin-top:10px}.capta60Fill{height:100%;background:linear-gradient(135deg,#00a651,#00e676);border-radius:999px}.capta60Tools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}.capta60Tools.two{grid-template-columns:1fr 1fr}.capta60Tools.four{grid-template-columns:repeat(4,1fr)}.capta60Table{width:100%;border-collapse:collapse;font-size:13px;min-width:760px}.capta60Table th,.capta60Table td{border-bottom:1px solid #252525;padding:9px;text-align:left}.capta60Table th{color:#ff8585;text-transform:uppercase;font-size:11px}.capta60Table .green{color:#00e676;font-weight:900}.capta60Table .blue{color:#00c2ff;font-weight:900}.capta60Table .gold{color:#ffd54f;font-weight:900}.capta60Table .red{color:#ff5252;font-weight:900}.capta60Ficha{background:#080808;border:1px solid #333;border-radius:16px;padding:12px;margin:8px 0}.capta60Ficha.sala{border-color:#00e676;background:#061d10}.capta60Ficha b{display:block;color:#fff;margin-bottom:4px}.capta60Ficha small{display:block;color:#aaa;margin:3px 0}.capta60Empty{border:1px dashed #444;border-radius:16px;padding:15px;color:#888;text-align:center}.capta60Notice{background:#061620;border:1px solid #00c2ff;color:#bdeeff;border-radius:14px;padding:10px;margin:10px 0;font-size:12px;font-weight:800;line-height:1.35}.capta60Menu{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:10px 0}.capta60Menu button{background:#181818;border:1px solid #333;border-radius:14px;color:#fff;font-weight:900;padding:12px}.capta60Menu button.active{background:linear-gradient(135deg,#ef1b24,#ff3333);border-color:#ef1b24}.capta60Bloco.hidden{display:none!important}.sx60Challenge{background:#080808;border:1px solid #333;border-radius:16px;padding:12px;margin:8px 0}.sx60Challenge.pending{border-color:#ffd54f}.sx60Challenge.done{border-color:#00e676;background:#061d10}.sx60Challenge b{display:block}.sx60Challenge small{display:block;color:#aaa;margin-top:4px}.markerPonto60{background:#00c2ff;color:#001;border:3px solid #fff;border-radius:999px;padding:6px 10px;font-weight:900;font-size:12px;box-shadow:0 0 18px #00c2ff;white-space:nowrap}.markerProf60{width:22px;height:22px;border-radius:50%;border:4px solid #fff;background:#00e676;box-shadow:0 0 0 8px rgba(0,230,118,.22),0 0 18px #00e676}.mapaCEO60{width:100%;height:620px;min-height:620px;background:#07110c;border:2px solid #00c2ff;border-radius:18px;overflow:hidden}.mapAviso60{background:#061d10;border:1px solid #00e676;color:#00e676;border-radius:12px;padding:10px;margin:8px 0;font-weight:900;font-size:12px}.capta60RankPos{font-size:28px;color:#ffd54f;font-weight:900}.capta60Quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.capta60Quick button{width:auto;padding:8px 10px;border-radius:999px;font-size:12px}
-@media(max-width:760px){.capta60Hero,.capta60Tools,.capta60Tools.two,.capta60Tools.four{grid-template-columns:1fr}.capta60Grid{grid-template-columns:1fr 1fr}.capta60Menu{grid-template-columns:1fr 1fr}.capta60HeroBox h3{font-size:19px}.capta60Card{min-height:82px}.capta60Card b{font-size:20px}.mapaCEO60{height:420px;min-height:420px}.capta60Table{min-width:680px}}
+/* ===== HEADER ===== */
+.top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:16px 20px;background:linear-gradient(135deg,#0a0a0a,#1a0505);border-radius:20px;border:1px solid #2a1515;margin-bottom:16px}
+.logo{font-size:36px;font-weight:900;letter-spacing:-1px}
+.logo span{color:#ef1b24}
+.logo small{font-size:14px;font-weight:400;color:#888;margin-left:8px}
+.badge{display:inline-block;background:#1b0505;border:1px solid #671818;color:#ff8585;border-radius:999px;padding:4px 14px;font-size:11px;font-weight:900}
+.user-info{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.user-info .name{color:#00e676;font-weight:700;font-size:14px}
+.user-info .role{background:#1a1a1a;border:1px solid #333;border-radius:999px;padding:2px 12px;font-size:11px;color:#aaa}
+.btn-sair{background:#2a0a0a;border:1px solid #5a1515;color:#ff6666;padding:6px 16px;border-radius:999px;font-weight:700;font-size:12px;cursor:pointer}
+.btn-sair:hover{background:#3a0a0a}
 
-/* ===== ESTILOS DAS ABAS ===== */
-#pesquisa .pessoaBox{grid-column:1/-1;background:#151515;border:1px solid #333;border-radius:16px;padding:12px;margin-top:2px}
-#pesquisa .pessoaBox b{display:block;color:#ff8585;margin-bottom:8px}
-#pesquisa .pessoaGrid{display:grid;grid-template-columns:1.4fr .7fr 1.3fr;gap:8px}
-@media(max-width:700px){#pesquisa .pessoaGrid{grid-template-columns:1fr}}
+/* ===== CARDS ===== */
+.card{background:linear-gradient(145deg,#0d0d0d,#0a0a0a);border:1px solid #222;border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.card-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px;gap:8px}
+.card-header h2{font-size:18px;border-left:4px solid #ef1b24;padding-left:12px;color:#fff}
+.card-header .count{font-size:13px;color:#888}
+.section{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:14px;padding:14px;margin-top:12px}
+.section-title{font-size:15px;color:#ff8585;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-title .pill{font-size:11px;font-weight:400;color:#aaa;background:#151515;padding:2px 10px;border-radius:999px}
+
+/* ===== FORMULÁRIOS ===== */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+input,select,textarea{width:100%;padding:10px 14px;border-radius:10px;border:1px solid #2a2a2a;background:#0a0a0a;color:#e8e8e8;font-size:14px;transition:border .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#ef1b24;box-shadow:0 0 0 3px rgba(239,27,36,.12)}
+textarea{min-height:60px;resize:vertical}
+select option{background:#1a1a1a}
+input::placeholder,textarea::placeholder{color:#555}
+
+/* ===== BOTÕES ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;border:none;transition:all .2s;text-decoration:none}
+.btn-primary{background:linear-gradient(135deg,#ef1b24,#cc1520);color:#fff;box-shadow:0 4px 16px rgba(239,27,36,.25)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(239,27,36,.35)}
+.btn-secondary{background:#1a1a1a;color:#ccc;border:1px solid #333}
+.btn-secondary:hover{background:#252525;border-color:#555}
+.btn-success{background:linear-gradient(135deg,#00a651,#00c853);color:#fff;box-shadow:0 4px 16px rgba(0,200,83,.2)}
+.btn-success:hover{transform:translateY(-2px)}
+.btn-danger{background:linear-gradient(135deg,#a62020,#cc1520);color:#fff}
+.btn-sm{padding:6px 14px;font-size:12px}
+.btn-xs{padding:4px 10px;font-size:11px}
+.btn-block{width:100%}
+
+/* ===== TABS ===== */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.tabs button{background:#0f0f0f;border:1px solid #222;padding:10px 18px;border-radius:12px;color:#aaa;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;flex:1;min-width:100px;text-align:center}
+.tabs button:hover{background:#181818;color:#fff}
+.tabs button.active{background:linear-gradient(135deg,#ef1b24,#cc1520);color:#fff;border-color:#ef1b24;box-shadow:0 4px 16px rgba(239,27,36,.2)}
+.tabs button .tab-icon{font-size:16px;display:block;margin-bottom:2px}
+
+/* ===== PAINÉIS DE NÚMEROS ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin:10px 0}
+.stat-card{background:#111;border:1px solid #222;border-radius:12px;padding:12px;text-align:center;min-height:70px;display:flex;flex-direction:column;justify-content:center}
+.stat-card .label{font-size:10px;text-transform:uppercase;color:#777;font-weight:700;letter-spacing:.4px}
+.stat-card .value{font-size:26px;font-weight:900;color:#ef1b24;margin-top:2px}
+.stat-card .value.green{color:#00e676}
+.stat-card .value.blue{color:#00c2ff}
+.stat-card .value.gold{color:#ffd54f}
+.stat-card .value.white{color:#fff}
+.stat-card.small .value{font-size:20px}
+
+/* ===== RANKING TABELAS ===== */
+.table-wrap{overflow-x:auto;margin-top:8px}
+.table{width:100%;border-collapse:collapse;font-size:13px}
+.table th{color:#ff7777;text-transform:uppercase;font-size:11px;padding:10px 8px;text-align:left;border-bottom:2px solid #1a1a1a}
+.table td{padding:9px 8px;border-bottom:1px solid #181818}
+.table .pos{color:#ffd54f;font-weight:900;width:40px}
+.table .money{color:#00e676;font-weight:700}
+.table .green{color:#00e676;font-weight:700}
+.table .blue{color:#00c2ff;font-weight:700}
+.table .gold{color:#ffd54f;font-weight:700}
+.table tr.top1{background:linear-gradient(90deg,rgba(255,213,79,.08),transparent)}
+.table tr.top2{background:linear-gradient(90deg,rgba(207,216,220,.06),transparent)}
+.table tr.top3{background:linear-gradient(90deg,rgba(215,163,106,.06),transparent)}
+.table tr:hover{background:rgba(255,255,255,.03)}
+
+/* ===== FICHAS ===== */
+.ficha-card{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:12px;padding:12px;margin:6px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.ficha-card.sala{border-color:#00e676;background:linear-gradient(145deg,#0a1a0a,#0a0a0a)}
+.ficha-card .info{flex:1;min-width:200px}
+.ficha-card .info b{color:#fff;font-size:15px}
+.ficha-card .info small{display:block;color:#888;font-size:12px;margin-top:2px}
+.ficha-card .tags{display:flex;gap:4px;flex-wrap:wrap}
+.tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:10px;font-weight:900;background:#151515;border:1px solid #2a2a2a;color:#aaa}
+.tag.q{border-color:#00e676;color:#00e676}
+.tag.nq{border-color:#ffd54f;color:#ffd54f}
+.tag.sala{border-color:#00c2ff;color:#00c2ff}
+.tag.venda{border-color:#ff6b35;color:#ff6b35}
+
+/* ===== PILLS ===== */
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;background:#151515;border:1px solid #2a2a2a;color:#aaa}
+.pill.green{background:#0a2a0a;border-color:#00e676;color:#00e676}
+.pill.blue{background:#0a1a2a;border-color:#00c2ff;color:#00c2ff}
+.pill.gold{background:#2a2a0a;border-color:#ffd54f;color:#ffd54f}
+.pill.red{background:#2a0a0a;border-color:#ff5252;color:#ff5252}
+
+/* ===== EMPTY STATE ===== */
+.empty{text-align:center;padding:30px 20px;color:#666;font-size:13px;border:1px dashed #222;border-radius:12px}
+.empty .icon{font-size:32px;display:block;margin-bottom:8px}
+
+/* ===== BARRA DE PROGRESSO ===== */
+.progress-bar{height:6px;background:#1a1a1a;border-radius:999px;overflow:hidden;margin:8px 0}
+.progress-bar .fill{height:100%;background:linear-gradient(90deg,#00a651,#00e676);border-radius:999px;transition:width .4s}
 
 /* ===== MAPA ===== */
-#mapaCEO60{width:100%!important;height:620px!important;min-height:620px!important;display:block!important;visibility:visible!important;background:#07110c!important;border:2px solid #00c2ff!important;border-radius:18px!important;overflow:hidden!important}
+#mapaCEO60{width:100%;height:500px;min-height:500px;background:#0a0a0a;border:2px solid #00c2ff;border-radius:16px;overflow:hidden}
+.map-notice{background:#0a1a1a;border:1px solid #00e676;border-radius:12px;padding:10px 14px;color:#00e676;font-size:12px;font-weight:700;margin:8px 0}
+
+/* ===== MODAL ===== */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal.hidden{display:none!important}
+.modal-box{background:#0d0d0d;border:1px solid #3a1515;border-radius:20px;padding:20px;max-width:600px;width:100%;max-height:90vh;overflow:auto}
+.modal-box h3{color:#fff;margin-bottom:12px}
+
+/* ===== TOOLS ===== */
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.tools .btn{flex:0 1 auto}
+.tools .btn-block{flex:1}
+.tools input,.tools select{flex:1;min-width:120px}
+
+/* ===== HIDDEN ===== */
+.hidden{display:none!important}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+ .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+ .top{flex-direction:column;gap:10px;text-align:center}
+ .tabs button{flex:1 1 auto;min-width:80px;font-size:12px;padding:8px 12px}
+ .stats-grid{grid-template-columns:repeat(2,1fr)}
+ .stat-card .value{font-size:20px}
+ .ficha-card{flex-direction:column;align-items:stretch}
+ .tools{flex-direction:column}
+ .tools input,.tools select{flex:1;min-width:auto}
+ #mapaCEO60{height:350px;min-height:350px}
+ .table{font-size:12px}
+ .table td,.table th{padding:6px 4px}
+}
+@media(max-width:480px){
+ .stats-grid{grid-template-columns:1fr 1fr}
+ .stat-card{min-height:60px;padding:8px}
+ .stat-card .value{font-size:18px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Versão 6.0 PRO</div><p class="mini"><b style="color:#00e676">Bueno Invest</b></p><button id="btnSairFinal" class="secondary hidden" style="max-width:160px;margin:8px auto 0" onclick="sairCaptaProFinal()">Sair</button></div>
+
+<!-- ===== HEADER ===== -->
+<div class="top">
+  <div class="logo">Capta<span>Pro</span> <small>v6.0</small> <span class="badge">Bueno Invest</span></div>
+  <div class="user-info">
+    <span class="name" id="userNameDisplay">Visitante</span>
+    <span class="role" id="userRoleDisplay">Profissional</span>
+    <button class="btn-sair hidden" id="btnSair" onclick="sairCaptaPro()">Sair</button>
+  </div>
+</div>
 
 <!-- ===== LOGIN ===== -->
 <section id="loginBox" class="card">
-<h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
+  <div class="card-header"><h2>🔐 Entrar</h2></div>
+  <div class="grid-2">
+    <input id="email" type="email" placeholder="Seu e-mail">
+    <input id="nome" placeholder="Seu nome completo">
+  </div>
+  <button class="btn btn-primary btn-block" style="margin-top:10px" onclick="entrar()">Entrar</button>
+  <p id="loginMsg" style="margin-top:8px;font-size:13px"></p>
 </section>
 
 <!-- ===== APP ===== -->
 <section id="app" class="hidden">
+
+<!-- ===== TABS ===== -->
 <div class="tabs">
-<button class="active" onclick="aba('pesquisa',this)">Pesquisa</button>
-<button onclick="aba('diario',this)">Meu Profissional</button>
-<button onclick="aba('relatorio',this)">Relatório</button>
-<button onclick="aba('raking',this)">Ranking</button>
-<button onclick="aba('arena',this)">Arena SX</button>
-<button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button>
+  <button class="active" onclick="aba('pesquisa',this)"><span class="tab-icon">📋</span>Pesquisa</button>
+  <button onclick="aba('diario',this)"><span class="tab-icon">👤</span>Meu Profissional</button>
+  <button onclick="aba('relatorio',this)"><span class="tab-icon">📊</span>Relatório</button>
+  <button onclick="aba('raking',this)"><span class="tab-icon">🏆</span>Ranking</button>
+  <button onclick="aba('arena',this)"><span class="tab-icon">⚔️</span>Arena SX</button>
+  <button class="adminOnly" onclick="aba('qualificacao',this)"><span class="tab-icon">👑</span>Portal CEO</button>
 </div>
 
-<!-- ===== PESQUISA ===== -->
+<!-- ============================================================ -->
+<!-- ABA: PESQUISA -->
+<!-- ============================================================ -->
 <section id="pesquisa" class="card">
-<h2>Pesquisa</h2><p class="hint">Abordagem → ficha → salvar → compartilhar → nova ficha.</p>
-<div class="card"><button class="main" style="min-height:62px;font-size:18px" onclick="registrarAbordagem()">+ REGISTRAR ABORDAGEM</button><p class="mini">Abordagens hoje: <b id="abordagensHoje" class="ok">0</b></p></div>
-<div class="grid pesquisaGrid14">
-<select id="equipe"><option value="">1. Equipe</option><option>PARK</option><option>EXTERNA</option></select>
-<select id="ponto"><option value="">2. Ponto de captação</option><option>Porta dentro do Park</option><option>Park Dream House</option><option>Fábrica Spinassi</option><option>Corredor</option><option>Baden Baden</option><option>Djalma</option><option>Igreja</option><option>Renner</option><option>Guarda-chuvas</option><option>Posto Shell</option></select>
-<div class="pessoaBox"><b>3. Pessoa 1</b><div class="pessoaGrid"><input id="nome1" placeholder="Nome"><select id="idade1"><option value="">Idade</option></select><input id="profissao1" list="profissoes" placeholder="Profissão"></div></div>
-<div class="pessoaBox"><b>4. Pessoa 2</b><div class="pessoaGrid"><input id="nome2" placeholder="Nome"><select id="idade2"><option value="">Idade</option></select><input id="profissao2" list="profissoes" placeholder="Profissão"></div></div>
-<select id="estado"><option value="">6. Estado</option><option>SP</option><option>RJ</option><option>MG</option><option>PR</option><option>SC</option><option>RS</option><option>GO</option><option>DF</option><option>BA</option><option>CE</option><option>PE</option><option>ES</option><option>MT</option><option>MS</option><option>PA</option><option>AM</option></select>
-<input id="cidade" list="cidades" placeholder="6. Cidade">
-<select id="relacionamento"><option value="">7. Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option></select>
-<select id="tempo"><option value="">7. Tempo juntos</option><option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option><option>3 anos</option><option>4 anos</option><option>5 anos</option><option>6 anos</option><option>7 anos</option><option>8 anos</option><option>9 anos</option><option>10 anos</option><option>Mais de 10 anos</option></select>
-<input id="nomeCarro" placeholder="8. Carro (Ex: Onix)">
-<input id="anoCarro" inputmode="numeric" placeholder="8. Ano do carro (Ex: 2015)">
-<select id="casa"><option value="">9. Casa própria?</option><option>Sim</option><option>Não</option></select>
-<select id="cartao"><option value="">10. Cartão de crédito?</option><option>Sim</option><option>Não</option></select>
-<input id="renda" inputmode="numeric" autocomplete="off" placeholder="11. Renda bruta do casal. Ex: 10000 vira 10.000,00">
-<select id="multi"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
-<select id="brinde"><option value="">Selecione a cortesia</option><option>2 Museu de Cera</option><option>2 Mini Mundo</option><option>2 Vale dos Dinossauros</option><option>2 Terror</option><option>4 Espelho do Jordão</option><option>Rostie - 120,00 em consumo</option><option>Vemaguet - 120,00 em consumo</option><option>Armazém Brasil - 120,00 em consumo</option><option>Combustível - 120,00 em consumo</option><option>Chocolate Spinassi - 120,00 em consumo</option><option>Loja Parque R$ 150,00</option><option>Combo de experiência</option></select>
-<input id="contato" placeholder="WhatsApp / contato">
-</div>
-<textarea id="obs" style="margin-top:8px" placeholder="Observações"></textarea>
-<div style="margin-top:8px"><button class="main" onclick="salvarPesquisa()">Salvar Ficha</button></div>
-<button class="secondary" style="margin-top:8px;background:#073a21;border-color:#0a7b43" onclick="confirmarSala21()">✅ Casal em Sala</button>
-<p id="formMsg"></p>
-<div id="resultado" class="hidden"></div>
-<div id="fichaBox" class="card hidden"><h2>Ficha salva</h2><div id="fichaConteudo"></div><div class="grid"><button class="main" onclick="compartilharFicha()">Compartilhar imagem</button><button class="secondary" onclick="novaPesquisa()">Nova pesquisa</button></div></div>
+  <div class="card-header">
+    <h2>📋 Nova Pesquisa</h2>
+    <span class="count">Abordagens hoje: <b id="abordagensHoje" class="green">0</b></span>
+  </div>
+
+  <button class="btn btn-success btn-block" onclick="registrarAbordagem()" style="margin-bottom:12px;min-height:48px;font-size:16px">
+    ➕ REGISTRAR ABORDAGEM
+  </button>
+
+  <div class="grid-2">
+    <select id="equipe"><option value="">1. Equipe</option><option>PARK</option><option>EXTERNA</option></select>
+    <select id="ponto"><option value="">2. Ponto de captação</option><option>Porta dentro do Park</option><option>Park Dream House</option><option>Fábrica Spinassi</option><option>Corredor</option><option>Baden Baden</option><option>Djalma</option><option>Igreja</option><option>Renner</option><option>Guarda-chuvas</option><option>Posto Shell</option></select>
+  </div>
+
+  <div class="section">
+    <div class="section-title">👤 Pessoa 1</div>
+    <div class="grid-3">
+      <input id="nome1" placeholder="Nome">
+      <select id="idade1"><option value="">Idade</option></select>
+      <input id="profissao1" list="profissoes" placeholder="Profissão">
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">👤 Pessoa 2</div>
+    <div class="grid-3">
+      <input id="nome2" placeholder="Nome">
+      <select id="idade2"><option value="">Idade</option></select>
+      <input id="profissao2" list="profissoes" placeholder="Profissão">
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <select id="estado"><option value="">Estado</option><option>SP</option><option>RJ</option><option>MG</option><option>PR</option><option>SC</option><option>RS</option><option>GO</option><option>DF</option><option>BA</option><option>CE</option><option>PE</option><option>ES</option><option>MT</option><option>MS</option><option>PA</option><option>AM</option></select>
+    <input id="cidade" list="cidades" placeholder="Cidade">
+  </div>
+
+  <div class="grid-2">
+    <select id="relacionamento"><option value="">Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option></select>
+    <select id="tempo"><option value="">Tempo juntos</option><option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option><option>3 anos</option><option>4 anos</option><option>5 anos</option><option>6 anos</option><option>7 anos</option><option>8 anos</option><option>9 anos</option><option>10 anos</option><option>Mais de 10 anos</option></select>
+  </div>
+
+  <div class="grid-2">
+    <input id="nomeCarro" placeholder="Carro (Ex: Onix)">
+    <input id="anoCarro" inputmode="numeric" placeholder="Ano do carro (Ex: 2015)">
+  </div>
+
+  <div class="grid-2">
+    <select id="casa"><option value="">Casa própria?</option><option>Sim</option><option>Não</option></select>
+    <select id="cartao"><option value="">Cartão de crédito?</option><option>Sim</option><option>Não</option></select>
+  </div>
+
+  <div class="grid-2">
+    <input id="renda" inputmode="numeric" placeholder="Renda bruta do casal. Ex: 10000">
+    <select id="multi"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
+  </div>
+
+  <select id="brinde" style="margin-top:8px"><option value="">Cortesia</option><option>2 Museu de Cera</option><option>2 Mini Mundo</option><option>2 Vale dos Dinossauros</option><option>2 Terror</option><option>4 Espelho do Jordão</option><option>Rostie - 120,00 em consumo</option><option>Vemaguet - 120,00 em consumo</option><option>Armazém Brasil - 120,00 em consumo</option><option>Combustível - 120,00 em consumo</option><option>Chocolate Spinassi - 120,00 em consumo</option><option>Loja Parque R$ 150,00</option><option>Combo de experiência</option></select>
+
+  <input id="contato" placeholder="WhatsApp / contato" style="margin-top:8px">
+  <textarea id="obs" placeholder="Observações" style="margin-top:8px"></textarea>
+
+  <div class="tools" style="margin-top:10px">
+    <button class="btn btn-primary" onclick="salvarPesquisa()">💾 Salvar Ficha</button>
+    <button class="btn btn-success" onclick="confirmarSala21()">✅ Casal em Sala</button>
+  </div>
+
+  <p id="formMsg" style="margin-top:8px;font-size:13px"></p>
+
+  <div id="resultado" class="hidden"></div>
+
+  <div id="fichaBox" class="hidden" style="margin-top:12px">
+    <div class="section">
+      <div class="section-title">📄 Ficha salva</div>
+      <div id="fichaConteudo"></div>
+      <div class="tools">
+        <button class="btn btn-primary" onclick="compartilharFicha()">📤 Compartilhar imagem</button>
+        <button class="btn btn-secondary" onclick="novaPesquisa()">🔄 Nova pesquisa</button>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- ===== MEU PROFISSIONAL ===== -->
+<!-- ============================================================ -->
+<!-- ABA: MEU PROFISSIONAL -->
+<!-- ============================================================ -->
 <section id="diario" class="card hidden">
-<h2>Meu Profissional</h2>
-<div id="meuProfissionalContent"></div>
+  <div class="card-header">
+    <h2>👤 Meu Profissional</h2>
+    <span class="count" id="profDataAtual"></span>
+  </div>
+  <div id="meuProfissionalContent"></div>
 </section>
 
-<!-- ===== RELATÓRIO ===== -->
+<!-- ============================================================ -->
+<!-- ABA: RELATÓRIO -->
+<!-- ============================================================ -->
 <section id="relatorio" class="card hidden">
-<h2>Relatório</h2>
-<div id="relatorioContent"></div>
+  <div class="card-header">
+    <h2>📊 Relatório Geral</h2>
+    <span class="count">Visão completa da operação</span>
+  </div>
+  <div id="relatorioContent"></div>
 </section>
 
-<!-- ===== RANKING ===== -->
+<!-- ============================================================ -->
+<!-- ABA: RANKING -->
+<!-- ============================================================ -->
 <section id="raking" class="card hidden">
-<h2>Ranking de Captação — Julho</h2>
-<div id="rankingContent"></div>
+  <div class="card-header">
+    <h2>🏆 Ranking de Captação — Julho 2026</h2>
+    <span class="count">Ranking oficial</span>
+  </div>
+  <div id="rankingContent"></div>
 </section>
 
-<!-- ===== ARENA SX ===== -->
+<!-- ============================================================ -->
+<!-- ABA: ARENA SX -->
+<!-- ============================================================ -->
 <section id="arena" class="card hidden">
-<h2>Arena SX</h2>
-<div id="arenaContent"></div>
+  <div class="card-header">
+    <h2>⚔️ Arena SX</h2>
+    <span class="count">Desafios e pontuação</span>
+  </div>
+  <div id="arenaContent"></div>
 </section>
 
-<!-- ===== PORTAL CEO ===== -->
+<!-- ============================================================ -->
+<!-- ABA: PORTAL CEO -->
+<!-- ============================================================ -->
 <section id="qualificacao" class="card hidden adminOnly">
-<h2>Portal CEO</h2>
-<div id="portalContent"></div>
+  <div class="card-header">
+    <h2>👑 Portal CEO</h2>
+    <span class="count">Visão executiva</span>
+  </div>
+  <div id="portalContent"></div>
 </section>
 
-</section>
-</div>
+</section><!-- end #app -->
+
+</div><!-- end .wrap -->
 
 <datalist id="profissoes"><option value="Outro(a)"><option value="Empresário"><option value="Empresária"><option value="Comerciante"><option value="Vendedor"><option value="Gerente"><option value="Professor"><option value="Médico"><option value="Advogado"><option value="Engenheiro"><option value="Autônomo"><option value="Aposentado"></datalist>
 <datalist id="cidades"><option value="Campos do Jordão"><option value="São Paulo"><option value="São José dos Campos"><option value="Taubaté"><option value="Pindamonhangaba"><option value="Campinas"><option value="Rio de Janeiro"></datalist>
 
+<!-- ============================================================ -->
+<!-- SCRIPT PRINCIPAL -->
+<!-- ============================================================ -->
 <script>
 // ============================================================
-// CAPTAPRO 6.0 - CÓDIGO COMPLETO CORRIGIDO
+// CONFIGURAÇÃO
 // ============================================================
-
-// ===== SUPABASE =====
 const SUPABASE_URL="https://veznreiamwstlulkpocz.supabase.co";
 const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlem5yZWlhbXdzdGx1bGtwb2N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODc1NDksImV4cCI6MjA5NzI2MzU0OX0.MeSqJZTZnk3zDKWgD920ccV2KUheH0W_BGD3TvhPXdM";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-
-// ===== CONSTANTES =====
 const CEOS=['raphaelbueno.captacao@gmail.com','marcel.dorado2@gmail.com'];
 let usuarioEmail='', usuarioNome='', role='profissional', ultimaFicha=null;
 
-// ===== RANKING FIXO JULHO 2026 =====
+// ============================================================
+// DADOS FIXOS - RANKING JULHO 2026
+// ============================================================
 const RANKING_FIXO = [
  {nome:'Pedro Henrique',casais:13,vendas:6,vgv:512400,ponto:'Porta dentro do Park'},
  {nome:'José Ademir',casais:12,vendas:2,vgv:185880,ponto:'Corredor'},
@@ -175,7 +397,9 @@ const PONTOS_FIXOS = [
  {nome:'Posto Shell',lat:-22.74115,lng:-45.59115}
 ];
 
-// ===== UTILITÁRIOS =====
+// ============================================================
+// UTILITÁRIOS
+// ============================================================
 function E(id){return document.getElementById(id)}
 function V(id){return (E(id)?.value||'').trim()}
 function H(id,html){const e=E(id); if(e)e.innerHTML=html}
@@ -191,7 +415,9 @@ function login(){return parseLocal('loginSimples',{})}
 function getUsuario(){return window.usuarioNome||login().nome||V('nome')||'Profissional'}
 function getEmail(){return window.usuarioEmail||login().email||V('email')||''}
 
-// ===== RANKING FUNCTIONS =====
+// ============================================================
+// RANKING FUNCTIONS
+// ============================================================
 function totalRank(){return RANKING_FIXO.reduce((a,r)=>({casais:a.casais+r.casais,vendas:a.vendas+r.vendas,vgv:a.vgv+r.vgv}),{casais:0,vendas:0,vgv:0})}
 function rankOrdenado(by='casais',dir='desc'){
  const arr=[...RANKING_FIXO]; const mul=dir==='asc'?1:-1;
@@ -204,336 +430,10 @@ function pontoPorNome(nome){return PONTOS_FIXOS.find(p=>norm(p.nome)===norm(nome
 function sxScore(r){return (r.casais||0)*300+(r.vendas||0)*1000+Math.floor((r.vgv||0)/10000)}
 function nivelSX(score){return score>=7000?'Elite':score>=4000?'Pro':score>=1800?'Avançado':'Iniciante'}
 
-// ===== FICHA FUNCTIONS =====
+// ============================================================
+// FICHA FUNCTIONS
+// ============================================================
 function statusFicha(x){return String(x?.qualificacao_automatica||x?.status||'').trim()||'N/I'}
 function isSala(x){const s=norm(x?.levou_sala||x?.sala_status||x?.status_sala||x?.sala); return s.includes('sim')||s.includes('confirm')||x?.sala===true}
 function mesmaData(x){const d=new Date(x?.created_at||x?.data||Date.now()); return d.toDateString()===new Date().toDateString()}
-
-// ===== DADOS LOCAIS =====
-async function getDados(tabela){
- let arr=[];
- try{
-   if(tabela==='pesquisas') arr=parseLocal('pesquisasLocal',[]);
-   else if(tabela==='abordagens') arr=parseLocal('abordagensLocal',[]);
-   else arr=parseLocal(tabela+'Local',[]);
- }catch(e){arr=[]}
- if(tabela==='pesquisas'){
-   const salas=parseLocal('salasLocal21',[]);
-   arr=arr.map(x=>{
-     const achou=salas.some(s=>String(s.created_at)===String(x.created_at)&&String(s.user_email)===String(x.user_email));
-     return achou?{...x,levou_sala:'Sim',sala_status:'Sim'}:x;
-   });
- }
- return arr;
-}
-
-// ===== CARDS E TABELAS =====
-function card(t,v,c=''){return `<div class="capta60Card ${c}"><span>${esc(t)}</span><b>${esc(v)}</b></div>`}
-function tabelaRank(rows,compact=false){
- if(!rows.length) return '<div class="capta60Empty">Sem dados para exibir.</div>';
- return `<div class="scroll"><table class="capta60Table"><thead><tr><th>Pos.</th><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th>${compact?'':'<th>Ponto</th>'}</tr></thead><tbody>${rows.map((r,i)=>`<tr><td class="gold">${i+1}º</td><td><b>${esc(r.nome)}</b></td><td class="green">${r.casais}</td><td class="green">${r.vendas}</td><td>${moeda(r.vgv)}</td><td class="blue">${pct(r.vendas,r.casais)}</td>${compact?'':`<td>${esc(r.ponto||'-')}</td>`}</tr>`).join('')}</tbody></table></div>`}
-function fichaResumo(x){const nome=[x.convidado_1,x.convidado_2].filter(Boolean).join(' e ')||'Ficha sem nome'; const sala=isSala(x); return `<div class="capta60Ficha ${sala?'sala':''}"><b>${esc(nome)}</b><small>Profissional: ${esc(x.captador_nome||'-')} • ${new Date(x.created_at||Date.now()).toLocaleString('pt-BR')}</small><small>${esc(x.cidade_origem||'-')} • ${esc(statusFicha(x))} • Sala: ${sala?'Sim':'Não'}</small></div>`}
-
-// ===== RENDER FUNCTIONS =====
-async function renderMeuProfissional(){
- const box=E('meuProfissionalContent'); if(!box)return;
- const ps=await getDados('pesquisas'); const abs=await getDados('abordagens');
- const n=norm(getUsuario()), em=getEmail();
- const minhas=ps.filter(x=>norm(x.captador_nome||'')===n||String(x.user_email||'')===em).sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||'')));
- const hojeP=minhas.filter(mesmaData);
- const hojeA=abs.filter(x=>(norm(x.captador_nome||'')===n||String(x.user_email||'')===em)&&mesmaData(x));
- const q=hojeP.filter(x=>statusFicha(x)==='Q').length;
- const nq1=hojeP.filter(x=>statusFicha(x).includes('1')).length;
- const nq=Math.max(0,hojeP.length-q-nq1);
- const sala=hojeP.filter(isSala).length;
- const r=rowNome(getUsuario())||{nome:getUsuario(),casais:minhas.filter(isSala).length,vendas:0,vgv:0,ponto:'-'};
- const meta=35; const falta=Math.max(0,meta-r.casais); const prog=Math.min(100,Math.round(r.casais/meta*100));
- window.capta60Minhas=minhas;
- box.innerHTML=`
-<div class="capta60Hero"><div class="capta60HeroBox"><h3>${esc(getUsuario())}</h3><p>Seu painel oficial: resultado de hoje, resultado de julho, meta mensal e posição no ranking.</p><div class="capta60Quick"><span class="capta60Pill blue">${hojeA.length} abordagens hoje</span><span class="capta60Pill blue">${hojeP.length} pesquisas hoje</span><span class="capta60Pill">${r.casais} casais</span><span class="capta60Pill gold">${r.vendas} vendas</span></div></div><div class="capta60HeroBox"><span class="capta60RankPos">${posRank(getUsuario())}º</span><p>Posição oficial no ranking de casais em sala.</p><div class="capta60Bar"><div class="capta60Fill" style="width:${prog}%"></div></div><p>${r.casais}/${meta} casais • faltam ${falta} • ${prog}% da meta</p></div></div>
-<div class="capta60Section"><h3>Resultado de Hoje no App</h3><div class="capta60Grid">${card('Abordagens',hojeA.length,'blue')}${card('Pesquisas',hojeP.length,'blue')}${card('Q',q)}${card('NQ',nq,'gold')}${card('1 Item',nq1,'gold')}${card('Sala no app',sala)}${card('Conversão sala',pct(sala,hojeP.length),'blue')}${card('Eficiência Q',pct(q,hojeP.length),'blue')}</div></div>
-<div class="capta60Section"><h3>Resultado Julho Oficial</h3><div class="capta60Grid">${card('Casais em sala',r.casais)}${card('Vendas',r.vendas)}${card('VGV',moeda(r.vgv))}${card('Eficiência',pct(r.vendas,r.casais),'blue')}${card('Meta mensal',meta,'gold')}${card('Faltam',falta,'gold')}${card('Progresso',prog+'%','blue')}${card('SX estimado',sxScore(r),'gold')}</div></div>
-<div class="capta60Section"><div class="capta60Top"><h3>Minhas fichas guardadas</h3><span class="capta60Pill">${minhas.length} fichas</span></div><div class="capta60Tools two"><input id="buscaFicha60" placeholder="Buscar por nome, cidade, telefone" oninput="filtrarFichas60()"><select id="filtroFicha60" onchange="filtrarFichas60()"><option value="todas">Todas</option><option value="hoje">Hoje</option><option value="sala">Sala</option><option value="q">Q</option><option value="nq">NQ</option></select></div><div id="boxFichas60"></div></div>`;
- filtrarFichas60();
-}
-
-window.filtrarFichas60=function(){
- const arr=window.capta60Minhas||[];
- const busca=norm(V('buscaFicha60'));
- const f=V('filtroFicha60')||'todas';
- const out=arr.filter(x=>{
-   const texto=norm([x.convidado_1,x.convidado_2,x.cidade_origem,x.contato,x.brinde].join(' '));
-   if(busca&&!texto.includes(busca))return false;
-   if(f==='hoje'&&!mesmaData(x))return false;
-   if(f==='sala'&&!isSala(x))return false;
-   if(f==='q'&&statusFicha(x)!=='Q')return false;
-   if(f==='nq'&&statusFicha(x)==='Q')return false;
-   return true;
- });
- H('boxFichas60',out.length?out.map(fichaResumo).join(''):'<div class="capta60Empty">Nenhuma ficha encontrada nesse filtro.</div>');
-};
-
-function renderRanking(){
- const box=E('rankingContent'); if(!box)return;
- const t=totalRank();
- box.innerHTML=`
-<div class="capta60Grid">${card('Total de casais',t.casais)}${card('Total de vendas',t.vendas)}${card('VGV Geral',moeda(t.vgv))}${card('Conversão geral',pct(t.vendas,t.casais),'blue')}</div>
-<div class="capta60Tools four"><select id="rankSort60" onchange="atualizarRanking()"><option value="casais">Ordenar por casais</option><option value="vendas">Ordenar por vendas</option><option value="vgv">Ordenar por VGV</option><option value="eficiencia">Ordenar por eficiência</option><option value="nome">Ordenar por nome</option></select><select id="rankDir60" onchange="atualizarRanking()"><option value="desc">Maior para menor</option><option value="asc">Menor para maior</option></select><button class="secondary" onclick="exportarRanking()">Exportar CSV</button><button class="main" onclick="atualizarRanking()">Atualizar</button></div>
-<div id="rankTable60"></div>`;
- atualizarRanking();
-}
-
-window.atualizarRanking=function(){
- const by=V('rankSort60')||'casais';
- const dir=V('rankDir60')||'desc';
- H('rankTable60',tabelaRank(rankOrdenado(by,dir),false));
-};
-
-window.exportarRanking=function(){
- const by=V('rankSort60')||'casais';
- const dir=V('rankDir60')||'desc';
- const rows=rankOrdenado(by,dir);
- const csv=['Posicao;Profissional;Casais;Vendas;VGV;Eficiencia'];
- rows.forEach((r,i)=>csv.push(`${i+1};${r.nome};${r.casais};${r.vendas};${String(r.vgv).replace('.',',')};${pct(r.vendas,r.casais)}`));
- const blob=new Blob([csv.join('\n')],{type:'text/csv;charset=utf-8'});
- const a=document.createElement('a');
- a.href=URL.createObjectURL(blob);
- a.download='ranking-captapro-julho.csv';
- a.click();
-};
-
-function renderArena(){
- const box=E('arenaContent'); if(!box)return;
- const atual=rowNome(getUsuario())||{nome:getUsuario(),casais:0,vendas:0,vgv:0};
- const score=sxScore(atual);
- const rankSX=[...RANKING_FIXO].sort((a,b)=>sxScore(b)-sxScore(a));
- const ds=parseLocal('sxDesafios60',[]);
- box.innerHTML=`
-<div class="capta60Hero"><div class="capta60HeroBox"><h3>Meu SX Coin</h3><span class="capta60Pill">${score} SX</span><p>Casais em sala, vendas e VGV geram pontuação.</p></div><div class="capta60HeroBox"><h3>Nível</h3><span class="capta60Pill gold">${nivelSX(score)}</span><p>Quanto mais resultado, maior seu nível.</p></div></div>
-<div class="capta60Section"><h3>🏆 Top 10 SX</h3><div class="scroll"><table class="capta60Table"><thead><tr><th>Pos.</th><th>Profissional</th><th>SX</th><th>Casais</th><th>Vendas</th></tr></thead><tbody>${rankSX.slice(0,10).map((r,i)=>`<tr><td class="gold">${i+1}º</td><td><b>${esc(r.nome)}</b></td><td class="green">${sxScore(r)}</td><td>${r.casais}</td><td>${r.vendas}</td></tr>`).join('')}</tbody></table></div></div>
-<div class="capta60Section"><h3>⚔️ Criar Desafio</h3><div class="capta60Tools four"><input id="sxDesafiante60" value="${esc(getUsuario())}" readonly><select id="sxAdversario60"><option value="">Escolha o adversário</option>${RANKING_FIXO.filter(r=>norm(r.nome)!==norm(getUsuario())).map(r=>`<option>${esc(r.nome)}</option>`).join('')}</select><select id="sxCriterio60"><option value="casais">Por casais em sala</option><option value="vendas">Por vendas</option><option value="vgv">Por VGV</option></select><input id="sxAposta60" type="number" placeholder="Aposta SX"></div><button class="main" style="margin-top:8px" onclick="criarDesafio60()">Criar desafio</button><p id="sxMsg60"></p></div>
-<div class="capta60Section"><h3>📋 Meus desafios</h3>${ds.length?ds.map(d=>desafioHtml(d,false)).join(''):'<div class="capta60Empty">Nenhum desafio criado ainda.</div>'}</div>
-<div class="capta60Section"><h3>CEO • Definir vencedor</h3>${ds.length?ds.map(d=>desafioHtml(d,true)).join(''):'<div class="capta60Empty">Sem desafios pendentes.</div>'}</div>`;
-}
-
-function desafioHtml(d,ceo=false){
- return `<div class="sx60Challenge ${d.status==='Finalizado'?'done':'pending'}"><b>${esc(d.desafiante)} x ${esc(d.adversario)}</b><small>Critério: ${esc(d.criterio)} • Aposta: ${esc(d.aposta)} SX • Status: ${esc(d.status)} ${d.vencedor?'• Vencedor: '+esc(d.vencedor):''}</small>${ceo&&d.status!=='Finalizado'?`<div class="capta60Tools two"><button class="main" onclick="finalizarDesafio60('${d.id}','${esc(d.desafiante)}')">Venceu ${esc(d.desafiante)}</button><button class="secondary" onclick="finalizarDesafio60('${d.id}','${esc(d.adversario)}')">Venceu ${esc(d.adversario)}</button></div>`:''}</div>`;
-}
-
-window.criarDesafio60=function(){
- const adv=V('sxAdversario60'), criterio=V('sxCriterio60'), aposta=Number(V('sxAposta60')||0);
- if(!adv||!aposta){H('sxMsg60','<span class="erro">Escolha o adversário e coloque a aposta SX.</span>');return;}
- const arr=parseLocal('sxDesafios60',[]);
- arr.unshift({id:'sx'+Date.now(),desafiante:getUsuario(),adversario:adv,criterio,aposta,status:'Pendente',created_at:new Date().toISOString()});
- saveLocal('sxDesafios60',arr);
- renderArena();
-};
-
-window.finalizarDesafio60=function(id,vencedor){
- const arr=parseLocal('sxDesafios60',[]);
- saveLocal('sxDesafios60',arr.map(d=>d.id===id?{...d,status:'Finalizado',vencedor}:d));
- renderArena();
-};
-
-function renderRelatorio(){
- const box=E('relatorioContent'); if(!box)return;
- const t=totalRank();
- const ps=parseLocal('pesquisasLocal',[]);
- const abs=parseLocal('abordagensLocal',[]);
- const recentes=ps.slice().sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||''))).slice(0,10);
- const q=ps.filter(x=>statusFicha(x)==='Q').length;
- box.innerHTML=`
-<div class="capta60Grid">${card('Casais em sala',t.casais)}${card('Vendas',t.vendas)}${card('VGV Geral',moeda(t.vgv))}${card('Conversão',pct(t.vendas,t.casais),'blue')}${card('Abordagens app',abs.length,'blue')}${card('Pesquisas app',ps.length,'blue')}${card('Q app',q)}${card('Sala app',ps.filter(isSala).length)}</div>
-<div class="capta60Section"><h3>Ranking da Equipe</h3>${tabelaRank(rankOrdenado('casais'),true)}</div>
-<div class="capta60Section"><h3>Fichas Recentes</h3>${recentes.length?recentes.map(fichaResumo).join(''):'<div class="capta60Empty">Nenhuma ficha salva.</div>'}</div>`;
-}
-
-function renderPortal(){
- const box=E('portalContent'); if(!box)return;
- const t=totalRank();
- const ps=parseLocal('pesquisasLocal',[]);
- const abs=parseLocal('abordagensLocal',[]);
- const recentes=ps.slice().sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||''))).slice(0,10);
- const q=ps.filter(x=>statusFicha(x)==='Q').length;
- box.innerHTML=`
-<div class="capta60Grid">${card('Casais em sala',t.casais)}${card('Vendas',t.vendas)}${card('VGV Geral',moeda(t.vgv))}${card('Conversão',pct(t.vendas,t.casais),'blue')}${card('Abordagens app',abs.length,'blue')}${card('Pesquisas app',ps.length,'blue')}${card('Q app',q)}${card('Sala app',ps.filter(isSala).length)}</div>
-<div class="capta60Section"><h3>Ranking Completo</h3>${tabelaRank(rankOrdenado('casais'),false)}</div>
-<div class="capta60Section"><h3>Fichas Recentes</h3>${recentes.length?recentes.map(fichaResumo).join(''):'<div class="capta60Empty">Nenhuma ficha salva.</div>'}</div>
-<div class="capta60Section"><h3>Mapa da Operação</h3><div id="mapaCEO60" class="mapaCEO60"></div><div class="mapAviso60">Mapa com pontos de captação e profissionais.</div><button class="main" style="margin-top:8px" onclick="carregarMapa()">Atualizar mapa</button></div>`;
- setTimeout(carregarMapa,300);
-}
-
-// ===== MAPA =====
-let mapInstance=null;
-window.carregarMapa=function(){
- const box=E('mapaCEO60');
- if(!box)return;
- if(!window.L){box.innerHTML='<div class="capta60Empty">Mapa indisponível. Verifique a internet.</div>';return;}
- if(mapInstance){try{mapInstance.remove()}catch(e){} mapInstance=null;}
- mapInstance=L.map('mapaCEO60',{zoomControl:true}).setView([-22.7395,-45.5917],16);
- L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(mapInstance);
- const bounds=[];
- PONTOS_FIXOS.forEach(p=>{
-   const icon=L.divIcon({className:'',html:`<div class="markerPonto60">📍 ${esc(p.nome)}</div>`,iconSize:[165,32],iconAnchor:[8,16]});
-   L.marker([p.lat,p.lng],{icon}).addTo(mapInstance).bindPopup(`<b>${esc(p.nome)}</b>`);
-   bounds.push([p.lat,p.lng]);
- });
- RANKING_FIXO.forEach((r,i)=>{
-   const p=pontoPorNome(r.ponto);
-   const lat=p.lat+((i%5)-2)*0.00013;
-   const lng=p.lng+(Math.floor(i/5)-1.5)*0.00013;
-   const icon=L.divIcon({className:'',html:'<div class="markerProf60"></div>',iconSize:[22,22],iconAnchor:[11,11]});
-   L.marker([lat,lng],{icon}).addTo(mapInstance).bindPopup(`<b>${esc(r.nome)}</b><br>📍 ${esc(r.ponto)}<br>Casais: ${r.casais}<br>Vendas: ${r.vendas}<br>VGV: ${moeda(r.vgv)}`);
-   bounds.push([lat,lng]);
- });
- if(bounds.length)mapInstance.fitBounds(bounds,{padding:[30,30],maxZoom:17});
- setTimeout(()=>{if(mapInstance)mapInstance.invalidateSize(true);},300);
-};
-
-// ===== ABA NAVIGATION =====
-function aba(id,b){
- ['pesquisa','diario','relatorio','raking','arena','qualificacao'].forEach(s=>{if(E(s))E(s).classList.add('hidden')});
- if(E(id))E(id).classList.remove('hidden');
- document.querySelectorAll('.tabs button').forEach(bt=>bt.classList.remove('active'));
- if(b)b.classList.add('active');
- 
- if(id==='diario') renderMeuProfissional();
- if(id==='relatorio') renderRelatorio();
- if(id==='raking') renderRanking();
- if(id==='arena') renderArena();
- if(id==='qualificacao') renderPortal();
- window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// ===== LOGIN =====
-async function entrar(){
- const email=V('email').toLowerCase();
- const nome=V('nome')||email;
- if(!email){H('loginMsg','<span class=erro>Informe o e-mail.</span>');return;}
- try{
-   const r=await db.from('approved_users').select('*').eq('email',email).maybeSingle();
-   const u=r.data;
-   if(!u&&CEOS.includes(email)){role='ceo';usuarioNome=nome||email;}
-   else if(!u||u.approved===false){H('loginMsg','<span class=erro>E-mail não aprovado.</span>');return;}
-   else {role=u.role||'profissional';usuarioNome=u.name||nome;}
- }catch(e){role=CEOS.includes(email)?'ceo':'profissional';usuarioNome=nome;}
- usuarioEmail=email;
- document.body.classList.toggle('ceo',role==='ceo'||CEOS.includes(email));
- E('loginBox').classList.add('hidden');
- E('app').classList.remove('hidden');
- saveLocal('loginSimples',{email, nome:usuarioNome});
- carregarAbordagensHoje();
-}
-
-// ===== ABORDAGENS =====
-async function carregarAbordagensHoje(){
- let total=0;
- try{
-   const r=await db.from('abordagens').select('*',{count:'exact',head:true})
-     .eq('user_email',usuarioEmail)
-     .gte('created_at',hoje()+'T00:00:00')
-     .lte('created_at',hoje()+'T23:59:59');
-   total=r.count||0;
- }catch(e){
-   total=parseLocal('abordagensLocal',[]).filter(x=>String(x.created_at||'').slice(0,10)===hoje()).length;
- }
- S('abordagensHoje',total);
-}
-
-// ===== SALVAR PESQUISA =====
-async function salvarPesquisa(){
- const p={user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),convidado_1:V('nome1'),convidado_2:V('nome2'),idade_1:Number(V('idade1'))||0,idade_2:Number(V('idade2'))||0,profissao_1:V('profissao1'),profissao_2:V('profissao2'),estado_origem:V('estado'),cidade_origem:V('cidade'),estado_civil:V('relacionamento'),tempo_juntos:V('tempo'),modelo_carro:V('nomeCarro'),ano_veiculo:V('anoCarro'),casa_propria:V('casa'),cartao_credito:V('cartao'),renda_casal:V('renda'),multipropriedade:V('multi'),brinde:V('brinde'),contato:V('contato'),observacoes:V('obs'),levou_sala:'Não',created_at:new Date().toISOString()};
- if(!p.convidado_1){H('formMsg','<span class=erro>Informe o Nome 1.</span>');return;}
- try{
-   const arr=parseLocal('pesquisasLocal',[]);
-   arr.push(p);
-   saveLocal('pesquisasLocal',arr);
-   ultimaFicha=p;
-   H('formMsg','<span class=ok>Ficha salva localmente.</span>');
-   renderFicha(p);
- }catch(e){H('formMsg','<span class=erro>Erro ao salvar.</span>');}
-}
-
-function renderFicha(p){
- E('fichaBox').classList.remove('hidden');
- H('fichaConteudo',`<div id=fichaImg class=ficha>
-<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro 6.0 • ${new Date().toLocaleString('pt-BR')}</small></div></div>
-<div class=campo><small>Pessoa 1</small>${esc(p.convidado_1||'-')}</div>
-<div class=campo><small>Pessoa 2</small>${esc(p.convidado_2||'-')}</div>
-<div class=campo><small>Renda</small>${esc(p.renda_casal||'-')}</div>
-<div class=campo><small>Carro / Ano</small>${esc(p.modelo_carro||'-')} ${esc(p.ano_veiculo||'')}</div>
-<div class=campo><small>Cidade / Estado</small>${esc(p.cidade_origem||'-')} / ${esc(p.estado_origem||'-')}</div>
-<div class=campo><small>Cortesia</small>${esc(p.brinde||'-')}</div>
-<div class="fichaRodapeFull">Registro CaptaPro • Bueno Invest</div></div>`);
-}
-
-async function compartilharFicha(){
- const node=E('fichaImg'); if(!node)return;
- try{
-   const c=await html2canvas(node,{scale:2,backgroundColor:'#090909'});
-   const link=document.createElement('a');
-   link.href=c.toDataURL('image/png');
-   link.download='ficha-captapro.png';
-   link.click();
- }catch(e){alert('Erro ao gerar imagem.');}
-}
-
-function novaPesquisa(){
- ['nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade','relacionamento','tempo','nomeCarro','anoCarro','cartao','casa','multi','renda','brinde','contato','obs'].forEach(id=>{if(E(id))E(id).value=''});
- H('resultado','');H('formMsg','');E('fichaBox').classList.add('hidden');ultimaFicha=null;
-}
-
-async function confirmarSala21(){
- if(!ultimaFicha){H('formMsg','<span class=warn>Salve a ficha primeiro.</span>');return;}
- ultimaFicha.levou_sala='Sim';
- ultimaFicha.sala_status='Confirmada';
- const arr=parseLocal('pesquisasLocal',[]);
- const idx=arr.findIndex(x=>String(x.created_at)===String(ultimaFicha.created_at)&&String(x.user_email)===String(ultimaFicha.user_email));
- if(idx>=0)arr[idx]={...arr[idx],levou_sala:'Sim',sala_status:'Confirmada'};
- else arr.push({...ultimaFicha});
- saveLocal('pesquisasLocal',arr);
- const salas=parseLocal('salasLocal21',[]);
- salas.push({...ultimaFicha});
- saveLocal('salasLocal21',salas);
- H('formMsg','<span class=ok>Casal confirmado em sala!</span>');
- renderFicha(ultimaFicha);
-}
-
-async function registrarAbordagem(){
- const p={user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),observacao:'Abordagem',created_at:new Date().toISOString()};
- const arr=parseLocal('abordagensLocal',[]);
- arr.push(p);
- saveLocal('abordagensLocal',arr);
- carregarAbordagensHoje();
- H('formMsg','<span class=ok>Abordagem registrada.</span>');
-}
-
-function sairCaptaProFinal(){localStorage.removeItem('loginSimples');location.reload();}
-
-// ===== IDADES =====
-for(let i=18;i<=90;i++){
- if(E('idade1'))E('idade1').innerHTML+=`<option>${i}</option>`;
- if(E('idade2'))E('idade2').innerHTML+=`<option>${i}</option>`;
-}
-
-// ===== INICIALIZAÇÃO =====
-(function init(){
- try{
-   const saved=parseLocal('loginSimples',{});
-   if(saved.email){
-     E('email').value=saved.email;
-     E('nome').value=saved.nome||'';
-     setTimeout(entrar,300);
-   }
-   // Carrega a aba ativa
-   const activeTab=document.querySelector('.tabs .active');
-   if(activeTab){
-     const id=activeTab.getAttribute('onclick')?.match(/aba\('([^']+)'/)?.[1];
-     if(id) setTimeout(()=>aba(id,activeTab),500);
-   }
- }catch(e){console.warn('Init error:',e);}
-})();
-</script>
-
-</body>
-</html>
+function vendaCount(x){const s=norm(x
