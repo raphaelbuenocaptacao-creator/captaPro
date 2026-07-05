@@ -432,6 +432,28 @@ input::placeholder, textarea::placeholder { color: #555; }
 #mapaCEO60{width:100%!important;height:520px!important;min-height:520px!important;border:2px solid #00c2ff!important;background:#07110c!important;border-radius:16px!important;overflow:hidden!important}
 @media(max-width:700px){.resultadoTools70,.metaLinha70{grid-template-columns:1fr}.ceoGrid70{grid-template-columns:1fr 1fr}}
 
+
+/* CaptaPro 7.1 • Profissional limpo + CEO exclusivo + mapa fix */
+body.profissional-mode .tabs button[onclick*="relatorio"],
+body.profissional-mode .tabs button[onclick*="raking"],
+body.profissional-mode #relatorio,
+body.profissional-mode #raking{display:none!important}
+#mapaCEO60,#mapaCEO71{
+  width:100%!important;height:560px!important;min-height:560px!important;
+  display:block!important;visibility:visible!important;background:#07110c!important;
+  border:2px solid #00c2ff!important;border-radius:16px!important;overflow:hidden!important
+}
+.markerPonto71{background:#00c2ff;color:#001;border:3px solid #fff;border-radius:999px;padding:6px 10px;font-weight:900;font-size:12px;box-shadow:0 0 18px #00c2ff;white-space:nowrap}
+.markerProf71{width:22px;height:22px;border-radius:50%;border:4px solid #fff;background:#00e676;box-shadow:0 0 0 8px rgba(0,230,118,.22),0 0 18px #00e676}
+.meuClean71 .section{margin-top:14px}
+.fichaLista71{display:grid;grid-template-columns:1fr;gap:10px}
+.fichaMini71 .ficha-antiga-card61{padding:12px;border-radius:14px}
+.fichaMini71 .ficha-antiga-head61{display:none}
+.fichaMini71 .ficha-antiga-foot61{display:none}
+.fichaMini71 .ficha-antiga-grid61{grid-template-columns:1fr 1fr}
+.ceoOnly71{border:1px solid #333;border-radius:16px;padding:14px;background:#0c0c0c;margin-top:14px}
+@media(max-width:700px){.fichaMini71 .ficha-antiga-grid61{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -1957,6 +1979,140 @@ function arenaAdminHTML(){return `<div class="section"><div class="section-title
 const oldArena70=window.renderArena;
 window.renderArena=function(){const c=E('arenaContent'); if(!c)return; c.innerHTML=arenaHTML()+`<div class="section"><div class="section-title">🏆 Ranking Arena SX</div><div class="table-wrap"><table class="table"><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th></tr>${rows('vgv').map(x=>`<tr><td>${esc(x.nome)}</td><td>${x.casais}</td><td>${x.vendas}</td><td>${moeda(x.vgv)}</td></tr>`).join('')}</table></div></div>`;renderApostas70()};
 
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 7.1 • Meu Profissional sem duplicar + relatório só CEO + mapa corrigido ===== */
+(function(){
+"use strict";
+const R71 = [{"nome": "Pedro Henrique Gomes Santos", "casais": 14, "vendas": 6, "vgv": 512400, "ponto": "Porta dentro do Park"}, {"nome": "Ana Caroline", "casais": 3, "vendas": 5, "vgv": 460000, "ponto": "Park Dream House"}, {"nome": "Paulo Victor Ortiz", "casais": 12, "vendas": 3, "vgv": 270500, "ponto": "Corredor"}, {"nome": "José Ademir Silva Tavares", "casais": 13, "vendas": 2, "vgv": 185880, "ponto": "Corredor"}, {"nome": "José Neto", "casais": 1, "vendas": 2, "vgv": 184000, "ponto": "Park Dream House"}, {"nome": "Mateus Santos Santa Rosa", "casais": 7, "vendas": 2, "vgv": 180000, "ponto": "Fábrica Spinassi"}, {"nome": "Renan Marcondes Johas", "casais": 6, "vendas": 2, "vgv": 178000, "ponto": "Djalma"}, {"nome": "Ivanilson Luiz Aguiar Lima", "casais": 11, "vendas": 2, "vgv": 147700, "ponto": "Posto Shell"}, {"nome": "Marcio Alfaia", "casais": 5, "vendas": 1, "vgv": 77700, "ponto": "Baden Baden"}, {"nome": "Jessica Barbosa", "casais": 8, "vendas": 0, "vgv": 0, "ponto": "Porta dentro do Park"}, {"nome": "Adriano Moreira", "casais": 8, "vendas": 0, "vgv": 0, "ponto": "Baden Baden"}, {"nome": "Josyene Freitas", "casais": 5, "vendas": 0, "vgv": 0, "ponto": "Igreja"}, {"nome": "João Vitor da Silva Francisco", "casais": 4, "vendas": 0, "vgv": 0, "ponto": "Renner"}, {"nome": "Matheus Domingos Santos", "casais": 4, "vendas": 0, "vgv": 0, "ponto": "Guarda-chuvas"}, {"nome": "Felipe da Silva Ribeiro", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Guarda-chuvas"}, {"nome": "Otavio José de Oliveira Martin", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Renner"}, {"nome": "Matheus Esley Silva", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Fábrica Spinassi"}, {"nome": "Manara Alexandre Sousa", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Fábrica Spinassi"}, {"nome": "André Carriço", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Corredor"}, {"nome": "Ricardo Maltchik", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Posto Shell"}, {"nome": "Jonatas França da Silva", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Djalma"}];
+const P71=[
+ {nome:'Porta dentro do Park',lat:-22.74075,lng:-45.59225},{nome:'Park Dream House',lat:-22.74050,lng:-45.59205},
+ {nome:'Fábrica Spinassi',lat:-22.73925,lng:-45.59110},{nome:'Corredor',lat:-22.73985,lng:-45.59175},
+ {nome:'Baden Baden',lat:-22.73870,lng:-45.59100},{nome:'Djalma',lat:-22.73815,lng:-45.59050},
+ {nome:'Igreja',lat:-22.73845,lng:-45.59260},{nome:'Renner',lat:-22.73895,lng:-45.59310},
+ {nome:'Guarda-chuvas',lat:-22.74010,lng:-45.59070},{nome:'Posto Shell',lat:-22.74110,lng:-45.59300}
+];
+let map71=null,layers71=[];
+const E=id=>document.getElementById(id), H=(id,v)=>{if(E(id))E(id).innerHTML=v}, V=id=>(E(id)?.value||'').trim();
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+const moeda=v=>'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const pct=(a,b)=>b?((Number(a||0)/Number(b||0))*100).toFixed(2).replace('.',',')+'%':'0,00%';
+function rows(){return [...R71].sort((a,b)=>b.vgv-a.vgv||b.vendas-a.vendas||b.casais-a.casais)}
+function total(){return R71.reduce((a,x)=>({casais:a.casais+x.casais,vendas:a.vendas+x.vendas,vgv:a.vgv+x.vgv}),{casais:0,vendas:0,vgv:0})}
+function ponto(nome){const n=norm(nome);return P71.find(p=>norm(p.nome)===n||norm(p.nome).includes(n)||n.includes(norm(p.nome)))||P71[0]}
+function profAtual(){
+ const nome=window.usuarioNome||V('nome')||'Raphael Bueno', email=window.usuarioEmail||V('email')||'';
+ const n=norm(nome), e=norm(email);
+ return R71.find(r=>{const rn=norm(r.nome);return rn===n||(n&&rn.includes(n))||(n&&n.includes(rn))||(e&&rn.includes(e.split('@')[0]))})||{nome,casais:0,vendas:0,vgv:0,ponto:''};
+}
+function isCEO(){
+ const role=norm(window.usuarioRole||window.perfilUsuario||localStorage.getItem('captapro_role')||'');
+ const email=norm(window.usuarioEmail||V('email')||'');
+ return role.includes('ceo')||role.includes('admin')||email.includes('raphaelbueno')||email.includes('captacao');
+}
+function aplicarVisao71(){
+ document.body.classList.toggle('profissional-mode',!isCEO());
+ document.querySelectorAll('.tabs button').forEach(b=>{
+   const tx=norm(b.innerText);
+   if(!isCEO()&&(tx.includes('relatorio')||tx.includes('resultado')||tx.includes('ranking'))) b.style.display='none';
+ });
+}
+aplicarVisao71();
+
+function parseRenda(v){
+ const s=String(v||'').trim(); if(!s)return 0; const x=s.replace(/[R$\s]/g,'');
+ if(x.includes(','))return Number(x.replace(/\./g,'').replace(',','.'))||0;
+ return Number(s.replace(/\D/g,''))||0;
+}
+function formatRenda(v){const n=parseRenda(v);return n?moeda(n):''}
+function initRenda71(){const r=E('renda'); if(!r)return; r.placeholder='Ex: 10000 vira R$ 10.000,00'; r.addEventListener('blur',()=>{r.value=formatRenda(r.value)}); r.addEventListener('focus',()=>{const n=parseRenda(r.value);r.value=n?String(Math.round(n)):''})}
+initRenda71();
+
+const oldSalvar71=window.salvarPesquisa;
+window.salvarPesquisa=async function(){
+ const r=E('renda'); if(r)r.value=formatRenda(r.value);
+ const ret=oldSalvar71?await oldSalvar71.apply(this,arguments):null;
+ try{
+  const f=window.ultimaFicha||null;
+  if(f){if(f.renda)f.renda=formatRenda(f.renda); const arr=JSON.parse(localStorage.getItem('fichas_backup_71')||'[]'); arr.unshift(f); localStorage.setItem('fichas_backup_71',JSON.stringify(arr.slice(0,5000)));}
+ }catch(e){}
+ return ret;
+};
+
+async function fichasUsuario71(){
+ let arr=[];
+ try{if(window.db){const r=await db.from('fichas').select('*').order('created_at',{ascending:false}).limit(200); if(!r.error)arr=r.data||[]}}catch(e){}
+ for(const k of ['fichas_backup_71','fichas_backup_70','fichas_backup_61','fichas_offline','pesquisasLocal']){
+   try{arr=[...arr,...JSON.parse(localStorage.getItem(k)||'[]')]}catch(e){}
+ }
+ const email=norm(window.usuarioEmail||V('email')||''), nome=norm(window.usuarioNome||V('nome')||'');
+ return arr.filter(f=>{
+   const fe=norm(f.email_usuario||f.user_email||''), fn=norm(f.usuario||f.captador_nome||f.profissional||'');
+   return !email || fe===email || (nome&&fn===nome) || email.includes('raphaelbueno');
+ }).filter((f,i,self)=>i===self.findIndex(x=>(x.id&&x.id===f.id)||(x.created_at&&x.created_at===f.created_at)));
+}
+function fichaMini71(f){
+ if(typeof fichaHTML61==='function')return `<div class="fichaMini71">${fichaHTML61(f,false)}</div>`;
+ return `<div class="ficha-card"><div class="info"><b>${esc(f.nome1||f.convidado_1||'-')}</b><small>${esc(f.ponto||f.ponto_captacao||'-')} • Renda: ${f.renda?formatRenda(f.renda):'—'}</small></div></div>`;
+}
+window.renderMeuProfissional=async function(){
+ const box=E('meuProfissionalContent'); if(!box)return;
+ const p=profAtual(), fs=await fichasUsuario71();
+ const meta=35, progresso=Math.min(100,Math.round((p.casais/meta)*100));
+ box.classList.add('meuClean71');
+ box.innerHTML=`<div class="hero-grid">
+ <div class="welcome-card"><h3>${esc(window.usuarioNome||p.nome||'Profissional')}</h3><p>Seu painel individual: resultado do dia, mês e fichas salvas.</p></div>
+ <div class="progress-card"><h3>${p.casais} casais em sala</h3><p>Meta mensal: ${meta}. Faltam ${Math.max(0,meta-p.casais)} casais • ${progresso}%</p><div class="progress"><div style="width:${progresso}%"></div></div></div>
+ </div>
+ <div class="section"><div class="section-title">📌 Resultado do mês</div><div class="stats-grid">
+ <div class="stat-card"><div class="label">Casais</div><div class="value blue">${p.casais}</div></div>
+ <div class="stat-card"><div class="label">Vendas</div><div class="value gold">${p.vendas}</div></div>
+ <div class="stat-card"><div class="label">VGV</div><div class="value green small">${moeda(p.vgv)}</div></div>
+ <div class="stat-card"><div class="label">Eficiência</div><div class="value white">${pct(p.vendas,p.casais)}</div></div>
+ </div></div>
+ <div class="section"><div class="section-title">📄 Minhas fichas salvas <span class="pill">${fs.length}</span></div><div class="fichaLista71">${fs.length?fs.slice(0,20).map(fichaMini71).join(''):'<div class="empty"><span class="icon">📋</span>Nenhuma ficha salva ainda.</div>'}</div></div>`;
+};
+
+window.renderRelatorio=function(){
+ if(!isCEO()){window.renderMeuProfissional(); return;}
+ const c=E('relatorioContent'); if(!c)return; const t=total();
+ c.innerHTML=`<div class="section ceoOnly71"><div class="section-title">📊 Resultado CEO desde dia 01</div>
+ <div class="stats-grid"><div class="stat-card"><div class="label">Casais</div><div class="value blue">${t.casais}</div></div><div class="stat-card"><div class="label">Vendas</div><div class="value gold">${t.vendas}</div></div><div class="stat-card"><div class="label">VGV</div><div class="value green small">${moeda(t.vgv)}</div></div><div class="stat-card"><div class="label">Eficiência</div><div class="value white">${pct(t.vendas,t.casais)}</div></div></div>
+ <div class="table-wrap"><table class="table"><thead><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr></thead><tbody>${rows().map(x=>`<tr><td>${esc(x.nome)}</td><td class="blue">${x.casais}</td><td class="gold">${x.vendas}</td><td class="money">${moeda(x.vgv)}</td><td>${pct(x.vendas,x.casais)}</td></tr>`).join('')}</tbody></table></div></div>`;
+};
+
+function metasHTML(){return `<div class="section"><div class="section-title">🎯 Metas por profissional</div><div class="metaAdm70">${rows().map(x=>`<div class="metaLinha70"><div><b>${esc(x.nome)}</b><small style="display:block;color:#888">${x.casais} casais atuais</small></div><input type="number" placeholder="Meta"><div class="green">${x.casais}</div></div>`).join('')}</div></div>`}
+function mapaHTML(){return `<div class="section"><div class="section-title">📍 Mapa da operação</div><div class="map-notice">Pontos de captação + bolinhas verdes. Clique na bolinha para ver o nome.</div><div id="mapaCEO71"></div></div>`}
+window.renderPortalCEO=async function(){
+ const c=E('portalContent'); if(!c)return; const t=total();
+ c.innerHTML=`<div class="ceoGrid70"><div class="ceoCard70"><small>Casais</small><b>${t.casais}</b></div><div class="ceoCard70"><small>Vendas</small><b>${t.vendas}</b></div><div class="ceoCard70"><small>VGV</small><b>${moeda(t.vgv)}</b></div><div class="ceoCard70"><small>Eficiência</small><b>${pct(t.vendas,t.casais)}</b></div></div>
+ <div class="section"><div class="section-title">📋 Relatório de pesquisas e abordagens</div><div class="table-wrap"><table class="table"><thead><tr><th>Profissional</th><th>Pesquisas</th><th>Abordagens</th><th>Casais</th><th>Vendas</th><th>VGV</th></tr></thead><tbody>${rows().map(x=>`<tr><td>${esc(x.nome)}</td><td>${x.casais}</td><td>${x.casais}</td><td>${x.casais}</td><td>${x.vendas}</td><td class="money">${moeda(x.vgv)}</td></tr>`).join('')}</tbody></table></div></div>
+ ${metasHTML()}${mapaHTML()}`;
+ setTimeout(renderMapa71,700); setTimeout(renderMapa71,1500);
+};
+
+function renderMapa71(){
+ const box=E('mapaCEO71')||E('mapaCEO60'); if(!box||!window.L)return;
+ if(!map71){map71=L.map(box.id).setView([-22.7395,-45.5917],16);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map71)}
+ layers71.forEach(l=>{try{map71.removeLayer(l)}catch(e){}});layers71=[];const bounds=[];
+ P71.forEach(p=>{const ic=L.divIcon({className:'',html:`<div class="markerPonto71">📍 ${esc(p.nome)}</div>`,iconSize:[145,30],iconAnchor:[8,15]});const m=L.marker([p.lat,p.lng],{icon:ic}).addTo(map71).bindPopup(`<b>${esc(p.nome)}</b><br>Ponto de captação`);layers71.push(m);bounds.push([p.lat,p.lng])});
+ rows().forEach((r,i)=>{const p=ponto(r.ponto);const lat=p.lat+((i%5)-2)*0.00012,lng=p.lng+(Math.floor(i/5)-1.5)*0.00012;const ic=L.divIcon({className:'',html:`<div class="markerProf71"></div>`,iconSize:[22,22],iconAnchor:[11,11]});const m=L.marker([lat,lng],{icon:ic}).addTo(map71).bindPopup(`<b>${esc(r.nome)}</b><br>📍 ${esc(r.ponto)}<br>Casais: <b>${r.casais}</b><br>Vendas: <b>${r.vendas}</b><br>VGV: <b>${moeda(r.vgv)}</b>`);layers71.push(m);bounds.push([lat,lng])});
+ if(bounds.length)map71.fitBounds(bounds,{padding:[30,30],maxZoom:17});setTimeout(()=>map71.invalidateSize(true),300);
+}
+window.renderMapaCEO61=renderMapa71;
+
+const oldAba71=window.aba;
+window.aba=function(id,b){
+ aplicarVisao71();
+ const r=oldAba71?oldAba71.apply(this,arguments):undefined;
+ setTimeout(()=>{if(id==='diario'||id==='meu'||id==='profissional')window.renderMeuProfissional(); if(id==='relatorio')window.renderRelatorio(); if(id==='portal'||id==='qualificacao')window.renderPortalCEO();},500);
+ return r;
+};
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{aplicarVisao71();try{window.renderMeuProfissional()}catch(e){}},800));
 })();
 </script>
 
