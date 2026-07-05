@@ -1,123 +1,2071 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CaptaPro 5.3 Limpo</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CaptaPro Versão 3.0</title>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#050505,#160000 55%,#050505);color:#fff}button,input,select,textarea{font-family:inherit}.wrap{max-width:980px;margin:0 auto;padding:14px}.top{text-align:center;padding:8px 0 12px}.logo{font-size:42px;font-weight:900;letter-spacing:-1px}.logo span{color:#ff2633}.version{display:inline-block;margin-top:5px;border:1px solid #852020;border-radius:999px;background:#160505;color:#ffb0b0;font-size:12px;font-weight:900;padding:6px 16px}.brand{color:#00e676;font-size:12px;font-weight:900;margin-top:8px}.card{background:#101010;border:1px solid #2b2b2b;border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 0 18px rgba(255,38,51,.10)}h2{margin:0 0 12px;border-left:4px solid #ff2633;padding-left:10px;font-size:26px}h3{margin:0 0 10px;font-size:20px}.hint{color:#aaa;font-size:13px;line-height:1.45}.mini{color:#aaa;font-size:12px}.tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:12px 0 18px}.tabs button{background:#181818;color:#fff;border:0;border-radius:15px;padding:18px 10px;min-height:70px;font-weight:900;font-size:16px;cursor:pointer}.tabs button.active{background:linear-gradient(135deg,#ef1b24,#ff3333);box-shadow:0 0 0 2px #fff inset}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}input,select,textarea{width:100%;padding:13px;border-radius:13px;border:1px solid #333;background:#050505;color:#fff;font-size:15px}textarea{min-height:90px;resize:vertical}button.main{background:linear-gradient(135deg,#ef1b24,#ff3333);border:0;color:#fff;padding:14px;border-radius:13px;font-weight:900;cursor:pointer}button.secondary{background:#202020;border:1px solid #444;color:#fff;padding:14px;border-radius:13px;font-weight:900;cursor:pointer}button.green{background:linear-gradient(135deg,#008c47,#00e676);color:#061006;border:0}.hidden{display:none!important}.ok{color:#00e676;font-weight:900}.danger{color:#ff8585;font-weight:900}.warn{color:#ffd54f;font-weight:900}.kpi{background:linear-gradient(145deg,#171717,#0b0b0b);border:1px solid #303030;border-radius:18px;padding:14px;text-align:center;min-height:95px}.kpi span{display:block;color:#aaa;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.3px}.kpi b{display:block;color:#ff3333;font-size:31px;margin-top:7px;line-height:1.05}.kpi.green b{color:#00e676}.kpi.blue b{color:#00c2ff}.kpi.yellow b{color:#ffd54f}.section{background:#0b0b0b;border:1px solid #2d2d2d;border-radius:20px;padding:14px;margin:12px 0}.bar{height:18px;background:#252525;border:1px solid #333;border-radius:999px;overflow:hidden}.fill{height:100%;border-radius:999px;background:linear-gradient(135deg,#00a651,#00e676);width:0%;transition:.25s}.tableWrap{overflow:auto}.table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}.table th{color:#ff8585;text-transform:uppercase;font-size:11px}.table td,.table th{border-bottom:1px solid #252525;padding:10px;text-align:left}.table .pos{color:#ffd54f;font-weight:900}.money{color:#00e676;font-weight:900}.rankHead{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.rankHead div{background:#151515;border:1px solid #333;border-radius:18px;padding:15px;text-align:center}.rankHead span{font-size:12px;color:#aaa;font-weight:900;text-transform:uppercase}.rankHead b{display:block;color:#00e676;font-size:28px;margin-top:6px}.fichaItem{background:linear-gradient(145deg,#111,#080808);border:1px solid #303030;border-radius:16px;padding:12px;margin:8px 0}.fichaItem.sala{border-color:rgba(0,230,118,.55);background:linear-gradient(145deg,#061d10,#080808)}.fichaTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}.tag{display:inline-block;margin:6px 6px 0 0;padding:6px 9px;border-radius:999px;background:#181818;border:1px solid #333;font-size:11px;font-weight:900;color:#ccc}.tag.q{border-color:#00e676;color:#00e676}.tag.nq{border-color:#ff5252;color:#ff8585}.tag.sala{border-color:#00c2ff;color:#00c2ff}.empty{text-align:center;color:#777;padding:18px;border:1px dashed #333;border-radius:16px;background:#090909}.modal{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:16px}.modalBox{max-width:820px;width:100%;max-height:88vh;overflow:auto;background:#101010;border:1px solid #5a1717;border-radius:22px;padding:16px;box-shadow:0 0 30px rgba(255,38,51,.28)}.campo{background:#080808;border:1px solid #2d2d2d;border-radius:12px;padding:10px}.campo small{display:block;color:#ff8585;font-size:10px;text-transform:uppercase;font-weight:900;margin-bottom:4px}.campo b{font-size:14px;word-break:break-word}.ceoMenu{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.ceoMenu button{background:#202020;border:1px solid #444;color:#fff;border-radius:13px;padding:13px;font-weight:900}.ceoMenu button.active{background:linear-gradient(135deg,#ef1b24,#ff3333);border:0}.ceoBlock{display:none}.ceoBlock.active{display:block}.mapGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.pontoCard{background:#080808;border:1px solid #333;border-radius:16px;padding:12px}.pontoCard h4{margin:0 0 8px;color:#ff8585}.profDot{display:inline-block;margin:5px 5px 0 0;padding:7px 9px;border-radius:999px;background:#151515;border:1px solid #00e676;color:#00e676;font-size:12px;font-weight:900}.loginBox{max-width:850px;margin:0 auto}.adminOnly{display:none}body.ceo .adminOnly{display:block}@media(max-width:760px){.wrap{padding:10px}.logo{font-size:34px}.tabs{grid-template-columns:1fr 1fr}.tabs button{min-height:60px}.grid,.grid3,.grid4,.rankHead,.mapGrid,.ceoMenu{grid-template-columns:1fr}.kpi b{font-size:26px}}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#050505,#180000);color:#fff}.wrap{max-width:900px;margin:auto;padding:12px}
+.top{text-align:center;margin:12px 0}.logo{font-size:38px;font-weight:900}.logo span{color:#ff3333}.version{display:inline-block;background:#1b0505;border:1px solid #671818;color:#ff8585;border-radius:999px;padding:5px 13px;font-size:12px;font-weight:900}
+.card{background:#101010;border:1px solid #2b2b2b;border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:0 0 16px rgba(239,27,36,.10)}h2{margin:0 0 12px;border-left:4px solid #ef1b24;padding-left:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}input,select,textarea,button{width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#050505;color:#fff;font-size:15px}textarea{min-height:70px}
+button{font-weight:900;cursor:pointer}.main{background:linear-gradient(135deg,#ef1b24,#ff3333);border:0}.secondary{background:#202020;border:1px solid #444}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.tabs button{background:#181818;border:0;padding:14px;border-radius:14px;color:#fff;font-weight:900}.tabs button.active{background:linear-gradient(135deg,#ef1b24,#ff3333)}
+.hidden{display:none!important}.adminOnly{display:none}body.ceo .adminOnly{display:block}body.ceo .tabs{grid-template-columns:repeat(6,1fr)}.ok{color:#00e676;font-weight:900}.erro{color:#ff5252;font-weight:900}.warn{color:#ffd54f;font-weight:900}.hint,.mini{color:#aaa;font-size:12px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.kpi{background:#181818;border:1px solid #2d2d2d;border-radius:14px;padding:12px;text-align:center;color:#ccc}.kpi b{display:block;color:#ff3333;font-size:26px;margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #2b2b2b;padding:8px;text-align:left}th{color:#ff7777}.scroll{overflow:auto}.badge{display:inline-block;border-radius:999px;padding:6px 10px;background:#260000;border:1px solid #5b1111;color:#ff8585;font-weight:900}
+.ficha{background:linear-gradient(145deg,#090909,#180000);border:1px solid #5a1717;border-radius:18px;padding:18px}.campo{background:#101010;border:1px solid #292929;border-radius:12px;padding:10px;margin:6px 0}.campo small{display:block;color:#ff7777;text-transform:uppercase;font-weight:900;font-size:10px;margin-bottom:4px}
+@media(max-width:700px){.grid,.kpis{grid-template-columns:1fr}input,select,textarea,button{font-size:14px;padding:11px}.logo{font-size:32px}}
+
+.fichaHeaderFull{display:flex;align-items:center;gap:10px;border-bottom:1px solid #3b1b1b;padding-bottom:12px;margin-bottom:12px}
+.fichaLogoFull{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#ef1b24,#7a0000);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px}
+.fichaTitleFull b{display:block;font-size:22px}.fichaTitleFull small{color:#aaa}
+.fichaRodapeFull{border-top:1px solid #3b1b1b;margin-top:12px;padding-top:10px;color:#888;font-size:11px}
+
+/* CaptaPro Versão 3.0 */
+#brinde{border-color:#00c2ff!important}
+.rankDestaque13{color:#00e676;font-weight:900}
+
+
+/* Organização pesquisa e CEO */
+.pesquisaGrid14 input,.pesquisaGrid14 select{min-height:47px}
+.ceoPainel14{border:1px solid #5a1717;border-radius:16px;padding:12px;background:#080808}
+.ceoGrid14{grid-template-columns:repeat(3,1fr)}
+#cfgRendaMin{font-weight:900}
+#rankingBox.hidden{display:none!important}
+@media(max-width:700px){.ceoGrid14{grid-template-columns:1fr}}
+
+
+/* Renda e ranking */
+#rankingMesAtual15{border-color:#00c2ff!important}
+#rankingMesAtual15 h2{border-left-color:#00c2ff!important}
+.rendaAjuda15{font-size:11px;color:#aaa;margin-top:-4px;margin-bottom:6px}
+
+
+/* Correção renda e CSV */
+#renda{border-color:#00c2ff!important}
+#csvRankingInput16{border-color:#00e676!important}
+
+
+/* Aba Ranking */
+#rakingBox table{min-width:650px}
+#rakingBox tr:nth-child(2) td:first-child{color:#ffd54f;font-weight:900}
+#rakingBox tr:nth-child(3) td:first-child{color:#cfd8dc;font-weight:900}
+#rakingBox tr:nth-child(4) td:first-child{color:#d7a36a;font-weight:900}
+.rakingTools17{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+@media(max-width:700px){.rakingTools17{grid-template-columns:1fr}.tabs{grid-template-columns:1fr}body.ceo .tabs{grid-template-columns:1fr}}
+
+
+/* Versão limpa */
+#renda{border-color:#00c2ff!important}
+#csvRakingInput21{border-color:#00e676!important;margin:8px 0}
+#rakingBox table{min-width:650px}
+#rakingBox tr:nth-child(2) td:first-child{color:#ffd54f;font-weight:900}
+#rakingBox tr:nth-child(3) td:first-child{color:#cfd8dc;font-weight:900}
+#rakingBox tr:nth-child(4) td:first-child{color:#d7a36a;font-weight:900}
+
+
+/* Versão 3.0 • layout do casal e ranking junho */
+.pessoaBox{grid-column:1/-1;background:#151515;border:1px solid #333;border-radius:16px;padding:12px;margin-top:2px}
+.pessoaBox b{display:block;color:#ff8585;margin-bottom:8px}
+.pessoaGrid{display:grid;grid-template-columns:1.4fr .7fr 1.3fr;gap:8px}
+.projBaixa{background:#c62828;color:#fff;font-weight:900;text-align:center}
+.projMeta{background:#8bc34a;color:#061006;font-weight:900;text-align:center}
+.projBoa{background:#00a651;color:#fff;font-weight:900;text-align:center}
+.projTop{background:#050505;color:#fff;font-weight:900;text-align:center}
+.rankTop{background:#4b4100!important}
+@media(max-width:700px){.pessoaGrid{grid-template-columns:1fr}.pessoaBox{padding:10px}}
+
+/* CaptaPro Versão 3.0 • Relatório diário */
+#diario textarea{margin-top:10px;min-height:120px}
+#fechamentosCEOBox table{min-width:900px}
+
+
+/* Versão 3.0 • renda líquida e relacionamento CEO */
+#rendaLiquida{border-color:#00e676!important}
+#rendaLiquida.hidden{display:none!important}
+
+
+/* Versão 3.0 • painel inicial e conferência de sala */
+#painelInicial{border-color:#00c2ff}
+#homeMeta{color:#00e676!important}
+#salaCEOBox20 table{min-width:900px}
+
+
+/* Versão 3.0 • painel limpo + validação visual */
+.painelClean20{border-color:#172b5a!important}
+.painelCards20{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.painelCard20{border-radius:18px;padding:18px;text-align:center;min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.12)}
+.painelCard20 span{font-size:13px;color:#eaeaea;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.painelCard20 b{font-size:38px;margin-top:6px;color:#fff}
+.painelCard20.azul{background:linear-gradient(135deg,#06336b,#0a6cff)}
+.painelCard20.vermelho{background:linear-gradient(135deg,#5a0707,#ef1b24)}
+.painelCard20.verde{background:linear-gradient(135deg,#06451f,#00a651)}
+.painelCard20.amarelo{background:linear-gradient(135deg,#5f4600,#ffb300);color:#111}
+.painelCard20.roxo{background:linear-gradient(135deg,#35105a,#8e24aa)}
+.painelCard20.preto{background:linear-gradient(135deg,#050505,#333)}
+.campoObrigatorioErro20{border:2px solid #ff5252!important;box-shadow:0 0 0 2px rgba(255,82,82,.16)!important;background:#210606!important}
+.confirmacaoFicha20{border:1px solid #00e676;background:#061d10;border-radius:16px;padding:14px;margin-top:10px}
+.confirmacaoFicha20 b{display:block;color:#00e676;font-size:20px;margin-bottom:4px}
+.confirmacaoFicha20 .grid{margin-top:10px}
+@media(max-width:700px){.painelCards20{grid-template-columns:1fr 1fr}.painelCard20{min-height:92px}.painelCard20 b{font-size:32px}}
+
+
+/* Versão 3.0 • meta mensal pelo CEO */
+.metaMensalBox20{margin-top:12px;background:#080808;border:1px solid #333;border-radius:16px;padding:12px}
+.metaLinha20{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.metaLinha20 span{font-size:13px;color:#ccc;font-weight:900;text-transform:uppercase}
+.metaLinha20 b{font-size:22px;color:#00e676}
+.barraMeta20{height:16px;background:#222;border-radius:999px;overflow:hidden;margin-top:10px;border:1px solid #333}
+#barraMetaFill20{height:100%;width:0%;background:linear-gradient(135deg,#00a651,#00e676);border-radius:999px;transition:.3s}
+
+
+/* Versão 3.0 • metas individuais CEO */
+.metaMensalBox20{margin-top:12px;background:#080808;border:1px solid #333;border-radius:16px;padding:12px}
+.metaLinha20{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.metaLinha20 span{font-size:13px;color:#ccc;font-weight:900;text-transform:uppercase}
+.metaLinha20 b{font-size:22px;color:#00e676}
+.barraMeta20{height:16px;background:#222;border-radius:999px;overflow:hidden;margin-top:10px;border:1px solid #333}
+#barraMetaFill20{height:100%;width:0%;background:linear-gradient(135deg,#00a651,#00e676);border-radius:999px;transition:.3s}
+.metaTable20 button{padding:6px;border-radius:8px;font-size:12px}
+
+
+/* Versão 3.0 • Arena SX + ranking performance + meta estável */
+#arena .kpi b{color:#00e676}
+.sxCoin{color:#00e676;font-weight:900}
+.sxPendente{color:#ffd54f;font-weight:900}
+.sxFinalizado{color:#00e676;font-weight:900}
+#sxRankingBox table,#sxDesafiosBox table,#sxCEOBox table{min-width:760px}
+#rakingBox table{min-width:760px}
+#homeMeta,#metaMensalTexto20{color:#00e676!important}
+
+
+/* CaptaPro 2.2 • Arena SX temporada, loja e conquistas */
+.conquistaSX20{display:inline-block;margin:5px;padding:10px 12px;border-radius:999px;background:#181818;border:1px solid #333;font-weight:900}
+.conquistaSX20.ok{background:#06220f;border-color:#00e676;color:#00e676}
+.conquistaSX20.lock{color:#777}
+.lojaPendenteSX{color:#ffd54f;font-weight:900}
+.lojaAprovadaSX{color:#00e676;font-weight:900}
+.lojaRecusadaSX{color:#ff5252;font-weight:900}
+#sxTemporadaBox table,#sxTrocasBox table,#sxTrocasCEOBox table{min-width:760px}
+
+
+/* CaptaPro 2.3 • Arena SX compartilhada + níveis */
+.nivelGridSX{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.nivelCardSX{background:#181818;border:1px solid #333;border-radius:14px;padding:12px;text-align:center}
+.nivelCardSX.ativo{border-color:#00e676;background:#06220f;color:#00e676}
+.nivelCardSX b{display:block;font-size:17px;margin-bottom:4px}
+@media(max-width:700px){.nivelGridSX{grid-template-columns:1fr 1fr}}
+
+
+/* CaptaPro 2.5 • correção login duplicado + meta sala */
+body.appAberto #loginBox{display:none!important}
+body.appAberto #app{display:block!important}
+#app:not(.hidden) ~ #loginBox{display:none!important}
+
+
+/* CaptaPro 2.6 • CEO dashboard, sala Supabase, histórico e exportação */
+#csvRakingInput21{display:none!important}
+#ceoDashboard20{border-color:#00c2ff!important}
+#ceoResumoMesBox25 table{min-width:900px}
+.salaPendente25{color:#ffd54f;font-weight:900}
+.salaConfirmada25{color:#00e676;font-weight:900}
+.salaCorrigida25{color:#ff5252;font-weight:900}
+
+
+/* CaptaPro 2.7 • Arena SX enxuta oficial */
+.arenaCleanSX .card{margin-bottom:10px}
+.sxHero{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.sxHeroCard{background:linear-gradient(135deg,#111,#220606);border:1px solid #4b1515;border-radius:18px;padding:16px;text-align:center}
+.sxHeroCard span{display:block;color:#aaa;font-size:12px;text-transform:uppercase;font-weight:900;letter-spacing:.5px}
+.sxHeroCard b{display:block;color:#00e676;font-size:34px;margin:6px 0}
+.sxHeroCard small{color:#bbb}
+.sxBarBox{background:#080808;border:1px solid #333;border-radius:16px;padding:12px;margin:10px 0}
+.sxBarTop{display:flex;justify-content:space-between;font-weight:900;color:#ccc;margin-bottom:8px}
+.sxBar{height:16px;background:#222;border-radius:999px;overflow:hidden;border:1px solid #333}
+#sxBarFill{height:100%;width:0%;background:linear-gradient(135deg,#00a651,#00e676);border-radius:999px;transition:.3s}
+.sxBadge{display:inline-block;margin:4px;padding:9px 11px;border-radius:999px;background:#181818;border:1px solid #333;font-weight:900;color:#777}
+.sxBadge.ok{background:#06220f;border-color:#00e676;color:#00e676}
+.sxStatusPendente{color:#ffd54f;font-weight:900}.sxStatusVitoria{color:#00e676;font-weight:900}.sxStatusDerrota{color:#ff5252;font-weight:900}
+.sxModal{position:fixed;z-index:9999;inset:0;background:rgba(0,0,0,.76);padding:20px;display:flex;align-items:center;justify-content:center}
+.sxModalBox{background:#101010;border:1px solid #5a1717;border-radius:20px;padding:16px;max-width:560px;width:100%;box-shadow:0 0 30px rgba(239,27,36,.25)}
+#sxRankingBox table,#sxDesafiosBox table,#sxCEOBox table,#sxTrocasCEOBox table,#sxTemporadaBox table{min-width:720px}
+body.appAberto #loginBox{display:none!important}body.appAberto #app{display:block!important}
+@media(max-width:700px){.sxHero{grid-template-columns:1fr}.sxHeroCard b{font-size:30px}}
+
+
+/* CaptaPro 2.8 • estabilidade final */
+body.appAberto #loginBox{display:none!important}
+body.appAberto #btnSairFinal{display:block!important}
+.salaOficialOK{color:#00e676;font-weight:900}
+.salaPendenteOK{color:#ffd54f;font-weight:900}
+.salaNaoOK{color:#ff5252;font-weight:900}
+#ceoDashboard20 .kpi b{color:#00e676}
+
+/* CaptaPro 2.9 • relatório e presença CEO */
+#ceoPresencaMapa29{border-color:#00e676!important}
+.pres29{padding:9px;border-bottom:1px solid #262626}
+.on29{color:#00e676;font-weight:900}.off29{color:#ff5252;font-weight:900}
+.ponto29{background:#080808;border:1px solid #333;border-radius:14px;padding:12px;margin:8px 0}
+.tag29{display:inline-block;margin:4px;padding:7px 9px;border-radius:999px;background:#181818;border:1px solid #333}
+.tag29.on{border-color:#00e676;color:#00e676}.tag29.off{border-color:#ff5252;color:#ff5252}
+.resumoRel29{border:1px solid #333;background:#080808;border-radius:14px;padding:12px;margin-top:10px}
+
+
+/* CaptaPro 3.0 • relatório diário em imagem */
+.relImg30{background:linear-gradient(145deg,#090909,#180000);border:1px solid #5a1717;border-radius:20px;padding:18px;color:#fff;max-width:520px;margin:auto}
+.relImgHead30{display:flex;align-items:center;gap:10px;border-bottom:1px solid #3b1b1b;padding-bottom:12px;margin-bottom:12px}
+.relImgLogo30{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,#ef1b24,#7a0000);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px}
+.relImgTitle30 b{display:block;font-size:22px}.relImgTitle30 small{color:#aaa}
+.relGrid30{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.relCampo30{background:#101010;border:1px solid #292929;border-radius:12px;padding:10px;margin:4px 0}
+.relCampo30 small{display:block;color:#ff7777;text-transform:uppercase;font-weight:900;font-size:10px;margin-bottom:4px}
+.relBig30{font-size:28px;color:#00e676;font-weight:900}
+.relFoot30{border-top:1px solid #3b1b1b;margin-top:12px;padding-top:10px;color:#aaa;font-size:11px;text-align:center}
+@media(max-width:700px){.relGrid30{grid-template-columns:1fr}.relImg30{padding:14px}}
+
+
+/* CaptaPro 3.0 Oficial • Portal CEO e Mapa da Operação */
+.portalCEO30{border:1px solid #5a1717;border-radius:18px;padding:12px;background:#070707;margin-bottom:12px}
+.portalHero30{background:linear-gradient(135deg,#120000,#050505);border:1px solid #4b1515;border-radius:18px;padding:14px;margin-bottom:10px}
+.portalBloco30{border-color:#2d2d2d}
+.mapaGrid30{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.pontoCard30{background:#080808;border:1px solid #333;border-radius:16px;padding:12px}
+.pontoCard30 h3{margin:0 0 8px;color:#ff8585}
+.pontoStatus30{display:flex;justify-content:space-between;gap:8px;margin-bottom:8px;font-size:12px;color:#aaa}
+.profTag30{display:inline-block;margin:4px;padding:8px 10px;border-radius:999px;background:#181818;border:1px solid #333;font-weight:900}
+.profTag30.online{border-color:#00e676;color:#00e676}
+.profTag30.offline{border-color:#ff5252;color:#ff5252}
+.portalLinha30{padding:9px;border-bottom:1px solid #252525}
+.portalLinha30 b{color:#fff}
+.portalLinha30 .online{color:#00e676;font-weight:900}
+.portalLinha30 .offline{color:#ff5252;font-weight:900}
+@media(max-width:700px){.mapaGrid30{grid-template-columns:1fr}}
+
+
+/* CaptaPro 3.1 • Administração do Sistema no Portal CEO */
+.adminGrid31{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.adminBox31{background:#080808;border:1px solid #333;border-radius:16px;padding:12px;margin-top:10px}
+.adminBox31 h3{margin:0 0 8px;color:#ff8585}
+.adminList31{margin-top:8px}
+.adminItem31{padding:9px;border-bottom:1px solid #252525}
+.adminItem31 b{color:#fff}
+.adminItem31 small{color:#aaa}
+.adminOk31{color:#00e676;font-weight:900}
+.adminWarn31{color:#ffd54f;font-weight:900}
+.adminErr31{color:#ff5252;font-weight:900}
+@media(max-width:700px){.adminGrid31{grid-template-columns:1fr}}
+
+
+/* CaptaPro 3.2 • Mapa Operacional por Ponto */
+.pontoAtual32{border-color:#00c2ff!important}
+.pontoResumo32{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.pontoResumo32 span{background:#111;border:1px solid #282828;border-radius:10px;padding:7px;text-align:center;font-size:12px;color:#ccc}
+.profMapa32{display:block;margin:7px 0;padding:10px;border-radius:12px;background:#111;border:1px solid #333}
+.profMapa32.online{border-color:#00e676}.profMapa32.offline{border-color:#ff5252}
+.profMapa32 b{color:#fff}.profMapa32 small{display:block;color:#aaa;margin-top:4px}
+.semProf32{display:block;color:#777;font-size:12px;margin-top:8px}
+
+
+/* CaptaPro 3.3 • Portal CEO funcional */
+.portalHidden33{display:none!important}
+.portalBtnAtivo33{background:linear-gradient(135deg,#ef1b24,#ff3333)!important}
+.portalBox33{margin-top:10px}
+
+
+/* CaptaPro 3.5 • Fluxo final profissional/CEO */
+.metaCard35{border-color:#00e676!important;background:linear-gradient(145deg,#07150d,#080808)}
+.metaTitulo35{font-size:13px;text-transform:uppercase;color:#aaa;font-weight:900;text-align:center}
+.metaValor35{font-size:30px;color:#00e676;font-weight:900;text-align:center;margin:8px 0}
+.metaBar35{height:18px;background:#222;border:1px solid #333;border-radius:999px;overflow:hidden;margin:10px 0}
+.metaFill35{height:100%;width:0%;background:linear-gradient(135deg,#00a651,#00e676);border-radius:999px;transition:.3s}
+.metaInfo35{text-align:center;font-weight:900;color:#ffd54f}
+.pesquisasHoje35{border-color:#00c2ff!important}
+.fichaLinha35{background:#080808;border:1px solid #333;border-radius:14px;padding:12px;margin:8px 0}
+.fichaLinha35 b{display:block;color:#fff;margin-bottom:4px}
+.fichaLinha35 small{display:block;color:#aaa;margin:3px 0}
+.fichaSala35{border-color:#00e676;background:#061d10}
+.btnSala35{margin-top:8px;background:linear-gradient(135deg,#00a651,#00e676)!important;color:#061006!important}
+.portalCEO35 .portalBloco30{display:none}
+.portalCEO35 .portalBloco30.ativo35{display:block!important}
+.mapaSlim35{background:#080808;border:1px solid #333;border-radius:14px;padding:10px;margin:8px 0}
+.mapaSlim35 h3{margin:0;color:#ff8585;font-size:17px}
+.mapaPessoa35{display:inline-block;margin:5px 5px 0 0;padding:7px 9px;border-radius:999px;background:#151515;border:1px solid #333;font-weight:900;font-size:12px}
+.mapaPessoa35.on{border-color:#00e676;color:#00e676}
+.mapaPessoa35.off{border-color:#ff5252;color:#ff5252}
+.ceoSalaBtns35{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+@media(max-width:700px){.metaValor35{font-size:25px}}
+
+
+/* CaptaPro 3.6 • Ajustes finais solicitados */
+#ceoPresencaMapa29{display:none!important}
+.tempoBox36{grid-column:1/-1;background:#151515;border:1px solid #333;border-radius:16px;padding:12px}
+.tempoBox36 b{display:block;color:#ff8585;margin-bottom:8px}
+.tempoGrid36{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.usoApp36{background:linear-gradient(135deg,#050505,#333)!important}
+.usoApp36 b{color:#00c2ff!important}
+.portalCEO36 .portalBloco30{display:none}
+.portalCEO36 .portalBloco30.ativo35{display:block!important}
+.portalDash36{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.portalCard36{background:#181818;border:1px solid #2d2d2d;border-radius:14px;padding:12px;text-align:center;color:#ccc}
+.portalCard36 b{display:block;color:#00e676;font-size:25px;margin-top:5px}
+.mapaLive36{display:grid;grid-template-columns:1fr;gap:8px}
+.pontoLive36{background:#080808;border:1px solid #333;border-radius:15px;padding:12px}
+.pontoLive36 h3{margin:0 0 8px;color:#ff8585}
+.profLive36{display:inline-block;margin:4px;padding:8px 10px;border-radius:999px;background:#151515;border:1px solid #333;font-weight:900}
+.profLive36.on{border-color:#00e676;color:#00e676}
+.profLive36.off{border-color:#ff5252;color:#ff5252}
+.salaStatus36{font-weight:900}
+.salaPendente36{color:#ffd54f}
+.salaConfirmada36{color:#00e676}
+.salaCancelada36{color:#ff5252}
+@media(max-width:700px){.tempoGrid36,.portalDash36{grid-template-columns:1fr}.portalCard36 b{font-size:22px}}
+
+
+/* CaptaPro 3.7 • Tempo editável CEO + Mapa GPS real */
+#ceoPresencaMapa29{display:none!important}
+.tempoBox36{display:none!important}
+#mapaRealCEO37{width:100%;height:460px;border-radius:18px;border:1px solid #333;background:#050505;margin-top:10px}
+.mapFiltros37{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.mapAviso37{background:#100;border:1px solid #522;border-radius:12px;padding:10px;color:#bbb;font-size:12px}
+.gpsBtn37{background:linear-gradient(135deg,#00a651,#00e676)!important;color:#061006!important}
+.leaflet-popup-content{color:#111;font-weight:600}
+@media(max-width:700px){#mapaRealCEO37{height:380px}.mapFiltros37{grid-template-columns:1fr}}
+
+
+/* CaptaPro 3.8 • Casal em sala direto */
+.salaDireta38{color:#00e676;font-weight:900}
+.btnRemoveSala38{background:#202020!important;border:1px solid #ff5252!important;color:#ff8585!important}
+
+
+/* CaptaPro 3.9 • GPS automático e mapa CEO */
+.gpsBtn37{display:none!important}
+#mapaRealCEO37{height:500px!important}
+.mapaLegenda39{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.mapaLegenda39 span{background:#111;border:1px solid #333;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:900}
+.leaflet-popup-content b{font-size:15px}
+
+
+/* CaptaPro 4.0 • Ficha compartilhável grande */
+.fichaShare40{
+  width:1080px;
+  max-width:1080px;
+  background:linear-gradient(180deg,#070707,#160000);
+  border:4px solid #5a1717;
+  border-radius:42px;
+  padding:42px;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  box-shadow:0 0 50px rgba(239,27,36,.35);
+}
+.fichaShareHead40{display:flex;align-items:center;gap:24px;border-bottom:2px solid #3b1b1b;padding-bottom:26px;margin-bottom:28px}
+.fichaLogo40{width:96px;height:96px;border-radius:24px;background:linear-gradient(135deg,#ef1b24,#7a0000);display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900}
+.fichaTitle40 b{display:block;font-size:52px;line-height:1.05}
+.fichaTitle40 span{display:block;color:#bbb;font-size:24px;margin-top:8px}
+.fichaResult40{background:#111;border:2px solid #333;border-radius:24px;padding:24px;margin-bottom:20px}
+.fichaResult40 small,.campoShare40 small{display:block;color:#ff8585;text-transform:uppercase;font-size:20px;font-weight:900;margin-bottom:10px;letter-spacing:.6px}
+.fichaResult40 b{font-size:34px;color:#fff}
+.fichaGrid40{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.campoShare40{background:#101010;border:2px solid #292929;border-radius:24px;padding:22px;min-height:112px}
+.campoShare40 b{display:block;font-size:32px;line-height:1.18;color:#fff;word-break:break-word}
+.campoShare40.full40{grid-column:1/-1}
+.fichaFoot40{border-top:2px solid #3b1b1b;margin-top:24px;padding-top:18px;color:#aaa;font-size:22px}
+@media(max-width:700px){
+  .fichaShare40{width:1080px;max-width:1080px}
+}
+
+
+/* CaptaPro 4.1 • Ficha maior sem qualificação + mapa com pontos */
+.fichaShare40{width:1280px!important;max-width:1280px!important;padding:54px!important}
+.fichaTitle40 b{font-size:68px!important}
+.fichaTitle40 span{font-size:30px!important}
+.fichaLogo40{width:120px!important;height:120px!important;font-size:42px!important}
+.fichaResult40{display:none!important}
+.campoShare40{padding:30px!important;min-height:142px!important}
+.campoShare40 small{font-size:25px!important}
+.campoShare40 b{font-size:42px!important}
+.fichaFoot40{font-size:28px!important}
+#mapaRealCEO37{height:620px!important}
+.pontoFixo41{filter:drop-shadow(0 0 8px #00c2ff)}
+
+
+/* CaptaPro 4.2 • Correção de delay/sumiço dos dados */
+.kpi b.valorFirme42{color:#ff3333!important}
+.statusSync42{font-size:12px;color:#00e676;margin-top:6px}
+
+
+/* CaptaPro 4.3 • Correção mapa, relatório e ranking ADM */
+#mapaRealCEO37{height:560px!important;min-height:560px!important;background:#050505!important}
+.markerPonto43{
+  background:#00c2ff;color:#001;border:3px solid #fff;border-radius:999px;
+  padding:5px 9px;font-weight:900;font-size:12px;box-shadow:0 0 16px #00c2ff;white-space:nowrap
+}
+.markerCaptador43{
+  width:22px;height:22px;border-radius:50%;border:4px solid #fff;background:#00e676;
+  box-shadow:0 0 0 8px rgba(0,230,118,.22),0 0 18px #00e676
+}
+.markerCaptador43.off{background:#ff3333;box-shadow:0 0 0 8px rgba(255,51,51,.18),0 0 18px #ff3333}
+.rankingAdm43{border-color:#00c2ff!important}
+.rankingAdm43 h2{border-left-color:#00c2ff!important}
+.relStatus43{color:#00e676;font-size:12px;font-weight:900;margin-top:8px}
+
+
+/* CaptaPro 4.4 • Portal CEO final */
+#relatorio .adminOnly#ceoDashboard20{display:none!important}
+.ceoDia44{border-color:#00c2ff!important}
+.ceoDia44 h2{border-left-color:#00c2ff!important}
+.ceoProfCard44{background:#080808;border:1px solid #333;border-radius:14px;padding:12px;margin:8px 0}
+.ceoProfCard44 b{font-size:16px}
+.ceoProfGrid44{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.ceoProfGrid44 span{background:#151515;border:1px solid #292929;border-radius:10px;padding:8px;text-align:center;font-size:12px;color:#ccc}
+.ceoProfGrid44 strong{display:block;color:#ff3333;font-size:18px}
+.profOnline44{color:#00e676;font-weight:900}.profOffline44{color:#ff5252;font-weight:900}
+@media(max-width:700px){.ceoProfGrid44{grid-template-columns:1fr 1fr}}
+
+
+/* CaptaPro 4.5 • Ajustes Raphael: mapa com nomes, sem tempo/ponto profissional */
+.usoApp36,.pontoAtual32{display:none!important}
+.markerCaptadorNome45{
+  background:#00e676;color:#061006;border:3px solid #fff;border-radius:999px;
+  padding:6px 10px;font-weight:900;font-size:12px;box-shadow:0 0 16px #00e676;white-space:nowrap
+}
+.markerCaptadorNome45.off{background:#ff3333;color:#fff;box-shadow:0 0 16px #ff3333}
+.portalBloco30{min-height:120px}
+
+
+/* CaptaPro 4.6 • Resultado de casais em sala Julho */
+.rankingJulho46{border-color:#00e676!important}
+.rankingJulho46 h2{border-left-color:#00e676!important}
+.resumoJulho46{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.resumoJulho46 div{background:#151515;border:1px solid #333;border-radius:14px;padding:12px;text-align:center}
+.resumoJulho46 b{display:block;color:#00e676;font-size:26px}
+@media(max-width:700px){.resumoJulho46{grid-template-columns:1fr}}
+
+
+/* CaptaPro 4.7 • Sala independente + mapa sem nomes sobre ponto */
+.markerCaptadorNome45{display:none!important}
+.markerCaptador47{
+  width:18px;height:18px;border-radius:50%;border:4px solid #fff;background:#00e676;
+  box-shadow:0 0 0 6px rgba(0,230,118,.22),0 0 16px #00e676
+}
+.markerCaptador47.off{background:#ff3333;box-shadow:0 0 0 6px rgba(255,51,51,.18),0 0 16px #ff3333}
+.salaInd47{color:#00e676!important;font-weight:900}
+
+
+/* CaptaPro 4.8 • Correção final: sem piscar, ranking único e mapa limpo */
+.markerCaptadorNome45{display:none!important}
+.markerCaptador47{width:18px;height:18px;border-radius:50%;border:4px solid #fff;background:#00e676;box-shadow:0 0 0 6px rgba(0,230,118,.22),0 0 16px #00e676}
+.markerCaptador47.off{background:#ff3333;box-shadow:0 0 0 6px rgba(255,51,51,.18),0 0 16px #ff3333}
+.salaInd47{color:#00e676!important;font-weight:900}
+.captaStable48{border-color:#00e676!important}
+.captaStable48 b{color:#00e676!important}
+.resumoJulho46{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.resumoJulho46 div{background:#151515;border:1px solid #333;border-radius:14px;padding:12px;text-align:center}
+.resumoJulho46 b{display:block;color:#00e676;font-size:26px}
+@media(max-width:700px){.resumoJulho46{grid-template-columns:1fr}}
+
+
+/* CaptaPro 4.9 • Ranking atualizado + Resultado Profissional amarelo */
+.resultadoProf49{
+  background:linear-gradient(135deg,#5f4600,#ffb300)!important;
+  color:#111!important;
+  border-color:#ffd54f!important;
+}
+.resultadoProf49 span{color:#111!important}
+.resultadoProf49 b{color:#111!important;font-size:24px!important;line-height:1.15}
+.resultadoMini49{font-size:11px;font-weight:900;color:#1b1b1b;margin-top:4px}
+.rankingResumo49{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 12px}
+.rankingResumo49 div{background:#151515;border:1px solid #333;border-radius:14px;padding:12px;text-align:center}
+.rankingResumo49 b{display:block;color:#00e676;font-size:26px}
+@media(max-width:700px){.rankingResumo49{grid-template-columns:1fr}}
+
+
+/* CaptaPro 5.0 • Correção casais no CEO e mapa sempre visível */
+#mapaRealCEO37{height:560px!important;min-height:560px!important;display:block!important;background:#050505!important}
+.markerProf50{
+  width:20px;height:20px;border-radius:50%;border:4px solid #fff;background:#00e676;
+  box-shadow:0 0 0 7px rgba(0,230,118,.22),0 0 18px #00e676
+}
+.markerProf50.off{background:#ff3333;box-shadow:0 0 0 7px rgba(255,51,51,.18),0 0 18px #ff3333}
+.nomePopup50 b{font-size:16px!important}
+.casaisFix50{color:#00e676!important;font-weight:900}
+.vgvFix50{color:#00e676!important;font-weight:900}
+
+
+/* CaptaPro 5.1 • Mapa corrigido completo */
+#portalMapa30{display:block}
+.portalCEO35 .portalBloco30{display:none}
+.portalCEO35 .portalBloco30.ativo35{display:block!important}
+.portalCEO36 .portalBloco30{display:none}
+.portalCEO36 .portalBloco30.ativo35{display:block!important}
+#mapaRealCEO37{
+  width:100%!important;
+  height:620px!important;
+  min-height:620px!important;
+  display:block!important;
+  visibility:visible!important;
+  background:#07110c!important;
+  border:2px solid #00c2ff!important;
+  border-radius:18px!important;
+  overflow:hidden!important;
+}
+.markerPonto51{
+  background:#00c2ff;color:#001;border:3px solid #fff;border-radius:999px;
+  padding:6px 10px;font-weight:900;font-size:12px;box-shadow:0 0 18px #00c2ff;white-space:nowrap
+}
+.markerProf51{
+  width:22px;height:22px;border-radius:50%;border:4px solid #fff;background:#00e676;
+  box-shadow:0 0 0 8px rgba(0,230,118,.22),0 0 18px #00e676
+}
+.markerProf51.off{background:#ff3333;box-shadow:0 0 0 8px rgba(255,51,51,.18),0 0 18px #ff3333}
+.mapaStatus51{
+  background:#061d10;border:1px solid #00e676;color:#00e676;border-radius:12px;
+  padding:10px;margin:8px 0;font-weight:900;font-size:13px
+}
+
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Versão 5.3 LIMPO</div><div class="brand">Bueno Invest</div><button id="btnSair" class="secondary hidden" style="max-width:170px;margin-top:10px" onclick="sair()">Sair</button></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Versão 3.0 Oficial</div><p class="mini"><b style="color:#00e676">Bueno Invest</b></p><button id="btnSairFinal" class="secondary hidden" style="max-width:160px;margin:8px auto 0" onclick="sairCaptaProFinal()">Sair</button></div>
 
-  <section id="loginBox" class="card loginBox">
-    <h2>Entrada</h2>
-    <div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div>
-    <button class="main" style="margin-top:10px;width:100%" onclick="entrar()">Entrar</button>
-    <p id="loginMsg" class="mini"></p>
-  </section>
+<section id="loginBox" class="card">
+<h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
+</section>
 
-  <section id="app" class="hidden">
-    <div class="tabs">
-      <button class="active" data-tab="pesquisa" onclick="showTab('pesquisa',this)">Pesquisa</button>
-      <button data-tab="profissional" onclick="showTab('profissional',this)">Meu<br>Profissional</button>
-      <button data-tab="relatorio" onclick="showTab('relatorio',this)">Relatório</button>
-      <button data-tab="ranking" onclick="showTab('ranking',this)">Ranking<br>Julho</button>
-      <button data-tab="arena" onclick="showTab('arena',this)">Arena SX</button>
-      <button data-tab="ceo" class="adminOnly" onclick="showTab('ceo',this)">Portal CEO</button>
-    </div>
+<section id="app" class="hidden">
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Meu Profissional</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button onclick="aba('arena',this)">Arena SX</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
 
-    <section id="pesquisa" class="tabContent card"></section>
-    <section id="profissional" class="tabContent card hidden"></section>
-    <section id="relatorio" class="tabContent card hidden"></section>
-    <section id="ranking" class="tabContent card hidden"></section>
-    <section id="arena" class="tabContent card hidden"></section>
-    <section id="ceo" class="tabContent card hidden adminOnly"></section>
-  </section>
+
+<section id="pesquisa" class="card">
+<h2>Pesquisa</h2><p class="hint">Abordagem → ficha → salvar → compartilhar → nova ficha.</p>
+<div class="card"><button class="main" style="min-height:62px;font-size:18px" onclick="registrarAbordagem()">+ REGISTRAR ABORDAGEM</button><p class="mini">Abordagens hoje: <b id="abordagensHoje" class="ok">0</b></p></div>
+<div class="grid pesquisaGrid14">
+<!-- 1 equipe -->
+<select id="equipe"><option value="">1. Equipe</option><option>PARK</option><option>EXTERNA</option></select>
+
+<!-- 2 ponto de captação -->
+<select id="ponto"><option value="">2. Ponto de captação</option><option>Porta dentro do Park</option><option>Park Dream House</option><option>Fábrica Spinassi</option><option>Corredor</option><option>Baden Baden</option><option>Djalma</option><option>Igreja</option><option>Renner</option><option>Guarda-chuvas</option><option>Posto Shell</option></select>
+
+<!-- 3 pessoa 1: nome, idade e profissão -->
+<div class="pessoaBox">
+  <b>3. Pessoa 1</b>
+  <div class="pessoaGrid">
+    <input id="nome1" placeholder="Nome">
+    <select id="idade1"><option value="">Idade</option></select>
+    <input id="profissao1" list="profissoes" placeholder="Profissão">
+  </div>
 </div>
 
-<div id="modalFicha" class="modal hidden"><div class="modalBox"><div id="modalFichaConteudo"></div><button class="main" style="width:100%;margin-top:10px" onclick="fecharFicha()">Fechar</button></div></div>
+<!-- 4 pessoa 2: nome, idade e profissão -->
+<div class="pessoaBox">
+  <b>4. Pessoa 2</b>
+  <div class="pessoaGrid">
+    <input id="nome2" placeholder="Nome">
+    <select id="idade2"><option value="">Idade</option></select>
+    <input id="profissao2" list="profissoes" placeholder="Profissão">
+  </div>
+</div>
+
+<!-- 6 estado e cidade -->
+<select id="estado"><option value="">6. Estado</option><option>SP</option><option>RJ</option><option>MG</option><option>PR</option><option>SC</option><option>RS</option><option>GO</option><option>DF</option><option>BA</option><option>CE</option><option>PE</option><option>ES</option><option>MT</option><option>MS</option><option>PA</option><option>AM</option></select>
+<input id="cidade" list="cidades" placeholder="6. Cidade">
+
+<!-- 7 relacionamento e tempo -->
+<select id="relacionamento"><option value="">7. Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option></select>
+
+<select id="tempo">
+<option value="">7. Tempo juntos</option>
+<option>Menos de 1 ano</option>
+<option>1 ano</option>
+<option>2 anos</option>
+<option>3 anos</option>
+<option>4 anos</option>
+<option>5 anos</option>
+<option>6 anos</option>
+<option>7 anos</option>
+<option>8 anos</option>
+<option>9 anos</option>
+<option>10 anos</option>
+<option>Mais de 10 anos</option>
+</select>
+
+
+<!-- 8 carro e ano -->
+<input id="nomeCarro" placeholder="8. Carro (Ex: Onix)">
+<input id="anoCarro" inputmode="numeric" placeholder="8. Ano do carro (Ex: 2015)">
+
+<!-- 9 casa sim ou não -->
+<select id="casa"><option value="">9. Casa própria?</option><option>Sim</option><option>Não</option></select>
+
+<!-- 10 cartão sim ou não -->
+<select id="cartao"><option value="">10. Cartão de crédito?</option><option>Sim</option><option>Não</option></select>
+
+<!-- 11 renda em reais -->
+<input id="renda" inputmode="numeric" autocomplete="off" placeholder="11. Renda bruta do casal. Ex: 10000 vira 10.000,00"><input id="rendaLiquida" class="hidden" inputmode="numeric" autocomplete="off" placeholder="Renda líquida para Empresário/Comerciante. Ex: 8000 vira 8.000,00">
+
+<!-- demais campos necessários -->
+<select id="multi"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select>
+<select id="brinde">
+<option value="">Selecione a cortesia</option>
+<option>2 Museu de Cera</option>
+<option>2 Mini Mundo</option>
+<option>2 Vale dos Dinossauros</option>
+<option>2 Terror</option>
+<option>4 Espelho do Jordão</option>
+<option>Rostie - 120,00 em consumo</option>
+<option>Vemaguet - 120,00 em consumo</option>
+<option>Armazém Brasil - 120,00 em consumo</option>
+<option>Combustível - 120,00 em consumo</option>
+<option>Chocolate Spinassi - 120,00 em consumo</option>
+<option>Loja Parque R$ 150,00</option>
+<option>Combo de experiência</option>
+</select>
+<input id="contato" placeholder="WhatsApp / contato">
+</div>
+<textarea id="obs" style="margin-top:8px" placeholder="Observações"></textarea>
+<div style="margin-top:8px"><button class="main" onclick="salvarPesquisa()">Salvar Ficha</button></div><button class="secondary" style="margin-top:8px;background:#073a21;border-color:#0a7b43" onclick="confirmarSala21()">✅ Casal em Sala</button><p id="formMsg"></p><div id="resultado" class="hidden"></div>
+<div id="fichaBox" class="card hidden"><h2>Ficha salva</h2><div id="fichaConteudo"></div><div class="grid"><button class="main" onclick="compartilharFicha()">Compartilhar imagem</button><button class="secondary" onclick="novaPesquisa()">Nova pesquisa</button></div></div>
+</section>
+
+
+<section id="diario" class="card hidden">
+<h2>Meu Profissional</h2>
+<section id="painelInicialProfissional20" class="card painelClean20">
+<h2>Painel do Dia</h2>
+<p class="hint">Resumo individual de hoje.</p>
+<div class="painelCards20">
+  <div class="painelCard20 azul"><span>Abordagens</span><b id="homeAbord">0</b></div>
+  <div class="painelCard20 vermelho"><span>Pesquisas</span><b id="homePesq">0</b></div>
+  <div class="painelCard20 verde"><span>Q</span><b id="homeQ">0</b></div>
+  <div class="painelCard20 amarelo"><span>NQ</span><b id="homeNQ">0</b></div>
+  <div class="painelCard20 roxo"><span>Sala</span><b id="homeSala">0</b></div>
+  <div class="painelCard20 resultadoProf49"><span>Resultado Julho</span><b id="resultadoProf49">0 casal<br>0 venda</b><div class="resultadoMini49" id="resultadoProfMini49">R$ 0 • 0%</div></div>
+</div>
+
+<div class="card metaCard35">
+  <div class="metaTitulo35">🎯 Meta Mensal</div>
+  <div class="metaValor35" id="metaValor35">0 casais em sala</div>
+  <div class="metaBar35"><div class="metaFill35" id="metaFill35"></div></div>
+  <p class="metaInfo35" id="metaInfo35">Faltam 35 casais</p>
+</div>
+
+<div class="metaMensalBox20 hidden">
+  <div class="metaLinha20"><span>Progresso da meta de sala</span><b id="metaMensalTexto20">0 / 35</b></div>
+  <div class="barraMeta20"><div id="barraMetaFill20"></div></div>
+  <p class="mini" id="metaMensalInfo20">Faltam 35 casais em sala</p>
+</div>
+
+</section>
+
+
+
+<div class="card pontoAtual32">
+  <h2>📍 Meu ponto atual</h2>
+  <p class="hint">Escolha onde você está trabalhando agora.</p>
+  <div class="grid">
+    <select id="pontoAtualProf32"><option value="">Escolha o ponto atual</option>
+<option>Porta dentro do Park</option><option>Park Dream House</option><option>Fábrica Spinassi</option>
+<option>Corredor</option><option>Baden Baden</option><option>Djalma</option><option>Igreja</option>
+<option>Renner</option><option>Guarda-chuvas</option><option>Posto Shell</option></select>
+    <button class="main" onclick="salvarPontoAtual32()">Atualizar meu ponto</button>
+    <button class="main gpsBtn37" onclick="ativarGPS37()">📍 Ativar localização real</button>
+  </div>
+  <p id="pontoAtualMsg32" class="mini"></p>
+</div>
+
+<p class="hint">No final do expediente, o profissional acompanha seus próprios números e envia o relatório do dia.</p>
+
+<div class="card pesquisasHoje35">
+  <h2>📋 Minhas Pesquisas de Hoje</h2>
+  <p class="hint">Quando o casal entrar na sala, toque em “Casal em Sala”.</p>
+  <button class="secondary" onclick="carregarMinhasPesquisas35()">Atualizar minhas pesquisas</button>
+  <div id="minhasPesquisas35" style="margin-top:8px"></div>
+</div>
+
+<div class="grid">
+  <input id="diarioData" type="date">
+  <input id="diarioNome" placeholder="Nome do profissional" readonly>
+</div>
+<div class="kpis">
+  <div class="kpi">Abordagens<b id="dAbord">0</b></div>
+  <div class="kpi">Pesquisas<b id="dPesq">0</b></div>
+  <div class="kpi">Q<b id="dQ">0</b></div>
+  <div class="kpi">NQ<b id="dNQ">0</b></div>
+  <div class="kpi">NQ 1 Item<b id="dNQ1">0</b></div>
+  <div class="kpi">Sala confirmada<b id="dSala">0</b></div>
+  <div class="kpi">Eficiência<b id="dEfic">0%</b></div>
+  <div class="kpi">Conversão<b id="dConv">0%</b></div>
+  <div class="kpi">Projeção Mês<b id="dProj">0</b></div>
+</div>
+<textarea id="diarioTexto" placeholder="Observações do dia (opcional)."></textarea>
+<div class="grid" style="margin-top:8px">
+  <button class="secondary" onclick="carregarDiario()">Atualizar números</button>
+  <button class="main" onclick="finalizarDiario()">✅ Enviar meu relatório</button>
+</div>
+<p id="diarioMsg"></p>
+
+<div id="relatorioImagemBox30" class="card hidden">
+  <h2>Imagem do Relatório Diário</h2>
+  <div id="relatorioImagemConteudo30"></div>
+  <div class="grid" style="margin-top:8px">
+    <button class="main" onclick="compartilharRelatorioImagem30()">Compartilhar imagem</button>
+    <button class="secondary" onclick="baixarRelatorioImagem30()">Salvar imagem</button>
+  </div>
+</div>
+<div class="card scroll adminOnly">
+  <h2>Fechamentos enviados</h2>
+  <p class="hint">Somente CEO visualiza todos os relatórios finalizados.</p>
+  <button class="main" onclick="carregarFechamentosCEO()">Atualizar fechamentos</button>
+  <div id="fechamentosCEOBox" style="margin-top:8px"></div>
+</div>
+</section>
+
+<section id="relatorio" class="card hidden">
+<h2>Relatório</h2>
+
+<div class="card scroll adminOnly" id="ceoDashboard20">
+  <h2>CEO • Dashboard Geral</h2>
+  <p class="hint">Visão geral em tempo real da operação.</p>
+  <div class="kpis">
+    <div class="kpi">Abordagens Hoje<b id="ceoAbordHoje">0</b></div>
+    <div class="kpi">Pesquisas Hoje<b id="ceoPesqHoje">0</b></div>
+    <div class="kpi">Q Hoje<b id="ceoQHoje">0</b></div>
+    <div class="kpi">NQ Hoje<b id="ceoNQHoje">0</b></div>
+    <div class="kpi">Sala Confirmada<b id="ceoSalaHoje">0</b></div>
+    <div class="kpi">Sala Pendente<b id="ceoSalaPendente">0</b></div>
+    <div class="kpi">Eficiência<b id="ceoEficHoje">0%</b></div>
+    <div class="kpi">Conversão Sala<b id="ceoConvHoje">0%</b></div>
+  </div>
+  <div class="grid" style="margin-top:8px">
+    <button class="main" onclick="carregarDashboardCEO25()">Atualizar CEO</button>
+    <button class="secondary" onclick="exportarExcelCEO25()">Exportar Excel/CSV</button>
+  </div>
+  <div id="ceoResumoMesBox25" style="margin-top:10px"></div>
+</div>
+
+<div class="card scroll adminOnly" id="ceoPresencaMapa29">
+  <h2>CEO • Online/Offline e Mapa dos Pontos</h2>
+  <p class="hint">Somente CEO: mostra quem está usando o app e em qual ponto está.</p>
+  <div class="kpis">
+    <div class="kpi">Online<b id="ceoOnlineAgora29">0</b></div>
+    <div class="kpi">Offline<b id="ceoOfflineAgora29">0</b></div>
+    <div class="kpi">Em campo<b id="ceoEmCampo29">0</b></div>
+    <div class="kpi">Sem ponto<b id="ceoSemPonto29">0</b></div>
+  </div>
+  <button class="main" style="margin-top:8px" onclick="carregarPresencaMapa29()">Atualizar presença/mapa</button>
+  <div class="grid" style="margin-top:10px">
+    <div class="card scroll"><h2>🟢 Online</h2><div id="ceoOnlineBox29"></div></div>
+    <div class="card scroll"><h2>🔴 Offline</h2><div id="ceoOfflineBox29"></div></div>
+  </div>
+  <div class="card scroll"><h2>📍 Pontos de Captação</h2><div id="ceoMapaPontosBox29"></div></div>
+</div>
+<div class="grid"><input id="relDe" type="date"><input id="relAte" type="date"></div>
+<button class="main" style="margin-top:8px" onclick="carregarRelatorio()">Atualizar</button>
+<div class="kpis">
+  <div class="kpi">Abordagens<b id="rAbord">0</b></div>
+  <div class="kpi">Pesquisas<b id="rPesq">0</b></div>
+  <div class="kpi">Q<b id="rQ">0</b></div>
+  <div class="kpi">NQ<b id="rNQ">0</b></div>
+  <div class="kpi">1 Item<b id="rNQ1">0</b></div>
+  <div class="kpi">Sala confirmada<b id="rSala">0</b></div>
+  <div class="kpi">Conversão<b id="rConv">0%</b></div>
+</div>
+<div class="card scroll"><h2>Ranking da Equipe</h2><div id="rankingEquipeBox13"></div></div>
+
+<div class="card scroll adminOnly">
+  <h2>Conferência de Sala</h2>
+  <p class="hint">O profissional confirma casal em sala. O CEO pode corrigir/desfazer se necessário.</p>
+  <button class="main" onclick="carregarConferenciaSala20()">Atualizar sala</button>
+  <div id="salaCEOBox20" style="margin-top:8px"></div>
+</div>
+
+<div class="card"><h2>Individual</h2><select id="profFiltro" onchange="mostrarIndividual()"><option value="">Escolha o profissional</option></select><div id="individualBox"></div></div>
+</section>
+
+<section id="raking" class="card hidden">
+<h2>Ranking Julho 2026</h2>
+<p class="hint">Julho começa do zero. O ranking será formado pelas fichas salvas no sistema.</p>
+<div class="rakingTools17">
+  <input id="rakingDe" type="date">
+  <input id="rakingAte" type="date">
+</div>
+<input id="csvRakingInput21" type="file" accept=".csv,text/csv" onchange="importarRakingCSV21(event)">
+<div class="grid" style="margin:8px 0">
+  <button class="main" onclick="carregarRaking()">Atualizar Ranking</button>
+  <button class="secondary" onclick="limparRakingCSV21()">Atualizar ranking</button>
+</div>
+<div class="card scroll">
+  <h2>Ranking Julho</h2>
+  <p class="hint">Relatório zerado: mostra somente os dados salvos de hoje em diante.</p>
+  <div id="rakingFonte21" class="mini"></div>
+  <div id="rakingBox"></div>
+</div>
+</section>
+
+
+
+<section id="arena" class="card hidden arenaCleanSX">
+<h2>Arena SX</h2>
+<p class="hint">Tela enxuta para o profissional: saldo, nível, ranking, desafios e conquistas.</p>
+
+<div class="sxHero">
+  <div class="sxHeroCard"><span>Meu SX Coin</span><b id="sxMeuSaldo">0</b><small>SX disponíveis</small></div>
+  <div class="sxHeroCard"><span>Meu nível</span><b id="sxMeuNivel">Iniciante</b><small id="sxProximoNivel">Faltam 1.000 SX para evoluir</small></div>
+</div>
+
+<div class="sxBarBox">
+  <div class="sxBarTop"><span>Evolução</span><b id="sxPctNivel">0%</b></div>
+  <div class="sxBar"><div id="sxBarFill"></div></div>
+</div>
+
+<div class="card scroll"><h2>🏆 Top 10 SX</h2><div id="sxRankingBox"></div><button class="secondary" style="margin-top:8px" onclick="toggleRankingCompletoSX()">Ver ranking completo</button></div>
+
+<div class="card">
+  <h2>⚔️ Criar Desafio</h2>
+  <p class="hint">Somente promotores participam. Liderança e direção apenas acompanham.</p>
+  <div class="grid">
+    <input id="sxDesafiante" placeholder="Seu nome" readonly>
+    <select id="sxAdversario"><option value="">Escolha o adversário</option></select>
+    <input id="sxAposta" type="number" placeholder="Aposta SX. Ex: 100">
+    <select id="sxCriterio">
+      <option value="pesquisas">Por pesquisas</option>
+      <option value="q">Por Q</option>
+      <option value="sala">Por sala</option>
+      <option value="dia">Resultado do dia</option>
+      <option value="semana">Resultado da semana</option>
+    </select>
+  </div>
+  <button class="main" style="margin-top:8px" onclick="criarDesafioSX20()">Criar desafio</button>
+  <p id="sxMsg"></p>
+</div>
+
+<div class="card scroll"><h2>📋 Meus Desafios</h2><div id="sxDesafiosBox"></div></div>
+<div class="card scroll"><h2>🏅 Conquistas</h2><div id="sxConquistasBox"></div></div>
+
+<button class="secondary" onclick="abrirComoFuncionaSX()">❓ Como funciona o SX?</button>
+
+<div id="sxModalRegras" class="sxModal hidden">
+  <div class="sxModalBox">
+    <h2>Como funciona o SX?</h2>
+    <p class="hint">Pontuação automática da Arena SX.</p>
+    <div class="kpis">
+      <div class="kpi">Pesquisa<b>+10</b></div><div class="kpi">NQ<b>+20</b></div>
+      <div class="kpi">1 Item<b>+50</b></div><div class="kpi">Q<b>+100</b></div>
+      <div class="kpi">Sala<b>+300</b></div><div class="kpi">Venda<b>+1000</b></div>
+    </div>
+    <button class="main" style="margin-top:8px" onclick="fecharComoFuncionaSX()">Fechar</button>
+  </div>
+</div>
+
+<div class="card scroll adminOnly">
+  <h2>CEO • Arena SX</h2>
+  <p class="hint">Administração da Arena: desafios, temporada e trocas SX.</p>
+  <div class="grid">
+    <button class="main" onclick="carregarArenaSX20()">Atualizar Arena</button>
+    <button class="secondary" onclick="exportarArenaSXCSV()">Exportar Arena CSV</button>
+  </div>
+  <div class="card scroll"><h2>Definir vencedor dos desafios</h2><div id="sxCEOBox"></div></div>
+  <div class="card scroll"><h2>Temporada Mensal SX</h2><div id="sxTemporadaBox"></div></div>
+  <div class="card scroll"><h2>Trocas SX</h2><div id="sxTrocasCEOBox"></div></div>
+</div>
+</section>
+
+
+<section id="qualificacao" class="card hidden adminOnly">
+<h2>Portal CEO</h2>
+<p class="hint">Central do CEO: dashboard, mapa da operação, sala, Arena SX, metas e configurações.</p>
+
+<div class="portalCEO30 portalCEO35 portalCEO36">
+  
+<div class="portalHero30">
+    <h2>Portal CEO</h2>
+    <p class="hint">Central do CEO: dashboard, equipe, mapa ao vivo, salas, ranking, metas e administração.</p>
+    <div class="grid">
+      <button class="main" onclick="abrirPortalBloco30('portalDashboard30')">📊 Dashboard</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalEquipe35')">👥 Equipe</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalRelatorioDia44')">📋 Relatório do Dia</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalMapa30')">📍 Mapa ao Vivo</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalSala30')">✅ Salas</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalRanking36')">🏆 Ranking</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalMetas36')">📈 Metas</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalArena30')">🎮 Arena SX</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalAdmin31')">⚙️ Administração</button>
+    </div>
+  </div>
+
+  <div id="portalDashboard30" class="card scroll portalBloco30">
+    <h2>📊 Dashboard da Operação</h2>
+    <p class="hint">Resumo geral do dia.</p><div id="portalDashboardClean36" class="portalDash36"></div>
+    <div class="kpis">
+      <div class="kpi">Online<b id="p30Online">0</b></div>
+      <div class="kpi">Offline<b id="p30Offline">0</b></div>
+      <div class="kpi">Pesquisas Hoje<b id="p30Pesq">0</b></div>
+      <div class="kpi">Q Hoje<b id="p30Q">0</b></div>
+      <div class="kpi">NQ Hoje<b id="p30NQ">0</b></div>
+      <div class="kpi">Sala Confirmada<b id="p30Sala">0</b></div>
+      <div class="kpi">Sala Pendente<b id="p30Pendente">0</b></div>
+      <div class="kpi">Eficiência<b id="p30Efic">0%</b></div>
+    </div>
+    <button class="main" style="margin-top:8px" onclick="carregarPortalCEO30()">Atualizar Portal CEO</button>
+  </div>
+
+
+
+  <div id="portalRelatorioDia44" class="card scroll portalBloco30 ceoDia44">
+    <h2>📋 Relatório do Dia • CEO</h2>
+    <p class="hint">Somente CEO: resultado do dia, geral da equipe e profissionais.</p>
+    <div class="grid">
+      <input id="ceoDiaData44" type="date">
+      <button class="main" onclick="carregarRelatorioDiaCEO44()">Atualizar relatório do dia</button>
+    </div>
+    <div id="ceoDiaResumo44" class="kpis"></div>
+    <div class="card scroll"><h2>Resultado Geral da Equipe</h2><div id="ceoDiaEquipe44"></div></div>
+    <div class="card scroll"><h2>Profissionais do Dia</h2><div id="ceoDiaProfissionais44"></div></div>
+  </div>
+
+  <div id="portalMapa30" class="card scroll portalBloco30">
+    <h2>📍 Mapa ao Vivo</h2>
+    <p class="hint">Mapa real com localização GPS dos profissionais. Cada celular precisa autorizar a localização.</p>
+    <div class="mapFiltros37">
+      <select id="mapEquipe37" onchange="carregarMapaReal37()">
+        <option value="">Todas as equipes</option>
+        <option value="PARK">PARK</option>
+        <option value="EXTERNA">EXTERNA</option>
+      </select>
+      <select id="mapStatus37" onchange="carregarMapaReal37()">
+        <option value="">Todos</option>
+        <option value="online">Somente online</option>
+        <option value="offline">Somente offline</option>
+      </select>
+      <button class="main" onclick="carregarMapaReal37()">Atualizar mapa</button>
+    </div>
+    <div id="mapaRealCEO37"></div>
+    <div class="mapAviso37">Os pinos aparecem quando o profissional toca em “Ativar localização real”. O círculo mostra referência de 50 metros.</div>
+  </div>
+
+
+  <div id="portalEquipe35" class="card scroll portalBloco30">
+    <h2>👥 Equipe</h2>
+    <p class="hint">Resumo individual dos profissionais no dia.</p>
+    <div id="portalEquipeBox35"></div>
+  </div>
+
+
+  <div id="portalRanking36" class="card scroll portalBloco30">
+    <h2>🏆 Ranking</h2>
+    <p class="hint">Ranking do dia por sala, pesquisas e eficiência.</p>
+    <div id="portalRankingBox36"></div>
+  </div>
+
+  <div id="portalMetas36" class="card scroll portalBloco30">
+    <h2>📈 Metas</h2>
+    <p class="hint">Acompanhamento das metas individuais.</p>
+    <div id="portalMetasBox36"></div>
+  </div>
+
+  <div id="portalSala30" class="card scroll portalBloco30">
+    <h2>✅ Confirmação de Sala</h2>
+    <p class="hint">O profissional confirma casal em sala. O CEO pode corrigir/desfazer se necessário.</p>
+    <button class="main" onclick="carregarConferenciaSala20()">Atualizar sala</button>
+    <div id="portalSalaBox30" style="margin-top:8px"></div>
+  </div>
+
+  <div id="portalArena30" class="card scroll portalBloco30">
+    <h2>🪙 Arena SX • Administração</h2>
+    <p class="hint">Aprovação de desafios, temporada, trocas e ranking SX.</p>
+    <button class="main" onclick="carregarArenaSX20()">Atualizar Arena SX</button>
+    <div class="card scroll"><h2>Definir vencedor dos desafios</h2><div id="portalSxCEOBox30"></div></div>
+    <div class="card scroll"><h2>Temporada Mensal SX</h2><div id="portalSxTemporadaBox30"></div></div>
+    <div class="card scroll"><h2>Trocas SX</h2><div id="portalSxTrocasBox30"></div></div>
+  </div>
+
+  <div id="portalRelatorios30" class="card scroll portalBloco30">
+    <h2>📋 Relatórios dos Profissionais</h2>
+    <p class="hint">Fechamentos enviados no final do dia.</p>
+    <button class="main" onclick="carregarFechamentosCEO()">Atualizar fechamentos</button>
+    <div id="portalFechamentos30" style="margin-top:8px"></div>
+  </div>
+
+  <div id="portalConfig30" class="card scroll portalBloco30">
+    <h2>⚙️ Configurações e Metas</h2>
+    <p class="hint">Perfil de qualificação, regras e metas individuais continuam abaixo.</p>
+  </div>
+
+  <div id="portalAdmin31" class="card scroll portalBloco30 hidden">
+    <h2>🛠️ Administração do Sistema</h2>
+    <p class="hint">Gerencie o CaptaPro sem precisar abrir o Supabase.</p>
+
+    <div class="adminGrid31">
+      <div class="adminBox31">
+        <h3>✅ Aprovar Usuários</h3>
+        <div class="grid">
+          <input id="admUserEmail31" placeholder="E-mail do usuário">
+          <input id="admUserNome31" placeholder="Nome do usuário">
+          <select id="admUserRole31">
+            <option value="profissional">Profissional</option>
+            <option value="gestor">Gestor</option>
+            <option value="ceo">CEO</option>
+          </select>
+          <select id="admUserApproved31">
+            <option value="true">Aprovado</option>
+            <option value="false">Bloqueado</option>
+          </select>
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarUsuario31()">Salvar usuário</button>
+        <div id="admUsuariosBox31" class="adminList31"></div>
+      </div>
+
+      <div class="adminBox31">
+        <h3>🎯 Metas Individuais</h3>
+        <div class="grid">
+          <input id="admMetaEmail31" placeholder="E-mail ou nome do profissional">
+          <input id="admMetaNome31" placeholder="Nome do profissional">
+          <input id="admMetaValor31" type="number" placeholder="Meta de sala. Ex: 35">
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarMeta31()">Salvar meta</button>
+        <div id="admMetasBox31" class="adminList31"></div>
+      </div>
+
+      <div class="adminBox31">
+        <h3>📍 Pontos de Captação</h3>
+        <div class="grid">
+          <input id="admPontoNome31" placeholder="Nome do ponto">
+          <select id="admPontoAtivo31"><option value="true">Ativo</option><option value="false">Inativo</option></select>
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarPonto31()">Salvar ponto</button>
+        <div id="admPontosBox31" class="adminList31"></div>
+      </div>
+
+      <div class="adminBox31">
+        <h3>🪙 Pontuação SX</h3>
+        <div class="grid">
+          <input id="admPtsPesquisa31" type="number" placeholder="Pesquisa +10">
+          <input id="admPtsQ31" type="number" placeholder="Q +100">
+          <input id="admPtsNQ31" type="number" placeholder="NQ +20">
+          <input id="admPtsItem31" type="number" placeholder="1 Item +50">
+          <input id="admPtsSala31" type="number" placeholder="Sala +300">
+          <input id="admPtsVenda31" type="number" placeholder="Venda +1000">
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarPontuacao31()">Salvar pontuação</button>
+        <div id="admPontuacaoBox31" class="adminList31"></div>
+      </div>
+
+      <div class="adminBox31">
+        <h3>🏆 Loja SX</h3>
+        <div class="grid">
+          <input id="admPremioNome31" placeholder="Prêmio. Ex: Voucher R$100">
+          <input id="admPremioCusto31" type="number" placeholder="Custo SX. Ex: 5000">
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarPremio31()">Salvar prêmio</button>
+        <div id="admPremiosBox31" class="adminList31"></div>
+      </div>
+
+      <div class="adminBox31">
+        <h3>📅 Temporada SX</h3>
+        <div class="grid">
+          <input id="admTempNome31" placeholder="Temporada. Ex: 2026-07">
+          <input id="admTempInicio31" type="date">
+          <input id="admTempFim31" type="date">
+          <select id="admTempAtiva31"><option value="true">Ativa</option><option value="false">Inativa</option></select>
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarTemporada31()">Salvar temporada</button>
+        <div id="admTemporadaBox31" class="adminList31"></div>
+      </div>
+    </div>
+
+    <div class="adminBox31">
+      <h3>📦 Backup rápido</h3>
+      <p class="hint">Exporta dados principais em JSON para conferência/backup.</p>
+      <div class="grid">
+        <button class="secondary" onclick="admExportarBackup31()">Exportar backup JSON</button>
+        <button class="secondary" onclick="admCarregarTudo31()">Atualizar listas</button>
+      </div>
+      <p id="admMsg31"></p>
+    </div>
+  </div>
+
+</div>
+
+<div class="ceoPainel14">
+  <div class="grid ceoGrid14">
+    <input id="cfgRendaMin" inputmode="numeric" placeholder="R$ 15.000,00">
+    <input id="cfgAnoMin" type="number" placeholder="Ano mínimo do carro. Ex: 2011">
+    <input id="cfgIdadeMin" type="number" placeholder="Idade mínima. Ex: 25">
+    <input id="cfgIdadeMax" type="number" placeholder="Idade máxima. Ex: 64">
+    <input id="cfgTempoMinNumero" type="number" placeholder="Tempo mínimo. Ex: 1">
+    <select id="cfgTempoMinUnidade37">
+      <option value="dias">Dias</option>
+      <option value="meses">Meses</option>
+      <option value="anos" selected>Anos</option>
+    </select>
+    <input id="cfgTempoMaxNumero" type="number" placeholder="Tempo máximo referência. Ex: 30"><input id="cfgMetaMensalCasais" type="number" placeholder="Meta de casais em sala. Ex: 100">
+    <select id="cfgCasa"><option value="nao">Casa obrigatória: Não</option><option value="sim">Casa obrigatória: Sim</option></select>
+    <select id="cfgCartao"><option value="nao">Cartão obrigatório: Não</option><option value="sim">Cartão obrigatório: Sim</option></select>
+    <select id="cfgProfObrigatoria"><option value="nao">Profissão definida não obrigatória</option><option value="sim">Profissão definida obrigatória</option></select><select id="cfgRelacionamento"><option value="nao">Relacionamento não obrigatório</option><option value="sim">Exigir casados/união estável</option></select>
+  </div>
+  <textarea id="cfgProfissoesBloqueadas" placeholder="Profissões que deixam NQ. Ex: Operador de caixa, Zelador, Estudante, Uber/App/Freelancer"></textarea>
+  <textarea id="cfgObsCEO" placeholder="Observações do CEO"></textarea>
+  <button class="main" style="margin-top:8px" onclick="salvarConfig()">Salvar CEO</button>
+  <p id="cfgMsg"></p>
+
+<div class="card adminOnly">
+  <h2>Metas Individuais</h2>
+  <p class="hint">Defina a meta mensal de casais em sala por profissional. Ex.: Francisco = 50.</p>
+  <div class="grid">
+    <input id="metaProfNome20" placeholder="Nome do profissional. Ex: Francisco">
+    <input id="metaProfValor20" type="number" placeholder="Meta de casais em sala. Ex: 100">
+  </div>
+  <button class="main" style="margin-top:8px" onclick="salvarMetaIndividual20()">Salvar meta individual</button>
+  <div id="metasIndividuaisBox20" style="margin-top:10px"></div>
+</div>
+
+</div>
+</section>
+</section></div>
+
+<datalist id="profissoes"><option value="Outro(a)"><option value="Empresário"><option value="Empresária"><option value="Comerciante"><option value="Vendedor"><option value="Gerente"><option value="Professor"><option value="Médico"><option value="Advogado"><option value="Engenheiro"><option value="Autônomo"><option value="Aposentado"></datalist>
+<datalist id="cidades"><option value="Campos do Jordão"><option value="São Paulo"><option value="São José dos Campos"><option value="Taubaté"><option value="Pindamonhangaba"><option value="Campinas"><option value="Rio de Janeiro"></datalist>
+<datalist id="marcas"><option value="Chevrolet"><option value="Fiat"><option value="Ford"><option value="Honda"><option value="Hyundai"><option value="Jeep"><option value="Nissan"><option value="Renault"><option value="Toyota"><option value="Volkswagen"></datalist>
+
 
 <script>
-const CEOS=['raphaelbueno.captacao@gmail.com','raphaelbueno@hotmail.com','emaildogestor@gmail.com'];
-const RANKING_JULHO=[
- {nome:'Pedro Henrique',casais:13,vendas:6,vgv:512400,ponto:'Porta dentro do Park'},
- {nome:'José Ademir',casais:12,vendas:2,vgv:185880,ponto:'Djalma'},
- {nome:'Paulo Victor',casais:10,vendas:3,vgv:270500,ponto:'Baden Baden'},
+const SUPABASE_URL="https://veznreiamwstlulkpocz.supabase.co", SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlem5yZWlhbXdzdGx1bGtwb2N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODc1NDksImV4cCI6MjA5NzI2MzU0OX0.MeSqJZTZnk3zDKWgD920ccV2KUheH0W_BGD3TvhPXdM";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const CEOS=['raphaelbueno.captacao@gmail.com','marcel.dorado2@gmail.com'];
+let usuarioEmail='', usuarioNome='', role='profissional', ultimaFicha=null;
+
+function E(id){return document.getElementById(id)}
+function V(id){return (E(id)?.value||'').trim()}
+function H(id,v){if(E(id))E(id).innerHTML=v}
+function S(id,v){if(E(id))E(id).innerText=v}
+function normal(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function onlyDigits(v){return String(v||'').replace(/\D/g,'')}
+function parseMoeda(v){
+  let s=String(v||'').replace(/R\$|\s/g,'').trim();
+  if(!s)return 0;
+  s=s.replace(/[^0-9,.-]/g,'');
+  if(s.includes(',')) return Number(s.replace(/\./g,'').replace(',', '.'))||0;
+  return Number(s.replace(/\./g,''))||0;
+}
+function moeda(n){return (Number(n||0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function rendaTela(n){return (Number(n||0)).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function vendaCount(v){
+  const s=normal(v);
+  if(!s)return 0;
+  const hashes=(String(v).match(/#/g)||[]).length;
+  if(hashes>0)return hashes;
+  if(/\b(venda|vendido|vendeu|contrato|fechou|fechado)\b/.test(s))return 1;
+  const n=Number(String(v).replace(/[^0-9]/g,''));
+  return Number.isFinite(n)?n:0;
+}
+function valorTempo(t){return {'Menos de 1 ano':0,'1 ano':1,'2 anos':2,'3 a 5 anos':3,'Mais de 5 anos':5}[t]||0}
+
+for(let i=18;i<=90;i++){ if(E('idade1'))E('idade1').innerHTML+=`<option>${i}</option>`; if(E('idade2'))E('idade2').innerHTML+=`<option>${i}</option>`; }
+
+function aplicarRendaDigitavel(){
+ const el=E('renda'); if(!el||el.__renda21)return; el.__renda21=true;
+ let digits=String(el.value||'').split(',')[0].replace(/\D/g,'');
+ function render(){ el.value = digits ? rendaTela(Number(digits)) : ''; try{ const p=el.value.indexOf(','); el.setSelectionRange(p>-1?p:el.value.length,p>-1?p:el.value.length); }catch(e){} }
+ el.addEventListener('focus',()=>{digits=String(el.value||'').split(',')[0].replace(/\D/g,''); render();});
+ el.addEventListener('beforeinput',(ev)=>{
+   if(ev.inputType==='insertText' && /^\d$/.test(ev.data||'')){ev.preventDefault(); if(el.selectionStart===0&&el.selectionEnd===el.value.length)digits=''; digits+=ev.data; render();}
+   else if(ev.inputType==='deleteContentBackward'){ev.preventDefault(); digits=digits.slice(0,-1); render();}
+ });
+ el.addEventListener('input',()=>{ if(!el.value.includes(',')){digits=onlyDigits(el.value); render();} });
+ el.addEventListener('blur',render);
+}
+function aplicarRendaCEO(){
+ const el=E('cfgRendaMin'); if(!el||el.__rendaCEO21)return; el.__rendaCEO21=true;
+ el.addEventListener('input',()=>{ const d=onlyDigits(el.value); el.value=d?rendaTela(Number(d)):''; });
+}
+
+function getCfg(){
+ try{return JSON.parse(localStorage.getItem('cfg')||'{}')}catch(e){return {}}
+}
+function loadCfg(){
+ const c=getCfg();
+ if(E('cfgIdadeMin'))E('cfgIdadeMin').value=c.idadeMin||25;
+ if(E('cfgIdadeMax'))E('cfgIdadeMax').value=c.idadeMax||64;
+ if(E('cfgRendaMin'))E('cfgRendaMin').value=rendaTela(c.rendaMin||15000);
+ if(E('cfgAnoMin'))E('cfgAnoMin').value=c.anoMin||2011;
+ if(E('cfgTempoMinNumero'))E('cfgTempoMinNumero').value=c.tempoMinNumero||2;
+ if(E('cfgTempoMaxNumero'))E('cfgTempoMaxNumero').value=c.tempoMaxNumero||30;
+ if(E('cfgCasa'))E('cfgCasa').value=c.casa||'sim';
+ if(E('cfgCartao'))E('cfgCartao').value=c.cartao||'sim';
+ if(E('cfgProfObrigatoria'))E('cfgProfObrigatoria').value=c.profObrigatoria||'sim';
+ if(E('cfgProfissoesBloqueadas'))E('cfgProfissoesBloqueadas').value=c.profissoesBloqueadas||'Operador de caixa, Zelador, Secretária, Auxiliar, Assistente, Estudante, Uber/App/Freelancer';
+ if(E('cfgObsCEO'))E('cfgObsCEO').value=c.obsCEO||'';
+}
+function salvarConfig(){
+ const c={
+   rendaMin:parseMoeda(V('cfgRendaMin'))||15000,
+   anoMin:Number(V('cfgAnoMin'))||2011,
+   idadeMin:Number(V('cfgIdadeMin'))||25,
+   idadeMax:Number(V('cfgIdadeMax'))||64,
+   tempoMinNumero:Number(V('cfgTempoMinNumero'))||2,
+   tempoMaxNumero:Number(V('cfgTempoMaxNumero'))||30,
+   casa:V('cfgCasa')||'sim',
+   cartao:V('cfgCartao')||'sim',
+   profObrigatoria:V('cfgProfObrigatoria')||'sim',
+   profissoesBloqueadas:V('cfgProfissoesBloqueadas'),
+   obsCEO:V('cfgObsCEO')
+ };
+ localStorage.setItem('cfg',JSON.stringify(c));
+ H('cfgMsg','<span class="ok">Portal CEO salvo.</span>');
+}
+
+async function entrar(){
+ usuarioEmail=V('email').toLowerCase(); usuarioNome=V('nome')||usuarioEmail;
+ if(!usuarioEmail){H('loginMsg','<span class=erro>Informe o e-mail.</span>');return}
+ try{
+   const r=await db.from('approved_users').select('*').eq('email',usuarioEmail).maybeSingle();
+   let u=r.data;
+   if(!u&&CEOS.includes(usuarioEmail))u={role:'ceo',approved:true,name:usuarioNome};
+   if(!u||u.approved===false){H('loginMsg','<span class=erro>E-mail não aprovado.</span>');return}
+   role=u.role||'profissional'; usuarioNome=u.name||usuarioNome;
+ }catch(e){role=CEOS.includes(usuarioEmail)?'ceo':'profissional'}
+ document.body.classList.toggle('ceo',role==='ceo'||CEOS.includes(usuarioEmail));
+ E('loginBox').classList.add('hidden'); E('app').classList.remove('hidden');
+ localStorage.setItem('loginSimples',JSON.stringify({email:usuarioEmail,nome:usuarioNome}));
+ loadCfg(); aplicarRendaDigitavel(); aplicarRendaCEO(); carregarAbordagensHoje(); carregarRelatorio(); carregarRaking();
+}
+(function(){try{const l=JSON.parse(localStorage.getItem('loginSimples')||'null'); if(l){E('email').value=l.email;E('nome').value=l.nome;setTimeout(entrar,300)}}catch(e){}})();
+
+function aba(id,b){
+ ['pesquisa','diario','relatorio','raking','arena','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
+ if(E(id))E(id).classList.remove('hidden');
+ document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+ if(b)b.classList.add('active');
+ if(id==='relatorio')carregarRelatorio();
+ if(id==='raking')carregarRaking();
+}
+
+function qual(){
+ const c=getCfg(); const cfg=Object.assign({rendaMin:15000,anoMin:2011,idadeMin:25,idadeMax:64,tempoMinNumero:2,casa:'sim',cartao:'sim',profObrigatoria:'sim',profissoesBloqueadas:'Operador de caixa, Zelador, Secretária, Auxiliar, Assistente, Estudante, Uber/App/Freelancer'}, c);
+ const idade=Math.max(Number(V('idade1'))||0,Number(V('idade2'))||0);
+ const renda=parseMoeda(V('renda')); const ano=Number(V('anoCarro'))||0;
+ let status='Q', m=[];
+ function nq(txt){status='NQ';m.push(txt)}
+ function item(txt){if(status==='Q')status='NQ 1 Item';m.push(txt)}
+ const lista=String(cfg.profissoesBloqueadas||'').toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);
+ const p1=String(V('profissao1')||'').toLowerCase(), p2=String(V('profissao2')||'').toLowerCase();
+ if(idade<cfg.idadeMin||idade>cfg.idadeMax)nq('idade');
+ if(renda<cfg.rendaMin)item('renda');
+ if(cfg.anoMin&&ano&&ano<cfg.anoMin)item('ano do carro');
+ if(cfg.casa==='sim'&&V('casa')!=='Sim')item('casa própria');
+ if(cfg.cartao==='sim'&&V('cartao')!=='Sim')item('cartão');
+ if(cfg.profObrigatoria==='sim'&&(!V('profissao1')&&!V('profissao2')))item('profissão');
+ if(lista.some(x=>p1.includes(x)||p2.includes(x)))nq('profissão fora do perfil');
+ if(cfg.tempoMinNumero&&valorTempo(V('tempo'))<Number(cfg.tempoMinNumero))item('tempo juntos');
+ return {status,motivo:m.join(', ')||'Perfil dentro da regra'};
+}
+function calcularQualificacao(){const q=qual();H('resultado',`<div class=card><span class=badge>${q.status}</span><p class=mini>${q.motivo}</p></div>`);return q}
+
+async function registrarAbordagem(){
+ const p={user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),observacao:'Abordagem',created_at:new Date().toISOString()};
+ try{await db.from('abordagens').insert(p)}catch(e){const a=JSON.parse(localStorage.getItem('abordagensLocal')||'[]');a.push(p);localStorage.setItem('abordagensLocal',JSON.stringify(a))}
+ carregarAbordagensHoje(); H('formMsg','<span class=ok>Abordagem registrada.</span>');
+}
+async function carregarAbordagensHoje(){
+ let total=0,d=new Date().toISOString().slice(0,10);
+ try{const r=await db.from('abordagens').select('*',{count:'exact',head:true}).eq('user_email',usuarioEmail).gte('created_at',d+'T00:00:00').lte('created_at',d+'T23:59:59');total=r.count||0}
+ catch(e){total=JSON.parse(localStorage.getItem('abordagensLocal')||'[]').filter(x=>x.user_email===usuarioEmail&&String(x.created_at).slice(0,10)===d).length}
+ S('abordagensHoje',total);
+}
+function payload(){
+ const q=calcularQualificacao();
+ return {user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),convidado_1:V('nome1'),convidado_2:V('nome2'),idade_1:Number(V('idade1'))||0,idade_2:Number(V('idade2'))||0,profissao_1:V('profissao1'),profissao_2:V('profissao2'),estado_origem:V('estado'),cidade_origem:V('cidade'),estado_civil:V('relacionamento'),tempo_juntos:V('tempo'),veiculo:V('nomeCarro')?'Sim':'Não',marca_carro:'',modelo_carro:V('nomeCarro'),ano_veiculo:V('anoCarro'),cartao_credito:V('cartao'),casa_propria:V('casa'),multipropriedade:V('multi'),renda_casal:V('renda'),brinde:V('brinde'),contato:V('contato'),observacoes:V('obs'),qualificacao_automatica:q.status,motivo_qualificacao:q.motivo,levou_sala:'Não',created_at:new Date().toISOString()};
+}
+async function salvarPesquisa(){
+ const p=payload(); if(!p.convidado_1){H('formMsg','<span class=erro>Informe o Nome 1.</span>');return}
+ try{
+   const r=await db.from('pesquisas').insert(p).select('*').single();
+   ultimaFicha=r.data||p;
+   H('formMsg','<span class=ok>Ficha salva no Supabase.</span>');
+ }
+ catch(e){
+   const a=JSON.parse(localStorage.getItem('pesquisasLocal')||'[]');
+   a.push(p);
+   localStorage.setItem('pesquisasLocal',JSON.stringify(a));
+   ultimaFicha=p;
+   H('formMsg','<span class=warn>Ficha salva localmente. Verifique a internet/Supabase.</span>');
+ }
+ renderFicha(ultimaFicha); carregarRelatorio(); carregarRaking();
+}
+async function confirmarSala21(){
+ if(!ultimaFicha){H('formMsg','<span class=warn>Salve a ficha primeiro.</span>');return}
+ const agora=new Date().toISOString();
+ ultimaFicha.levou_sala='Sim';
+ ultimaFicha.sala_confirmada_em=agora;
+ ultimaFicha.sala_status='Sim';
+
+ // Garante que apareça imediatamente no relatório deste celular.
+ const locais=JSON.parse(localStorage.getItem('pesquisasLocal')||'[]');
+ const idx=locais.findIndex(x=>
+   (ultimaFicha.id&&String(x.id)===String(ultimaFicha.id)) ||
+   (String(x.created_at)===String(ultimaFicha.created_at)&&String(x.user_email)===String(ultimaFicha.user_email))
+ );
+ if(idx>=0) locais[idx]={...locais[idx],levou_sala:'Sim',sala_status:'Sim',sala_confirmada_em:agora};
+ else locais.push({...ultimaFicha});
+ localStorage.setItem('pesquisasLocal',JSON.stringify(locais));
+
+ const salas=JSON.parse(localStorage.getItem('salasLocal21')||'[]');
+ salas.push({...ultimaFicha});
+ localStorage.setItem('salasLocal21',JSON.stringify(salas));
+
+ // Sincroniza com o Supabase. Primeiro tenta com data da sala; se a coluna não existir, salva só levou_sala.
+ try{
+   let q;
+   if(ultimaFicha.id) q=db.from('pesquisas').update({levou_sala:'Sim',sala_status:'Sim',sala_confirmada_em:agora}).eq('id',ultimaFicha.id);
+   else q=db.from('pesquisas').update({levou_sala:'Sim',sala_status:'Sim',sala_confirmada_em:agora}).eq('user_email',ultimaFicha.user_email).eq('created_at',ultimaFicha.created_at);
+   let r=await q;
+   if(r.error){
+     if(ultimaFicha.id) r=await db.from('pesquisas').update({levou_sala:'Sim'}).eq('id',ultimaFicha.id);
+     else r=await db.from('pesquisas').update({levou_sala:'Sim'}).eq('user_email',ultimaFicha.user_email).eq('created_at',ultimaFicha.created_at);
+   }
+   if(r.error) throw r.error;
+   H('formMsg','<span class=ok>Casal confirmado em sala e sincronizado no Supabase.</span>');
+ }catch(e){
+   H('formMsg','<span class=warn>Sala confirmada neste celular. Se não aparecer para o CEO, confira as colunas no Supabase.</span>');
+ }
+ renderFicha(ultimaFicha);
+ carregarRelatorio(); carregarRaking();
+}
+function campoFicha(label,valor){return `<div class=campo><small>${label}</small>${valor||'-'}</div>`}
+function renderFicha(p){
+ E('fichaBox').classList.remove('hidden');
+ const carroTxt=`${p.modelo_carro||'-'} ${p.ano_veiculo||''}`.trim();
+ H('fichaConteudo',`<div id=fichaImg class=ficha>
+<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Versão 3.0 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
+${campoFicha('Resultado da qualificação', `${p.qualificacao_automatica||'-'} • ${p.motivo_qualificacao||'Perfil dentro da regra'}`)}
+${campoFicha('Nome 1', p.convidado_1)}${campoFicha('Idade 1 / Profissão 1', `${p.idade_1||'-'} anos • ${p.profissao_1||'-'}`)}
+${campoFicha('Nome 2', p.convidado_2)}${campoFicha('Idade 2 / Profissão 2', `${p.idade_2||'-'} anos • ${p.profissao_2||'-'}`)}
+${campoFicha('Relacionamento', `${p.estado_civil||'-'} • ${p.tempo_juntos||'-'}`)}
+${campoFicha('Renda', p.renda_casal)}${campoFicha('Veículo / Ano', carroTxt)}
+${campoFicha('Cartão de crédito', p.cartao_credito)}${campoFicha('Casa própria', p.casa_propria)}
+${campoFicha('Estado / Cidade', `${p.estado_origem||'-'} • ${p.cidade_origem||'-'}`)}
+${campoFicha('Multipropriedade', p.multipropriedade)}${campoFicha('Cortesia escolhida', p.brinde)}
+${campoFicha('WhatsApp / Contato', p.contato)}${campoFicha('Entrada em sala', p.levou_sala||'Aguardando informação do promotor')}
+${campoFicha('Equipe / Ponto', `${p.equipe||'-'} • ${p.ponto_captacao||'-'}`)}
+${campoFicha('Profissional responsável', p.captador_nome)}${campoFicha('Observações', p.observacoes||'Sem observações')}
+<div class="fichaRodapeFull">Cliente(s): ${p.convidado_1||'-'} ${p.convidado_2?'e '+p.convidado_2:''}<br>Registro CaptaPro • Bueno Invest • Sala ${p.levou_sala||'pendente'}</div></div>`);
+}
+async function compartilharFicha(){
+ const node=E('fichaImg'); if(!node)return;
+ const c=await html2canvas(node,{scale:2,backgroundColor:'#090909'});
+ c.toBlob(async b=>{const f=new File([b],'ficha-captapro.png',{type:'image/png'}); if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'Ficha CaptaPro'}); else{const a=document.createElement('a');a.href=c.toDataURL();a.download='ficha-captapro.png';a.click()}});
+}
+function novaPesquisa(){
+ ['nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade','relacionamento','tempo','nomeCarro','anoCarro','cartao','casa','multi','renda','brinde','contato','obs'].forEach(id=>{if(E(id))E(id).value=''});
+ H('resultado','');H('formMsg','');E('fichaBox').classList.add('hidden');ultimaFicha=null;E('nome1').focus();
+}
+async function dados(t){
+ let arr=[];
+ try{const r=await db.from(t).select('*').order('created_at',{ascending:false}).limit(3000);arr=r.data||[]}
+ catch(e){arr=JSON.parse(localStorage.getItem(t==='pesquisas'?'pesquisasLocal':'abordagensLocal')||'[]')}
+ if(t==='pesquisas'){
+   const locais=JSON.parse(localStorage.getItem('pesquisasLocal')||'[]');
+   const salas=JSON.parse(localStorage.getItem('salasLocal21')||'[]');
+   const key=x=>String(x.id||'')+'|'+String(x.user_email||'')+'|'+String(x.created_at||'');
+   const map={};
+   [...arr,...locais].forEach(x=>{map[key(x)]={...(map[key(x)]||{}),...x}});
+   salas.forEach(x=>{const k=key(x);map[k]={...(map[k]||x),...x,levou_sala:'Sim',sala_status:'Sim'}});
+   arr=Object.values(map);
+ }
+ return arr;
+}
+function per(x,de,ate){const d=String(x.created_at||'').slice(0,10);return(!de||d>=de)&&(!ate||d<=ate)}
+function isSala(x){return normal(x.levou_sala||x.sala||x.sala_status||x.status_sala).includes('sim')||x.sala===true}
+function aplicarSalasLocais21(p){
+ const salas=JSON.parse(localStorage.getItem('salasLocal21')||'[]');
+ if(!salas.length)return p||[];
+ return (p||[]).map(x=>{
+   const achou=salas.some(s=>String(s.created_at)===String(x.created_at)&&String(s.user_email)===String(x.user_email));
+   return achou?{...x,levou_sala:'Sim'}:x;
+ });
+}
+async function carregarRelatorio(){
+ const de=V('relDe'),ate=V('relAte'); let p=aplicarSalasLocais21(await dados('pesquisas')), a=await dados('abordagens');
+ if(role!=='ceo'){const eq=V('equipe'); if(eq){p=p.filter(x=>x.equipe===eq||x.user_email===usuarioEmail);a=a.filter(x=>x.equipe===eq||x.user_email===usuarioEmail)} else {p=p.filter(x=>x.user_email===usuarioEmail);a=a.filter(x=>x.user_email===usuarioEmail)}}
+ p=p.filter(x=>per(x,de,ate)); a=a.filter(x=>per(x,de,ate));
+ const minhas=role==='ceo'?p:p.filter(x=>x.user_email===usuarioEmail), minhasAb=role==='ceo'?a:a.filter(x=>x.user_email===usuarioEmail);
+ const q=minhas.filter(x=>x.qualificacao_automatica==='Q').length, nq1=minhas.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length, nq=minhas.length-q-nq1, sala=minhas.filter(isSala).length;
+ S('rAbord',minhasAb.length);S('rPesq',minhas.length);S('rQ',q);S('rNQ',nq);S('rNQ1',nq1);S('rSala',sala);S('rConv',minhas.length?Math.round(sala/minhas.length*100)+'%':'0%');
+ const map={};
+ p.forEach(x=>{const n=x.captador_nome||x.user_email||'Sem nome'; if(!map[n])map[n]={nome:n,equipe:x.equipe||'',p:0,s:0,q:0,nq:0,nq1:0,a:0}; map[n].p++; if(x.qualificacao_automatica==='Q')map[n].q++; else if(String(x.qualificacao_automatica||'').includes('1'))map[n].nq1++; else map[n].nq++; if(isSala(x))map[n].s++;});
+ a.forEach(x=>{const n=x.captador_nome||x.user_email||'Sem nome'; if(!map[n])map[n]={nome:n,equipe:x.equipe||'',p:0,s:0,q:0,nq:0,nq1:0,a:0}; map[n].a++;});
+ const rows=Object.values(map).sort((x,y)=>y.p-x.p||y.a-x.a||y.s-x.s);
+ H('rankingEquipeBox13',rows.length?'<table><tr><th>Nome</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th></tr>'+rows.map(r=>`<tr><td>${r.nome}</td><td>${r.a}</td><td>${r.p}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.s}</td></tr>`).join('')+'</table>':'<p class=mini>Sem dados.</p>');
+ H('profFiltro','<option value="">Escolha o profissional</option>'+rows.map(r=>`<option>${r.nome}</option>`).join(''));
+ window.rowsRel=rows;mostrarIndividual();
+}
+function mostrarIndividual(){
+ const r=(window.rowsRel||[]).find(x=>x.nome===V('profFiltro'));
+ H('individualBox',r?`<div class=kpis><div class=kpi>Abord.<b>${r.a}</b></div><div class=kpi>Pesq.<b>${r.p}</b></div><div class=kpi>Q<b>${r.q}</b></div><div class=kpi>NQ<b>${r.nq}</b></div><div class=kpi>1 Item<b>${r.nq1}</b></div><div class=kpi>Sala<b>${r.s}</b></div><div class=kpi>Conv.<b>${r.p?Math.round(r.s/r.p*100):0}%</b></div></div>`:'<p class=mini>Escolha um profissional.</p>');
+}
+
+function csvSplit(line){const out=[];let cur='',q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){q=!q;continue}if((c===','||c===';'||c==='\t')&&!q){out.push(cur.trim());cur='';continue}cur+=c}out.push(cur.trim());return out}
+function parseCSV(text){const lines=String(text||'').split(/\r?\n/).filter(l=>l.trim());if(lines.length<2)return [];const headers=csvSplit(lines[0]).map(normal);return lines.slice(1).map(line=>{const cols=csvSplit(line),o={};headers.forEach((h,i)=>o[h]=cols[i]||'');return o})}
+function pick(o,names){for(const n of names){const nn=normal(n);const k=Object.keys(o||{}).find(x=>normal(x)===nn||normal(x).includes(nn));if(k)return o[k]}return ''}
+function montarCSV(dados){const map={};(dados||[]).forEach(r=>{const nome=pick(r,['profissional','promotor','captador','promotor de marketing','nome'])||'Sem nome';if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0};map[nome].casais+=parseMoeda(pick(r,['casais','casal','pesquisas','fichas']))||0;map[nome].vendas+=parseMoeda(pick(r,['vendas','venda']))||vendaCount(pick(r,['status']));map[nome].vgv+=parseMoeda(pick(r,['vgv','valor vendido','valor','valor vgv','volume geral']))||0;});return Object.values(map)}
+function montarPesquisas(p){const map={};(p||[]).forEach(x=>{const nome=x.captador_nome||x.profissional||x.user_email||'Sem nome';if(!map[nome])map[nome]={nome,casais:0,vendas:0,vgv:0};map[nome].casais++;map[nome].vendas+=vendaCount(x.status||x.venda||x.vendas);map[nome].vgv+=parseMoeda(x.vgv||x.valor_vgv||x.valor||0);});return Object.values(map)}
+
+const rankingJunhoPadrao21 = [];
+function classeProj(p){p=Number(p)||0; if(p>=50)return 'projTop'; if(p>=35)return 'projBoa'; if(p>=22)return 'projMeta'; return 'projBaixa'}
+
+function renderRaking(arr,fonte){
+ const box=E('rakingBox'); if(!box)return; arr=(arr||[]).filter(x=>x.nome).sort((a,b)=>b.vendas-a.vendas||b.vgv-a.vgv||b.casais-a.casais||a.nome.localeCompare(b.nome));
+ if(E('rakingFonte21'))E('rakingFonte21').innerHTML=fonte||'';
+ if(!arr.length){box.innerHTML='<p class=mini>Sem dados para montar o Ranking.</p>';return}
+ const total={casais:0,vendas:0,vgv:0};
+ const linhas=arr.map((r,i)=>{total.casais+=Number(r.casais)||0;total.vendas+=Number(r.vendas)||0;total.vgv+=Number(r.vgv)||0;const ef=r.casais?(r.vendas/r.casais*100):0;const proj=r.projecao||Math.round((Number(r.casais)||0)/21*30);return `<tr class="${i<3?'rankTop':''}"><td>${i+1}º ${r.nome}</td><td>${r.casais}</td><td>${r.vendas}</td><td>${moeda(r.vgv)}</td><td>${ef.toFixed(0)}%</td><td class="${classeProj(proj)}">${proj}</td></tr>`}).join('');
+ const efT=total.casais?(total.vendas/total.casais*100):0;
+ const projT=Math.round(total.casais/21*30);
+ box.innerHTML=`<table><tr><th>Profissional</th><th>Pesquisas</th><th>Vendas</th><th>VGV</th><th>Eficiência</th><th>Projeção</th></tr>${linhas}<tr><th>Total</th><th>${total.casais}</th><th>${total.vendas}</th><th>${moeda(total.vgv)}</th><th>${efT.toFixed(0)}%</th><th>${projT}</th></tr></table>`;
+}
+function setPeriodoMes(){
+ const de=E('rakingDe'),ate=E('rakingAte'); if(!de||!ate)return;
+ const now=new Date();
+ const y=now.getFullYear(), m=String(now.getMonth()+1).padStart(2,'0');
+ const hoje=now.toISOString().slice(0,10);
+ if(!de.value)de.value=`${y}-${m}-01`;
+ if(!ate.value)ate.value=hoje;
+}
+async function tentarCSVRepo(){
+ for(const url of ['./raking%20junho.csv','./raking junho.csv','raking%20junho.csv']){try{const resp=await fetch(url,{cache:'no-store'});if(resp.ok){const dados=parseCSV(await resp.text());if(dados.length)return dados}}catch(e){}}
+ return [];
+}
+function importarRakingCSV21(ev){const file=ev.target.files&&ev.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const dados=parseCSV(reader.result);localStorage.setItem('raking_csv_21',JSON.stringify(dados));renderRaking(montarCSV(dados),'<span class=ok>Fonte: CSV importado.</span>')};reader.readAsText(file,'utf-8')}
+function limparRakingCSV21(){localStorage.removeItem('raking_csv_21');if(E('csvRakingInput21'))E('csvRakingInput21').value='';renderRaking([], '<span class=warn>Julho começa do zero. Salve fichas para montar o ranking.</span>');return}
+async function carregarRaking(forcarBanco){
+ setPeriodoMes();
+ if(!forcarBanco){
+   try{const salvo=JSON.parse(localStorage.getItem('raking_csv_21')||'[]');if(salvo.length){renderRaking(montarCSV(salvo),'<span class=ok>Fonte: CSV importado.</span>');return}}catch(e){}
+ }
+ const de=V('rakingDe'),ate=V('rakingAte'); let p=[];
+ try{p=await dados('pesquisas')}catch(e){p=[]}
+ p=(p||[]).filter(x=>per(x,de,ate));
+ const arr=montarPesquisas(p);
+ if(arr.length){renderRaking(arr,'<span class=ok>Fonte: fichas salvas de hoje em diante.</span>');return}
+ renderRaking([], '<span class=warn>Julho começa do zero. Salve fichas para montar o ranking.</span>');
+}
+
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{aplicarRendaDigitavel();aplicarRendaCEO();loadCfg();setPeriodoMes();carregarRaking();},500)});
+</script>
+
+
+<script>
+/* ===== CaptaPro 4.8 • Correção final sem flicker ===== */
+(function(){
+"use strict";
+
+const BASE_JULHO_48 = [{"nome": "José Ademir", "casais": 8, "vendas": 2, "vgv": 185880, "ponto": "Porta dentro do Park"}, {"nome": "Pedro Henrique", "casais": 7, "vendas": 6, "vgv": 512400, "ponto": "Park Dream House"}, {"nome": "Adriano Moreira", "casais": 7, "vendas": 0, "vgv": 0, "ponto": "Porta dentro do Park"}, {"nome": "Paulo Victor", "casais": 6, "vendas": 3, "vgv": 270500, "ponto": "Corredor"}, {"nome": "Mateus Santos", "casais": 6, "vendas": 2, "vgv": 180000, "ponto": "Fábrica Spinassi"}, {"nome": "Ivanilson", "casais": 4, "vendas": 0, "vgv": 0, "ponto": "Park Dream House"}, {"nome": "Jéssica Barbosa", "casais": 4, "vendas": 0, "vgv": 0, "ponto": "Renner"}, {"nome": "João Vitor", "casais": 3, "vendas": 0, "vgv": 0, "ponto": "Fábrica Spinassi"}, {"nome": "Márcio Alfaia", "casais": 3, "vendas": 0, "vgv": 0, "ponto": "Posto Shell"}, {"nome": "Josyene Freitas", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Guarda-chuvas"}, {"nome": "Matheus Domingos", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Baden Baden"}, {"nome": "Renan Marcondes", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Djalma"}, {"nome": "Ana Caroline", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Igreja"}, {"nome": "André Carriço", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Corredor"}, {"nome": "Jonatas França", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Baden Baden"}, {"nome": "Matheus Esley", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Fábrica Spinassi"}, {"nome": "Otávio José", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Renner"}, {"nome": "Ricardo Maltchik", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Djalma"}];
+const PONTOS48=[
+ {nome:'Porta dentro do Park',lat:-22.74075,lng:-45.59225},
+ {nome:'Park Dream House',lat:-22.74050,lng:-45.59205},
+ {nome:'Fábrica Spinassi',lat:-22.73925,lng:-45.59110},
+ {nome:'Corredor',lat:-22.73985,lng:-45.59175},
+ {nome:'Baden Baden',lat:-22.73870,lng:-45.59100},
+ {nome:'Djalma',lat:-22.73815,lng:-45.59050},
+ {nome:'Igreja',lat:-22.73845,lng:-45.59260},
+ {nome:'Renner',lat:-22.73895,lng:-45.59310},
+ {nome:'Guarda-chuvas',lat:-22.74010,lng:-45.59070},
+ {nome:'Posto Shell',lat:-22.74110,lng:-45.59300}
+];
+
+let MAP48=null, LAYERS48=[], BUSY48=false, CACHE48={ts:0,pesquisas:[],abordagens:[],presenca:[]};
+
+function $(id){return document.getElementById(id)}
+function val(id){return ($(id)?.value||'').trim()}
+function setText(id,v){const el=$(id); if(el) el.innerText=v}
+function setHtml(id,v){const el=$(id); if(el) el.innerHTML=v}
+function esc(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function hoje(){return new Date().toISOString().slice(0,10)}
+function data(x){return String(x.created_at||x.data||x.dia||'').slice(0,10)}
+function sala(x){
+  const s=norm(x.sala_status||x.levou_sala||x.status_sala||'');
+  return s==='sim'||s==='confirmado'||s==='confirmada'||s==='sala_confirmada'||s==='em sala'||x.sala===true;
+}
+function minAgo(iso){if(!iso)return 99999;return Math.round((Date.now()-new Date(iso).getTime())/60000)}
+function online(x){return minAgo(x.last_seen||x.updated_at||x.created_at)<5}
+async function get(t){
+  try{const r=await db.from(t).select('*').limit(5000); if(!r.error)return r.data||[]}catch(e){}
+  try{return JSON.parse(localStorage.getItem(t+'Local')||'[]')}catch(e){return []}
+}
+async function base(force=false){
+  if(!force && Date.now()-CACHE48.ts<15000)return CACHE48;
+  const [pesquisas,abordagens,presenca]=await Promise.all([get('pesquisas'),get('abordagens'),get('captapro_presence')]);
+  CACHE48={ts:Date.now(),pesquisas,abordagens,presenca}; return CACHE48;
+}
+function filtraPeriodo(arr,de,ate){
+  return (arr||[]).filter(x=>{const d=data(x); if(!d)return false; if(de&&d<de)return false; if(ate&&d>ate)return false; return true});
+}
+function pontoCoord(nome){
+  const n=norm(nome);
+  return PONTOS48.find(p=>norm(p.nome)===n || norm(p.nome).includes(n) || n.includes(norm(p.nome)));
+}
+function agrupar(p,a,pres){
+ const by={};
+ p.forEach(x=>{
+   const k=x.user_email||x.captador_nome||x.profissional||'Sem nome';
+   if(!by[k]) by[k]={nome:x.captador_nome||x.profissional||k,email:x.user_email||'',equipe:x.equipe||'',ponto:x.ponto_captacao||x.ponto||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0,vendas:0,vgv:0,online:false};
+   by[k].pesq++; by[k].equipe=x.equipe||by[k].equipe; by[k].ponto=x.ponto_captacao||x.ponto||by[k].ponto;
+   if(x.qualificacao_automatica==='Q') by[k].q++;
+   else if(String(x.qualificacao_automatica||'').includes('1')) by[k].nq1++;
+   else by[k].nq++;
+   if(sala(x)) by[k].sala++;
+ });
+ a.forEach(x=>{
+   const k=x.user_email||x.captador_nome||x.profissional||'Sem nome';
+   if(!by[k]) by[k]={nome:x.captador_nome||x.profissional||k,email:x.user_email||'',equipe:x.equipe||'',ponto:x.ponto||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0,vendas:0,vgv:0,online:false};
+   by[k].abord++;
+ });
+ (pres||[]).forEach(x=>{
+   const k=x.email||x.nome||'Sem nome';
+   if(!by[k]) by[k]={nome:x.nome||k,email:x.email||'',equipe:x.equipe||'',ponto:x.ponto||'',abord:0,pesq:0,q:0,nq:0,nq1:0,sala:0,vendas:0,vgv:0,online:online(x)};
+   by[k].online=online(x); by[k].ponto=x.ponto||by[k].ponto; by[k].equipe=x.equipe||by[k].equipe;
+ });
+ return Object.values(by).sort((x,y)=>y.sala-x.sala||y.pesq-x.pesq||x.nome.localeCompare(y.nome));
+}
+function tabela(rows){
+ if(!rows.length)return '<p class="mini">Sem dados no período.</p>';
+ return `<table><tr><th>Profissional</th><th>Status</th><th>Ponto</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Casais em Sala</th><th>Vendas</th><th>Eficiência</th></tr>${rows.map(r=>`<tr><td>${esc(r.nome)}</td><td>${r.online?'🟢':'🔴'}</td><td>${esc(r.ponto||'-')}</td><td>${r.abord}</td><td>${r.pesq}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td class="salaInd47">${r.sala}</td><td>${r.vendas||0}</td><td>${r.pesq?Math.round(r.sala/r.pesq*100):0}%</td></tr>`).join('')}</table>`;
+}
+function manuais(){
+  try{return JSON.parse(localStorage.getItem('rankingManual43')||'[]')}catch(e){return []}
+}
+function rankingJulhoRows(){
+ const by={};
+ BASE_JULHO_48.forEach(x=>{const k=norm(x.nome); by[k]={nome:x.nome,casais:Number(x.casais||0),vendas:Number(x.vendas||0),vgv:Number(x.vgv||0),origem:'Planilha'}});
+ manuais().forEach(x=>{
+   const k=norm(x.nome);
+   if(!by[k]) by[k]={nome:x.nome,casais:0,vendas:0,vgv:0,origem:'ADM'};
+   by[k].casais += Number(x.casais||0);
+   by[k].vendas += Number(x.vendas||0);
+   by[k].vgv += Number(x.vgv||0);
+   by[k].origem='Planilha + ADM';
+ });
+ return Object.values(by).sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||a.nome.localeCompare(b.nome));
+}
+window.carregarRaking=function(){
+ const rows=rankingJulhoRows();
+ const totalCasais=rows.reduce((s,x)=>s+Number(x.casais||0),0);
+ const totalVendas=rows.reduce((s,x)=>s+Number(x.vendas||0),0);
+ const totalVgv=rows.reduce((s,x)=>s+Number(x.vgv||0),0);
+ const de=val('rakingDe')||'2026-07-01', ate=val('rakingAte')||hoje();
+ setHtml('rakingFonte21',`Resultado fixo de casais em sala + ajustes manuais ADM • ${de} até ${ate}`);
+ setHtml('rakingBox',`<div class="resumoJulho46"><div>Casais em sala<b>${totalCasais}</b></div><div>Vendas<b>${totalVendas}</b></div><div>VGV<b>R$ ${totalVgv.toLocaleString('pt-BR')}</b></div></div>
+ <table><tr><th>Pos.</th><th>Profissional</th><th>Casais em Sala</th><th>Vendas</th><th>VGV</th><th>Origem</th></tr>${rows.map((r,i)=>`<tr><td>${i+1}º</td><td>${esc(r.nome)}</td><td class="salaInd47">${r.casais}</td><td>${r.vendas||0}</td><td>R$ ${(Number(r.vgv||0)).toLocaleString('pt-BR')}</td><td>${esc(r.origem)}</td></tr>`).join('')}</table>`);
+ setHtml('portalRankingBox36',`<table><tr><th>Profissional</th><th>Casais em Sala</th><th>Vendas</th><th>VGV</th></tr>${rows.map(r=>`<tr><td>${esc(r.nome)}</td><td class="salaInd47">${r.casais}</td><td>${r.vendas||0}</td><td>R$ ${(Number(r.vgv||0)).toLocaleString('pt-BR')}</td></tr>`).join('')}</table>`);
+};
+
+window.carregarRelatorio=function(){ return carregarRelatorio48(true); };
+async function carregarRelatorio48(force=true){
+ if(BUSY48)return; BUSY48=true;
+ try{
+  const de=val('relDe')||hoje(), ate=val('relAte')||de;
+  if($('relDe')&&!val('relDe')) $('relDe').value=de;
+  if($('relAte')&&!val('relAte')) $('relAte').value=ate;
+  const b=await base(force), p=filtraPeriodo(b.pesquisas,de,ate), a=filtraPeriodo(b.abordagens,de,ate);
+  const q=p.filter(x=>x.qualificacao_automatica==='Q').length, nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length, s=p.filter(sala).length, ef=p.length?Math.round(s/p.length*100):0;
+  setText('rAbord',a.length); setText('rPesq',p.length); setText('rQ',q); setText('rNQ',p.length-q-nq1); setText('rNQ1',nq1); setText('rSala',s); setText('rConv',ef+'%');
+  setHtml('rankingEquipeBox13',tabela(agrupar(p,a,b.presenca)));
+ } finally { setTimeout(()=>BUSY48=false,500); }
+}
+window.carregarDashboardCEO25=window.carregarRelatorio;
+
+async function carregarDiario48(){
+ const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
+ const dia=val('diarioData')||hoje(); if($('diarioData')) $('diarioData').value=dia;
+ const b=await base(true);
+ const p=b.pesquisas.filter(x=>String(x.user_email||'').toLowerCase()===email && data(x)===dia);
+ const a=b.abordagens.filter(x=>String(x.user_email||'').toLowerCase()===email && data(x)===dia);
+ const q=p.filter(x=>x.qualificacao_automatica==='Q').length, nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length, s=p.filter(sala).length, ef=p.length?Math.round(s/p.length*100):0;
+ setText('dAbord',a.length); setText('dPesq',p.length); setText('dQ',q); setText('dNQ',p.length-q-nq1); setText('dNQ1',nq1); setText('dSala',s); setText('dEfic',ef+'%'); setText('dConv',ef+'%');
+ setText('homeAbord',a.length); setText('homePesq',p.length); setText('homeQ',q); setText('homeNQ',p.length-q-nq1); setText('homeSala',s);
+ setText('metaValor35',s+' casais em sala');
+ const meta=35, pct=Math.min(100,Math.round((s/meta)*100)); if($('metaFill35')) $('metaFill35').style.width=pct+'%';
+ setText('metaInfo35',s>=meta?'Meta batida!':'Faltam '+(meta-s)+' casais • '+pct+'%');
+}
+window.carregarDiario=carregarDiario48;
+
+window.carregarMinhasPesquisas35=async function(){
+ const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
+ const b=await base(true);
+ const p=b.pesquisas.filter(x=>String(x.user_email||'').toLowerCase()===email && data(x)===hoje()).sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||'')));
+ if(!p.length){setHtml('minhasPesquisas35','<p class="mini">Nenhuma pesquisa salva hoje.</p>');return}
+ setHtml('minhasPesquisas35',p.map(x=>{const ok=sala(x);return `<div class="fichaLinha35 ${ok?'fichaSala35':''}"><b>${esc(x.convidado_1||'Sem nome')} ${x.convidado_2?'e '+esc(x.convidado_2):''}</b><small>${x.qualificacao_automatica||'-'} • ${x.ponto_captacao||x.ponto||'-'} • ${String(x.created_at||'').slice(11,16)}</small><small>Status: ${ok?'<span class="salaInd47">✅ Casal em sala</span>':'Pesquisa salva'}</small>${ok?'<button class="secondary" disabled>✅ Casal em Sala</button>':`<button class="main btnSala35" onclick="confirmarSala48('${x.id||''}','${x.created_at||''}')">✅ Casal em Sala</button>`}</div>`}).join(''));
+};
+window.confirmarSala48=async function(id,created){
+ const email=(window.usuarioEmail||usuarioEmail||'').toLowerCase();
+ const payload={levou_sala:'Sim',sala_status:'Confirmado',sala_confirmada_em:new Date().toISOString()};
+ try{const q=id?db.from('pesquisas').update(payload).eq('id',id):db.from('pesquisas').update(payload).eq('user_email',email).eq('created_at',created); await q;}catch(e){}
+ CACHE48.ts=0; setHtml('diarioMsg','<span class="ok">Casal em sala confirmado.</span>');
+ window.carregarMinhasPesquisas35(); carregarDiario48(); carregarPortalCEO48(true);
+};
+window.marcarCasalSala35=window.confirmarSala48; window.marcarCasalSala36=window.confirmarSala48; window.marcarCasalSala38=window.confirmarSala48;
+window.confirmarSala21=function(){window.confirmarSala48('', window.ultimaFicha?.created_at||'')};
+
+window.removerSalaCEO48=async function(id,created,email){
+ try{const payload={levou_sala:'Não',sala_status:'Não'}; const q=id?db.from('pesquisas').update(payload).eq('id',id):db.from('pesquisas').update(payload).eq('user_email',email).eq('created_at',created); await q;}catch(e){}
+ CACHE48.ts=0; carregarPortalCEO48(true); carregarRelatorio48(true);
+};
+window.desfazerSalaCEO35=window.removerSalaCEO48; window.desfazerSalaCEO36=window.removerSalaCEO48; window.removerSalaCEO38=window.removerSalaCEO48;
+
+async function carregarPortalCEO48(force=true){
+ const dia=val('ceoDiaData44')||hoje(); if($('ceoDiaData44')) $('ceoDiaData44').value=dia;
+ const b=await base(force), p=filtraPeriodo(b.pesquisas,dia,dia), a=filtraPeriodo(b.abordagens,dia,dia);
+ const q=p.filter(x=>x.qualificacao_automatica==='Q').length, nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length, s=p.filter(sala).length, ef=p.length?Math.round(s/p.length*100):0;
+ setText('p30Pesq',p.length); setText('p30Q',q); setText('p30NQ',p.length-q-nq1); setText('p30Sala',s); setText('p30Pendente',0); setText('p30Efic',ef+'%');
+ setHtml('portalDashboardClean36',`<div class="portalCard36 captaStable48">Abordagens<b>${a.length}</b></div><div class="portalCard36 captaStable48">Pesquisas<b>${p.length}</b></div><div class="portalCard36 captaStable48">Q<b>${q}</b></div><div class="portalCard36 captaStable48">NQ<b>${p.length-q-nq1}</b></div><div class="portalCard36 captaStable48">1 Item<b>${nq1}</b></div><div class="portalCard36 captaStable48">Casais em Sala<b>${s}</b></div><div class="portalCard36 captaStable48">Eficiência<b>${ef}%</b></div><div class="portalCard36 captaStable48">Pendentes<b>0</b></div>`);
+ const rows=agrupar(p,a,b.presenca);
+ setHtml('portalEquipeBox35',tabela(rows));
+ setHtml('ceoDiaResumo44',`<div class="kpi">Abordagens<b>${a.length}</b></div><div class="kpi">Pesquisas<b>${p.length}</b></div><div class="kpi">Q<b>${q}</b></div><div class="kpi">NQ<b>${p.length-q-nq1}</b></div><div class="kpi">1 Item<b>${nq1}</b></div><div class="kpi">Casais em Sala<b>${s}</b></div><div class="kpi">Eficiência<b>${ef}%</b></div><div class="kpi">Profissionais<b>${rows.length}</b></div>`);
+ setHtml('ceoDiaEquipe44',tabela(rows));
+ setHtml('ceoDiaProfissionais44',rows.length?rows.map(r=>`<div class="ceoProfCard44"><b>${esc(r.nome)}</b> ${r.online?'🟢':'🔴'}<br><small class="mini">📍 ${esc(r.ponto||'Sem ponto')} • ${esc(r.equipe||'-')}</small><div class="ceoProfGrid44"><span>Abord.<strong>${r.abord}</strong></span><span>Pesq.<strong>${r.pesq}</strong></span><span>Q<strong>${r.q}</strong></span><span>NQ<strong>${r.nq}</strong></span><span>1 Item<strong>${r.nq1}</strong></span><span>Sala<strong>${r.sala}</strong></span><span>Eficiência<strong>${r.pesq?Math.round(r.sala/r.pesq*100):0}%</strong></span></div></div>`).join(''):'<p class="mini">Sem profissionais no dia.</p>');
+ window.carregarRaking();
+}
+window.carregarPortalCEO30=carregarPortalCEO48; window.carregarPortalCEO36=carregarPortalCEO48; window.carregarPortalCEO38=carregarPortalCEO48; window.carregarPortalCEO43=carregarPortalCEO48; window.carregarRelatorioDiaCEO44=carregarPortalCEO48; window.carregarTodasColunasCEO45=carregarPortalCEO48;
+
+window.carregarMapaReal37=async function(){
+ const box=$('mapaRealCEO37'); if(!box||!window.L)return;
+ const equipe=val('mapEquipe37'), status=val('mapStatus37');
+ const b=await base(false); let pres=b.presenca||[];
+ if(equipe) pres=pres.filter(x=>String(x.equipe||'').toUpperCase()===equipe);
+ if(status==='online') pres=pres.filter(online); if(status==='offline') pres=pres.filter(x=>!online(x));
+ if(!MAP48){MAP48=L.map('mapaRealCEO37').setView([-22.7395,-45.5917],16); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(MAP48)}
+ LAYERS48.forEach(l=>MAP48.removeLayer(l)); LAYERS48=[]; const bounds=[];
+ PONTOS48.forEach(p=>{const ic=L.divIcon({className:'',html:`<div class="markerPonto43">📍 ${esc(p.nome)}</div>`,iconSize:[135,28],iconAnchor:[8,14]}); const mk=L.marker([p.lat,p.lng],{icon:ic}).addTo(MAP48).bindPopup(`<b>📍 ${esc(p.nome)}</b><br>Ponto de captação`); LAYERS48.push(mk); bounds.push([p.lat,p.lng]);});
+ pres.forEach(x=>{let lat=Number(x.lat),lng=Number(x.lng); if(!lat||!lng){const pc=pontoCoord(x.ponto); if(pc){lat=pc.lat+(Math.random()-.5)*0.00028;lng=pc.lng+(Math.random()-.5)*0.00028}} if(!lat||!lng)return; const on=online(x); const ic=L.divIcon({className:'',html:`<div class="markerCaptador47 ${on?'':'off'}"></div>`,iconSize:[18,18],iconAnchor:[9,9]}); const mk=L.marker([lat,lng],{icon:ic}).addTo(MAP48).bindPopup(`<b>${esc(x.nome||x.email||'Profissional')}</b><br>${on?'🟢 Online':'🔴 Offline'}<br>📍 ${esc(x.ponto||'Sem ponto')}<br>${minAgo(x.last_seen)<=0?'agora':'há '+minAgo(x.last_seen)+' min'}`); LAYERS48.push(mk); bounds.push([lat,lng]);});
+ if(bounds.length) MAP48.fitBounds(bounds,{padding:[25,25],maxZoom:17});
+ setTimeout(()=>MAP48.invalidateSize(),300);
+};
+window.carregarMapaReal39=window.carregarMapaReal37; window.carregarMapaReal41=window.carregarMapaReal37; window.carregarMapaReal43=window.carregarMapaReal37; window.carregarMapaReal45=window.carregarMapaReal37;
+
+const oldAba=window.aba;
+window.aba=function(id,b){
+ const r=oldAba?oldAba.apply(this,arguments):undefined;
+ setTimeout(()=>{try{
+   if(id==='raking') window.carregarRaking();
+   if(id==='relatorio') carregarRelatorio48(true);
+   if(id==='diario'){window.carregarMinhasPesquisas35(); carregarDiario48();}
+   if(id==='qualificacao'){carregarPortalCEO48(true); window.carregarMapaReal37();}
+ }catch(e){console.warn(e)}},400);
+ return r;
+};
+
+window.limparRakingCSV21=function(){ window.carregarRaking(); };
+window.importarRakingCSV21=function(){ window.carregarRaking(); };
+
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{window.carregarRaking(); carregarRelatorio48(true); carregarPortalCEO48(true);}catch(e){}},1000));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 4.9 • Ranking Julho atualizado + resultado individual ===== */
+(function(){
+"use strict";
+const RANKING_JULHO_49 = [{"nome": "José Ademir", "casais": 8, "vendas": 2, "vgv": 185880, "ponto": "Porta dentro do Park"}, {"nome": "Pedro Henrique", "casais": 7, "vendas": 6, "vgv": 512400, "ponto": "Park Dream House"}, {"nome": "Adriano Moreira", "casais": 7, "vendas": 0, "vgv": 0, "ponto": "Porta dentro do Park"}, {"nome": "Paulo Victor", "casais": 6, "vendas": 3, "vgv": 270500, "ponto": "Corredor"}, {"nome": "Mateus Santos", "casais": 6, "vendas": 2, "vgv": 180000, "ponto": "Fábrica Spinassi"}, {"nome": "Ivanilson", "casais": 4, "vendas": 0, "vgv": 0, "ponto": "Park Dream House"}, {"nome": "Jéssica Barbosa", "casais": 4, "vendas": 0, "vgv": 0, "ponto": "Renner"}, {"nome": "João Vitor", "casais": 3, "vendas": 0, "vgv": 0, "ponto": "Fábrica Spinassi"}, {"nome": "Márcio Alfaia", "casais": 3, "vendas": 0, "vgv": 0, "ponto": "Posto Shell"}, {"nome": "Josyene Freitas", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Guarda-chuvas"}, {"nome": "Matheus Domingos", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Baden Baden"}, {"nome": "Renan Marcondes", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Djalma"}, {"nome": "Ana Caroline", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Igreja"}, {"nome": "André Carriço", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Corredor"}, {"nome": "Jonatas França", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Baden Baden"}, {"nome": "Matheus Esley", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Fábrica Spinassi"}, {"nome": "Otávio José", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Renner"}, {"nome": "Ricardo Maltchik", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Djalma"}];
+
+function E49(id){return document.getElementById(id)}
+function H49(id,v){if(E49(id))E49(id).innerHTML=v}
+function T49(id,v){if(E49(id))E49(id).innerText=v}
+function esc49(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+function norm49(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function moeda49(v){return 'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function pct49(vendas,casais){return casais?((Number(vendas||0)/Number(casais||0))*100).toFixed(2).replace('.',',')+'%':'0,00%'}
+function acharProf49(nome,email){
+  const n=norm49(nome||''), e=norm49(email||'');
+  return RANKING_JULHO_49.find(r=>{
+    const rn=norm49(r.nome);
+    return rn===n || (n&&rn.includes(n)) || (n&&n.includes(rn)) || (e&&rn.includes(e.split('@')[0]));
+  }) || {nome:nome||'Profissional',casais:0,vendas:0,vgv:0};
+}
+window.carregarResultadoProf49=function(){
+  const nome=window.usuarioNome||usuarioNome||E49('diarioNome')?.value||'';
+  const email=window.usuarioEmail||usuarioEmail||'';
+  const r=acharProf49(nome,email);
+  const casalTxt=Number(r.casais||0)===1?'1 casal':(Number(r.casais||0)+' casais');
+  const vendaTxt=Number(r.vendas||0)===1?'1 venda':(Number(r.vendas||0)+' vendas');
+  H49('resultadoProf49',`${casalTxt}<br>${vendaTxt}`);
+  T49('resultadoProfMini49',`${moeda49(r.vgv)} • ${pct49(r.vendas,r.casais)}`);
+}
+window.carregarRaking=function(){
+  const rows=[...RANKING_JULHO_49].sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv);
+  const totalCasais=rows.reduce((s,x)=>s+Number(x.casais||0),0);
+  const totalVendas=rows.reduce((s,x)=>s+Number(x.vendas||0),0);
+  const totalVgv=rows.reduce((s,x)=>s+Number(x.vgv||0),0);
+  H49('rakingFonte21',`Ranking de captação — Julho • Dia 01 até agora`);
+  H49('rakingBox',`<div class="rankingResumo49"><div>Total de casais<b>${totalCasais}</b></div><div>Total de vendas<b>${totalVendas}</b></div><div>VGV Geral<b>${moeda49(totalVgv)}</b></div></div>
+  <table><tr><th>Pos.</th><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${rows.map((r,i)=>`<tr><td>${i+1}º</td><td>${esc49(r.nome)}</td><td class="salaInd47">${r.casais}</td><td>${r.vendas}</td><td>${moeda49(r.vgv)}</td><td>${pct49(r.vendas,r.casais)}</td></tr>`).join('')}</table>`);
+  H49('portalRankingBox36',`<table><tr><th>Pos.</th><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${rows.map((r,i)=>`<tr><td>${i+1}º</td><td>${esc49(r.nome)}</td><td class="salaInd47">${r.casais}</td><td>${r.vendas}</td><td>${moeda49(r.vgv)}</td><td>${pct49(r.vendas,r.casais)}</td></tr>`).join('')}</table>`);
+  carregarResultadoProf49();
+};
+const oldAba49=window.aba;
+window.aba=function(id,b){
+  const r=oldAba49?oldAba49.apply(this,arguments):undefined;
+  setTimeout(()=>{try{if(id==='raking'||id==='qualificacao')window.carregarRaking(); if(id==='diario')carregarResultadoProf49()}catch(e){}},500);
+  return r;
+};
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{window.carregarRaking();carregarResultadoProf49()}catch(e){}},1200));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 5.0 • Corrige casais no CEO + mapa com fallback ===== */
+(function(){
+"use strict";
+
+const RANKING_FIXO_50 = [{"nome": "José Ademir", "casais": 8, "vendas": 2, "vgv": 185880, "ponto": "Porta dentro do Park"}, {"nome": "Pedro Henrique", "casais": 7, "vendas": 6, "vgv": 512400, "ponto": "Park Dream House"}, {"nome": "Adriano Moreira", "casais": 7, "vendas": 0, "vgv": 0, "ponto": "Porta dentro do Park"}, {"nome": "Paulo Victor", "casais": 6, "vendas": 3, "vgv": 270500, "ponto": "Corredor"}, {"nome": "Mateus Santos", "casais": 6, "vendas": 2, "vgv": 180000, "ponto": "Fábrica Spinassi"}, {"nome": "Ivanilson", "casais": 4, "vendas": 0, "vgv": 0, "ponto": "Park Dream House"}, {"nome": "Jéssica Barbosa", "casais": 4, "vendas": 0, "vgv": 0, "ponto": "Renner"}, {"nome": "João Vitor", "casais": 3, "vendas": 0, "vgv": 0, "ponto": "Fábrica Spinassi"}, {"nome": "Márcio Alfaia", "casais": 3, "vendas": 0, "vgv": 0, "ponto": "Posto Shell"}, {"nome": "Josyene Freitas", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Guarda-chuvas"}, {"nome": "Matheus Domingos", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Baden Baden"}, {"nome": "Renan Marcondes", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Djalma"}, {"nome": "Ana Caroline", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Igreja"}, {"nome": "André Carriço", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Corredor"}, {"nome": "Jonatas França", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Baden Baden"}, {"nome": "Matheus Esley", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Fábrica Spinassi"}, {"nome": "Otávio José", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Renner"}, {"nome": "Ricardo Maltchik", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Djalma"}];
+const PONTOS50=[
+ {nome:'Porta dentro do Park',lat:-22.74075,lng:-45.59225},
+ {nome:'Park Dream House',lat:-22.74050,lng:-45.59205},
+ {nome:'Fábrica Spinassi',lat:-22.73925,lng:-45.59110},
+ {nome:'Corredor',lat:-22.73985,lng:-45.59175},
+ {nome:'Baden Baden',lat:-22.73870,lng:-45.59100},
+ {nome:'Djalma',lat:-22.73815,lng:-45.59050},
+ {nome:'Igreja',lat:-22.73845,lng:-45.59260},
+ {nome:'Renner',lat:-22.73895,lng:-45.59310},
+ {nome:'Guarda-chuvas',lat:-22.74010,lng:-45.59070},
+ {nome:'Posto Shell',lat:-22.74110,lng:-45.59300}
+];
+let MAP50=null, LAYERS50=[];
+
+function el(id){return document.getElementById(id)}
+function html(id,v){if(el(id))el(id).innerHTML=v}
+function text(id,v){if(el(id))el(id).innerText=v}
+function val(id){return (el(id)?.value||'').trim()}
+function esc(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function moeda(v){return 'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function eficiencia(v,c){return c?((Number(v||0)/Number(c||0))*100).toFixed(2).replace('.',',')+'%':'0,00%'}
+function hoje(){return new Date().toISOString().slice(0,10)}
+function minAgo(iso){if(!iso)return 99999;return Math.round((Date.now()-new Date(iso).getTime())/60000)}
+function online(p){return minAgo(p.last_seen||p.updated_at||p.created_at)<5}
+function pontoCoord(nome){const n=norm(nome);return PONTOS50.find(p=>norm(p.nome)===n||norm(p.nome).includes(n)||n.includes(norm(p.nome))) || PONTOS50[0]}
+function rowsOrdenado(){return [...RANKING_FIXO_50].sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv)}
+
+function tabelaRanking50(){
+ const rows=rowsOrdenado();
+ return `<table><tr><th>Pos.</th><th>Profissional</th><th>Casais/Sala</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${
+   rows.map((r,i)=>`<tr><td>${i+1}º</td><td>${esc(r.nome)}</td><td class="casaisFix50">${r.casais}</td><td>${r.vendas}</td><td class="vgvFix50">${moeda(r.vgv)}</td><td>${eficiencia(r.vendas,r.casais)}</td></tr>`).join('')
+ }</table>`;
+}
+function cardsResumo50(){
+ const rows=rowsOrdenado();
+ const c=rows.reduce((s,x)=>s+x.casais,0), v=rows.reduce((s,x)=>s+x.vendas,0), g=rows.reduce((s,x)=>s+x.vgv,0);
+ return `<div class="portalCard36">Casais em Sala<b>${c}</b></div><div class="portalCard36">Vendas<b>${v}</b></div><div class="portalCard36">VGV<b>${moeda(g)}</b></div><div class="portalCard36">Eficiência Geral<b>${eficiencia(v,c)}</b></div>`;
+}
+function tabelaEquipe50(){
+ const rows=rowsOrdenado();
+ return `<table><tr><th>Profissional</th><th>Casais/Sala</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${
+   rows.map(r=>`<tr><td>${esc(r.nome)}</td><td class="casaisFix50">${r.casais}</td><td>${r.vendas}</td><td class="vgvFix50">${moeda(r.vgv)}</td><td>${eficiencia(r.vendas,r.casais)}</td></tr>`).join('')
+ }</table>`;
+}
+function atualizarCasaisCEO50(){
+ const rows=rowsOrdenado();
+ const totalCasais=rows.reduce((s,x)=>s+x.casais,0), totalVendas=rows.reduce((s,x)=>s+x.vendas,0), totalVgv=rows.reduce((s,x)=>s+x.vgv,0);
+ html('portalDashboardClean36',cardsResumo50());
+ text('p30Sala',totalCasais); text('p30Efic',eficiencia(totalVendas,totalCasais));
+ html('portalEquipeBox35',tabelaEquipe50());
+ html('portalRankingBox36',tabelaRanking50());
+ html('ceoDiaResumo44',`<div class="kpi">Casais em Sala<b>${totalCasais}</b></div><div class="kpi">Vendas<b>${totalVendas}</b></div><div class="kpi">VGV<b>${moeda(totalVgv)}</b></div><div class="kpi">Eficiência<b>${eficiencia(totalVendas,totalCasais)}</b></div>`);
+ html('ceoDiaEquipe44',tabelaEquipe50());
+ html('ceoDiaProfissionais44',rows.map(r=>`<div class="ceoProfCard44"><b>${esc(r.nome)}</b><br><small class="mini">📍 ${esc(r.ponto||'-')}</small><div class="ceoProfGrid44"><span>Casais/Sala<strong>${r.casais}</strong></span><span>Vendas<strong>${r.vendas}</strong></span><span>VGV<strong>${moeda(r.vgv)}</strong></span><span>Eficiência<strong>${eficiencia(r.vendas,r.casais)}</strong></span></div></div>`).join(''));
+ if(typeof window.carregarRaking==='function') window.carregarRaking();
+}
+
+window.carregarMapaReal37=function(){
+ const box=el('mapaRealCEO37'); if(!box||!window.L)return;
+ if(!MAP50){
+   MAP50=L.map('mapaRealCEO37').setView([-22.7395,-45.5917],16);
+   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(MAP50);
+ }
+ LAYERS50.forEach(l=>MAP50.removeLayer(l)); LAYERS50=[];
+ const bounds=[];
+ PONTOS50.forEach(p=>{
+   const icon=L.divIcon({className:'',html:`<div class="markerPonto43">📍 ${esc(p.nome)}</div>`,iconSize:[135,28],iconAnchor:[8,14]});
+   const mk=L.marker([p.lat,p.lng],{icon}).addTo(MAP50).bindPopup(`<b>📍 ${esc(p.nome)}</b><br>Ponto de captação`);
+   LAYERS50.push(mk); bounds.push([p.lat,p.lng]);
+ });
+ rowsOrdenado().forEach((r,i)=>{
+   const pc=pontoCoord(r.ponto);
+   const lat=pc.lat+((i%4)-1.5)*0.00010;
+   const lng=pc.lng+(Math.floor(i/4)%4-1.5)*0.00010;
+   const icon=L.divIcon({className:'',html:`<div class="markerProf50"></div>`,iconSize:[20,20],iconAnchor:[10,10]});
+   const mk=L.marker([lat,lng],{icon}).addTo(MAP50).bindPopup(`<div class="nomePopup50"><b>${esc(r.nome)}</b><br>📍 ${esc(r.ponto||pc.nome)}<br>Casais/Sala: <b>${r.casais}</b><br>Vendas: <b>${r.vendas}</b><br>VGV: <b>${moeda(r.vgv)}</b></div>`);
+   LAYERS50.push(mk); bounds.push([lat,lng]);
+ });
+ if(bounds.length) MAP50.fitBounds(bounds,{padding:[25,25],maxZoom:17});
+ setTimeout(()=>MAP50.invalidateSize(),250);
+};
+window.carregarMapaReal39=window.carregarMapaReal37;
+window.carregarMapaReal41=window.carregarMapaReal37;
+window.carregarMapaReal43=window.carregarMapaReal37;
+window.carregarMapaReal45=window.carregarMapaReal37;
+window.carregarMapaReal47=window.carregarMapaReal37;
+
+const oldPortal50=window.abrirPortalBloco30;
+window.abrirPortalBloco30=function(id){
+ const r=oldPortal50?oldPortal50.apply(this,arguments):undefined;
+ setTimeout(()=>{atualizarCasaisCEO50(); if(id==='portalMapa30') window.carregarMapaReal37();},400);
+ return r;
+};
+const oldAba50=window.aba;
+window.aba=function(id,b){
+ const r=oldAba50?oldAba50.apply(this,arguments):undefined;
+ setTimeout(()=>{if(id==='qualificacao'){atualizarCasaisCEO50(); window.carregarMapaReal37();} if(id==='raking' && typeof window.carregarRaking==='function') window.carregarRaking();},600);
+ return r;
+};
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{atualizarCasaisCEO50(); window.carregarMapaReal37();}catch(e){}},1200));
+})();
+</script>
+
+
+<script>
+/* ===== CaptaPro 5.1 • Mapa definitivo funcionando ===== */
+(function(){
+"use strict";
+
+const RANKING_MAPA_51 = [{"nome": "José Ademir", "casais": 8, "vendas": 2, "vgv": 185880, "ponto": "Porta dentro do Park"}, {"nome": "Pedro Henrique", "casais": 7, "vendas": 6, "vgv": 512400, "ponto": "Park Dream House"}, {"nome": "Adriano Moreira", "casais": 7, "vendas": 0, "vgv": 0, "ponto": "Porta dentro do Park"}, {"nome": "Paulo Victor", "casais": 6, "vendas": 3, "vgv": 270500, "ponto": "Corredor"}, {"nome": "Mateus Santos", "casais": 6, "vendas": 2, "vgv": 180000, "ponto": "Fábrica Spinassi"}, {"nome": "Ivanilson", "casais": 4, "vendas": 0, "vgv": 0, "ponto": "Park Dream House"}, {"nome": "Jéssica Barbosa", "casais": 4, "vendas": 0, "vgv": 0, "ponto": "Renner"}, {"nome": "João Vitor", "casais": 3, "vendas": 0, "vgv": 0, "ponto": "Fábrica Spinassi"}, {"nome": "Márcio Alfaia", "casais": 3, "vendas": 0, "vgv": 0, "ponto": "Posto Shell"}, {"nome": "Josyene Freitas", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Guarda-chuvas"}, {"nome": "Matheus Domingos", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Baden Baden"}, {"nome": "Renan Marcondes", "casais": 2, "vendas": 0, "vgv": 0, "ponto": "Djalma"}, {"nome": "Ana Caroline", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Igreja"}, {"nome": "André Carriço", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Corredor"}, {"nome": "Jonatas França", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Baden Baden"}, {"nome": "Matheus Esley", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Fábrica Spinassi"}, {"nome": "Otávio José", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Renner"}, {"nome": "Ricardo Maltchik", "casais": 1, "vendas": 0, "vgv": 0, "ponto": "Djalma"}];
+const PONTOS51=[
+ {nome:'Porta dentro do Park',lat:-22.74075,lng:-45.59225},
+ {nome:'Park Dream House',lat:-22.74050,lng:-45.59205},
+ {nome:'Fábrica Spinassi',lat:-22.73925,lng:-45.59110},
+ {nome:'Corredor',lat:-22.73985,lng:-45.59175},
+ {nome:'Baden Baden',lat:-22.73870,lng:-45.59100},
+ {nome:'Djalma',lat:-22.73815,lng:-45.59050},
+ {nome:'Igreja',lat:-22.73845,lng:-45.59260},
+ {nome:'Renner',lat:-22.73895,lng:-45.59310},
+ {nome:'Guarda-chuvas',lat:-22.74010,lng:-45.59070},
+ {nome:'Posto Shell',lat:-22.74110,lng:-45.59300}
+];
+
+let map51=null, layers51=[];
+function E51(id){return document.getElementById(id)}
+function H51(id,v){if(E51(id))E51(id).innerHTML=v}
+function esc51(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+function norm51(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function moeda51(v){return 'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function ponto51(nome){const n=norm51(nome);return PONTOS51.find(p=>norm51(p.nome)===n||norm51(p.nome).includes(n)||n.includes(norm51(p.nome)))||PONTOS51[0]}
+function rows51(){return [...RANKING_MAPA_51].sort((a,b)=>b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv)}
+
+function mostrarBlocoMapa51(){
+  const blocos=document.querySelectorAll('.portalBloco30');
+  blocos.forEach(b=>b.classList.remove('ativo35'));
+  const mapa=E51('portalMapa30');
+  if(mapa){mapa.classList.add('ativo35');mapa.style.display='block';}
+}
+
+window.carregarMapaReal37=function(){
+  const box=E51('mapaRealCEO37');
+  if(!box){return;}
+  H51('mapaStatus51','Carregando mapa e profissionais...');
+  if(!window.L){
+    H51('mapaStatus51','Leaflet não carregou. Verifique internet do navegador.');
+    return;
+  }
+
+  // Garante que o bloco esteja visível antes de criar o Leaflet
+  const portalMapa=E51('portalMapa30');
+  if(portalMapa){portalMapa.classList.add('ativo35');portalMapa.style.display='block';}
+  box.style.display='block';
+  box.style.height='620px';
+  box.style.minHeight='620px';
+
+  setTimeout(()=>{
+    try{
+      if(!map51){
+        map51=L.map('mapaRealCEO37',{zoomControl:true,attributionControl:true}).setView([-22.7395,-45.5917],16);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+          maxZoom:19,
+          attribution:'© OpenStreetMap'
+        }).addTo(map51);
+      }
+
+      layers51.forEach(l=>{try{map51.removeLayer(l)}catch(e){}});
+      layers51=[];
+      const bounds=[];
+
+      PONTOS51.forEach(p=>{
+        const icon=L.divIcon({
+          className:'',
+          html:`<div class="markerPonto51">📍 ${esc51(p.nome)}</div>`,
+          iconSize:[145,30],
+          iconAnchor:[8,15]
+        });
+        const marker=L.marker([p.lat,p.lng],{icon}).addTo(map51);
+        marker.bindPopup(`<b>📍 ${esc51(p.nome)}</b><br>Ponto de captação`);
+        layers51.push(marker);
+        bounds.push([p.lat,p.lng]);
+      });
+
+      rows51().forEach((r,i)=>{
+        const pc=ponto51(r.ponto);
+        const offsetLat=((i%5)-2)*0.00012;
+        const offsetLng=(Math.floor(i/5)-1.5)*0.00012;
+        const lat=pc.lat+offsetLat;
+        const lng=pc.lng+offsetLng;
+        const icon=L.divIcon({
+          className:'',
+          html:`<div class="markerProf51"></div>`,
+          iconSize:[22,22],
+          iconAnchor:[11,11]
+        });
+        const marker=L.marker([lat,lng],{icon}).addTo(map51);
+        marker.bindPopup(`<b>${esc51(r.nome)}</b><br>📍 ${esc51(r.ponto||pc.nome)}<br>Casais/Sala: <b>${r.casais}</b><br>Vendas: <b>${r.vendas}</b><br>VGV: <b>${moeda51(r.vgv)}</b>`);
+        layers51.push(marker);
+        bounds.push([lat,lng]);
+      });
+
+      if(bounds.length){
+        map51.fitBounds(bounds,{padding:[30,30],maxZoom:17});
+      }
+      setTimeout(()=>{try{map51.invalidateSize(true)}catch(e){}},200);
+      setTimeout(()=>{try{map51.invalidateSize(true)}catch(e){}},800);
+      H51('mapaStatus51',`Mapa carregado: ${PONTOS51.length} pontos e ${RANKING_MAPA_51.length} profissionais.`);
+    }catch(err){
+      H51('mapaStatus51','Erro ao carregar mapa: '+err.message);
+      console.error(err);
+    }
+  },350);
+};
+
+window.carregarMapaReal39=window.carregarMapaReal37;
+window.carregarMapaReal41=window.carregarMapaReal37;
+window.carregarMapaReal43=window.carregarMapaReal37;
+window.carregarMapaReal45=window.carregarMapaReal37;
+window.carregarMapaReal47=window.carregarMapaReal37;
+
+const oldAbrir51=window.abrirPortalBloco30;
+window.abrirPortalBloco30=function(id){
+  if(oldAbrir51){oldAbrir51.apply(this,arguments);}
+  if(id==='portalMapa30'){
+    mostrarBlocoMapa51();
+    setTimeout(window.carregarMapaReal37,500);
+    setTimeout(window.carregarMapaReal37,1400);
+  }
+};
+
+const oldAba51=window.aba;
+window.aba=function(id,b){
+  const r=oldAba51?oldAba51.apply(this,arguments):undefined;
+  if(id==='qualificacao'){
+    setTimeout(()=>{try{window.abrirPortalBloco30('portalDashboard30')}catch(e){}},300);
+  }
+  return r;
+};
+
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{try{if(E51('portalMapa30')?.classList.contains('ativo35')) window.carregarMapaReal37()}catch(e){}},1200);
+});
+})();
+</script>
+
+
+<!-- ===== CAPTAPRO 5.4 • RESTAURADO: FICHA ANTIGA + MAPA ANTIGO + RELATÓRIOS MANTIDOS ===== -->
+<style id="capta54-style">
+.version{font-size:0!important}.version:after{content:'Versão 5.4 PRO';font-size:12px}
+#diario.capta54Meu{border-color:#00c2ff}
+.capta54Hero{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin:10px 0 14px}
+.capta54Box{background:linear-gradient(145deg,#120000,#070707);border:1px solid #4b1515;border-radius:22px;padding:18px;box-shadow:0 0 16px rgba(239,27,36,.12)}
+.capta54Box h3{margin:0;color:#fff;font-size:22px}.capta54Box p{margin:8px 0 0;color:#aaa;font-size:13px;line-height:1.4}
+.capta54Grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.capta54Card{background:#151515;border:1px solid #2d2d2d;border-radius:18px;padding:14px;text-align:center;min-height:95px}.capta54Card span{display:block;color:#aaa;text-transform:uppercase;font-size:11px;font-weight:900;letter-spacing:.3px}.capta54Card b{display:block;color:#ff3333;font-size:30px;margin-top:7px;line-height:1.05}.capta54Card.green b{color:#00e676}.capta54Card.blue b{color:#00c2ff}.capta54Card.yellow b{color:#ffd54f}.capta54Card small{display:block;color:#888;margin-top:4px;font-weight:800}
+.capta54Section{background:#0b0b0b;border:1px solid #2d2d2d;border-radius:20px;padding:14px;margin:12px 0}.capta54Section h3{margin:0 0 10px;font-size:20px;border-left:4px solid #ef1b24;padding-left:10px}.capta54Top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.capta54Pill{display:inline-block;border-radius:999px;padding:7px 10px;background:#061d10;border:1px solid #00e676;color:#00e676;font-weight:900;font-size:12px}.capta54Bar{height:18px;background:#222;border:1px solid #333;border-radius:999px;overflow:hidden;margin-top:10px}.capta54Fill{height:100%;background:linear-gradient(135deg,#00a651,#00e676);border-radius:999px;width:0%}
+.capta54Ficha{background:linear-gradient(145deg,#111,#080808);border:1px solid #303030;border-radius:16px;padding:12px;margin:8px 0}.capta54Ficha.sala{border-color:#00e676;background:linear-gradient(145deg,#061d10,#080808)}.capta54Ficha b{font-size:16px}.capta54Ficha small{display:block;color:#aaa;margin-top:4px}.capta54Tag{display:inline-block;margin:6px 6px 0 0;padding:5px 8px;border-radius:999px;background:#181818;border:1px solid #333;color:#ccc;font-size:11px;font-weight:900}.capta54Tag.q{border-color:#00e676;color:#00e676}.capta54Tag.nq{border-color:#ff5252;color:#ff8585}.capta54Tag.sala{border-color:#00c2ff;color:#00c2ff}.capta54Empty{text-align:center;color:#777;padding:18px;border:1px dashed #333;border-radius:16px;background:#090909}.capta54Table{width:100%;border-collapse:collapse;font-size:13px;min-width:760px}.capta54Table th{color:#ff7777;text-transform:uppercase;font-size:11px}.capta54Table th,.capta54Table td{border-bottom:1px solid #252525;padding:9px;text-align:left}.capta54Table .money{color:#00e676;font-weight:900}.capta54Table .pos{color:#ffd54f;font-weight:900}.rank54Top1{background:linear-gradient(90deg,rgba(255,213,79,.15),transparent)}.rank54Top2{background:linear-gradient(90deg,rgba(207,216,220,.10),transparent)}.rank54Top3{background:linear-gradient(90deg,rgba(215,163,106,.10),transparent)}
+.rank54Resumo{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 12px}.rank54Resumo div{background:#151515;border:1px solid #333;border-radius:18px;padding:14px;text-align:center}.rank54Resumo span{display:block;color:#aaa;text-transform:uppercase;font-size:12px;font-weight:900}.rank54Resumo b{display:block;color:#00e676;font-size:28px;margin-top:6px}.rank54Tools{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}
+.sx54Hero{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}.sx54Box{background:linear-gradient(135deg,#111,#220606);border:1px solid #4b1515;border-radius:18px;padding:16px;text-align:center}.sx54Box span{display:block;color:#aaa;font-size:12px;text-transform:uppercase;font-weight:900}.sx54Box b{display:block;color:#00e676;font-size:34px;margin:6px 0}.sx54Loja{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sx54Premio{background:#101010;border:1px solid #333;border-radius:16px;padding:12px}.sx54Premio h4{margin:0 0 5px;color:#fff}.sx54Premio p{margin:0;color:#aaa;font-size:12px}.modal54{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:10000;display:flex;align-items:center;justify-content:center;padding:16px}.modal54.hidden{display:none!important}.modal54Box{background:#101010;border:1px solid #5a1717;border-radius:20px;padding:16px;max-width:780px;width:100%;max-height:88vh;overflow:auto;box-shadow:0 0 30px rgba(239,27,36,.22)}.modal54Grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.modal54Campo{background:#080808;border:1px solid #2d2d2d;border-radius:12px;padding:10px}.modal54Campo small{display:block;color:#ff7777;font-size:10px;text-transform:uppercase;font-weight:900;margin-bottom:4px}.modal54Campo b{word-break:break-word;color:#fff}
+.mapAviso54{background:#061d10;border:1px solid #00e676;color:#00e676;border-radius:12px;padding:10px;margin:8px 0;font-weight:900;font-size:13px}.markerPonto54{background:#00c2ff;color:#001;border:3px solid #fff;border-radius:999px;padding:6px 10px;font-weight:900;font-size:12px;box-shadow:0 0 18px #00c2ff;white-space:nowrap}.markerProf54{width:22px;height:22px;border-radius:50%;border:4px solid #fff;background:#00e676;box-shadow:0 0 0 8px rgba(0,230,118,.22),0 0 18px #00e676}.markerProf54.off{background:#ff3333;box-shadow:0 0 0 8px rgba(255,51,51,.18),0 0 18px #ff3333}
+@media(max-width:700px){.capta54Hero,.sx54Hero,.sx54Loja{grid-template-columns:1fr}.capta54Grid,.rank54Resumo,.rank54Tools{grid-template-columns:1fr 1fr}.modal54Grid{grid-template-columns:1fr}.capta54Card b{font-size:25px}.tabs{grid-template-columns:1fr!important}body.ceo .tabs{grid-template-columns:1fr!important}}
+</style>
+<script id="capta54-script">
+(function(){
+'use strict';
+const RANK54=[
+ {nome:'Pedro Henrique',casais:13,vendas:6,vgv:512400,ponto:'Park Dream House'},
+ {nome:'José Ademir',casais:12,vendas:2,vgv:185880,ponto:'Porta dentro do Park'},
+ {nome:'Paulo Victor',casais:10,vendas:3,vgv:270500,ponto:'Corredor'},
  {nome:'Adriano Moreira',casais:8,vendas:0,vgv:0,ponto:'Porta dentro do Park'},
- {nome:'Jéssica Barbosa',casais:7,vendas:0,vgv:0,ponto:'Park Dream House'},
- {nome:'Mateus Santos',casais:6,vendas:2,vgv:180000,ponto:'Porta dentro do Park'},
- {nome:'Ivanilson',casais:6,vendas:1,vgv:70000,ponto:'Guarda-chuvas'},
- {nome:'Matheus Domingos',casais:4,vendas:0,vgv:0,ponto:'Corredor'},
- {nome:'João Vitor',casais:3,vendas:0,vgv:0,ponto:'Igreja'},
- {nome:'Josyene Freitas',casais:3,vendas:0,vgv:0,ponto:'Park Dream House'},
- {nome:'Márcio Alfaia',casais:3,vendas:0,vgv:0,ponto:'Fábrica Spinassi'},
- {nome:'Renan Marcondes',casais:3,vendas:0,vgv:0,ponto:'Baden Baden'},
- {nome:'Ana Caroline',casais:2,vendas:4,vgv:380000,ponto:'Renner'},
+ {nome:'Jéssica Barbosa',casais:7,vendas:0,vgv:0,ponto:'Renner'},
+ {nome:'Mateus Santos',casais:6,vendas:2,vgv:180000,ponto:'Fábrica Spinassi'},
+ {nome:'Ivanilson',casais:6,vendas:1,vgv:70000,ponto:'Park Dream House'},
+ {nome:'Matheus Domingos',casais:4,vendas:0,vgv:0,ponto:'Baden Baden'},
+ {nome:'João Vitor',casais:3,vendas:0,vgv:0,ponto:'Fábrica Spinassi'},
+ {nome:'Josyene Freitas',casais:3,vendas:0,vgv:0,ponto:'Guarda-chuvas'},
+ {nome:'Márcio Alfaia',casais:3,vendas:0,vgv:0,ponto:'Posto Shell'},
+ {nome:'Renan Marcondes',casais:3,vendas:0,vgv:0,ponto:'Djalma'},
+ {nome:'Ana Caroline',casais:2,vendas:4,vgv:380000,ponto:'Igreja'},
  {nome:'André Carriço',casais:2,vendas:0,vgv:0,ponto:'Corredor'},
- {nome:'Felipe Ribeiro',casais:1,vendas:0,vgv:0,ponto:'Djalma'},
+ {nome:'Felipe Ribeiro',casais:1,vendas:0,vgv:0,ponto:'Baden Baden'},
  {nome:'Jonatas França',casais:1,vendas:0,vgv:0,ponto:'Baden Baden'},
  {nome:'Manara Alexandre',casais:1,vendas:0,vgv:0,ponto:'Guarda-chuvas'},
  {nome:'Matheus Esley',casais:1,vendas:0,vgv:0,ponto:'Fábrica Spinassi'},
- {nome:'Otávio José',casais:1,vendas:0,vgv:0,ponto:'Guarda-chuvas'},
- {nome:'Ricardo Maltchik',casais:1,vendas:0,vgv:0,ponto:'Renner'}
+ {nome:'Otávio José',casais:1,vendas:0,vgv:0,ponto:'Renner'},
+ {nome:'Ricardo Maltchik',casais:1,vendas:0,vgv:0,ponto:'Djalma'}
 ];
-const PONTOS=['Porta dentro do Park','Park Dream House','Fábrica Spinassi','Corredor','Baden Baden','Djalma','Igreja','Renner','Guarda-chuvas','Posto Shell'];
-let usuario={email:'',nome:'',ceo:false};
-const $=id=>document.getElementById(id); const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
-function money(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-function pct(a,b){return b?((a/b)*100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%':'0,00%'}
-function today(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
-function parseMoney(v){return Number(String(v||'').replace(/\D/g,''))||0}
-function getFichas(){try{return JSON.parse(localStorage.getItem('captapro_fichas_53')||'[]')}catch(e){return []}}
-function setFichas(a){localStorage.setItem('captapro_fichas_53',JSON.stringify(a))}
-function getAbord(){try{return JSON.parse(localStorage.getItem('captapro_abord_53')||'[]')}catch(e){return []}}
-function setAbord(a){localStorage.setItem('captapro_abord_53',JSON.stringify(a))}
-function getDesafios(){try{return JSON.parse(localStorage.getItem('captapro_desafios_53')||'[]')}catch(e){return []}}
-function setDesafios(a){localStorage.setItem('captapro_desafios_53',JSON.stringify(a))}
-function isCEO(){return usuario.ceo||document.body.classList.contains('ceo')}
-function entrar(){const email=$('email').value.trim().toLowerCase(), nome=$('nome').value.trim()||email;if(!email){$('loginMsg').innerHTML='<span class="danger">Informe o e-mail.</span>';return}usuario={email,nome,ceo:CEOS.includes(email)||norm(nome).includes('raphael')};localStorage.setItem('captapro_login_53',JSON.stringify(usuario));document.body.classList.toggle('ceo',usuario.ceo);$('loginBox').classList.add('hidden');$('app').classList.remove('hidden');$('btnSair').classList.remove('hidden');renderAll();showTab('pesquisa',document.querySelector('[data-tab="pesquisa"]'))}
-function sair(){localStorage.removeItem('captapro_login_53');location.reload()}
-(function(){try{const u=JSON.parse(localStorage.getItem('captapro_login_53')||'null');if(u){usuario=u;$('email').value=u.email||'';$('nome').value=u.nome||'';setTimeout(entrar,150)}}catch(e){}})();
-function showTab(id,btn){document.querySelectorAll('.tabContent').forEach(x=>x.classList.add('hidden'));$(id)?.classList.remove('hidden');document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));btn?.classList.add('active');renderTab(id);window.scrollTo({top:0,behavior:'smooth'})}
-function renderAll(){['pesquisa','profissional','relatorio','ranking','arena','ceo'].forEach(renderTab)}
-function renderTab(id){if(id==='pesquisa')renderPesquisa();if(id==='profissional')renderProfissional();if(id==='relatorio')renderRelatorio();if(id==='ranking')renderRanking();if(id==='arena')renderArena();if(id==='ceo')renderCEO()}
-function opt(arr){return arr.map(x=>`<option>${esc(x)}</option>`).join('')}
-function renderPesquisa(){const box=$('pesquisa');box.innerHTML=`<h2>Pesquisa</h2><p class="hint">Ficha limpa: salvar, consultar depois e marcar casal em sala.</p><div class="section"><button class="main" style="width:100%;min-height:58px;font-size:18px" onclick="registrarAbordagem()">+ Registrar abordagem</button><p class="mini">Abordagens de hoje: <b class="ok" id="abHoje">${abordHoje().length}</b></p></div><div class="grid"><select id="equipe"><option value="">1. Equipe</option><option>PARK</option><option>EXTERNA</option></select><select id="ponto"><option value="">2. Ponto de captação</option>${opt(PONTOS)}</select></div><div class="section"><h3>3. Pessoa 1</h3><div class="grid3"><input id="nome1" placeholder="Nome"><input id="idade1" inputmode="numeric" placeholder="Idade"><input id="profissao1" placeholder="Profissão"></div></div><div class="section"><h3>4. Pessoa 2</h3><div class="grid3"><input id="nome2" placeholder="Nome"><input id="idade2" inputmode="numeric" placeholder="Idade"><input id="profissao2" placeholder="Profissão"></div></div><div class="grid"><select id="estado"><option value="">Estado</option><option>SP</option><option>RJ</option><option>MG</option><option>PR</option><option>SC</option><option>RS</option><option>GO</option><option>DF</option><option>BA</option><option>ES</option></select><input id="cidade" placeholder="Cidade"><select id="relacionamento"><option value="">Relacionamento</option><option>Casados</option><option>União estável</option><option>Namorados</option><option>Noivos</option><option>Solteiro</option></select><select id="tempo"><option value="">Tempo juntos</option><option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option><option>3 anos</option><option>4 anos</option><option>5 anos</option><option>Mais de 5 anos</option><option>Mais de 10 anos</option></select><input id="carro" placeholder="Carro. Ex: Onix"><input id="ano" inputmode="numeric" placeholder="Ano do carro. Ex: 2015"><select id="casa"><option value="">Casa própria?</option><option>Sim</option><option>Não</option></select><select id="cartao"><option value="">Cartão de crédito?</option><option>Sim</option><option>Não</option></select><input id="renda" inputmode="numeric" placeholder="Renda bruta do casal. Ex: 15000"><select id="multi"><option value="">Já conheceu multipropriedade?</option><option>Sim</option><option>Não</option></select><select id="brinde"><option value="">Selecione a cortesia</option><option>2 Museu de Cera</option><option>2 Mini Mundo</option><option>2 Vale dos Dinossauros</option><option>2 Terror</option><option>4 Espelho do Jordão</option><option>Rostie - R$ 120 consumo</option><option>Vemaguet - R$ 120 consumo</option><option>Armazém Brasil - R$ 120 consumo</option><option>Combustível - R$ 120 consumo</option><option>Chocolate Spinassi - R$ 120 consumo</option><option>Loja Parque R$ 150</option></select><input id="contato" placeholder="WhatsApp / contato"></div><textarea id="obs" style="margin-top:9px" placeholder="Observações"></textarea><div class="grid" style="margin-top:10px"><button class="main" onclick="salvarFicha(false)">Salvar ficha</button><button class="main green" onclick="salvarFicha(true)">Salvar + Casal em Sala</button></div><p id="formMsg" class="mini"></p><div id="fichaSalvaBox"></div>`}
-function registrarAbordagem(){const a=getAbord();a.push({id:Date.now(),email:usuario.email,nome:usuario.nome,data:today(),created_at:new Date().toISOString()});setAbord(a);$('abHoje')&&($('abHoje').textContent=abordHoje().length);renderProfissional();$('formMsg').innerHTML='<span class="ok">Abordagem registrada.</span>'}
-function abordHoje(){return getAbord().filter(x=>x.email===usuario.email&&x.data===today())}
-function qualificar(f){let erros=[];const renda=parseMoney(f.renda);const idade=Math.max(Number(f.idade1)||0,Number(f.idade2)||0);if(!f.nome1||!f.nome2)erros.push('nomes');if(idade<25||idade>64)erros.push('idade');if(renda<15000)erros.push('renda');if(f.casa!=='Sim')erros.push('casa');if(f.cartao!=='Sim')erros.push('cartão');if(!f.profissao1&&!f.profissao2)erros.push('profissão');return {status:erros.length===0?'Q':erros.length===1?'NQ 1 Item':'NQ',motivo:erros.length?erros.join(', '):'Dentro do perfil'}}
-function salvarFicha(sala){const f={id:Date.now(),email:usuario.email,captador:usuario.nome,equipe:$('equipe').value,ponto:$('ponto').value,nome1:$('nome1').value,idade1:$('idade1').value,profissao1:$('profissao1').value,nome2:$('nome2').value,idade2:$('idade2').value,profissao2:$('profissao2').value,estado:$('estado').value,cidade:$('cidade').value,relacionamento:$('relacionamento').value,tempo:$('tempo').value,carro:$('carro').value,ano:$('ano').value,casa:$('casa').value,cartao:$('cartao').value,renda:$('renda').value,multi:$('multi').value,brinde:$('brinde').value,contato:$('contato').value,obs:$('obs').value,sala:!!sala,data:today(),created_at:new Date().toISOString()};const q=qualificar(f);f.status=q.status;f.motivo=q.motivo;const arr=getFichas();arr.unshift(f);setFichas(arr);$('formMsg').innerHTML=`<span class="ok">Ficha salva.</span> <span class="tag ${q.status==='Q'?'q':'nq'}">${q.status}</span> ${sala?'<span class="tag sala">Sala</span>':''}`;$('fichaSalvaBox').innerHTML=`<div class="section"><h3>Ficha salva</h3>${fichaResumo(f,0,false)}<div class="grid"><button class="secondary" onclick="verFicha(${f.id})">Ver ficha completa</button><button class="main" onclick="renderPesquisa()">Nova pesquisa</button></div></div>`;renderAll()}
-function meusDados(){const f=getFichas().filter(x=>x.email===usuario.email||norm(x.captador)===norm(usuario.nome));const a=getAbord().filter(x=>x.email===usuario.email);return {f,a}}
-function stats(f,a){const hoje=f.filter(x=>x.data===today());return {abord:a.filter(x=>x.data===today()).length,pesq:hoje.length,q:hoje.filter(x=>x.status==='Q').length,nq:hoje.filter(x=>String(x.status).startsWith('NQ')&&!String(x.status).includes('1')).length,nq1:hoje.filter(x=>String(x.status).includes('1')).length,sala:hoje.filter(x=>x.sala).length}}
-function card(t,v,c=''){return `<div class="kpi ${c}"><span>${t}</span><b>${v}</b></div>`}
-function rowRank(nome=usuario.nome){return RANKING_JULHO.find(r=>norm(r.nome)===norm(nome))}
-function renderProfissional(){const box=$('profissional');if(!box)return;const {f,a}=meusDados();const s=stats(f,a);const r=rowRank();const casais=r?r.casais:f.filter(x=>x.sala).length;const meta=35;const perc=Math.min(100,Math.round((casais/meta)*100));const faltam=Math.max(0,meta-casais);box.innerHTML=`<h2>Meu Profissional</h2><div class="grid"><div class="section"><h3>${esc(usuario.nome)}</h3><p class="hint">Área limpa para acompanhar resultado e encontrar fichas depois de feitas.</p></div><div class="section"><h3 class="ok">${casais} casais em sala</h3><p class="hint">Meta mensal: ${meta}. Faltam ${faltam} casais • ${perc}%</p><div class="bar"><div class="fill" style="width:${perc}%"></div></div></div></div><div class="section"><h3>Resultado de Hoje</h3><div class="grid4">${card('Abordagens',s.abord,'blue')}${card('Pesquisas',s.pesq)}${card('Q',s.q,'green')}${card('NQ',s.nq,'yellow')}${card('1 Item',s.nq1,'yellow')}${card('Sala',s.sala,'green')}${card('Conv. sala',pct(s.sala,s.pesq),'blue')}${card('Eficiência Q',pct(s.q,s.pesq),'blue')}</div></div><div class="section"><h3>Resultado Julho</h3><div class="grid4">${card('Casais',r?r.casais:casais,'green')}${card('Vendas',r?r.vendas:0,'green')}${card('VGV',r?money(r.vgv):money(0),'green')}${card('Eficiência',r?pct(r.vendas,r.casais):'0,00%','blue')}</div></div><div class="section"><div class="fichaTop"><h3>Minhas fichas guardadas</h3><span class="tag q">${f.length} fichas salvas</span></div><div class="grid"><input id="buscaProf" placeholder="Buscar por nome, cidade, telefone ou cortesia" oninput="filtrarProf()"><select id="filtroProf" onchange="filtrarProf()"><option value="todas">Todas</option><option value="hoje">Hoje</option><option value="sala">Sala</option><option value="q">Q</option><option value="nq">NQ</option></select></div><div id="listaProf"></div></div>`;filtrarProf()}
-function fichaResumo(f,i,acoes=true){return `<div class="fichaItem ${f.sala?'sala':''}"><div class="fichaTop"><div><b>${esc(f.nome1||'Pessoa 1')} + ${esc(f.nome2||'Pessoa 2')}</b><small>${esc(f.cidade||'-')} • ${esc(f.contato||'sem contato')} • ${new Date(f.created_at).toLocaleString('pt-BR')}</small></div><div><span class="tag ${f.status==='Q'?'q':'nq'}">${esc(f.status)}</span>${f.sala?'<span class="tag sala">Sala</span>':''}</div></div><span class="tag">${esc(f.captador)}</span><span class="tag">${esc(f.ponto||'sem ponto')}</span><span class="tag">${esc(f.brinde||'sem cortesia')}</span>${acoes?`<div class="grid" style="margin-top:8px"><button class="secondary" onclick="verFicha(${f.id})">Ver ficha completa</button><button class="secondary" onclick="toggleSala(${f.id})">${f.sala?'Remover sala':'Marcar sala'}</button></div>`:''}</div>`}
-function filtrarLista(fichas,buscaId,filtroId,boxId){const busca=norm($(buscaId)?.value||''), filtro=$(filtroId)?.value||'todas';let out=fichas.filter(f=>!busca||norm(JSON.stringify(f)).includes(busca));if(filtro==='hoje')out=out.filter(f=>f.data===today());if(filtro==='sala')out=out.filter(f=>f.sala);if(filtro==='q')out=out.filter(f=>f.status==='Q');if(filtro==='nq')out=out.filter(f=>String(f.status).startsWith('NQ'));$(boxId).innerHTML=out.length?out.map((f,i)=>fichaResumo(f,i,true)).join(''):'<div class="empty">Nenhuma ficha encontrada.</div>'}
-function filtrarProf(){filtrarLista(meusDados().f,'buscaProf','filtroProf','listaProf')}
-function renderRelatorio(){const box=$('relatorio');if(!isCEO()){box.innerHTML='<h2>Relatório</h2><div class="empty">Essa aba fica liberada para CEO. Seu resultado está na aba Meu Profissional.</div>';return}const f=getFichas(),a=getAbord(),s=stats(f,a);box.innerHTML=`<h2>Relatório do Dia</h2><p class="hint">Aba limpa para leitura do dia. Ranking mensal fica somente na aba Ranking.</p><div class="grid4">${card('Abordagens',s.abord,'blue')}${card('Pesquisas',s.pesq)}${card('Q',s.q,'green')}${card('NQ',s.nq,'yellow')}${card('1 Item',s.nq1,'yellow')}${card('Sala',s.sala,'green')}${card('Conv. sala',pct(s.sala,s.pesq),'blue')}${card('Eficiência Q',pct(s.q,s.pesq),'blue')}</div><div class="section"><div class="fichaTop"><h3>Fichas recentes da operação</h3><span class="tag">${f.length} fichas no arquivo</span></div><div class="grid"><input id="buscaCEO" placeholder="Buscar ficha da operação" oninput="filtrarCEO()"><select id="filtroCEO" onchange="filtrarCEO()"><option value="hoje">Hoje</option><option value="todas">Todas</option><option value="sala">Sala</option><option value="q">Q</option><option value="nq">NQ</option></select></div><div id="listaCEO"></div></div>`;filtrarCEO()}
-function filtrarCEO(){filtrarLista(getFichas(),'buscaCEO','filtroCEO','listaCEO')}
-function totalRank(){return RANKING_JULHO.reduce((t,r)=>({casais:t.casais+r.casais,vendas:t.vendas+r.vendas,vgv:t.vgv+r.vgv}),{casais:0,vendas:0,vgv:0})}
-function renderRanking(){const t=totalRank();$('ranking').innerHTML=`<h2>Ranking de Captação — Julho</h2><p class="hint">Resultado oficial de julho que você enviou.</p><div class="grid"><select><option>Julho 2026</option></select><button class="main" onclick="exportRanking()">Exportar CSV</button></div><div class="rankHead"><div><span>Total geral</span><b>${t.casais} casais</b></div><div><span>Vendas</span><b>${t.vendas}</b></div><div><span>VGV Geral</span><b>${money(t.vgv)}</b></div></div><div class="tableWrap"><table class="table"><tr><th>Pos.</th><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${RANKING_JULHO.map((r,i)=>`<tr><td class="pos">${i+1}º</td><td><b>${esc(r.nome)}</b></td><td class="ok">${r.casais}</td><td>${r.vendas}</td><td class="money">${money(r.vgv)}</td><td>${pct(r.vendas,r.casais)}</td></tr>`).join('')}<tr><th>Total</th><th>Geral</th><th>${t.casais}</th><th>${t.vendas}</th><th class="money">${money(t.vgv)}</th><th>${pct(t.vendas,t.casais)}</th></tr></table></div>`}
-function sxSaldo(nome){const r=RANKING_JULHO.find(x=>norm(x.nome)===norm(nome));return r?(r.casais*100+r.vendas*1000+Math.round(r.vgv/10000)):0}
-function renderArena(){const d=getDesafios(),nome=usuario.nome,saldo=sxSaldo(nome),nivel=saldo>=5000?'Elite':saldo>=2500?'Avançado':saldo>=1000?'Pro':'Iniciante',prox=nivel==='Iniciante'?1000:nivel==='Pro'?2500:nivel==='Avançado'?5000:saldo,p=Math.min(100,Math.round((saldo/prox)*100));const opts=RANKING_JULHO.filter(r=>norm(r.nome)!==norm(nome)).map(r=>`<option>${esc(r.nome)}</option>`).join('');const meus=d.filter(x=>norm(x.desafiante)===norm(nome)||norm(x.adversario)===norm(nome));$('arena').innerHTML=`<h2>Arena SX</h2><p class="hint">Arena organizada: escolha adversário, aposte SX e acompanhe desafios.</p><div class="grid4">${card('Meu SX Coin',saldo,'green')}${card('Meu nível',nivel,'blue')}${card('Próximo nível',prox,'yellow')}${card('Ranking base','Julho')}</div><div class="section"><h3>Evolução</h3><div class="bar"><div class="fill" style="width:${p}%"></div></div><p class="hint">${p}% do nível atual.</p></div><div class="section"><h3>Criar desafio</h3><div class="grid"><input value="${esc(nome)}" readonly><select id="adv"><option value="">Escolha o adversário</option>${opts}</select><input id="aposta" inputmode="numeric" placeholder="Aposta SX. Ex: 100"><select id="criterio"><option value="casais">Mais casais</option><option value="vendas">Mais vendas</option><option value="vgv">Maior VGV</option><option value="q">Mais Q</option><option value="sala">Mais sala</option></select></div><button class="main" style="margin-top:8px;width:100%" onclick="criarDesafio()">Criar desafio</button><p id="sxMsg" class="mini"></p></div><div class="section"><h3>Meus desafios</h3><div>${meus.length?meus.map(desafioCard).join(''):'<div class="empty">Você ainda não tem desafios.</div>'}</div></div><div class="section"><h3>Como pontua</h3><div class="grid4">${card('Pesquisa','+10','blue')}${card('Q','+100','green')}${card('Sala','+300','green')}${card('Venda','+1000','yellow')}</div></div>${isCEO()?`<div class="section"><h3>CEO • Definir vencedor</h3>${d.length?d.map(desafioCardCEO).join(''):'<div class="empty">Sem desafios criados.</div>'}</div>`:''}`}
-function desafioCard(x){return `<div class="fichaItem"><b>${esc(x.desafiante)} x ${esc(x.adversario)}</b><small>${esc(x.criterio)} • ${x.aposta} SX • ${esc(x.status)}</small>${x.vencedor?`<span class="tag q">Vencedor: ${esc(x.vencedor)}</span>`:'<span class="tag">Aguardando CEO</span>'}</div>`}
-function desafioCardCEO(x){return `<div class="fichaItem"><b>${esc(x.desafiante)} x ${esc(x.adversario)}</b><small>${esc(x.criterio)} • ${x.aposta} SX • ${esc(x.status)}</small><div class="grid" style="margin-top:8px"><button class="main" onclick="vencedor(${x.id},'${esc(x.desafiante)}')">${esc(x.desafiante)}</button><button class="secondary" onclick="vencedor(${x.id},'${esc(x.adversario)}')">${esc(x.adversario)}</button></div></div>`}
-function criarDesafio(){const adv=$('adv').value,aposta=Number($('aposta').value)||0,criterio=$('criterio').value;if(!adv){$('sxMsg').innerHTML='<span class="danger">Escolha um adversário.</span>';return}if(aposta<=0){$('sxMsg').innerHTML='<span class="danger">Informe a aposta.</span>';return}const d=getDesafios();d.unshift({id:Date.now(),desafiante:usuario.nome,adversario:adv,aposta,criterio,status:'Pendente',vencedor:'',created_at:new Date().toISOString()});setDesafios(d);renderArena()}
-function vencedor(id,nome){const d=getDesafios();const i=d.findIndex(x=>x.id===id);if(i>=0){d[i].status='Finalizado';d[i].vencedor=nome;setDesafios(d);renderArena()}}
-function renderCEO(){const t=totalRank();$('ceo').innerHTML=`<h2>Portal CEO</h2><p class="hint">Central simplificada. Só ficou o que funciona.</p><div class="ceoMenu"><button class="active" onclick="openCEO('dash',this)">📊 Dashboard</button><button onclick="openCEO('equipe',this)">👥 Equipe</button><button onclick="openCEO('fichas',this)">📋 Fichas</button><button onclick="openCEO('mapa',this)">📍 Mapa</button><button onclick="openCEO('salas',this)">✅ Salas</button><button onclick="openCEO('arenaCEO',this)">🎮 Arena SX</button><button onclick="openCEO('admin',this)">⚙️ Administração</button></div><div id="dash" class="ceoBlock active section"><h3>Dashboard Julho</h3><div class="grid4">${card('Casais',t.casais,'green')}${card('Vendas',t.vendas,'green')}${card('VGV',money(t.vgv),'green')}${card('Eficiência',pct(t.vendas,t.casais),'blue')}</div></div><div id="equipe" class="ceoBlock section"><h3>Equipe</h3><div class="tableWrap"><table class="table"><tr><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Ef.</th></tr>${RANKING_JULHO.map(r=>`<tr><td>${esc(r.nome)}</td><td>${r.casais}</td><td>${r.vendas}</td><td class="money">${money(r.vgv)}</td><td>${pct(r.vendas,r.casais)}</td></tr>`).join('')}</table></div></div><div id="fichas" class="ceoBlock section"><h3>Fichas guardadas</h3><div id="ceoFichasBox">${getFichas().length?getFichas().map(f=>fichaResumo(f,0,true)).join(''):'<div class="empty">Sem fichas salvas.</div>'}</div></div><div id="mapa" class="ceoBlock section"><h3>Mapa da Operação</h3>${renderMapa()}</div><div id="salas" class="ceoBlock section"><h3>Salas confirmadas</h3>${getFichas().filter(x=>x.sala).length?getFichas().filter(x=>x.sala).map(f=>fichaResumo(f,0,true)).join(''):'<div class="empty">Nenhum casal em sala confirmado.</div>'}</div><div id="arenaCEO" class="ceoBlock section"><h3>Arena SX</h3><button class="main" onclick="showTab('arena',document.querySelector('[data-tab=arena]'))">Abrir Arena SX</button></div><div id="admin" class="ceoBlock section"><h3>Administração</h3><p class="hint">Área limpa para evitar botão quebrado. Próximo passo: ligar regras no Supabase.</p><button class="secondary" onclick="exportFichas()">Exportar fichas CSV</button></div>`}
-function openCEO(id,btn){document.querySelectorAll('.ceoBlock').forEach(x=>x.classList.remove('active'));$(id)?.classList.add('active');document.querySelectorAll('.ceoMenu button').forEach(x=>x.classList.remove('active'));btn?.classList.add('active')}
-function renderMapa(){return `<div class="mapGrid">${PONTOS.map(p=>{const profs=RANKING_JULHO.filter(r=>r.ponto===p);return `<div class="pontoCard"><h4>📍 ${esc(p)}</h4>${profs.length?profs.map(r=>`<span class="profDot">${esc(r.nome)} • ${r.casais} casais</span>`).join(''):'<span class="mini">Sem profissional no ranking.</span>'}</div>`}).join('')}</div><p class="hint">Mapa operacional por ponto. GPS real entra na próxima etapa com Supabase/localização.</p>`}
-function verFicha(id){const f=getFichas().find(x=>x.id===id);if(!f)return;const campos=[['Captador',f.captador],['Equipe',f.equipe],['Ponto',f.ponto],['Pessoa 1',`${f.nome1} • ${f.idade1} • ${f.profissao1}`],['Pessoa 2',`${f.nome2} • ${f.idade2} • ${f.profissao2}`],['Cidade/Estado',`${f.cidade}/${f.estado}`],['Relacionamento',`${f.relacionamento} • ${f.tempo}`],['Carro',`${f.carro} • ${f.ano}`],['Casa',f.casa],['Cartão',f.cartao],['Renda',f.renda],['Multipropriedade',f.multi],['Cortesia',f.brinde],['Contato',f.contato],['Qualificação',`${f.status} • ${f.motivo}`],['Sala',f.sala?'Sim':'Não'],['Observações',f.obs]];$('modalFichaConteudo').innerHTML=`<h2>Ficha completa</h2><div class="grid">${campos.map(c=>`<div class="campo"><small>${esc(c[0])}</small><b>${esc(c[1]||'-')}</b></div>`).join('')}</div>`;$('modalFicha').classList.remove('hidden')}
-function fecharFicha(){$('modalFicha').classList.add('hidden')}
-function toggleSala(id){const a=getFichas();const i=a.findIndex(x=>x.id===id);if(i>=0){a[i].sala=!a[i].sala;setFichas(a);renderAll()}}
-function csvDownload(name,rows){const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
-function exportRanking(){csvDownload('ranking_julho_captapro.csv',[['Pos','Profissional','Casais','Vendas','VGV','Eficiencia'],...RANKING_JULHO.map((r,i)=>[i+1,r.nome,r.casais,r.vendas,r.vgv,pct(r.vendas,r.casais)])])}
-function exportFichas(){csvDownload('fichas_captapro.csv',[['Data','Captador','Pessoa1','Pessoa2','Cidade','Contato','Status','Sala','Cortesia'],...getFichas().map(f=>[f.data,f.captador,f.nome1,f.nome2,f.cidade,f.contato,f.status,f.sala?'Sim':'Não',f.brinde])])}
+const PONTOS54=[
+ {nome:'Porta dentro do Park',lat:-22.74075,lng:-45.59225},{nome:'Park Dream House',lat:-22.74050,lng:-45.59205},{nome:'Fábrica Spinassi',lat:-22.73925,lng:-45.59110},{nome:'Corredor',lat:-22.73985,lng:-45.59175},{nome:'Baden Baden',lat:-22.73870,lng:-45.59100},{nome:'Djalma',lat:-22.73815,lng:-45.59050},{nome:'Igreja',lat:-22.73845,lng:-45.59260},{nome:'Renner',lat:-22.73895,lng:-45.59310},{nome:'Guarda-chuvas',lat:-22.74010,lng:-45.59070},{nome:'Posto Shell',lat:-22.74110,lng:-45.59300}
+];
+let fichas54=[], map54=null, layers54=[];
+function E(id){return document.getElementById(id)}
+function V(id){return (E(id)?.value||'').trim()}
+function H(id,html){const e=E(id); if(e)e.innerHTML=html}
+function T(id,txt){const e=E(id); if(e)e.textContent=txt}
+function esc(s){return String(s??'').replace(/[<>&"']/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[a]))}
+function norm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim()}
+function moeda(v){try{if(typeof window.moeda==='function')return window.moeda(v)}catch(e){} return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function pct(a,b){return b?(a/b*100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%':'0,00%'}
+function totalRank(){return RANK54.reduce((t,r)=>({casais:t.casais+r.casais,vendas:t.vendas+r.vendas,vgv:t.vgv+r.vgv}),{casais:0,vendas:0,vgv:0})}
+function usuario(){return window.usuarioNome||V('nome')||JSON.parse(localStorage.getItem('loginSimples')||'{}').nome||''}
+function email(){return window.usuarioEmail||V('email')||JSON.parse(localStorage.getItem('loginSimples')||'{}').email||''}
+function isCEO(){return document.body.classList.contains('ceo')||['raphaelbueno.captacao@gmail.com'].includes(norm(email()))}
+function rowUser(){const n=norm(usuario()); return RANK54.find(r=>norm(r.nome)===n||n.includes(norm(r.nome))||norm(r.nome).includes(n))||null}
+function isSala(x){return String(x?.levou_sala||x?.sala_status||'').toLowerCase().includes('sim')||String(x?.levou_sala||'').toLowerCase().includes('sala')}
+function statusFicha(x){const q=String(x?.qualificacao_automatica||'').toUpperCase(); if(q==='Q')return 'Q'; if(q.includes('1'))return 'NQ 1 Item'; return q||'NQ'}
+async function getDados(tabela){try{if(typeof window.dados==='function')return await window.dados(tabela)}catch(e){} const key=tabela==='abordagens'?'abordagensLocal':'pesquisasLocal'; return JSON.parse(localStorage.getItem(key)||'[]')}
+function hoje(){return new Date().toISOString().slice(0,10)}
+function mesmaData(x,d=hoje()){return String(x?.created_at||'').slice(0,10)===d}
+function card(t,v,cls='',small=''){return `<div class="capta54Card ${cls}"><span>${esc(t)}</span><b>${v}</b>${small?`<small>${esc(small)}</small>`:''}</div>`}
+function fichaResumo(x,i,detalhe=true){const nome=[x.convidado_1,x.convidado_2].filter(Boolean).join(' + ')||'Ficha sem nome'; const sala=isSala(x); const st=statusFicha(x); return `<div class="capta54Ficha ${sala?'sala':''}"><div class="capta54Top"><div><b>${esc(nome)}</b><small>${esc(x.captador_nome||'')} • ${esc(x.cidade_origem||'-')} • ${new Date(x.created_at||Date.now()).toLocaleString('pt-BR')}</small></div>${detalhe?`<button class="secondary" style="max-width:150px;padding:8px" onclick="abrirFicha54(${i})">Ver detalhes</button>`:''}</div><span class="capta54Tag ${st==='Q'?'q':'nq'}">${esc(st)}</span>${sala?'<span class="capta54Tag sala">Sala</span>':''}<span class="capta54Tag">${esc(x.brinde||'Sem cortesia')}</span><span class="capta54Tag">${esc(x.contato||'Sem contato')}</span></div>`}
+function detalhesCampo(l,v){return `<div class="modal54Campo"><small>${esc(l)}</small><b>${esc(v||'-')}</b></div>`}
+window.abrirFicha54=function(i){const x=fichas54[i]; if(!x)return; let modal=E('modalFicha54'); if(!modal){document.body.insertAdjacentHTML('beforeend','<div id="modalFicha54" class="modal54 hidden"><div class="modal54Box"><div id="modalFicha54Content"></div></div></div>'); modal=E('modalFicha54')} H('modalFicha54Content',`<h2>Ficha guardada</h2><div class="modal54Grid">${detalhesCampo('Pessoa 1',`${x.convidado_1||'-'} • ${x.idade_1||'-'} anos • ${x.profissao_1||'-'}`)}${detalhesCampo('Pessoa 2',`${x.convidado_2||'-'} • ${x.idade_2||'-'} anos • ${x.profissao_2||'-'}`)}${detalhesCampo('Estado / Cidade',`${x.estado_origem||'-'} • ${x.cidade_origem||'-'}`)}${detalhesCampo('Relacionamento',`${x.estado_civil||'-'} • ${x.tempo_juntos||'-'}`)}${detalhesCampo('Renda',x.renda_casal)}${detalhesCampo('Carro / Ano',`${x.modelo_carro||'-'} • ${x.ano_veiculo||'-'}`)}${detalhesCampo('Casa própria',x.casa_propria)}${detalhesCampo('Cartão',x.cartao_credito)}${detalhesCampo('Cortesia',x.brinde)}${detalhesCampo('Contato',x.contato)}${detalhesCampo('Qualificação',`${x.qualificacao_automatica||'-'} • ${x.motivo_qualificacao||''}`)}${detalhesCampo('Sala',isSala(x)?'Sim':'Não')}${detalhesCampo('Equipe / Ponto',`${x.equipe||'-'} • ${x.ponto_captacao||'-'}`)}${detalhesCampo('Profissional',x.captador_nome)}${detalhesCampo('Observações',x.observacoes)}</div><button class="main" style="margin-top:10px" onclick="E('modalFicha54').classList.add('hidden')">Fechar</button>`); modal.classList.remove('hidden')}
+async function renderMeu(){const box=E('diario'); if(!box)return; box.classList.add('capta54Meu'); const all=await getDados('pesquisas'); const ab=await getDados('abordagens'); const em=email(); const nomeAtual=norm(usuario()); const minhas=all.filter(x=>String(x.user_email||'')===em||norm(x.captador_nome||'')===nomeAtual); const hojeP=minhas.filter(mesmaData); const hojeA=ab.filter(x=>String(x.user_email||'')===em||norm(x.captador_nome||'')===nomeAtual).filter(mesmaData); const q=hojeP.filter(x=>statusFicha(x)==='Q').length; const nq1=hojeP.filter(x=>statusFicha(x).includes('1')).length; const nq=hojeP.length-q-nq1; const sala=hojeP.filter(isSala).length; const r=rowUser(); const meta=35; const mesSala=r?r.casais:minhas.filter(isSala).length; const falta=Math.max(0,meta-mesSala); const perc=Math.min(100,Math.round(mesSala/meta*100)); fichas54=minhas.sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||''))); box.innerHTML=`<h2>Meu Profissional</h2><div class="capta54Hero"><div class="capta54Box"><h3>${esc(usuario()||'Profissional')}</h3><p>Seu painel ficou mais limpo: resultado do dia, resultado oficial de julho, meta e fichas guardadas para consultar quando precisar.</p></div><div class="capta54Box"><h3 style="color:#00e676">${mesSala} casais em sala</h3><p>Meta mensal: ${meta}. Faltam ${falta} casais • ${perc}%</p><div class="capta54Bar"><div class="capta54Fill" style="width:${perc}%"></div></div></div></div><div class="capta54Section"><h3>Resultado de Hoje</h3><div class="capta54Grid">${card('Abordagens',hojeA.length,'blue')}${card('Pesquisas',hojeP.length)}${card('Q',q,'green')}${card('NQ',nq,'yellow')}${card('1 Item',nq1,'yellow')}${card('Sala',sala,'green')}${card('Conversão',pct(sala,hojeP.length),'blue')}${card('Eficiência',pct(q,hojeP.length),'blue')}</div></div><div class="capta54Section"><h3>Resultado Julho Oficial</h3><div class="capta54Grid">${card('Casais',r?r.casais:0,'green')}${card('Vendas',r?r.vendas:0,'green')}${card('VGV',r?moeda(r.vgv):moeda(0),'green')}${card('Eficiência',r?pct(r.vendas,r.casais):'0,00%','blue')}</div></div><div class="capta54Section"><div class="capta54Top"><h3>Minhas fichas guardadas</h3><span class="capta54Pill">${fichas54.length} fichas</span></div><div class="grid"><input id="buscaFicha54" placeholder="Buscar ficha por nome, cidade, telefone ou cortesia" oninput="filtrarFichas54()"><select id="filtroFicha54" onchange="filtrarFichas54()"><option value="todas">Todas</option><option value="hoje">Hoje</option><option value="sala">Sala</option><option value="q">Q</option><option value="nq">NQ</option></select></div><div id="boxFichas54" style="margin-top:10px"></div></div>`; filtrarFichas54()}
+window.filtrarFichas54=function(){const busca=norm(V('buscaFicha54')); const filtro=V('filtroFicha54')||'todas'; let arr=fichas54.filter(x=>{const texto=norm([x.convidado_1,x.convidado_2,x.cidade_origem,x.contato,x.brinde,x.qualificacao_automatica].join(' ')); if(busca&&!texto.includes(busca))return false; if(filtro==='hoje'&&!mesmaData(x))return false; if(filtro==='sala'&&!isSala(x))return false; if(filtro==='q'&&statusFicha(x)!=='Q')return false; if(filtro==='nq'&&statusFicha(x)==='Q')return false; return true}); H('boxFichas54',arr.length?arr.map(x=>fichaResumo(x,fichas54.indexOf(x))).join(''):'<div class="capta54Empty">Nenhuma ficha encontrada. Quando salvar ficha, ela fica guardada aqui.</div>')}
+function renderRanking(){const t=totalRank(); const box=E('raking'); if(box){box.innerHTML=`<h2>Ranking de Captação — Julho</h2><p class="hint">Resultado oficial de julho. Os outros meses ficam preparados para próxima atualização.</p><div class="rank54Tools"><select id="mesRank54" onchange="carregarRaking()"><option value="julho">Julho 2026</option><option disabled>Agosto 2026 em breve</option><option disabled>Setembro 2026 em breve</option></select><button class="main" onclick="carregarRaking()">Atualizar Ranking</button><button class="secondary" onclick="exportarRanking54()">Exportar CSV</button></div><div id="rakingBox" class="card scroll"></div>`} carregarRaking()}
+window.carregarRaking=function(){const t=totalRank(); const html=`<div class="rank54Resumo"><div><span>Total de casais</span><b>${t.casais}</b></div><div><span>Total de vendas</span><b>${t.vendas}</b></div><div><span>VGV Geral</span><b>${moeda(t.vgv)}</b></div></div><div class="scroll"><table class="capta54Table"><tr><th>Pos.</th><th>Profissional</th><th>Casais</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${RANK54.map((r,i)=>`<tr class="${i===0?'rank54Top1':i===1?'rank54Top2':i===2?'rank54Top3':''}"><td class="pos">${i+1}º</td><td>${esc(r.nome)}</td><td>${r.casais}</td><td>${r.vendas}</td><td class="money">${moeda(r.vgv)}</td><td>${pct(r.vendas,r.casais)}</td></tr>`).join('')}</table></div>`; H('rakingBox',html); return html}
+window.exportarRanking54=function(){const lines=['Posicao;Profissional;Casais;Vendas;VGV;Eficiencia']; RANK54.forEach((r,i)=>lines.push(`${i+1};${r.nome};${r.casais};${r.vendas};${r.vgv};${pct(r.vendas,r.casais)}`)); baixarArquivo54('ranking-julho-captapro.csv',lines.join('\n'))}
+function baixarArquivo54(nome,txt){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv;charset=utf-8'}));a.download=nome;document.body.appendChild(a);a.click();a.remove()}
+function getDesafios(){return JSON.parse(localStorage.getItem('sxDesafios54')||'[]')} function setDesafios(v){localStorage.setItem('sxDesafios54',JSON.stringify(v))}
+function renderArena(){const box=E('arena'); if(!box)return; const n=usuario(); const adversarios=RANK54.map(r=>r.nome).filter(x=>norm(x)!==norm(n)); const r=rowUser(); const saldo=(r?(r.casais*10+r.vendas*1000):0); const desafios=getDesafios(); const meus=desafios.filter(d=>norm(d.desafiante)===norm(n)||norm(d.adversario)===norm(n)); box.innerHTML=`<h2>Arena SX</h2><p class="hint">Organizada para criar desafio, escolher adversário, apostar SX e o CEO definir vencedor.</p><div class="sx54Hero"><div class="sx54Box"><span>Meu SX Coin</span><b>${saldo}</b><small>SX disponíveis</small></div><div class="sx54Box"><span>Meu nível</span><b>${saldo>=3000?'Elite':saldo>=1500?'Avançado':'Iniciante'}</b><small>${saldo>=3000?'Nível máximo':'Continue captando para evoluir'}</small></div></div><div class="capta54Section"><h3>⚔️ Criar Desafio</h3><div class="grid"><input id="sxNome54" value="${esc(n)}" readonly><select id="sxAdv54"><option value="">Escolha o adversário</option>${adversarios.map(a=>`<option>${esc(a)}</option>`).join('')}</select><input id="sxAposta54" type="number" placeholder="Aposta SX. Ex: 100"><select id="sxCrit54"><option value="casais">Quem fizer mais casais</option><option value="vendas">Quem vender mais</option><option value="vgv">Maior VGV</option><option value="sala">Mais casais em sala</option></select></div><button class="main" style="margin-top:8px" onclick="criarDesafioSX20()">Criar desafio</button><p id="sxMsg54"></p></div><div class="capta54Section"><h3>📋 Meus Desafios</h3><div id="sxMeus54">${meus.length?meus.map(cardDesafio54).join(''):'<div class="capta54Empty">Você ainda não tem desafios.</div>'}</div></div><div class="capta54Section"><h3>🏆 Top 10 SX</h3><div class="scroll"><table class="capta54Table"><tr><th>Pos.</th><th>Profissional</th><th>SX</th></tr>${RANK54.slice(0,10).map((x,i)=>`<tr><td class="pos">${i+1}º</td><td>${esc(x.nome)}</td><td class="money">${x.casais*10+x.vendas*1000}</td></tr>`).join('')}</table></div></div><div class="capta54Section"><h3>🏅 Conquistas</h3><span class="capta54Tag q">Primeira ficha</span><span class="capta54Tag q">Casal em sala</span><span class="capta54Tag">Meta semanal</span><span class="capta54Tag">Top 3</span></div><div class="capta54Section"><h3>🎁 Trocas SX</h3><div class="sx54Loja"><div class="sx54Premio"><h4>Voucher R$ 100</h4><p>1.000 SX</p></div><div class="sx54Premio"><h4>Capitão da Semana</h4><p>Premiação conforme regra do gestor.</p></div></div></div>${isCEO()?`<div class="capta54Section"><h3>CEO • Definir vencedor</h3><div id="sxCEO54">${desafios.length?desafios.map(cardCEODesafio54).join(''):'<div class="capta54Empty">Nenhum desafio criado.</div>'}</div></div>`:''}`}
+function cardDesafio54(d){return `<div class="capta54Ficha"><b>${esc(d.desafiante)} x ${esc(d.adversario)}</b><small>${esc(d.criterio)} • Aposta ${d.aposta} SX • ${esc(d.status)}</small>${d.vencedor?`<span class="capta54Tag q">Vencedor: ${esc(d.vencedor)}</span>`:'<span class="capta54Tag">Aguardando CEO</span>'}</div>`}
+function cardCEODesafio54(d){return `<div class="capta54Ficha"><b>${esc(d.desafiante)} x ${esc(d.adversario)}</b><small>${esc(d.criterio)} • ${d.aposta} SX • ${esc(d.status)}</small><div class="grid" style="margin-top:8px"><button class="main" onclick="definirVencedorSX54(${d.id},'${esc(d.desafiante)}')">${esc(d.desafiante)}</button><button class="secondary" onclick="definirVencedorSX54(${d.id},'${esc(d.adversario)}')">${esc(d.adversario)}</button></div></div>`}
+window.criarDesafioSX20=function(){const adv=V('sxAdv54'), aposta=Number(V('sxAposta54'))||0, crit=V('sxCrit54')||'casais', n=usuario(); if(!adv){H('sxMsg54','<span class="erro">Escolha um adversário.</span>');return} if(aposta<=0){H('sxMsg54','<span class="erro">Informe a aposta SX.</span>');return} const d=getDesafios(); d.unshift({id:Date.now(),desafiante:n,adversario:adv,aposta,criterio:crit,status:'Pendente',vencedor:'',created_at:new Date().toISOString()}); setDesafios(d); renderArena()}
+window.definirVencedorSX54=function(id,v){const d=getDesafios(); const i=d.findIndex(x=>String(x.id)===String(id)); if(i>=0){d[i].status='Finalizado'; d[i].vencedor=v; setDesafios(d); renderArena()}}
+window.carregarArenaSX20=renderArena; window.toggleRankingCompletoSX=function(){}; window.abrirComoFuncionaSX=function(){alert('SX: Pesquisa +10 | Q +100 | Sala +300 | Venda +1000 | Desafios definidos pelo CEO.')}; window.fecharComoFuncionaSX=function(){};
+function pontoPorNome(nome){const n=norm(nome); return PONTOS54.find(p=>norm(p.nome)===n||norm(p.nome).includes(n)||n.includes(norm(p.nome)))||PONTOS54[0]}
+window.carregarMapaReal37=function(){const box=E('mapaRealCEO37'); if(!box||!window.L)return; if(!map54){map54=L.map('mapaRealCEO37',{zoomControl:true,attributionControl:true}).setView([-22.7395,-45.5917],16); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map54)} layers54.forEach(l=>{try{map54.removeLayer(l)}catch(e){}}); layers54=[]; const bounds=[]; PONTOS54.forEach(p=>{const icon=L.divIcon({className:'',html:`<div class="markerPonto54">📍 ${esc(p.nome)}</div>`,iconSize:[155,32],iconAnchor:[8,16]}); const m=L.marker([p.lat,p.lng],{icon}).addTo(map54).bindPopup(`<b>${esc(p.nome)}</b>`); layers54.push(m); bounds.push([p.lat,p.lng])}); RANK54.forEach((r,i)=>{const p=pontoPorNome(r.ponto); const lat=p.lat+((i%5)-2)*0.00013, lng=p.lng+(Math.floor(i/5)-1.5)*0.00013; const icon=L.divIcon({className:'',html:'<div class="markerProf54"></div>',iconSize:[22,22],iconAnchor:[11,11]}); const m=L.marker([lat,lng],{icon}).addTo(map54).bindPopup(`<b>${esc(r.nome)}</b><br>${esc(r.ponto)}<br>Casais: ${r.casais}<br>Vendas: ${r.vendas}<br>VGV: ${moeda(r.vgv)}`); layers54.push(m); bounds.push([lat,lng])}); if(bounds.length)map54.fitBounds(bounds,{padding:[30,30],maxZoom:17}); setTimeout(()=>map54.invalidateSize(true),250); if(!E('mapaAviso54'))box.insertAdjacentHTML('afterend','<div id="mapaAviso54" class="mapAviso54">Mapa no modelo anterior: pontos operacionais + profissionais distribuídos por ponto. GPS real depende da autorização do celular.</div>')};
+window.carregarMapaReal39=window.carregarMapaReal37; window.carregarMapaReal41=window.carregarMapaReal37; window.carregarMapaReal43=window.carregarMapaReal37; window.carregarMapaReal45=window.carregarMapaReal37; window.carregarMapaReal47=window.carregarMapaReal37;
+window.sairCaptaProFinal=function(){localStorage.removeItem('loginSimples');location.reload()};
+window.salvarPontoAtual32=async function(){const p=V('pontoAtualProf32'); if(!p){H('pontoAtualMsg32','<span class="erro">Escolha um ponto.</span>');return} const item={user_email:email(),captador_nome:usuario(),ponto_captacao:p,created_at:new Date().toISOString(),online:true}; const arr=JSON.parse(localStorage.getItem('captapro_presence_local')||'[]'); arr.push(item); localStorage.setItem('captapro_presence_local',JSON.stringify(arr)); try{if(window.db)await window.db.from('captapro_presence').insert(item)}catch(e){} H('pontoAtualMsg32','<span class="ok">Ponto atualizado.</span>')};
+window.ativarGPS37=function(){if(!navigator.geolocation){alert('GPS não disponível neste aparelho.');return} navigator.geolocation.getCurrentPosition(pos=>{localStorage.setItem('gpsCaptaPro54',JSON.stringify({lat:pos.coords.latitude,lng:pos.coords.longitude,updated_at:new Date().toISOString()})); alert('Localização autorizada e salva neste aparelho.')},()=>alert('Não foi possível autorizar localização. Confira a permissão do navegador.'))};
+window.finalizarDiario=function(){renderMeu(); alert('Relatório do profissional atualizado.')}; window.carregarDiario=renderMeu; window.carregarDiario48=renderMeu;
+window.compartilharRelatorioImagem30=function(){alert('Relatório pronto na aba Meu Profissional. Use print ou exportação na próxima versão.')}; window.baixarRelatorioImagem30=window.compartilharRelatorioImagem30;
+window.carregarFechamentosCEO=function(){H('fechamentosCEOBox','<p class="mini">Fechamentos mantidos. Próximo passo: ligar relatório diário no Supabase.</p>')};
+window.carregarConferenciaSala20=async function(){const all=await getDados('pesquisas'); const salas=all.filter(isSala); H('salaCEOBox20',salas.length?salas.map((x,i)=>fichaResumo(x,i,false)).join(''):'<p class="mini">Nenhum casal em sala confirmado.</p>')};
+window.exportarArenaSXCSV=function(){const d=getDesafios(); const lines=['Desafiante;Adversario;Aposta;Criterio;Status;Vencedor',...d.map(x=>`${x.desafiante};${x.adversario};${x.aposta};${x.criterio};${x.status};${x.vencedor||''}`)]; baixarArquivo54('arena-sx.csv',lines.join('\n'))};
+window.exportarExcelCEO25=function(){exportarRanking54()};
+const oldAba=window.aba; window.aba=function(id,b){const ret=oldAba?oldAba.apply(this,arguments):undefined; if(id==='diario')setTimeout(renderMeu,80); if(id==='raking')setTimeout(renderRanking,80); if(id==='arena')setTimeout(renderArena,80); if(id==='qualificacao')setTimeout(()=>{try{if(E('portalMapa30')&&!E('portalMapa30').classList.contains('hidden'))window.carregarMapaReal37()}catch(e){}},400); return ret};
+const oldSalvar=window.salvarPesquisa; if(oldSalvar){window.salvarPesquisa=async function(){const r=await oldSalvar.apply(this,arguments); setTimeout(()=>{if(!E('diario')?.classList.contains('hidden'))renderMeu()},500); return r}}
+const oldSala=window.confirmarSala21; if(oldSala){window.confirmarSala21=async function(){const r=await oldSala.apply(this,arguments); setTimeout(()=>{if(!E('diario')?.classList.contains('hidden'))renderMeu()},500); return r}}
+function init(){try{const v=document.querySelector('.version'); if(v)v.textContent='Versão 5.4 PRO';}catch(e){} renderRanking(); if(!E('diario')?.classList.contains('hidden'))renderMeu(); if(!E('arena')?.classList.contains('hidden'))renderArena(); try{const dashIds=['p30Pesq','ceoPesqHoje']; dashIds.forEach(id=>T(id,totalRank().casais)); ['p30Sala','ceoSalaHoje'].forEach(id=>T(id,totalRank().casais));}catch(e){}}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(init,800)); setTimeout(init,1500); window.RANKING_JULHO_54=RANK54;
+})();
 </script>
-</body>
-</html>
+
+</body></html>
