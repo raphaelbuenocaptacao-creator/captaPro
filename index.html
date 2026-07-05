@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaptaPro Versão 3.0</title>
+<title>CaptaPro 5.0 • Etapa 1 Ficha</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -376,11 +376,31 @@ body.appAberto #btnSairFinal{display:block!important}
   .fichaShare40{width:1080px;max-width:1080px}
 }
 
+
+/* CAPTAPRO 5.0 ETAPA 1 FICHA OFICIAL */
+.cp50Share{width:1280px;max-width:1280px;background:linear-gradient(180deg,#070707,#160000);border:5px solid #5a1717;border-radius:46px;padding:58px;color:#fff;font-family:Arial,Helvetica,sans-serif}
+.cp50Head{display:flex;align-items:center;gap:28px;border-bottom:2px solid #3b1b1b;padding-bottom:28px;margin-bottom:30px}
+.cp50Logo{width:130px;height:130px;border-radius:28px;background:linear-gradient(135deg,#ef1b24,#7a0000);display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:900}
+.cp50Title b{display:block;font-size:72px;line-height:1.03}.cp50Title span{display:block;color:#bbb;font-size:31px;margin-top:8px}
+.cp50Qual{background:#101010;border:2px solid #333;border-radius:26px;padding:26px;margin-bottom:22px}
+.cp50Qual small,.cp50Campo small{display:block;color:#ff8585;text-transform:uppercase;font-size:26px;font-weight:900;margin-bottom:11px;letter-spacing:.5px}
+.cp50Qual b{font-size:44px;color:#00e676}
+.cp50Grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.cp50Campo{background:#101010;border:2px solid #292929;border-radius:26px;padding:32px;min-height:150px}
+.cp50Campo b{display:block;font-size:44px;line-height:1.18;color:#fff;word-break:break-word}.cp50Campo.full{grid-column:1/-1}
+.cp50Foot{border-top:2px solid #3b1b1b;margin-top:28px;padding-top:22px;color:#aaa;font-size:30px}
+.cp50FichaMini{background:#080808;border:1px solid #333;border-radius:16px;padding:13px;margin:9px 0}.cp50FichaMini.sala{border-color:#00e676;background:#061d10}
+.cp50FichaMini b{display:block;color:#fff;font-size:16px}.cp50FichaMini small{display:block;color:#aaa;margin-top:4px}
+.cp50CeoEdit{background:#080808;border:1px solid #333;border-radius:16px;padding:12px;margin:10px 0}.cp50CeoEdit.sala{border-color:#00e676;background:#061d10}
+.cp50CeoGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.cp50Resumo{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.cp50Resumo div{background:#181818;border:1px solid #333;border-radius:14px;text-align:center;padding:12px}
+.cp50Resumo small{display:block;color:#aaa;font-size:11px;text-transform:uppercase;font-weight:900}.cp50Resumo b{display:block;color:#00e676;font-size:28px;margin-top:4px}
+@media(max-width:700px){.cp50Resumo,.cp50CeoGrid{grid-template-columns:1fr 1fr}.cp50Grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Versão 3.0 Oficial</div><p class="mini"><b style="color:#00e676">Bueno Invest</b></p><button id="btnSairFinal" class="secondary hidden" style="max-width:160px;margin:8px auto 0" onclick="sairCaptaProFinal()">Sair</button></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">CaptaPro 5.0 • Etapa 1 Ficha</div><p class="mini"><b style="color:#00e676">Bueno Invest</b></p><button id="btnSairFinal" class="secondary hidden" style="max-width:160px;margin:8px auto 0" onclick="sairCaptaProFinal()">Sair</button></div>
 
 <section id="loginBox" class="card">
 <h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
@@ -4893,6 +4913,62 @@ window.baixarFichaGrande40=async function(){
   a.href=url;a.download='ficha-captaPro.png';a.click();
   setTimeout(()=>URL.revokeObjectURL(url),3000);
 }
+})();
+</script>
+
+
+<script>
+/* CAPTAPRO 5.0 ETAPA 1 FICHA OFICIAL */
+(function(){
+"use strict";
+function E(id){return document.getElementById(id)}
+function V(id){return (E(id)?.value||"").trim()}
+function H(id,v){if(E(id))E(id).innerHTML=v}
+function T(id,v){if(E(id))E(id).textContent=v}
+function esc(s){return String(s??"").replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+function hoje(){return new Date().toISOString().slice(0,10)}
+function parseRenda(v){var s=String(v||"").trim();if(!s)return 0;var x=s.replace(/[R$\s]/g,"");if(x.indexOf(",")>=0)return Number(x.replace(/\./g,"").replace(",","."))||0;return Number(s.replace(/\D/g,""))||0}
+function rendaSemRS(v){var n=parseRenda(v);return n?n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}):""}
+function rendaComRS(v){var n=parseRenda(v);return n?"R$ "+n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}):"-"}
+function usuarioNome(){return window.usuarioNome||V("nome")||localStorage.getItem("cp50_nome")||"Profissional"}
+function usuarioEmail(){return window.usuarioEmail||V("email")||localStorage.getItem("cp50_email")||""}
+function isCEO(){var e=norm(usuarioEmail()),r=norm(localStorage.getItem("cp50_role")||window.usuarioRole||"");return r.indexOf("ceo")>=0||r.indexOf("admin")>=0||e.indexOf("raphaelbueno")>=0||e.indexOf("captacao")>=0}
+function getFichas(){var arr=[];["cp50_fichas","pesquisasLocal","fichas_offline"].forEach(function(k){try{arr=arr.concat(JSON.parse(localStorage.getItem(k)||"[]"))}catch(e){}});return arr.filter(function(f,i,self){return i===self.findIndex(function(x){return (x.id&&x.id===f.id)||(x.created_at&&x.created_at===f.created_at)})})}
+function setFichas(arr){localStorage.setItem("cp50_fichas",JSON.stringify(arr.slice(0,5000)))}
+function minhaFicha(f){var email=norm(usuarioEmail()),nome=norm(usuarioNome());return !email||norm(f.email_usuario||f.user_email||f.email||"")===email||norm(f.usuario||f.captador_nome||f.profissional||"")===nome||isCEO()}
+function salaSim(f){var s=norm(f.levou_sala||f.sala_status||f.sala||"");return s.indexOf("sim")>=0||s.indexOf("confirm")>=0}
+function qual(f){return f.qualificacao_automatica||f.qualificacao||f.status_qualificacao||"Q • Perfil dentro da regra"}
+function initRenda(){var r=E("renda");if(!r)return;r.placeholder="11. Renda bruta do casal. Ex: 10000 vira 10.000,00";r.addEventListener("focus",function(){var n=parseRenda(r.value);r.value=n?String(Math.round(n)):""});r.addEventListener("blur",function(){r.value=rendaSemRS(r.value)})}
+initRenda();
+
+function dadosFichaAtual(){
+ return {id:"cp50_"+Date.now(),created_at:new Date().toISOString(),data:hoje(),hora:new Date().toLocaleTimeString("pt-BR"),usuario:usuarioNome(),captador_nome:usuarioNome(),email_usuario:usuarioEmail(),user_email:usuarioEmail(),equipe:V("equipe"),ponto:V("ponto"),ponto_captacao:V("ponto"),nome1:V("nome1"),convidado_1:V("nome1"),idade1:V("idade1"),idade_1:V("idade1"),profissao1:V("profissao1"),profissao_1:V("profissao1"),nome2:V("nome2"),convidado_2:V("nome2"),idade2:V("idade2"),idade_2:V("idade2"),profissao2:V("profissao2"),profissao_2:V("profissao2"),estado:V("estado"),cidade:V("cidade"),relacionamento:V("relacionamento"),tempo:V("tempo"),carro:V("nomeCarro"),nome_carro:V("nomeCarro"),ano_carro:V("anoCarro"),casa:V("casa"),cartao:V("cartao"),renda:rendaSemRS(V("renda")),renda_liquida:rendaSemRS(V("rendaLiquida")),multi:V("multi"),brinde:V("brinde"),contato:V("contato"),obs:V("obs"),qualificacao_automatica:"Q • Perfil dentro da regra",levou_sala:"Não",sala_status:"Não"};
+}
+var oldEntrar=window.entrar;
+window.entrar=function(){var e=V("email"),n=V("nome");if(e)localStorage.setItem("cp50_email",e);if(n)localStorage.setItem("cp50_nome",n);if(oldEntrar)return oldEntrar.apply(this,arguments)}
+var oldSalvar=window.salvarPesquisa;
+window.salvarPesquisa=async function(){var r=E("renda");if(r)r.value=rendaSemRS(r.value);var ficha=dadosFichaAtual(),ret=null;try{if(oldSalvar)ret=await oldSalvar.apply(this,arguments)}catch(e){console.warn(e)}if(window.ultimaFicha)ficha=Object.assign(ficha,window.ultimaFicha);ficha.renda=rendaSemRS(ficha.renda||V("renda"));if(!ficha.id)ficha.id="cp50_"+Date.now();if(!ficha.created_at)ficha.created_at=new Date().toISOString();window.ultimaFicha=ficha;localStorage.setItem("cp50_ultima_ficha",JSON.stringify(ficha));var arr=getFichas();arr.unshift(ficha);setFichas(arr);renderFichaPreview(ficha);H("formMsg",'<span class="ok">Ficha salva e guardada no histórico.</span>');try{renderMinhasFichas()}catch(e){}return ret||ficha}
+var oldSala=window.confirmarSala21;
+window.confirmarSala21=async function(){var f=window.ultimaFicha||JSON.parse(localStorage.getItem("cp50_ultima_ficha")||"null")||dadosFichaAtual();f.levou_sala="Sim";f.sala_status="Confirmado";f.sala="Sim";f.sala_confirmada_em=new Date().toISOString();window.ultimaFicha=f;localStorage.setItem("cp50_ultima_ficha",JSON.stringify(f));var arr=getFichas();if(arr.some(function(x){return x.id===f.id||x.created_at===f.created_at})){arr=arr.map(function(x){return (x.id===f.id||x.created_at===f.created_at)?Object.assign(x,f):x})}else{arr.unshift(f)}setFichas(arr);try{if(oldSala)await oldSala.apply(this,arguments)}catch(e){}H("formMsg",'<span class="ok">Casal em sala confirmado.</span>');renderFichaPreview(f);try{renderMinhasFichas()}catch(e){}}
+
+function fichaShareHTML(f){var rel=[f.relacionamento||"",f.tempo||""].filter(Boolean).join(" • ")||"-",veic=[f.carro||f.nome_carro||"",f.ano_carro||""].filter(Boolean).join(" ")||"-",equipe=[f.equipe||"",f.ponto||f.ponto_captacao||""].filter(Boolean).join(" • ")||"-",sala=f.levou_sala||f.sala_status||f.sala||"Não";return '<div class="cp50Share" id="cp50FichaImg"><div class="cp50Head"><div class="cp50Logo">CP</div><div class="cp50Title"><b>Ficha Completa<br>do Casal</b><span>CaptaPro • Bueno Invest • '+new Date(f.created_at||Date.now()).toLocaleString("pt-BR")+'</span></div></div><div class="cp50Qual"><small>Resultado da qualificação</small><b>'+esc(qual(f))+'</b></div><div class="cp50Grid"><div class="cp50Campo"><small>Nome 1</small><b>'+esc(f.nome1||f.convidado_1||"-")+'</b></div><div class="cp50Campo"><small>Nome 2</small><b>'+esc(f.nome2||f.convidado_2||"-")+'</b></div><div class="cp50Campo"><small>Idade / Profissão 1</small><b>'+esc(f.idade1||f.idade_1||"-")+' anos • '+esc(f.profissao1||f.profissao_1||"-")+'</b></div><div class="cp50Campo"><small>Idade / Profissão 2</small><b>'+esc(f.idade2||f.idade_2||"-")+' anos • '+esc(f.profissao2||f.profissao_2||"-")+'</b></div><div class="cp50Campo"><small>Relacionamento</small><b>'+esc(rel)+'</b></div><div class="cp50Campo"><small>Renda</small><b>'+rendaComRS(f.renda)+'</b></div><div class="cp50Campo"><small>Veículo / Ano</small><b>'+esc(veic)+'</b></div><div class="cp50Campo"><small>Cartão de crédito</small><b>'+esc(f.cartao||"-")+'</b></div><div class="cp50Campo"><small>Casa própria</small><b>'+esc(f.casa||"-")+'</b></div><div class="cp50Campo"><small>Estado / Cidade</small><b>'+esc(f.estado||"-")+' • '+esc(f.cidade||"-")+'</b></div><div class="cp50Campo"><small>Multipropriedade</small><b>'+esc(f.multi||"-")+'</b></div><div class="cp50Campo"><small>Cortesia escolhida</small><b>'+esc(f.brinde||"-")+'</b></div><div class="cp50Campo"><small>WhatsApp / Contato</small><b>'+esc(f.contato||"-")+'</b></div><div class="cp50Campo"><small>Entrada em sala</small><b>'+esc(sala)+'</b></div><div class="cp50Campo"><small>Equipe / Ponto</small><b>'+esc(equipe)+'</b></div><div class="cp50Campo"><small>Profissional responsável</small><b>'+esc(f.usuario||f.captador_nome||usuarioNome())+'</b></div><div class="cp50Campo full"><small>Observações</small><b>'+esc(f.obs||f.observacoes||"-")+'</b></div></div><div class="cp50Foot">Registro CaptaPro • Bueno Invest • Sala '+esc(sala)+'</div></div>'}
+function miniFichaHTML(f){return '<div class="cp50FichaMini '+(salaSim(f)?"sala":"")+'"><b>'+esc(f.nome1||f.convidado_1||"-")+' '+(f.nome2||f.convidado_2?"& "+esc(f.nome2||f.convidado_2):"")+'</b><small>'+esc(f.ponto||f.ponto_captacao||"-")+' • Renda: '+rendaComRS(f.renda)+' • Sala: '+(salaSim(f)?"Sim":"Não")+'</small><small>'+esc(qual(f))+' • '+esc(f.data||String(f.created_at||"").slice(0,10)||"-")+'</small></div>'}
+function renderFichaPreview(f){H("fichaConteudo",miniFichaHTML(f));if(E("fichaBox"))E("fichaBox").classList.remove("hidden")}
+window.compartilharFicha=async function(){var f=window.ultimaFicha||JSON.parse(localStorage.getItem("cp50_ultima_ficha")||"null");if(!f){alert("Salve uma ficha primeiro.");return}var holder=document.createElement("div");holder.style.position="fixed";holder.style.left="-99999px";holder.style.top="0";holder.innerHTML=fichaShareHTML(f);document.body.appendChild(holder);try{var canvas=await html2canvas(holder.querySelector("#cp50FichaImg"),{scale:2,backgroundColor:null,useCORS:true});canvas.toBlob(async function(blob){var file=new File([blob],"ficha-captaPro.png",{type:"image/png"});if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"Ficha CaptaPro"})}else{var url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="ficha-captaPro.png";a.click()}holder.remove()},"image/png",1)}catch(e){holder.remove();alert("Erro ao gerar imagem da ficha.")}}
+
+window.renderMinhasFichas=function(){var arr=getFichas().filter(minhaFicha),pesq=arr.length,sala=arr.filter(salaSim).length,q=arr.filter(function(f){return norm(qual(f)).startsWith("q")}).length,nq=arr.filter(function(f){return norm(qual(f)).startsWith("nq")}).length,item=arr.filter(function(f){return norm(qual(f)).indexOf("1")>=0}).length;H("minhasPesquisas35",'<div class="cp50Resumo"><div><small>Pesquisas</small><b>'+pesq+'</b></div><div><small>Q</small><b>'+q+'</b></div><div><small>NQ</small><b>'+nq+'</b></div><div><small>1 Item</small><b>'+item+'</b></div><div><small>Sala</small><b>'+sala+'</b></div></div>'+(arr.length?arr.slice(0,50).map(miniFichaHTML).join(""):'<p class="mini">Nenhuma ficha salva ainda.</p>'));T("homePesq",pesq);T("homeQ",q);T("homeNQ",nq);T("homeSala",sala);T("dPesq",pesq);T("dQ",q);T("dNQ",nq);T("dNQ1",item);T("dSala",sala)}
+var oldCarregarMinhas=window.carregarMinhasPesquisas35;window.carregarMinhasPesquisas35=function(){renderMinhasFichas();try{if(oldCarregarMinhas)oldCarregarMinhas.apply(this,arguments)}catch(e){}}
+var oldCarregarDiario=window.carregarDiario;window.carregarDiario=function(){renderMinhasFichas();try{if(oldCarregarDiario)oldCarregarDiario.apply(this,arguments)}catch(e){}}
+
+window.cp50EditarQual=function(id,val){var arr=getFichas().map(function(f){if(f.id===id){f.qualificacao_automatica=val;f.qualificacao=val}return f});setFichas(arr);renderCeoFichas()}
+window.cp50EditarSala=function(id,val){var arr=getFichas().map(function(f){if(f.id===id){f.levou_sala=val;f.sala_status=val==="Sim"?"Confirmado":"Não";f.sala=val}return f});setFichas(arr);renderCeoFichas()}
+function ceoFichaHTML(f){return '<div class="cp50CeoEdit '+(salaSim(f)?"sala":"")+'"><b>'+esc(f.nome1||f.convidado_1||"-")+' '+(f.nome2||f.convidado_2?"& "+esc(f.nome2||f.convidado_2):"")+'</b><small>'+esc(f.usuario||f.captador_nome||"-")+' • '+esc(f.ponto||f.ponto_captacao||"-")+' • '+esc(f.data||String(f.created_at||"").slice(0,10)||"-")+'</small><div class="cp50CeoGrid"><select onchange="cp50EditarQual(\\''+esc(f.id)+'\\',this.value)"><option '+(qual(f).startsWith("Q")?"selected":"")+'>Q • Perfil dentro da regra</option><option '+(qual(f).startsWith("NQ")?"selected":"")+'>NQ • Fora da regra</option><option '+(qual(f).indexOf("1")>=0?"selected":"")+'>1 Item • Atenção</option></select><select onchange="cp50EditarSala(\\''+esc(f.id)+'\\',this.value)"><option value="Não" '+(!salaSim(f)?"selected":"")+'>Sala: Não</option><option value="Sim" '+(salaSim(f)?"selected":"")+'>Sala: Sim</option></select></div></div>'}
+function renderCeoFichas(){var arr=getFichas();var html='<div class="cp50Resumo"><div><small>Fichas</small><b>'+arr.length+'</b></div><div><small>Q</small><b>'+arr.filter(function(f){return norm(qual(f)).startsWith("q")}).length+'</b></div><div><small>NQ</small><b>'+arr.filter(function(f){return norm(qual(f)).startsWith("nq")}).length+'</b></div><div><small>Sala</small><b>'+arr.filter(salaSim).length+'</b></div></div>'+(arr.length?arr.map(ceoFichaHTML).join(""):'<p class="mini">Nenhuma ficha salva ainda.</p>');if(E("portalEquipeBox35"))H("portalEquipeBox35",html);if(E("portalSalaBox30"))H("portalSalaBox30",html);if(E("salaCEOBox20"))H("salaCEOBox20",html)}
+var oldPortal=window.carregarPortalCEO30;window.carregarPortalCEO30=function(){try{if(oldPortal)oldPortal.apply(this,arguments)}catch(e){}renderCeoFichas()}
+var oldSalaCEO=window.carregarConferenciaSala20;window.carregarConferenciaSala20=function(){try{if(oldSalaCEO)oldSalaCEO.apply(this,arguments)}catch(e){}renderCeoFichas()}
+var oldAba=window.aba;window.aba=function(id,btn){var r=oldAba?oldAba.apply(this,arguments):undefined;setTimeout(function(){initRenda();if(id==="diario")renderMinhasFichas();if(id==="qualificacao")renderCeoFichas()},400);return r}
+document.addEventListener("DOMContentLoaded",function(){setTimeout(function(){initRenda();try{renderMinhasFichas()}catch(e){}},800)})
 })();
 </script>
 
