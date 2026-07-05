@@ -2022,5 +2022,83 @@ window.renderMapa62=function(){
 })();
 </script>
 
+
+<script>
+/* ===== CaptaPro 6.4 • Correção definitiva da renda em Real ===== */
+(function(){
+"use strict";
+
+function E64(id){return document.getElementById(id)}
+function onlyDigits64(v){return String(v||'').replace(/\D/g,'')}
+function moedaBR64(valor){
+  const n = Number(valor || 0);
+  return 'R$ ' + n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function parseRenda64(v){
+  const s = String(v||'').trim();
+  if(!s) return 0;
+  const limpo = s.replace(/[R$\s]/g,'');
+  if(limpo.includes(',')){
+    return Number(limpo.replace(/\./g,'').replace(',','.')) || 0;
+  }
+  return Number(onlyDigits64(s)) || 0;
+}
+function formatarCampoRenda64(){
+  const renda = E64('renda');
+  if(!renda) return;
+  renda.setAttribute('placeholder','Ex: 10000 vira R$ 10.000,00');
+  renda.addEventListener('focus',()=>{
+    const n = parseRenda64(renda.value);
+    renda.value = n ? String(Math.round(n)) : '';
+  });
+  renda.addEventListener('blur',()=>{
+    const n = parseRenda64(renda.value);
+    renda.value = n ? moedaBR64(n) : '';
+  });
+  renda.addEventListener('input',()=>{
+    const raw = onlyDigits64(renda.value);
+    renda.dataset.valorNumerico = raw ? String(Number(raw)) : '';
+  });
+}
+formatarCampoRenda64();
+
+const oldQualAuto64 = window.qualAuto;
+window.qualAuto = function(f){
+  const f2 = Object.assign({}, f || {});
+  f2.renda = parseRenda64(f2.renda);
+  if(typeof oldQualAuto64 === 'function') return oldQualAuto64(f2);
+  return f2.renda >= 8000 ? 'QUALIFICADO' : f2.renda >= 5000 ? 'POTENCIAL' : 'NÃO QUALIFICADO';
+};
+
+const oldSalvar64 = window.salvarPesquisa;
+window.salvarPesquisa = async function(){
+  const renda = E64('renda');
+  if(renda){
+    const n = parseRenda64(renda.value);
+    renda.dataset.valorNumerico = String(n || 0);
+    renda.value = n ? moedaBR64(n) : '';
+  }
+  const res = oldSalvar64 ? await oldSalvar64.apply(this, arguments) : null;
+  if(renda){
+    const n = parseRenda64(renda.value);
+    renda.value = n ? moedaBR64(n) : '';
+  }
+  return res;
+};
+
+const oldRenderFichaBox64 = window.renderFichaBox;
+window.renderFichaBox = function(f){
+  if(f && f.renda){
+    const n = parseRenda64(f.renda);
+    f.renda = n ? moedaBR64(n) : f.renda;
+  }
+  if(oldRenderFichaBox64) return oldRenderFichaBox64.apply(this, arguments);
+};
+
+window.moedaRenda64 = function(v){ return moedaBR64(parseRenda64(v)); };
+
+})();
+</script>
+
 </body>
 </html>
