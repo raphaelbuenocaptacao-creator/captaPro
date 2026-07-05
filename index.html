@@ -2216,4 +2216,117 @@ document.addEventListener('DOMContentLoaded',()=>{setTimeout(init57,800);setTime
 })();
 </script>
 
+
+
+<!-- ===== CAPTAPRO 5.8 PRO • RELATÓRIO SEM DUPLICIDADE + PESQUISAS/ABORDAGENS ===== -->
+<style id="capta58-style">
+.version{font-size:0!important}.version:after{content:'Versão 5.8 PRO';font-size:12px!important}
+.capta58MiniTable{width:100%;border-collapse:collapse;font-size:13px;min-width:680px}.capta58MiniTable th{color:#ff7777;text-transform:uppercase;font-size:11px}.capta58MiniTable th,.capta58MiniTable td{border-bottom:1px solid #252525;padding:9px;text-align:left}.capta58MiniTable .green{color:#00e676;font-weight:900}.capta58MiniTable .blue{color:#00c2ff;font-weight:900}.capta58Dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:#ff3333;box-shadow:0 0 10px rgba(255,51,51,.45);margin-right:6px}.capta58Dot.on{background:#00e676;box-shadow:0 0 10px rgba(0,230,118,.55)}
+.capta58Notice{background:#061620;border:1px solid #00c2ff;color:#bdeeff;border-radius:14px;padding:10px;margin:8px 0;font-size:12px;font-weight:800;line-height:1.35}
+</style>
+<script id="capta58-script">
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const H=(id,html)=>{const e=$(id); if(e)e.innerHTML=html};
+const V=id=>($(id)?.value||'').trim();
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+const moeda=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const pct=(a,b)=>Number(!b?0:(a/b*100)).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';
+const parse=(key,def=[])=>{try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(def))}catch(e){return def}};
+const login=()=>parse('loginSimples',{});
+const usuario=()=>window.usuarioNome||login().nome||$('nome')?.value||'Profissional';
+const email=()=>window.usuarioEmail||login().email||$('email')?.value||'';
+const RANK58=()=> (window.RANKING_JULHO_54||[]).map(r=>({...r}));
+const totalRank58=()=>RANK58().reduce((a,r)=>({casais:a.casais+(+r.casais||0),vendas:a.vendas+(+r.vendas||0),vgv:a.vgv+(+r.vgv||0)}),{casais:0,vendas:0,vgv:0});
+const eficiencia=r=>(+r.casais?((+r.vendas||0)/(+r.casais||1)*100):0);
+const rowNome=n=>RANK58().find(r=>norm(r.nome)===norm(n)||norm(n).includes(norm(r.nome))||norm(r.nome).includes(norm(n)))||null;
+function statusFicha(x){const q=String(x?.qualificacao_automatica||'').toUpperCase(); if(q==='Q')return 'Q'; if(q.includes('1'))return 'NQ 1 Item'; return q||'NQ'}
+function isSala(x){return String(x?.levou_sala||x?.sala_status||x?.sala||'').toLowerCase().includes('sim')||x?.sala===true}
+function mesmaData(x){const d=x?.created_at||x?.data||x?.date; if(!d)return false; return new Date(d).toLocaleDateString('pt-BR')===new Date().toLocaleDateString('pt-BR')}
+async function dadosApp(tabela){
+  try{ if(typeof window.dados==='function'){ const r=await window.dados(tabela); if(Array.isArray(r)) return aplicarSalas(tabela,r); } }catch(e){}
+  const key=tabela==='abordagens'?'abordagensLocal':'pesquisasLocal';
+  return aplicarSalas(tabela,parse(key,[]));
+}
+function aplicarSalas(tabela,arr){
+  if(tabela!=='pesquisas') return arr||[];
+  const salas=parse('salasLocal21',[]);
+  return (arr||[]).map(x=>{const ok=salas.some(s=>String(s.created_at)===String(x.created_at)&&String(s.user_email||'')===String(x.user_email||'')); return ok?{...x,levou_sala:'Sim',sala_status:'Sim'}:x});
+}
+function porProf(arr,nome,mail){const n=norm(nome||''); return (arr||[]).filter(x=>String(x.user_email||'')===String(mail||'')||norm(x.captador_nome||'')===n||norm(x.nome||'')===n)}
+function resumoProf(nome,ps,abs,mail=''){
+  const p=porProf(ps,nome,mail), a=porProf(abs,nome,mail);
+  const hojeP=p.filter(mesmaData), hojeA=a.filter(mesmaData);
+  const q=p.filter(x=>statusFicha(x)==='Q').length;
+  const nq1=p.filter(x=>statusFicha(x).includes('1')).length;
+  const nq=Math.max(0,p.length-q-nq1);
+  const sala=p.filter(isSala).length;
+  return {pesquisas:p.length,abordagens:a.length,hojePesquisas:hojeP.length,hojeAbordagens:hojeA.length,q,nq,nq1,sala,fichas:p};
+}
+function card(t,v,c='green'){return `<div class="capta57Card ${c}"><span>${esc(t)}</span><b>${esc(v)}</b></div>`}
+function rankOrdenado(by){const arr=RANK58(); return arr.sort((a,b)=>{if(by==='vendas')return b.vendas-a.vendas||b.casais-a.casais;if(by==='vgv')return b.vgv-a.vgv||b.vendas-a.vendas;if(by==='eficiencia')return eficiencia(b)-eficiencia(a)||b.casais-a.casais;if(by==='nome')return a.nome.localeCompare(b.nome,'pt-BR');return b.casais-a.casais||b.vendas-a.vendas||b.vgv-a.vgv})}
+function tabelaRank58(rows,appStats={},comApp=false){return `<div class="scroll"><table class="capta57Table"><tr><th>Status</th><th>Pos.</th><th>Profissional</th><th>Ponto</th>${comApp?'<th>Abord. app</th><th>Pesq. app</th>':''}<th>Casais em sala</th><th>Vendas</th><th>VGV</th><th>Eficiência</th></tr>${rows.map((r,i)=>{const s=appStats[norm(r.nome)]||{}; return `<tr class="${i===0?'capta57Top1':i===1?'capta57Top2':i===2?'capta57Top3':''}"><td><span class="capta58Dot ${r.casais>0?'on':''}"></span></td><td class="pos">${i+1}º</td><td>${esc(r.nome)}</td><td>${esc(r.ponto||'-')}</td>${comApp?`<td class="blue">${s.abordagens||0}</td><td class="blue">${s.pesquisas||0}</td>`:''}<td class="green">${r.casais}</td><td>${r.vendas}</td><td class="money">${moeda(r.vgv)}</td><td>${pct(r.vendas,r.casais)}</td></tr>`}).join('')}</table></div>`}
+function fichaResumo(x,i){const nome=[x.convidado_1,x.convidado_2].filter(Boolean).join(' + ')||'Ficha sem nome'; const st=statusFicha(x); const sala=isSala(x); return `<div class="capta57Ficha ${sala?'sala':''}"><div><b>${esc(nome)}</b><small>${esc(x.captador_nome||'')} • ${esc(x.cidade_origem||'-')} • ${new Date(x.created_at||Date.now()).toLocaleString('pt-BR')}</small><span class="capta57Tag ${st==='Q'?'q':'nq'}">${esc(st)}</span>${sala?'<span class="capta57Tag sala">Sala</span>':''}<span class="capta57Tag">${esc(x.brinde||'Sem cortesia')}</span><span class="capta57Tag">${esc(x.contato||'Sem contato')}</span></div><button class="secondary" style="max-width:145px;padding:8px" onclick="abrirFicha57(${i})">Ver detalhes</button></div>`}
+function montarStats(ps,abs){const obj={}; RANK58().forEach(r=>{obj[norm(r.nome)]=resumoProf(r.nome,ps,abs)}); return obj}
+async function renderMeu58(){
+  const box=$('diario'); if(!box)return;
+  const ps=await dadosApp('pesquisas'), abs=await dadosApp('abordagens');
+  const r=rowNome(usuario());
+  const st=resumoProf(usuario(),ps,abs,email());
+  const minhas=st.fichas.sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||'')));
+  const qHoje=minhas.filter(x=>mesmaData(x)&&statusFicha(x)==='Q').length;
+  const nq1Hoje=minhas.filter(x=>mesmaData(x)&&statusFicha(x).includes('1')).length;
+  const nqHoje=Math.max(0,st.hojePesquisas-qHoje-nq1Hoje);
+  const salaHoje=minhas.filter(x=>mesmaData(x)&&isSala(x)).length;
+  const mesSala=r?r.casais:st.sala, vendas=r?r.vendas:0, vgv=r?r.vgv:0;
+  const meta=35, falta=Math.max(0,meta-mesSala), prog=Math.min(100,Math.round(mesSala/meta*100));
+  window.capta57Fichas=minhas;
+  box.innerHTML=`<h2>Meu Profissional</h2><div class="capta57Hero"><div class="capta57HeroBox"><h3>${esc(usuario())}</h3><p>Painel único do profissional: abordagens, pesquisas, resultado oficial de julho e fichas guardadas.</p><span class="capta57Pill blue">${st.hojeAbordagens} abordagens hoje</span><span class="capta57Pill blue">${st.hojePesquisas} pesquisas hoje</span><span class="capta57Pill">${mesSala} casais em sala</span><span class="capta57Pill gold">${vendas} vendas</span></div><div class="capta57HeroBox"><h3 style="color:#00e676">Meta mensal</h3><p>${mesSala}/${meta} casais em sala • faltam ${falta} • ${prog}%</p><div class="capta57Bar"><div class="capta57Fill" style="width:${prog}%"></div></div></div></div><div class="capta57Section"><h3>Resultado de Hoje no App</h3><div class="capta57Grid">${card('Abordagens',st.hojeAbordagens,'blue')}${card('Pesquisas',st.hojePesquisas,'blue')}${card('Q',qHoje)}${card('NQ',nqHoje,'gold')}${card('1 Item',nq1Hoje,'gold')}${card('Sala no app',salaHoje)}${card('Conversão sala',pct(salaHoje,st.hojePesquisas),'blue')}${card('Eficiência Q',pct(qHoje,st.hojePesquisas),'blue')}</div></div><div class="capta57Section"><h3>Resultado Julho Oficial</h3><div class="capta57Grid">${card('Abordagens salvas',st.abordagens,'blue')}${card('Pesquisas salvas',st.pesquisas,'blue')}${card('Casais em sala',mesSala)}${card('Vendas',vendas)}${card('VGV',moeda(vgv))}${card('Eficiência',pct(vendas,mesSala),'blue')}${card('Meta',meta,'gold')}${card('Faltam',falta,'gold')}</div></div><div class="capta57Section"><div class="capta57Top"><h3>Minhas fichas guardadas</h3><span class="capta57Pill">${minhas.length} fichas</span></div><div class="capta57Tools two"><input id="buscaFicha57" placeholder="Buscar por nome, cidade, telefone ou cortesia" oninput="filtrarFichas57()"><select id="filtroFicha57" onchange="filtrarFichas57()"><option value="todas">Todas</option><option value="hoje">Hoje</option><option value="sala">Sala</option><option value="q">Q</option><option value="nq">NQ</option></select></div><div id="boxFichas57" style="margin-top:10px"></div></div>`;
+  if(typeof window.filtrarFichas57==='function') window.filtrarFichas57();
+}
+window.renderMeu58=renderMeu58;
+async function individualHtml(nome,ps,abs){
+  const r=rowNome(nome); if(!r)return '<div class="capta57Empty">Escolha um profissional para ver tudo dele.</div>';
+  const st=resumoProf(r.nome,ps,abs);
+  const pos=rankOrdenado('casais').findIndex(x=>norm(x.nome)===norm(r.nome))+1;
+  const meta=35, falta=Math.max(0,meta-r.casais), prog=Math.min(100,Math.round(r.casais/meta*100));
+  const sx=r.casais*300+r.vendas*1000+Math.round((r.vgv||0)/10000);
+  const ultimas=st.fichas.sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||''))).slice(0,5);
+  return `<div class="capta57Hero"><div class="capta57HeroBox"><h3>${esc(r.nome)}</h3><p>Resultado individual completo: app + ranking oficial de casais em sala.</p><span class="capta57Pill">${pos}º no ranking</span><span class="capta57Pill blue">Ponto: ${esc(r.ponto||'-')}</span><span class="capta57Pill gold">Faltam ${falta} casais</span></div><div class="capta57HeroBox"><h3 style="color:#00e676">Progresso</h3><p>${r.casais}/${meta} casais • ${prog}%</p><div class="capta57Bar"><div class="capta57Fill" style="width:${prog}%"></div></div></div></div><div class="capta57Grid">${card('Abordagens app',st.abordagens,'blue')}${card('Pesquisas app',st.pesquisas,'blue')}${card('Q app',st.q)}${card('NQ app',st.nq,'gold')}${card('1 Item app',st.nq1,'gold')}${card('Sala app',st.sala)}${card('Casais ranking',r.casais)}${card('Vendas',r.vendas)}${card('VGV',moeda(r.vgv))}${card('Eficiência',pct(r.vendas,r.casais),'blue')}${card('Meta mensal',meta,'gold')}${card('SX estimado',sx,'gold')}</div><div class="capta57Section"><h3>Últimas fichas desse profissional</h3>${ultimas.length?ultimas.map((x,i)=>fichaResumo(x,i)).join(''):'<div class="capta57Empty">Ainda não há fichas salvas neste aparelho/Supabase para esse profissional.</div>'}</div>`;
+}
+window.mostrarIndividual58=async function(selId,boxId){const ps=await dadosApp('pesquisas'), abs=await dadosApp('abordagens'); H(boxId,await individualHtml(V(selId),ps,abs));};
+window.mostrarIndividual57=window.mostrarIndividual58;
+async function renderRelatorio58(){
+  const box=$('relatorio'); if(!box)return;
+  const ps=await dadosApp('pesquisas'), abs=await dadosApp('abordagens');
+  const t=totalRank58(), stats=montarStats(ps,abs), by=V('relSort58')||'casais';
+  const totalPesq=ps.length, totalAbord=abs.length, totalQ=ps.filter(x=>statusFicha(x)==='Q').length, totalSalaApp=ps.filter(isSala).length;
+  const recentes=ps.slice().sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||''))).slice(0,12); window.capta57Fichas=recentes;
+  box.innerHTML=`<h2>Relatório</h2><p class="hint">Relatório oficial sem duplicar ranking. Agora também mostra abordagens e pesquisas salvas no app.</p><div class="capta57Grid">${card('Casais em sala',t.casais)}${card('Vendas',t.vendas)}${card('VGV Geral',moeda(t.vgv))}${card('Conversão',pct(t.vendas,t.casais),'blue')}${card('Abordagens app',totalAbord,'blue')}${card('Pesquisas app',totalPesq,'blue')}${card('Q app',totalQ)}${card('Sala app',totalSalaApp)}</div><div class="capta58Notice">Os números oficiais de casais, vendas e VGV vêm do Ranking Julho. Abordagens e pesquisas vêm das fichas/abordagens salvas no sistema.</div><div class="capta57Section"><h3>Ranking da Equipe no Relatório</h3><div class="capta57Tools two"><select id="relSort58" onchange="carregarRelatorio()"><option value="casais" ${by==='casais'?'selected':''}>Ordenar por casais</option><option value="vendas" ${by==='vendas'?'selected':''}>Ordenar por vendas</option><option value="vgv" ${by==='vgv'?'selected':''}>Ordenar por VGV</option><option value="eficiencia" ${by==='eficiencia'?'selected':''}>Ordenar por eficiência</option><option value="nome" ${by==='nome'?'selected':''}>Ordenar por nome</option></select><button class="secondary" onclick="exportarRanking57()">Exportar CSV</button></div>${tabelaRank58(rankOrdenado(by),stats,true)}</div><div class="capta57Section"><h3>Individual do Profissional</h3><select id="profFiltro58" onchange="mostrarIndividual58('profFiltro58','individualBox58')"><option value="">Escolha o profissional</option>${RANK58().map(r=>`<option>${esc(r.nome)}</option>`).join('')}</select><div id="individualBox58" style="margin-top:10px"></div></div><div class="capta57Section"><h3>Conferência de Sala</h3><div class="capta57Grid">${card('Sala oficial ranking',t.casais)}${card('Sala registrada app',totalSalaApp)}${card('Diferença',Math.max(0,t.casais-totalSalaApp),'gold')}${card('Fichas recentes',recentes.length,'blue')}</div><p class="hint">Essa parte não repete o ranking. Ela compara sala oficial do ranking com sala marcada nas fichas.</p></div><div class="capta57Section"><h3>Fichas Recentes da Operação</h3><div>${recentes.length?recentes.map((x,i)=>fichaResumo(x,i)).join(''):'<div class="capta57Empty">Nenhuma ficha recente encontrada neste aparelho.</div>'}</div></div>`;
+}
+window.renderRelatorio58=renderRelatorio58;
+window.renderRelatorio57=renderRelatorio58;
+async function renderPortal58(){
+  const box=$('qualificacao'); if(!box)return;
+  const ps=await dadosApp('pesquisas'), abs=await dadosApp('abordagens');
+  const t=totalRank58(), stats=montarStats(ps,abs), recentes=ps.slice().sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||''))).slice(0,10); window.capta57Fichas=recentes;
+  box.innerHTML=`<h2>Portal CEO</h2><p class="hint">Central do CEO com dashboard, individual completo, mapa, fichas e Arena SX.</p><div class="portal57Menu"><button class="active" onclick="portal58('dash',this)">📊 Dashboard</button><button onclick="portal58('individual',this)">👤 Individual</button><button onclick="portal58('mapa',this)">📍 Mapa</button><button onclick="portal58('arena',this)">🎮 Arena SX</button></div><div id="p58dash" class="portal57Bloco"><div class="capta57Grid">${card('Casais em sala',t.casais)}${card('Vendas',t.vendas)}${card('VGV Geral',moeda(t.vgv))}${card('Conversão',pct(t.vendas,t.casais),'blue')}${card('Abordagens app',abs.length,'blue')}${card('Pesquisas app',ps.length,'blue')}${card('Q app',ps.filter(x=>statusFicha(x)==='Q').length)}${card('Sala app',ps.filter(isSala).length)}</div><div class="capta57Section"><h3>Ranking CEO</h3>${tabelaRank58(rankOrdenado('casais'),stats,true)}</div><div class="capta57Section"><h3>Fichas recentes</h3>${recentes.length?recentes.map((x,i)=>fichaResumo(x,i)).join(''):'<div class="capta57Empty">Nenhuma ficha salva neste aparelho.</div>'}</div></div><div id="p58individual" class="portal57Bloco hidden"><div class="capta57Section"><h3>Individual do Profissional • CEO</h3><select id="portalProf58" onchange="mostrarIndividual58('portalProf58','portalProfBox58')"><option value="">Escolha o profissional</option>${RANK58().map(r=>`<option>${esc(r.nome)}</option>`).join('')}</select><div id="portalProfBox58" style="margin-top:10px"></div></div></div><div id="p58mapa" class="portal57Bloco hidden"><div class="capta57Section"><h3>Mapa ao Vivo</h3><div id="mapaRealCEO37"></div><div class="mapAviso57">Mapa mantido no modelo anterior, com pontos operacionais e profissionais distribuídos por ponto.</div><button class="main" style="margin-top:8px" onclick="carregarMapa57()">Atualizar mapa</button></div></div><div id="p58arena" class="portal57Bloco hidden"><div class="capta57Section"><h3>Arena SX • CEO</h3><div class="sx57List">${(parse('sxDesafios57',[])).length?parse('sxDesafios57',[]).map(d=>`<div class="sx57Challenge ${d.status==='Finalizado'?'done':'pending'}"><b>${esc(d.desafiante)} x ${esc(d.adversario)}</b><small>Critério: ${esc(d.criterio)} • Aposta: ${esc(d.aposta)} SX • Status: ${esc(d.status)} ${d.vencedor?'• Vencedor: '+esc(d.vencedor):''}</small></div>`).join(''):'<div class="capta57Empty">Nenhum desafio criado.</div>'}</div></div></div>`;
+}
+window.portal58=function(id,btn){['dash','individual','mapa','arena'].forEach(x=>$('p58'+x)?.classList.add('hidden')); $('p58'+id)?.classList.remove('hidden'); document.querySelectorAll('.portal57Menu button').forEach(b=>b.classList.remove('active')); if(btn)btn.classList.add('active'); if(id==='mapa')setTimeout(()=>{try{window.carregarMapa57()}catch(e){}},250)};
+window.renderPortal58=renderPortal58;
+function aba58(id,b){['pesquisa','diario','relatorio','raking','arena','qualificacao'].forEach(s=>$(s)?.classList.add('hidden')); $(id)?.classList.remove('hidden'); document.querySelectorAll('.tabs button').forEach(bt=>bt.classList.remove('active')); if(b)b.classList.add('active'); if(id==='diario')renderMeu58(); if(id==='relatorio')renderRelatorio58(); if(id==='raking'){if(typeof window.renderRanking57==='function')window.renderRanking57(); else if(typeof window.carregarRaking==='function')window.carregarRaking()} if(id==='arena'){if(typeof window.renderArena57==='function')window.renderArena57(); else if(typeof window.carregarArenaSX20==='function')window.carregarArenaSX20()} if(id==='qualificacao')renderPortal58(); window.scrollTo({top:0,behavior:'smooth'})}
+window.aba=aba58;
+window.carregarDiario=renderMeu58;
+window.finalizarDiario=function(){renderMeu58(); alert('Relatório atualizado.')};
+window.carregarRelatorio=renderRelatorio58;
+window.renderRelatorio57=renderRelatorio58;
+const oldRaking=window.carregarRaking;
+window.carregarRaking=function(){try{if(typeof window.atualizarRanking57==='function'&&$('rankContent57'))return window.atualizarRanking57(); if(oldRaking)return oldRaking()}catch(e){if(oldRaking)return oldRaking()}};
+function init58(){try{const v=document.querySelector('.version'); if(v)v.textContent='Versão 5.8 PRO'}catch(e){} const visible=['pesquisa','diario','relatorio','raking','arena','qualificacao'].find(id=>$(id)&&!$(id).classList.contains('hidden')); if(visible==='diario')renderMeu58(); if(visible==='relatorio')renderRelatorio58(); if(visible==='qualificacao')renderPortal58();}
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(init58,900);setTimeout(init58,2600);setTimeout(init58,4600)}); setTimeout(init58,1200); setTimeout(init58,3200);
+})();
+</script>
+
 </body></html>
