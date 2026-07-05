@@ -122,11 +122,37 @@ input, select, textarea {
   color: #e8e8e8;
   font-size: 14px;
   transition: border .2s, box-shadow .2s;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: #ef1b24;
   box-shadow: 0 0 0 3px rgba(239,27,36,.12);
+}
+/* Correção para autofill em navegadores */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #0a0a0a inset !important;
+  box-shadow: 0 0 0 30px #0a0a0a inset !important;
+  -webkit-text-fill-color: #e8e8e8 !important;
+}
+input:-webkit-autofill {
+  -webkit-text-fill-color: #e8e8e8 !important;
+}
+input:-webkit-autofill::first-line {
+  font-size: 14px;
+}
+/* Correção para select dropdown */
+select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e8e8e8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+  padding-right: 36px;
 }
 textarea { min-height: 60px; resize: vertical; }
 select option { background: #1a1a1a; }
@@ -379,6 +405,13 @@ input::placeholder, textarea::placeholder { color: #555; }
   .stat-card { min-height: 60px; padding: 8px; }
   .stat-card .value { font-size: 18px; }
   .logo { font-size: 28px; }
+  /* Melhorias mobile */
+  input, select, textarea {
+    font-size: 16px; /* Evita zoom em iOS */
+  }
+  .btn { font-size: 16px; padding: 12px 20px; }
+  .top { padding: 12px 16px; }
+  .wrap { padding: 8px; }
 }
 </style>
 </head>
