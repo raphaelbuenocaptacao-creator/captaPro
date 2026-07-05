@@ -454,6 +454,27 @@ body.appAberto #btnSairFinal{display:block!important}
 .cp14MetaFill{height:100%;background:linear-gradient(90deg,#00a651,#00e676)}
 @media(max-width:700px){.cp14Tools,.cp14MetaRow{grid-template-columns:1fr}#cp14MapaCEO{height:420px;min-height:420px}}
 
+
+/* CAPTAPRO 1.0 ETAPA 5 PULSADOR */
+.cp15Hero{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin:10px 0}
+.cp15Box{background:#101010;border:1px solid #2b2b2b;border-radius:18px;padding:15px;margin:12px 0}
+.cp15Cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px;margin:10px 0}
+.cp15Card{background:#181818;border:1px solid #333;border-radius:16px;padding:13px;text-align:center}
+.cp15Card small{display:block;color:#aaa;font-size:11px;text-transform:uppercase;font-weight:900}
+.cp15Card b{display:block;color:#00e676;font-size:28px;margin-top:5px}
+.cp15Card.blue b{color:#00c2ff}.cp15Card.gold b{color:#ffd54f}.cp15Card.red b{color:#ff5252}.cp15Card.white b{color:#fff}
+.cp15Progress{height:18px;background:#222;border:1px solid #333;border-radius:999px;overflow:hidden;margin:10px 0}
+.cp15Fill{height:100%;background:linear-gradient(90deg,#00a651,#00e676);border-radius:999px;transition:.3s}
+.cp15Graph{display:flex;align-items:flex-end;gap:7px;height:170px;border:1px solid #2b2b2b;border-radius:16px;padding:12px;background:#080808;margin-top:10px}
+.cp15Bar{flex:1;min-width:24px;background:linear-gradient(180deg,#00e676,#005f2a);border-radius:8px 8px 0 0;position:relative}
+.cp15Bar span{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:10px;color:#aaa}
+.cp15TableWrap{overflow:auto;border:1px solid #2b2b2b;border-radius:14px;margin-top:10px}
+.cp15Table{width:100%;border-collapse:collapse;min-width:850px;font-size:13px}
+.cp15Table th,.cp15Table td{padding:9px;border-bottom:1px solid #252525;text-align:left}
+.cp15Table th{color:#ff8585;background:#111}
+.cp15Pill{display:inline-block;background:#181818;border:1px solid #333;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:900}
+@media(max-width:700px){.cp15Hero{grid-template-columns:1fr}.cp15Cards{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 <body>
@@ -5526,6 +5547,154 @@ window.aba=function(id,btn){
  return r;
 }
 document.addEventListener("DOMContentLoaded",function(){setTimeout(function(){if(E("qualificacao")&&!E("qualificacao").classList.contains("hidden"))renderPortalCEOEtapa4()},900)});
+})();
+</script>
+
+
+<script>
+/* CAPTAPRO 1.0 ETAPA 5 PULSADOR - NAO ALTERA ETAPAS 1,2,3,4 */
+(function(){
+"use strict";
+function E(id){return document.getElementById(id)}
+function V(id){return (E(id)?.value||"").trim()}
+function H(id,v){if(E(id))E(id).innerHTML=v}
+function T(id,v){if(E(id))E(id).textContent=v}
+function esc(s){return String(s??"").replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})}
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+function hoje(){return new Date().toISOString().slice(0,10)}
+function moeda(n){return "R$ "+Number(n||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}
+function pct(a,b){return b?((Number(a||0)/Number(b||0))*100).toFixed(2).replace(".",",")+"%":"0,00%"}
+function parseMoeda(v){return Number(String(v||"").replace(/[^\d,.-]/g,"").replace(/\./g,"").replace(",", "."))||0}
+function usuarioNome(){return window.usuarioNome||V("nome")||localStorage.getItem("cp50_nome")||"Profissional"}
+function getFichas(){
+  var arr=[];
+  ["cp50_fichas","pesquisasLocal","fichas_offline"].forEach(function(k){
+    try{arr=arr.concat(JSON.parse(localStorage.getItem(k)||"[]"))}catch(e){}
+  });
+  return arr.filter(function(f,i,self){return i===self.findIndex(function(x){return (x.id&&x.id===f.id)||(x.created_at&&x.created_at===f.created_at)})});
+}
+function dataFicha(f){return f.data||String(f.created_at||"").slice(0,10)||hoje()}
+function profissional(f){return f.usuario||f.captador_nome||f.profissional||"Sem nome"}
+function qual(f){return f.qualificacao_automatica||f.qualificacao||f.status_qualificacao||"N/I"}
+function isQ(f){return norm(qual(f)).startsWith("q")}
+function isNQ(f){return norm(qual(f)).startsWith("nq")}
+function isItem(f){return norm(qual(f)).includes("1")}
+function isSala(f){var s=norm(f.levou_sala||f.sala_status||f.sala||"");return s.includes("sim")||s.includes("confirm")}
+function getMetas(){try{return JSON.parse(localStorage.getItem("cp14_metas")||"{}")}catch(e){return {}}}
+function getCustos(){try{return JSON.parse(localStorage.getItem("cp14_custos")||"{}")}catch(e){return {}}}
+function getVendas(){try{return JSON.parse(localStorage.getItem("cp13_vendas")||"{}")}catch(e){return {}}}
+function getNoTour(){try{return JSON.parse(localStorage.getItem("cp13_notour")||"{}")}catch(e){return {}}}
+function semanaKey(d){var dt=d?new Date(d):new Date();var onejan=new Date(dt.getFullYear(),0,1);var week=Math.ceil((((dt-onejan)/86400000)+onejan.getDay()+1)/7);return dt.getFullYear()+"-S"+week}
+function mesKey(d){var dt=d?new Date(d):new Date();return dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")}
+function periodoMatch(f,periodo){
+  var d=dataFicha(f);
+  if(periodo==="hoje")return d===hoje();
+  if(periodo==="semana")return semanaKey(d)===semanaKey();
+  if(periodo==="mes")return mesKey(d)===mesKey();
+  return true;
+}
+function custoBrinde(f){
+  var b=norm(f.brinde||"");
+  if(!b)return 0;
+  if(b.includes("150"))return 150;
+  if(b.includes("120"))return 120;
+  if(b.includes("combustivel"))return 120;
+  if(b.includes("chocolate"))return 120;
+  if(b.includes("museu"))return 80;
+  if(b.includes("mini"))return 80;
+  if(b.includes("dinossauro"))return 80;
+  if(b.includes("terror"))return 80;
+  if(b.includes("espelho"))return 60;
+  return 100;
+}
+function metricas(nome,periodo){
+  var fichas=getFichas().filter(function(f){return profissional(f)===nome&&periodoMatch(f,periodo)});
+  var vendasObj=getVendas();
+  var keyMap={hoje:"diario",semana:"semanal",mes:"mensal",todos:"mensal"};
+  var vendas=Number(vendasObj[nome+"_"+(keyMap[periodo]||"mensal")]||0);
+  var pesquisas=fichas.length,q=fichas.filter(isQ).length,nq=fichas.filter(isNQ).length,item=fichas.filter(isItem).length,sala=fichas.filter(isSala).length;
+  var brinde=fichas.reduce(function(s,f){return s+custoBrinde(f)},0);
+  var custos=getCustos()[nome]||{};
+  var custoProf=(+custos.fixo||0)+(+custos.ajuda||0)+(+custos.carro||0)+(+custos.outros||0);
+  var meta=Number(getMetas()[nome]||35);
+  var vgv=fichas.reduce(function(s,f){return s+parseMoeda(f.vgv||f.valor_vgv||0)},0);
+  return {nome:nome,fichas:fichas,pesquisas:pesquisas,q:q,nq:nq,item:item,sala:sala,vendas:vendas,vgv:vgv,brinde:brinde,custoProf:custoProf,custoTotal:custoProf+brinde,meta:meta};
+}
+function diasDoMes(nome){
+  var map={};
+  getFichas().filter(function(f){return profissional(f)===nome&&mesKey(dataFicha(f))===mesKey()}).forEach(function(f){
+    var d=dataFicha(f).slice(8,10);
+    if(!map[d])map[d]=0;
+    if(isSala(f))map[d]++;
+  });
+  var arr=[];
+  for(var i=1;i<=31;i++){
+    var k=String(i).padStart(2,"0");
+    arr.push({dia:k,sala:map[k]||0});
+  }
+  return arr;
+}
+function cards(m){
+  var faltam=Math.max(0,m.meta-m.sala);
+  var proj=Math.round((m.sala/(new Date().getDate()||1))*30);
+  return '<div class="cp15Cards">'+
+    '<div class="cp15Card blue"><small>Pesquisas</small><b>'+m.pesquisas+'</b></div>'+
+    '<div class="cp15Card"><small>Q</small><b>'+m.q+'</b></div>'+
+    '<div class="cp15Card gold"><small>NQ</small><b>'+m.nq+'</b></div>'+
+    '<div class="cp15Card gold"><small>1 Item</small><b>'+m.item+'</b></div>'+
+    '<div class="cp15Card"><small>Sala</small><b>'+m.sala+'</b></div>'+
+    '<div class="cp15Card"><small>Vendas</small><b>'+m.vendas+'</b></div>'+
+    '<div class="cp15Card red"><small>Pesq → Sala</small><b>'+pct(m.sala,m.pesquisas)+'</b></div>'+
+    '<div class="cp15Card red"><small>Sala → Venda</small><b>'+pct(m.vendas,m.sala)+'</b></div>'+
+    '<div class="cp15Card white"><small>Custo Total</small><b>'+moeda(m.custoTotal)+'</b></div>'+
+    '<div class="cp15Card white"><small>Custo/Sala</small><b>'+moeda(m.sala?m.custoTotal/m.sala:0)+'</b></div>'+
+    '<div class="cp15Card white"><small>Brinde/Sala</small><b>'+moeda(m.sala?m.brinde/m.sala:0)+'</b></div>'+
+    '<div class="cp15Card"><small>Projeção</small><b>'+proj+'</b></div>'+
+  '</div>';
+}
+function grafico(nome){
+  var arr=diasDoMes(nome),max=Math.max(1,...arr.map(function(x){return x.sala}));
+  return '<div class="cp15Graph">'+arr.slice(0,new Date().getDate()).map(function(x){
+    return '<div class="cp15Bar" style="height:'+(8+(x.sala/max)*140)+'px"><span>'+x.dia+'</span></div>';
+  }).join("")+'</div>';
+}
+function tabelaFichas(m){
+  return '<div class="cp15TableWrap"><table class="cp15Table"><thead><tr><th>Data</th><th>Casal</th><th>Q/NQ</th><th>Sala</th><th>Ponto</th><th>Brinde</th><th>Custo Brinde</th></tr></thead><tbody>'+
+  m.fichas.slice(0,80).map(function(f){
+    return '<tr><td>'+esc(dataFicha(f))+'</td><td>'+esc((f.nome1||f.convidado_1||"-")+" & "+(f.nome2||f.convidado_2||"-"))+'</td><td>'+esc(qual(f))+'</td><td>'+(isSala(f)?"Sim":"Não")+'</td><td>'+esc(f.ponto||f.ponto_captacao||"-")+'</td><td>'+esc(f.brinde||"-")+'</td><td>'+moeda(custoBrinde(f))+'</td></tr>';
+  }).join("")+'</tbody></table></div>';
+}
+window.renderPulsadorEtapa5=function(){
+  var nome=usuarioNome();
+  var periodo=V("cp15Periodo")||"mes";
+  var m=metricas(nome,periodo);
+  var progresso=Math.min(100,Math.round((m.sala/(m.meta||35))*100));
+  var html='<div class="cp15Box"><h2>📡 Pulsador Individual</h2><p class="hint">Painel do profissional: resultado, conversão, custos, brindes e projeção.</p>'+
+  '<div class="cp15Hero"><div><h2>'+esc(nome)+'</h2><span class="cp15Pill">Período</span> <select id="cp15Periodo" onchange="renderPulsadorEtapa5()" style="max-width:180px"><option value="hoje">Hoje</option><option value="semana">Semana</option><option value="mes">Mês</option><option value="todos">Todos</option></select></div>'+
+  '<div><b class="ok">'+m.sala+' / '+m.meta+' casais em sala</b><div class="cp15Progress"><div class="cp15Fill" style="width:'+progresso+'%"></div></div><p class="mini">Faltam '+Math.max(0,m.meta-m.sala)+' casais para a meta.</p></div></div>'+
+  cards(m)+
+  '<div class="cp15Box"><h2>📈 Evolução diária de sala</h2>'+grafico(nome)+'</div>'+
+  '<div class="cp15Box"><h2>📋 Minhas fichas</h2>'+tabelaFichas(m)+'</div></div>';
+  H("minhasPesquisas35",html);
+  if(E("cp15Periodo"))E("cp15Periodo").value=periodo;
+}
+var oldCarregarDiario=window.carregarDiario;
+window.carregarDiario=function(){
+  try{if(oldCarregarDiario)oldCarregarDiario.apply(this,arguments)}catch(e){}
+  renderPulsadorEtapa5();
+}
+var oldCarregarMinhas=window.carregarMinhasPesquisas35;
+window.carregarMinhasPesquisas35=function(){
+  try{if(oldCarregarMinhas)oldCarregarMinhas.apply(this,arguments)}catch(e){}
+  renderPulsadorEtapa5();
+}
+var oldAba=window.aba;
+window.aba=function(id,btn){
+  var r=oldAba?oldAba.apply(this,arguments):undefined;
+  setTimeout(function(){if(id==="diario")renderPulsadorEtapa5();},500);
+  return r;
+}
+document.addEventListener("DOMContentLoaded",function(){setTimeout(function(){if(E("diario")&&!E("diario").classList.contains("hidden"))renderPulsadorEtapa5()},900)});
 })();
 </script>
 
