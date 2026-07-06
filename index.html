@@ -390,6 +390,22 @@ body.appAberto #btnSairFinal{display:block!important}
 #mapaRealCEO37{height:620px!important}
 .pontoFixo41{filter:drop-shadow(0 0 8px #00c2ff)}
 
+
+/* CAPTAPRO 3.0 FINAL • sem Arena SX e sem Pulsador */
+button[onclick*="arena"], #arena, #portalArena30, [id*="sx"], [class*="sx"]{display:none!important}
+body.ceo .tabs{grid-template-columns:repeat(4,1fr)!important}
+.tabs{grid-template-columns:repeat(3,1fr)!important}
+#resultado button[onclick*="compartilharFicha"],
+#resultado button[onclick*="novaPesquisa"]{display:none!important}
+#fichaBox ~ #fichaBox{display:none!important}
+#mapaRealCEO37{height:620px!important;min-height:620px!important;border:2px solid #00c2ff!important}
+.mapaResumoFinal{background:#080808;border:1px solid #333;border-radius:14px;padding:12px;margin:8px 0}
+.mapaResumoFinal h3{margin:0 0 8px;color:#ff8585}
+.mapaPessoaFinal{display:inline-block;margin:5px 5px 0 0;padding:8px 10px;border-radius:999px;background:#151515;border:1px solid #333;font-weight:900;font-size:12px}
+.mapaPessoaFinal.on{border-color:#00e676;color:#00e676}
+.mapaPessoaFinal.off{border-color:#ff5252;color:#ff5252}
+@media(max-width:700px){body.ceo .tabs,.tabs{grid-template-columns:1fr!important}}
+
 </style>
 </head>
 <body>
@@ -401,7 +417,7 @@ body.appAberto #btnSairFinal{display:block!important}
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Meu Profissional</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button onclick="aba('arena',this)">Arena SX</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Meu Profissional</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
 
 
 <section id="pesquisa" class="card">
@@ -670,75 +686,6 @@ body.appAberto #btnSairFinal{display:block!important}
 </div>
 </section>
 
-
-
-<section id="arena" class="card hidden arenaCleanSX">
-<h2>Arena SX</h2>
-<p class="hint">Tela enxuta para o profissional: saldo, nível, ranking, desafios e conquistas.</p>
-
-<div class="sxHero">
-  <div class="sxHeroCard"><span>Meu SX Coin</span><b id="sxMeuSaldo">0</b><small>SX disponíveis</small></div>
-  <div class="sxHeroCard"><span>Meu nível</span><b id="sxMeuNivel">Iniciante</b><small id="sxProximoNivel">Faltam 1.000 SX para evoluir</small></div>
-</div>
-
-<div class="sxBarBox">
-  <div class="sxBarTop"><span>Evolução</span><b id="sxPctNivel">0%</b></div>
-  <div class="sxBar"><div id="sxBarFill"></div></div>
-</div>
-
-<div class="card scroll"><h2>🏆 Top 10 SX</h2><div id="sxRankingBox"></div><button class="secondary" style="margin-top:8px" onclick="toggleRankingCompletoSX()">Ver ranking completo</button></div>
-
-<div class="card">
-  <h2>⚔️ Criar Desafio</h2>
-  <p class="hint">Somente promotores participam. Liderança e direção apenas acompanham.</p>
-  <div class="grid">
-    <input id="sxDesafiante" placeholder="Seu nome" readonly>
-    <select id="sxAdversario"><option value="">Escolha o adversário</option></select>
-    <input id="sxAposta" type="number" placeholder="Aposta SX. Ex: 100">
-    <select id="sxCriterio">
-      <option value="pesquisas">Por pesquisas</option>
-      <option value="q">Por Q</option>
-      <option value="sala">Por sala</option>
-      <option value="dia">Resultado do dia</option>
-      <option value="semana">Resultado da semana</option>
-    </select>
-  </div>
-  <button class="main" style="margin-top:8px" onclick="criarDesafioSX20()">Criar desafio</button>
-  <p id="sxMsg"></p>
-</div>
-
-<div class="card scroll"><h2>📋 Meus Desafios</h2><div id="sxDesafiosBox"></div></div>
-<div class="card scroll"><h2>🏅 Conquistas</h2><div id="sxConquistasBox"></div></div>
-
-<button class="secondary" onclick="abrirComoFuncionaSX()">❓ Como funciona o SX?</button>
-
-<div id="sxModalRegras" class="sxModal hidden">
-  <div class="sxModalBox">
-    <h2>Como funciona o SX?</h2>
-    <p class="hint">Pontuação automática da Arena SX.</p>
-    <div class="kpis">
-      <div class="kpi">Pesquisa<b>+10</b></div><div class="kpi">NQ<b>+20</b></div>
-      <div class="kpi">1 Item<b>+50</b></div><div class="kpi">Q<b>+100</b></div>
-      <div class="kpi">Sala<b>+300</b></div><div class="kpi">Venda<b>+1000</b></div>
-    </div>
-    <button class="main" style="margin-top:8px" onclick="fecharComoFuncionaSX()">Fechar</button>
-  </div>
-</div>
-
-<div class="card scroll adminOnly">
-  <h2>CEO • Arena SX</h2>
-  <p class="hint">Administração da Arena: desafios, temporada e trocas SX.</p>
-  <div class="grid">
-    <button class="main" onclick="carregarArenaSX20()">Atualizar Arena</button>
-    <button class="secondary" onclick="exportarArenaSXCSV()">Exportar Arena CSV</button>
-  </div>
-  <div class="card scroll"><h2>Definir vencedor dos desafios</h2><div id="sxCEOBox"></div></div>
-  <div class="card scroll"><h2>Temporada Mensal SX</h2><div id="sxTemporadaBox"></div></div>
-  <div class="card scroll"><h2>Trocas SX</h2><div id="sxTrocasCEOBox"></div></div>
-</div>
-</section>
-
-
 <section id="qualificacao" class="card hidden adminOnly">
 <h2>Portal CEO</h2>
 <p class="hint">Central do CEO: dashboard, mapa da operação, sala, Arena SX, metas e configurações.</p>
@@ -755,7 +702,7 @@ body.appAberto #btnSairFinal{display:block!important}
       <button class="secondary" onclick="abrirPortalBloco30('portalSala30')">✅ Salas</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalRanking36')">🏆 Ranking</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalMetas36')">📈 Metas</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalArena30')">🎮 Arena SX</button>
+      
       <button class="secondary" onclick="abrirPortalBloco30('portalAdmin31')">⚙️ Administração</button>
     </div>
   </div>
@@ -822,15 +769,6 @@ body.appAberto #btnSairFinal{display:block!important}
     <p class="hint">O profissional confirma casal em sala. O CEO pode corrigir/desfazer se necessário.</p>
     <button class="main" onclick="carregarConferenciaSala20()">Atualizar sala</button>
     <div id="portalSalaBox30" style="margin-top:8px"></div>
-  </div>
-
-  <div id="portalArena30" class="card scroll portalBloco30">
-    <h2>🪙 Arena SX • Administração</h2>
-    <p class="hint">Aprovação de desafios, temporada, trocas e ranking SX.</p>
-    <button class="main" onclick="carregarArenaSX20()">Atualizar Arena SX</button>
-    <div class="card scroll"><h2>Definir vencedor dos desafios</h2><div id="portalSxCEOBox30"></div></div>
-    <div class="card scroll"><h2>Temporada Mensal SX</h2><div id="portalSxTemporadaBox30"></div></div>
-    <div class="card scroll"><h2>Trocas SX</h2><div id="portalSxTrocasBox30"></div></div>
   </div>
 
   <div id="portalRelatorios30" class="card scroll portalBloco30">
@@ -5139,6 +5077,143 @@ document.addEventListener("DOMContentLoaded",()=>{
     if(CP3_E("relatorio") && !CP3_E("relatorio").classList.contains("hidden")) window.carregarRelatorio();
   },700);
 });
+})();
+</script>
+
+
+<script>
+/* ===== CAPTAPRO 3.0 FINAL • SEM ARENA SX / MAPA OPERACIONAL ===== */
+(function(){
+"use strict";
+function E(id){return document.getElementById(id)}
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+function esc(s){return String(s??"").replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
+const PONTOS=[
+ {nome:"Porta dentro do Park",lat:-22.74075,lng:-45.59225},
+ {nome:"Park Dream House",lat:-22.74050,lng:-45.59205},
+ {nome:"Fábrica Spinassi",lat:-22.73925,lng:-45.59110},
+ {nome:"Corredor",lat:-22.73985,lng:-45.59175},
+ {nome:"Baden Baden",lat:-22.73870,lng:-45.59100},
+ {nome:"Djalma",lat:-22.73815,lng:-45.59050},
+ {nome:"Igreja",lat:-22.73845,lng:-45.59260},
+ {nome:"Renner",lat:-22.73895,lng:-45.59310},
+ {nome:"Guarda-chuvas",lat:-22.74010,lng:-45.59070},
+ {nome:"Posto Shell",lat:-22.74110,lng:-45.59300}
+];
+let mapaFinal=null, layersFinal=[];
+
+function removeArena(){
+  document.querySelectorAll('button').forEach(function(b){
+    const t=norm(b.innerText), on=String(b.getAttribute("onclick")||"");
+    if(t.includes("arena") || t.includes("pulsador") || on.includes("arena") || on.includes("sx")){
+      b.style.display="none";
+      b.classList.add("hidden");
+    }
+  });
+  ["arena","portalArena30"].forEach(function(id){const el=E(id); if(el) el.remove();});
+}
+function corrigeCompartilhar(){
+  const r=E("resultado");
+  if(r) r.querySelectorAll('button[onclick*="compartilharFicha"],button[onclick*="novaPesquisa"]').forEach(function(b){b.remove()});
+  const f=E("fichaBox");
+  if(f){
+    const c=[...f.querySelectorAll('button[onclick*="compartilharFicha"]')]; c.slice(1).forEach(x=>x.remove());
+    const n=[...f.querySelectorAll('button[onclick*="novaPesquisa"]')]; n.slice(1).forEach(x=>x.remove());
+  }
+}
+function lerLocal(k){
+  try{const v=JSON.parse(localStorage.getItem(k)||"[]"); return Array.isArray(v)?v:[]}catch(e){return []}
+}
+function nome(x){return x.captador_nome||x.profissional||x.nome_profissional||x.nome||x.user_email||"Sem nome"}
+function ponto(x){return x.ponto||x.ponto_captacao||x.ponto_atual||x.local||""}
+function sala(x){const s=norm(x.levou_sala||x.sala||x.sala_status||x.status_sala||""); return s.includes("sim")||s.includes("confirm")||x.sala===true||x.levou_sala===true}
+function qual(x){return x.qualificacao_automatica||x.qualificacao||x.resultado_qualificacao||""}
+function pontoObj(nm){const n=norm(nm);return PONTOS.find(p=>norm(p.nome)===n||norm(p.nome).includes(n)||n.includes(norm(p.nome)))||PONTOS[0]}
+function profissionais(){
+  let arr=[].concat(lerLocal("pesquisasLocal"),lerLocal("cp_fichas"),lerLocal("capta_pesquisas"));
+  const map={};
+  arr.forEach(x=>{
+    const n=nome(x);
+    if(!map[n]) map[n]={nome:n,ponto:ponto(x),pesq:0,q:0,sala:0,online:false};
+    map[n].pesq++;
+    if(norm(qual(x)).startsWith("q")) map[n].q++;
+    if(sala(x)) map[n].sala++;
+    map[n].ponto=ponto(x)||map[n].ponto;
+  });
+  try{
+    const loc=JSON.parse(localStorage.getItem("cp_locs")||localStorage.getItem("cp14_locs")||"{}");
+    Object.entries(loc).forEach(([n,x])=>{
+      if(!map[n]) map[n]={nome:n,ponto:x.ponto||"",pesq:0,q:0,sala:0,online:true};
+      map[n].ponto=x.ponto||map[n].ponto;
+      map[n].online=true;
+      map[n].lat=x.lat; map[n].lng=x.lng;
+    });
+  }catch(e){}
+  return Object.values(map);
+}
+
+window.carregarMapaReal37=function(){
+  const box=E("mapaRealCEO37");
+  if(!box || !window.L) return;
+  if(!mapaFinal){
+    mapaFinal=L.map("mapaRealCEO37").setView([-22.7395,-45.5917],16);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(mapaFinal);
+  }
+  layersFinal.forEach(l=>{try{mapaFinal.removeLayer(l)}catch(e){}});
+  layersFinal=[];
+  const bounds=[];
+  PONTOS.forEach(p=>{
+    const ic=L.divIcon({className:"",html:`<div style="background:#00c2ff;color:#001;border:3px solid #fff;border-radius:999px;padding:7px 11px;font-weight:900;box-shadow:0 0 18px #00c2ff;white-space:nowrap">📍 ${esc(p.nome)}</div>`,iconSize:[165,34],iconAnchor:[10,17]});
+    const m=L.marker([p.lat,p.lng],{icon:ic}).addTo(mapaFinal).bindPopup(`<b>${esc(p.nome)}</b><br>Ponto de captação`);
+    const c=L.circle([p.lat,p.lng],{radius:50,color:"#00c2ff",fillColor:"#00c2ff",fillOpacity:.08,weight:1}).addTo(mapaFinal);
+    layersFinal.push(m,c); bounds.push([p.lat,p.lng]);
+  });
+  profissionais().forEach((r,i)=>{
+    const p=(r.lat&&r.lng)?{lat:r.lat,lng:r.lng,nome:r.ponto||"GPS"}:pontoObj(r.ponto||"");
+    const lat=Number(p.lat)+((i%5)-2)*0.00012;
+    const lng=Number(p.lng)+(Math.floor(i/5)-1.5)*0.00012;
+    const cor=r.online?"#00e676":"#ff5252";
+    const ic=L.divIcon({className:"",html:`<div style="width:25px;height:25px;border-radius:50%;border:4px solid #fff;background:${cor};box-shadow:0 0 0 8px ${r.online?"rgba(0,230,118,.22)":"rgba(255,82,82,.18)"},0 0 18px ${cor}"></div>`,iconSize:[25,25],iconAnchor:[12,12]});
+    const pop=`<b>${esc(r.nome)}</b><br>📍 ${esc(r.ponto||p.nome||"-")}<br>Pesquisas: <b>${r.pesq||0}</b><br>Q: <b>${r.q||0}</b><br>Casais em sala: <b>${r.sala||0}</b><br>Status: <b>${r.online?"Online":"Sem GPS recente"}</b>`;
+    const m=L.marker([lat,lng],{icon:ic}).addTo(mapaFinal).bindPopup(pop);
+    layersFinal.push(m); bounds.push([lat,lng]);
+  });
+  if(bounds.length) mapaFinal.fitBounds(bounds,{padding:[30,30],maxZoom:17});
+  setTimeout(()=>mapaFinal.invalidateSize(true),300);
+};
+
+function resumoMapa(){
+  const box=E("portalMapa30");
+  if(!box) return;
+  let div=E("mapaResumoFinal");
+  if(!div){
+    div=document.createElement("div");
+    div.id="mapaResumoFinal";
+    div.className="card";
+    div.innerHTML='<h2>📍 Pontos e Profissionais</h2><p class="hint">Resumo por ponto de captação.</p><div id="mapaResumoListaFinal"></div>';
+    box.appendChild(div);
+  }
+  const alvo=E("mapaResumoListaFinal");
+  const profs=profissionais();
+  alvo.innerHTML=PONTOS.map(p=>{
+    const lista=profs.filter(x=>norm(x.ponto||"").includes(norm(p.nome))||norm(p.nome).includes(norm(x.ponto||"")));
+    return `<div class="mapaResumoFinal"><h3>📍 ${esc(p.nome)}</h3>${lista.length?lista.map(x=>`<span class="mapaPessoaFinal ${x.online?"on":"off"}">${x.online?"🟢":"🔴"} ${esc(x.nome)} • ${x.pesq||0} pesq. • ${x.sala||0} sala</span>`).join(""):'<span class="mini">Nenhum profissional informado neste ponto.</span>'}</div>`;
+  }).join("");
+}
+
+const oldPortal=window.abrirPortalBloco30;
+window.abrirPortalBloco30=function(id){
+  if(oldPortal) oldPortal.apply(this,arguments);
+  setTimeout(()=>{removeArena(); corrigeCompartilhar(); if(id==="portalMapa30"){resumoMapa(); carregarMapaReal37();}},400);
+};
+const oldAba=window.aba;
+window.aba=function(id,btn){
+  const r=oldAba?oldAba.apply(this,arguments):undefined;
+  setTimeout(()=>{removeArena(); corrigeCompartilhar(); if(id==="qualificacao"){resumoMapa(); setTimeout(carregarMapaReal37,500);}},500);
+  return r;
+};
+document.addEventListener("DOMContentLoaded",()=>setTimeout(()=>{removeArena(); corrigeCompartilhar(); resumoMapa();},800));
+setInterval(corrigeCompartilhar,2000);
 })();
 </script>
 
