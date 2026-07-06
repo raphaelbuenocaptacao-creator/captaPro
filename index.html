@@ -423,6 +423,37 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 .profNomeMapaFinal.off{background:#ff5252;color:#fff;box-shadow:0 0 18px #ff5252}
 @media(max-width:700px){body.ceo .tabs,.tabs{grid-template-columns:1fr!important}.relCardsFinal{grid-template-columns:1fr 1fr}}
 
+
+/* CAPTAPRO 3.0 • RELATÓRIO PRO FINAL */
+button[onclick*="'raking'"], button[onclick*='"raking"'], #raking{display:none!important}
+.tabs{grid-template-columns:repeat(2,1fr)!important}
+body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
+.relProTop{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+.relProCard{background:#181818;border:1px solid #333;border-radius:16px;padding:14px;text-align:center}
+.relProCard small{display:block;color:#aaa;font-size:11px;text-transform:uppercase;font-weight:900}
+.relProCard b{display:block;color:#00e676;font-size:28px;margin-top:4px}
+.relProCard.blue b{color:#00c2ff}.relProCard.gold b{color:#ffd54f}.relProCard.red b{color:#ff5252}
+.relProTools{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px;margin:10px 0}
+.relProTabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}
+.relProTabs button{background:#181818;border:1px solid #333}
+.relProTabs button.ativo{background:linear-gradient(135deg,#ef1b24,#ff3333)!important;border:0}
+.relProBox{background:#080808;border:1px solid #333;border-radius:18px;padding:14px;margin:12px 0}
+.relProTable{overflow:auto;border:1px solid #2b2b2b;border-radius:14px;margin-top:10px}
+.relProTable table{min-width:900px}
+.relProFicha{background:#101010;border:1px solid #333;border-radius:16px;padding:13px;margin:9px 0}
+.relProFicha.sala{border-color:#00e676;background:#061d10}
+.relProFicha b{display:block;color:#fff;font-size:16px;margin-bottom:4px}
+.relProFicha small{display:block;color:#aaa;line-height:1.35}
+.relProFicha .tag{display:inline-block;border-radius:999px;padding:5px 8px;background:#181818;border:1px solid #333;margin:5px 5px 0 0;font-weight:900;font-size:12px}
+.relProPerfilHead{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;align-items:center}
+.relProAvatar{width:70px;height:70px;border-radius:20px;background:linear-gradient(135deg,#ef1b24,#7a0000);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:26px}
+.relProNome{display:flex;align-items:center;gap:12px}
+@media(max-width:700px){
+  .tabs,body.ceo .tabs{grid-template-columns:1fr!important}
+  .relProTop{grid-template-columns:1fr 1fr}
+  .relProTools,.relProTabs,.relProPerfilHead{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -434,7 +465,7 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('relatorio',this)">Relatório</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
 
 
 <section id="pesquisa" class="card">
@@ -681,26 +712,6 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 </div>
 
 <div class="card"><h2>Individual</h2><select id="profFiltro" onchange="mostrarIndividual()"><option value="">Escolha o profissional</option></select><div id="individualBox"></div></div>
-</section>
-
-<section id="raking" class="card hidden">
-<h2>Ranking Julho 2026</h2>
-<p class="hint">Julho começa do zero. O ranking será formado pelas fichas salvas no sistema.</p>
-<div class="rakingTools17">
-  <input id="rakingDe" type="date">
-  <input id="rakingAte" type="date">
-</div>
-<input id="csvRakingInput21" type="file" accept=".csv,text/csv" onchange="importarRakingCSV21(event)">
-<div class="grid" style="margin:8px 0">
-  <button class="main" onclick="carregarRaking()">Atualizar Ranking</button>
-  <button class="secondary" onclick="limparRakingCSV21()">Atualizar ranking</button>
-</div>
-<div class="card scroll">
-  <h2>Ranking Julho</h2>
-  <p class="hint">Relatório zerado: mostra somente os dados salvos de hoje em diante.</p>
-  <div id="rakingFonte21" class="mini"></div>
-  <div id="rakingBox"></div>
-</div>
 </section>
 
 <section id="qualificacao" class="card hidden adminOnly">
@@ -5402,6 +5413,227 @@ document.addEventListener("DOMContentLoaded",()=>{
     if(E("relDe") && !V("relDe")) E("relDe").value="2026-07-01";
     if(E("relAte") && !V("relAte")) E("relAte").value=dataHoje();
   },800);
+});
+})();
+</script>
+
+
+<script>
+/* ===== CAPTAPRO 3.0 • RELATÓRIO PRO FINAL + FICHAS POR USUÁRIO ===== */
+(function(){
+"use strict";
+
+function E(id){return document.getElementById(id)}
+function V(id){return (E(id)?.value||"").trim()}
+function H(id,v){if(E(id))E(id).innerHTML=v}
+function S(id,v){if(E(id))E(id).textContent=v}
+function esc(s){return String(s??"").replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+function hoje(){return new Date().toISOString().slice(0,10)}
+function pct(a,b){return b?Math.round((Number(a||0)/Number(b||0))*100)+"%":"0%"}
+function iniciais(n){return String(n||"P").split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"P"}
+
+function isCEO(){
+  const r=norm(window.role || (typeof role!=="undefined"?role:"") || document.body.className || "");
+  const e=norm(window.usuarioEmail || (typeof usuarioEmail!=="undefined"?usuarioEmail:"") || localStorage.getItem("email") || "");
+  return document.body.classList.contains("ceo") || r.includes("ceo") || r.includes("admin") || e.includes("raphaelbueno");
+}
+function emailAtual(){
+  return window.usuarioEmail || (typeof usuarioEmail!=="undefined"?usuarioEmail:"") || localStorage.getItem("email") || V("email") || "";
+}
+function nomeAtual(){
+  return window.usuarioNome || (typeof usuarioNome!=="undefined"?usuarioNome:"") || localStorage.getItem("nome") || V("nome") || "";
+}
+
+function dataFicha(x){return String(x.data||x.created_at||x.data_criacao||x.hora||"").slice(0,10)||hoje()}
+function nomeProf(x){return x.captador_nome||x.profissional||x.nome_profissional||x.nome_usuario||x.nome||x.user_name||x.usuario||"Sem nome"}
+function emailProf(x){return x.user_email||x.email||x.email_usuario||x.usuario_email||""}
+function pontoProf(x){return x.ponto||x.ponto_captacao||x.ponto_atual||x.local||"-"}
+function qual(x){return x.qualificacao_automatica||x.qualificacao||x.resultado_qualificacao||x.status_qualificacao||"N/I"}
+function isQ(x){return norm(qual(x)).startsWith("q")}
+function isItem(x){return norm(qual(x)).includes("1")}
+function isNQ(x){return norm(qual(x)).startsWith("nq") || (!isQ(x)&&!isItem(x))}
+function isSala(x){const s=norm(x.levou_sala||x.sala||x.sala_status||x.status_sala||x.confirmou_sala||"");return s.includes("sim")||s.includes("confirm")||x.levou_sala===true||x.sala===true}
+
+function lerLocal(keys){
+  let arr=[];
+  keys.forEach(k=>{
+    try{
+      const v=JSON.parse(localStorage.getItem(k)||"[]");
+      if(Array.isArray(v)) arr=arr.concat(v);
+    }catch(e){}
+  });
+  return arr;
+}
+async function buscarSupabase(tabela){
+  try{
+    if(typeof db!=="undefined" && db && db.from){
+      const r=await db.from(tabela).select("*").order("created_at",{ascending:false}).limit(5000);
+      return r.data||[];
+    }
+  }catch(e){}
+  return [];
+}
+async function getPesquisas(){
+  let arr=[].concat(
+    lerLocal(["pesquisasLocal","cp_fichas","capta_pesquisas","cp50_fichas"]),
+    await buscarSupabase("pesquisas")
+  );
+  const seen={};
+  return arr.filter(x=>{
+    const k=String(x.id||"")+"|"+String(emailProf(x))+"|"+String(dataFicha(x))+"|"+String(x.nome1||x.nome_casal||x.convidado_1||"");
+    if(seen[k]) return false; seen[k]=1; return true;
+  });
+}
+async function getAbordagens(){
+  let arr=[].concat(
+    lerLocal(["abordagensLocal","capta_abordagens","cp_abordagens_lista"]),
+    await buscarSupabase("abordagens")
+  );
+  return arr;
+}
+function filtrarPermissao(arr){
+  if(isCEO()) return arr;
+  const em=norm(emailAtual()), nm=norm(nomeAtual());
+  return arr.filter(x=>{
+    const xe=norm(emailProf(x)), xn=norm(nomeProf(x));
+    return (em && xe===em) || (nm && xn===nm) || (nm && xn.includes(nm)) || (nm && nm.includes(xn));
+  });
+}
+function periodo(){
+  const de=V("relDe")||"2026-07-01";
+  const ate=V("relAte")||hoje();
+  return {de,ate};
+}
+function inPeriodo(x,de,ate){const d=dataFicha(x); return (!de||d>=de)&&(!ate||d<=ate)}
+function agrupar(pesq,abord){
+  const map={};
+  pesq.forEach(x=>{
+    const n=nomeProf(x), e=emailProf(x);
+    const key=e||n;
+    if(!map[key]) map[key]={key,nome:n,email:e,abord:0,pesq:0,q:0,nq:0,item:0,sala:0,ponto:pontoProf(x),fichas:[]};
+    map[key].pesq++;
+    if(isQ(x)) map[key].q++;
+    else if(isItem(x)) map[key].item++;
+    else map[key].nq++;
+    if(isSala(x)) map[key].sala++;
+    map[key].ponto=pontoProf(x)||map[key].ponto;
+    map[key].fichas.push(x);
+  });
+  abord.forEach(x=>{
+    const n=nomeProf(x), e=emailProf(x);
+    const key=e||n;
+    if(!map[key]) map[key]={key,nome:n,email:e,abord:0,pesq:0,q:0,nq:0,item:0,sala:0,ponto:pontoProf(x),fichas:[]};
+    map[key].abord++;
+  });
+  return Object.values(map).sort((a,b)=>b.sala-a.sala||b.pesq-a.pesq||b.abord-a.abord||a.nome.localeCompare(b.nome));
+}
+function cards(r){
+  return `<div class="relProTop">
+    <div class="relProCard blue"><small>Abordagens</small><b>${r.abord||0}</b></div>
+    <div class="relProCard"><small>Pesquisas</small><b>${r.pesq||0}</b></div>
+    <div class="relProCard"><small>Q</small><b>${r.q||0}</b></div>
+    <div class="relProCard gold"><small>NQ</small><b>${r.nq||0}</b></div>
+    <div class="relProCard gold"><small>1 Item</small><b>${r.item||0}</b></div>
+    <div class="relProCard"><small>Casais em sala</small><b>${r.sala||0}</b></div>
+    <div class="relProCard red"><small>Pesquisa → Sala</small><b>${pct(r.sala,r.pesq)}</b></div>
+    <div class="relProCard red"><small>Abord. → Pesquisa</small><b>${pct(r.pesq,r.abord)}</b></div>
+  </div>`;
+}
+function fichaLinha(f){
+  const casal=[f.nome1||f.convidado_1||f.nome_cliente||"", f.nome2||f.convidado_2||""].filter(Boolean).join(" & ") || "Casal sem nome";
+  return `<div class="relProFicha ${isSala(f)?"sala":""}">
+    <b>${esc(casal)}</b>
+    <small>${esc(dataFicha(f))} • ${esc(pontoProf(f))} • ${esc(qual(f))}</small>
+    <span class="tag">${isSala(f)?"✅ Sala":"⏳ Não sala"}</span>
+    <span class="tag">Profissional: ${esc(nomeProf(f))}</span>
+    ${f.brinde?`<span class="tag">🎁 ${esc(f.brinde)}</span>`:""}
+    ${f.renda?`<span class="tag">Renda: ${esc(f.renda)}</span>`:""}
+  </div>`;
+}
+function tabelaEquipe(rows){
+  if(!rows.length) return '<p class="erro">Sem dados encontrados nesse período.</p>';
+  return `<div class="relProTable"><table>
+    <tr><th>Profissional</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th><th>Conv. Sala</th><th>Ponto</th></tr>
+    ${rows.map(r=>`<tr>
+      <td><b>${esc(r.nome)}</b></td><td>${r.abord}</td><td>${r.pesq}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.item}</td><td><b class="ok">${r.sala}</b></td><td>${pct(r.sala,r.pesq)}</td><td>${esc(r.ponto||"-")}</td>
+    </tr>`).join("")}
+  </table></div>`;
+}
+function perfil(r){
+  if(!r) return '<p class="mini">Escolha um profissional para abrir o perfil individual.</p>';
+  return `<div class="relProBox">
+    <div class="relProPerfilHead">
+      <div class="relProNome"><div class="relProAvatar">${esc(iniciais(r.nome))}</div><div><h2 style="border:0;padding:0;margin:0">${esc(r.nome)}</h2><p class="mini">${esc(r.email||"")} • ${esc(r.ponto||"-")}</p></div></div>
+      <div><b class="ok">${r.sala} casais em sala</b><div class="mini">Conversão: ${pct(r.sala,r.pesq)}</div></div>
+    </div>
+    ${cards(r)}
+    <h2 style="margin-top:14px">📋 Fichas salvas</h2>
+    ${r.fichas.length ? r.fichas.map(fichaLinha).join("") : '<p class="mini">Nenhuma ficha salva para este profissional neste período.</p>'}
+  </div>`;
+}
+
+window.carregarRelatorio=async function(){
+  const {de,ate}=periodo();
+  let p=(await getPesquisas()).filter(x=>inPeriodo(x,de,ate));
+  let a=(await getAbordagens()).filter(x=>inPeriodo(x,de,ate));
+  p=filtrarPermissao(p); a=filtrarPermissao(a);
+
+  const rows=agrupar(p,a);
+  window.rowsRel=rows;
+
+  const total={abord:a.length,pesq:p.length,q:p.filter(isQ).length,nq:p.filter(isNQ).length,item:p.filter(isItem).length,sala:p.filter(isSala).length};
+  S("rAbord",total.abord); S("rPesq",total.pesq); S("rQ",total.q); S("rNQ",total.nq); S("rNQ1",total.item); S("rSala",total.sala); S("rConv",pct(total.sala,total.pesq));
+
+  H("rankingEquipeBox13", `<div class="relProBox">
+    <h2>📊 Relatório Geral</h2>
+    <p class="mini"><b class="ok">Período:</b> ${de} até ${ate} • ${isCEO()?"Visão CEO: todos os profissionais":"Visão profissional: somente seus dados"}</p>
+    ${cards(total)}
+    <h2>👥 Resultado por profissional</h2>
+    ${tabelaEquipe(rows)}
+  </div>`);
+
+  const opcoes=rows.map(r=>`<option value="${esc(r.key)}">${esc(r.nome)}</option>`).join("");
+  H("profFiltro", '<option value="">Escolha o profissional</option>'+opcoes);
+
+  if(!isCEO() && rows.length){
+    E("profFiltro").value=rows[0].key;
+    mostrarIndividual();
+  }else{
+    H("individualBox", '<p class="mini">Escolha um profissional para ver o perfil individual e todas as fichas salvas.</p>');
+  }
+};
+
+window.mostrarIndividual=function(){
+  const key=V("profFiltro");
+  const r=(window.rowsRel||[]).find(x=>x.key===key || x.nome===key);
+  H("individualBox", perfil(r));
+};
+
+function removerRankingJulho(){
+  document.querySelectorAll('button').forEach(b=>{
+    const t=norm(b.innerText), on=String(b.getAttribute("onclick")||"");
+    if(t.includes("ranking julho") || on.includes("'raking'") || on.includes('"raking"')){
+      b.style.display="none";
+      b.classList.add("hidden");
+    }
+  });
+  const r=E("raking"); if(r) r.remove();
+}
+
+const oldAba=window.aba;
+window.aba=function(id,btn){
+  const r=oldAba?oldAba.apply(this,arguments):undefined;
+  setTimeout(()=>{removerRankingJulho(); if(id==="relatorio") carregarRelatorio();},400);
+  return r;
+};
+
+document.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(()=>{
+    removerRankingJulho();
+    if(E("relDe") && !V("relDe")) E("relDe").value="2026-07-01";
+    if(E("relAte") && !V("relAte")) E("relAte").value=hoje();
+  },700);
 });
 })();
 </script>
