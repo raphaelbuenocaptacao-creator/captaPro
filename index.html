@@ -4988,4 +4988,158 @@ if(typeof oldAbrir41==='function'&&!window.__abrir41){
 })();
 </script>
 
+
+<script>
+/* ===== CAPTAPRO 3.0 • CORREÇÃO RELATÓRIO 01/07 ATÉ 05/07 ===== */
+(function(){
+"use strict";
+
+function CP3_E(id){return document.getElementById(id)}
+function CP3_V(id){return (CP3_E(id)?.value||"").trim()}
+function CP3_S(id,v){if(CP3_E(id))CP3_E(id).textContent=v}
+function CP3_H(id,v){if(CP3_E(id))CP3_E(id).innerHTML=v}
+function CP3_norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+function CP3_data(x){
+  const d = String(x.data || x.created_at || x.data_criacao || "").slice(0,10);
+  return d || "";
+}
+function CP3_inRange(x,de,ate){
+  const d=CP3_data(x);
+  return (!de || d>=de) && (!ate || d<=ate);
+}
+function CP3_sala(x){
+  const s=CP3_norm(x.levou_sala || x.sala || x.sala_status || x.status_sala || x.confirmou_sala || "");
+  return s.includes("sim") || s.includes("confirm") || x.sala===true || x.levou_sala===true;
+}
+function CP3_qual(x){
+  return x.qualificacao_automatica || x.qualificacao || x.resultado_qualificacao || x.status_qualificacao || "";
+}
+function CP3_nome(x){
+  return x.captador_nome || x.profissional || x.nome_profissional || x.nome || x.user_email || "Sem nome";
+}
+async function CP3_dados(t){
+  let arr=[];
+  try{
+    if(typeof db!=="undefined" && db && db.from){
+      const r = await db.from(t).select("*").order("created_at",{ascending:false}).limit(5000);
+      arr = r.data || [];
+    }
+  }catch(e){}
+  try{
+    const key = t==="pesquisas" ? "pesquisasLocal" : "abordagensLocal";
+    const local = JSON.parse(localStorage.getItem(key)||"[]");
+    arr = [...arr, ...local];
+  }catch(e){}
+  if(t==="pesquisas"){
+    try{
+      const salas = JSON.parse(localStorage.getItem("salasLocal21")||"[]");
+      const key = x => String(x.id||"")+"|"+String(x.user_email||"")+"|"+String(x.created_at||x.data||"");
+      const map={};
+      arr.forEach(x=>{map[key(x)]={...(map[key(x)]||{}),...x}});
+      salas.forEach(s=>{
+        const k=key(s);
+        map[k]={...(map[k]||s),...s,levou_sala:"Sim",sala_status:"Sim"};
+      });
+      arr=Object.values(map);
+    }catch(e){}
+  }
+  return arr;
+}
+function CP3_setPeriodo(){
+  if(CP3_E("relDe")) CP3_E("relDe").value = "2026-07-01";
+  if(CP3_E("relAte")) CP3_E("relAte").value = "2026-07-05";
+  if(CP3_E("diarioData") && !CP3_V("diarioData")) CP3_E("diarioData").value = "2026-07-05";
+}
+window.carregarRelatorio = async function(){
+  CP3_setPeriodo();
+  const de = CP3_V("relDe") || "2026-07-01";
+  const ate = CP3_V("relAte") || "2026-07-05";
+
+  let p = await CP3_dados("pesquisas");
+  let a = await CP3_dados("abordagens");
+
+  p = (p||[]).filter(x=>CP3_inRange(x,de,ate));
+  a = (a||[]).filter(x=>CP3_inRange(x,de,ate));
+
+  const roleAtual = window.role || role || "";
+  const emailAtual = window.usuarioEmail || usuarioEmail || "";
+  if(roleAtual !== "ceo"){
+    p = p.filter(x=>!emailAtual || x.user_email===emailAtual || x.email===emailAtual);
+    a = a.filter(x=>!emailAtual || x.user_email===emailAtual || x.email===emailAtual);
+  }
+
+  const q = p.filter(x=>CP3_norm(CP3_qual(x)).startsWith("q")).length;
+  const nq1 = p.filter(x=>CP3_norm(CP3_qual(x)).includes("1")).length;
+  const nq = Math.max(0,p.length-q-nq1);
+  const sala = p.filter(CP3_sala).length;
+
+  CP3_S("rAbord",a.length);
+  CP3_S("rPesq",p.length);
+  CP3_S("rQ",q);
+  CP3_S("rNQ",nq);
+  CP3_S("rNQ1",nq1);
+  CP3_S("rSala",sala);
+  CP3_S("rConv",p.length ? Math.round((sala/p.length)*100)+"%" : "0%");
+
+  const map={};
+  p.forEach(x=>{
+    const n=CP3_nome(x);
+    if(!map[n]) map[n]={nome:n,a:0,p:0,q:0,nq:0,nq1:0,s:0};
+    map[n].p++;
+    const qv=CP3_norm(CP3_qual(x));
+    if(qv.startsWith("q")) map[n].q++;
+    else if(qv.includes("1")) map[n].nq1++;
+    else map[n].nq++;
+    if(CP3_sala(x)) map[n].s++;
+  });
+  a.forEach(x=>{
+    const n=CP3_nome(x);
+    if(!map[n]) map[n]={nome:n,a:0,p:0,q:0,nq:0,nq1:0,s:0};
+    map[n].a++;
+  });
+
+  const rows=Object.values(map).sort((x,y)=>y.s-x.s||y.p-x.p||y.a-x.a||x.nome.localeCompare(y.nome));
+  window.rowsRel=rows;
+
+  const aviso = `<p class="mini"><b class="ok">Período:</b> 01/07/2026 até 05/07/2026 • Relatório corrigido para buscar pesquisas, abordagens e casais em sala.</p>`;
+  CP3_H("rankingEquipeBox13", rows.length
+    ? aviso + `<table>
+        <tr><th>Profissional</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Casais em Sala</th><th>Conv. Sala</th></tr>
+        ${rows.map(r=>`<tr>
+          <td>${r.nome}</td><td>${r.a}</td><td>${r.p}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td><b class="ok">${r.s}</b></td><td>${r.p?Math.round((r.s/r.p)*100):0}%</td>
+        </tr>`).join("")}
+      </table>`
+    : aviso + `<p class="erro">Sem dados encontrados nesse período. Se os dados estão em outro celular, precisam estar no Supabase ou exportados/importados.</p>`
+  );
+
+  CP3_H("profFiltro", '<option value="">Escolha o profissional</option>'+rows.map(r=>`<option>${r.nome}</option>`).join(""));
+  if(typeof mostrarIndividual==="function") mostrarIndividual();
+
+  // também atualiza painel CEO, se existir
+  CP3_S("ceoAbordHoje",a.length);
+  CP3_S("ceoPesqHoje",p.length);
+  CP3_S("ceoQHoje",q);
+  CP3_S("ceoNQHoje",nq);
+  CP3_S("ceoSalaHoje",sala);
+  CP3_S("ceoConvHoje",p.length ? Math.round((sala/p.length)*100)+"%" : "0%");
+};
+
+const CP3_oldAba = window.aba;
+window.aba = function(id,btn){
+  const r = CP3_oldAba ? CP3_oldAba.apply(this,arguments) : undefined;
+  setTimeout(()=>{
+    if(id==="relatorio") window.carregarRelatorio();
+  },400);
+  return r;
+};
+
+document.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(()=>{
+    CP3_setPeriodo();
+    if(CP3_E("relatorio") && !CP3_E("relatorio").classList.contains("hidden")) window.carregarRelatorio();
+  },700);
+});
+})();
+</script>
+
 </body></html>
