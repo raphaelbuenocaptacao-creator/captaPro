@@ -454,6 +454,18 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
   .relProTools,.relProTabs,.relProPerfilHead{grid-template-columns:1fr}
 }
 
+
+/* CAPTAPRO 3.0 • CORREÇÃO MAPA + RELATÓRIO SEM CONFERÊNCIA DE SALA */
+button[onclick*="carregarConferenciaSala20"], #salaCEOBox20, #portalSala30, button[onclick*="portalSala30"]{display:none!important}
+.card:has(#salaCEOBox20){display:none!important}
+.mapaListaProfFinal{margin-top:8px}
+.mapaPessoaFinal{display:inline-block;margin:5px 5px 0 0;padding:8px 10px;border-radius:999px;background:#151515;border:1px solid #333;font-weight:900;font-size:12px}
+.mapaPessoaFinal.on{border-color:#00e676;color:#00e676}
+.mapaPessoaFinal.off{border-color:#ff5252;color:#ff5252}
+.profNomePinFinal{background:#00e676;color:#031;border:3px solid #fff;border-radius:999px;padding:7px 11px;font-weight:900;font-size:12px;box-shadow:0 0 18px #00e676;white-space:nowrap}
+.profNomePinFinal.off{background:#ff5252;color:#fff;box-shadow:0 0 18px #ff5252}
+.relProFicha b{font-size:18px}.relProFicha small{font-size:13px}
+
 </style>
 </head>
 <body>
@@ -5635,6 +5647,44 @@ document.addEventListener("DOMContentLoaded",()=>{
     if(E("relAte") && !V("relAte")) E("relAte").value=hoje();
   },700);
 });
+})();
+</script>
+
+
+<script>
+/* ===== CAPTAPRO 3.0 • FIX MAPA PROFISSIONAIS + RELATÓRIO CASAIS/PONTO ===== */
+(function(){
+"use strict";
+function E(id){return document.getElementById(id)}
+function esc(s){return String(s??"").replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+function hoje(){return new Date().toISOString().slice(0,10)}
+const PONTOS_FIX=[
+ {nome:"Porta dentro do Park",lat:-22.74075,lng:-45.59225},{nome:"Park Dream House",lat:-22.74050,lng:-45.59205},{nome:"Fábrica Spinassi",lat:-22.73925,lng:-45.59110},{nome:"Corredor",lat:-22.73985,lng:-45.59175},{nome:"Baden Baden",lat:-22.73870,lng:-45.59100},{nome:"Djalma",lat:-22.73815,lng:-45.59050},{nome:"Igreja",lat:-22.73845,lng:-45.59260},{nome:"Renner",lat:-22.73895,lng:-45.59310},{nome:"Guarda-chuvas",lat:-22.74010,lng:-45.59070},{nome:"Posto Shell",lat:-22.74110,lng:-45.59300}
+];
+function esconderConferenciaSala(){
+ document.querySelectorAll('button').forEach(b=>{const on=String(b.getAttribute('onclick')||''),t=norm(b.innerText);if(on.includes('carregarConferenciaSala20')||on.includes('portalSala30')||t.includes('conferencia de sala')){b.style.display='none';b.classList.add('hidden')}});
+ ['salaCEOBox20','portalSala30'].forEach(id=>{const el=E(id);if(el)el.style.display='none'});
+ document.querySelectorAll('.card').forEach(c=>{if(c.querySelector('#salaCEOBox20')||norm(c.innerText).includes('conferencia de sala'))c.style.display='none'});
+}
+function lerLocal(keys){let arr=[];keys.forEach(k=>{try{const v=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(v))arr=arr.concat(v)}catch(e){}});return arr}
+function nomeProf(x){return x.captador_nome||x.profissional||x.nome_profissional||x.nome_usuario||x.nome||x.usuario||x.user_name||'Sem nome'}
+function pontoProf(x){return x.ponto||x.ponto_captacao||x.ponto_atual||x.local||'-'}
+function dataFicha(x){return String(x.data||x.created_at||x.data_criacao||'').slice(0,10)||hoje()}
+function isSala(x){const s=norm(x.levou_sala||x.sala||x.sala_status||x.status_sala||x.confirmou_sala||'');return s.includes('sim')||s.includes('confirm')||x.levou_sala===true||x.sala===true}
+function casalNome(x){return [x.nome1||x.convidado_1||x.nome_cliente||x.cliente1||'',x.nome2||x.convidado_2||x.cliente2||''].filter(Boolean).join(' & ')||'Casal sem nome'}
+function allPesquisas(){const arr=lerLocal(['pesquisasLocal','cp_fichas','capta_pesquisas','cp50_fichas']);const seen={};return arr.filter(x=>{const k=String(x.id||'')+'|'+nomeProf(x)+'|'+casalNome(x)+'|'+dataFicha(x);if(seen[k])return false;seen[k]=1;return true})}
+function allLocs(){let loc={};['cp_locs','cp14_locs','capta_locs','capta_presence'].forEach(k=>{try{const v=JSON.parse(localStorage.getItem(k)||'{}');if(v&&!Array.isArray(v)&&typeof v==='object')loc={...loc,...v}}catch(e){}});return loc}
+function pontoObj(nome){const n=norm(nome);return PONTOS_FIX.find(p=>norm(p.nome)===n||norm(p.nome).includes(n)||n.includes(norm(p.nome)))||PONTOS_FIX[0]}
+function profissionaisMapa(){const map={};allPesquisas().forEach(f=>{const n=nomeProf(f);if(!map[n])map[n]={nome:n,ponto:pontoProf(f),pesq:0,sala:0,fichas:[],online:false};map[n].pesq++;if(isSala(f))map[n].sala++;map[n].ponto=pontoProf(f)||map[n].ponto;map[n].fichas.push(f)});const loc=allLocs();Object.entries(loc).forEach(([n,x])=>{if(!map[n])map[n]={nome:n,ponto:x.ponto||x.ponto_atual||'',pesq:0,sala:0,fichas:[],online:true};map[n].online=true;map[n].ponto=x.ponto||x.ponto_atual||map[n].ponto;map[n].lat=x.lat||x.latitude;map[n].lng=x.lng||x.longitude});return Object.values(map).filter(x=>x.nome&&x.nome!=='Sem nome')}
+let mapFix=null,layersFix=[];
+window.carregarMapaReal37=function(){const box=E('mapaRealCEO37');if(!box||!window.L)return;if(!mapFix){mapFix=L.map('mapaRealCEO37').setView([-22.7395,-45.5917],16);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(mapFix)}layersFix.forEach(l=>{try{mapFix.removeLayer(l)}catch(e){}});layersFix=[];const bounds=[];PONTOS_FIX.forEach(p=>{const ic=L.divIcon({className:'',html:`<div style="background:#00c2ff;color:#001;border:3px solid #fff;border-radius:999px;padding:7px 11px;font-weight:900;box-shadow:0 0 18px #00c2ff;white-space:nowrap">📍 ${esc(p.nome)}</div>`,iconSize:[165,34],iconAnchor:[10,17]});const m=L.marker([p.lat,p.lng],{icon:ic}).addTo(mapFix).bindPopup(`<b>${esc(p.nome)}</b><br>Ponto de captação`);const c=L.circle([p.lat,p.lng],{radius:50,color:'#00c2ff',fillColor:'#00c2ff',fillOpacity:.08,weight:1}).addTo(mapFix);layersFix.push(m,c);bounds.push([p.lat,p.lng])});profissionaisMapa().forEach((r,i)=>{const p=(r.lat&&r.lng)?{lat:r.lat,lng:r.lng,nome:r.ponto||'GPS'}:pontoObj(r.ponto||'');const lat=Number(p.lat)+((i%5)-2)*0.00013;const lng=Number(p.lng)+(Math.floor(i/5)-1.5)*0.00013;const cls=r.online?'profNomePinFinal':'profNomePinFinal off';const ic=L.divIcon({className:'',html:`<div class="${cls}">${r.online?'🟢':'🔴'} ${esc(r.nome)}</div>`,iconSize:[160,34],iconAnchor:[10,17]});const fichas=r.fichas.slice(0,8).map(f=>`• ${esc(casalNome(f))} — ${esc(pontoProf(f))} ${isSala(f)?'✅ Sala':''}`).join('<br>');const pop=`<b>${esc(r.nome)}</b><br>📍 ${esc(r.ponto||p.nome||'-')}<br>Pesquisas: <b>${r.pesq}</b><br>Casais em sala: <b>${r.sala}</b><br>Status: <b>${r.online?'Online':'Sem GPS recente'}</b><hr>${fichas||'Sem fichas'}`;const m=L.marker([lat,lng],{icon:ic}).addTo(mapFix).bindPopup(pop);layersFix.push(m);bounds.push([lat,lng])});if(bounds.length)mapFix.fitBounds(bounds,{padding:[30,30],maxZoom:17});setTimeout(()=>mapFix.invalidateSize(true),300);atualizarResumoPontos()};
+function atualizarResumoPontos(){const container=E('mapaResumoListaFinal')||E('mapaResumoOperacionalFinal');if(!container)return;const profs=profissionaisMapa();container.innerHTML=PONTOS_FIX.map(p=>{const lista=profs.filter(x=>norm(x.ponto||'').includes(norm(p.nome))||norm(p.nome).includes(norm(x.ponto||'')));return `<div class="mapaResumoFinal"><h3>📍 ${esc(p.nome)}</h3><div class="mapaListaProfFinal">${lista.length?lista.map(x=>`<span class="mapaPessoaFinal ${x.online?'on':'off'}">${x.online?'🟢':'🔴'} ${esc(x.nome)} • ${x.pesq} casais • ${x.sala} sala</span>`).join(''):'<span class="mini">Nenhum profissional informado neste ponto.</span>'}</div></div>`}).join('')}
+function melhorarIndividual(){const box=E('individualBox');if(!box)return;const p=box.querySelector('.mini');if(p&&p.innerText.includes('Escolha'))p.innerText='Escolha um profissional para ver os casais que ele colocou, os pontos e todas as fichas salvas.'}
+const oldMostrar=window.mostrarIndividual;window.mostrarIndividual=function(){if(oldMostrar)oldMostrar.apply(this,arguments);setTimeout(melhorarIndividual,100)};
+const oldAbrir=window.abrirPortalBloco30;window.abrirPortalBloco30=function(id){if(oldAbrir)oldAbrir.apply(this,arguments);setTimeout(()=>{esconderConferenciaSala();if(id==='portalMapa30'){carregarMapaReal37();atualizarResumoPontos()}},500)};
+const oldAba=window.aba;window.aba=function(id,btn){const r=oldAba?oldAba.apply(this,arguments):undefined;setTimeout(()=>{esconderConferenciaSala();if(id==='qualificacao')setTimeout(carregarMapaReal37,500);if(id==='relatorio')melhorarIndividual()},600);return r};
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{esconderConferenciaSala();atualizarResumoPontos();if(E('mapaRealCEO37'))setTimeout(carregarMapaReal37,800)},900)});
 })();
 </script>
 
