@@ -150,7 +150,7 @@ body.appAberto #btnSairFinal{display:block!important}
 .salaNaoOK{color:#ff5252;font-weight:900}
 #ceoDashboard20 .kpi b{color:#00e676}
 
-#ceoPresencaMapa29{border-color:#00e676!important}
+#ceoPresencaMapa29{display:none!important}
 .pres29{padding:9px;border-bottom:1px solid #262626}
 .on29{color:#00e676;font-weight:900}.off29{color:#ff5252;font-weight:900}
 .ponto29{background:#080808;border:1px solid #333;border-radius:14px;padding:12px;margin:8px 0}
@@ -320,6 +320,7 @@ body.appAberto #btnSairFinal{display:block!important}
     <div class="version">Versão 3.0</div>
   </div>
 
+  <!-- LOGIN BOX -->
   <section id="loginBox" class="card">
     <h2>Identificação Obrigatória</h2>
     <p class="hint">Digite suas credenciais operacionais para liberar o terminal.</p>
@@ -331,6 +332,7 @@ body.appAberto #btnSairFinal{display:block!important}
     <p id="loginMsg" style="margin-top:8px"></p>
   </section>
 
+  <!-- APP PRINCIPAL -->
   <div id="app" class="hidden">
     <div class="tabs">
       <button id="tab_pesquisa" class="active" onclick="aba('pesquisa',this)">Ficha Pesquisa</button>
@@ -339,6 +341,7 @@ body.appAberto #btnSairFinal{display:block!important}
       <button id="tab_ceo" class="adminOnly" onclick="aba('ceo',this)">Configurações CEO</button>
     </div>
 
+    <!-- ABA PESQUISA -->
     <section id="pesquisa" class="card">
       <h2>Nova Ficha de Captação</h2>
       <div class="grid pesquisaGrid14">
@@ -367,6 +370,7 @@ body.appAberto #btnSairFinal{display:block!important}
           <input id="contato" placeholder="Ex: (11) 99999-9999">
         </div>
 
+        <!-- CASAL BOX ORIGINAL -->
         <div class="pessoaBox">
           <b>Convidado(a) 1 (Principal)</b>
           <div class="pessoaGrid">
@@ -385,6 +389,7 @@ body.appAberto #btnSairFinal{display:block!important}
           </div>
         </div>
 
+        <!-- CAMPO RENDA LÍQUIDA ADICIONAL -->
         <div id="boxRendaLiquida" class="pessoaBox hidden" style="background:#091e12; border-color:#00e676;">
           <b style="color:#00e676;">Renda Líquida Mensal (Empresário/Comerciante)</b>
           <input id="renda_liquida" placeholder="R$ 0,00" style="border-color:#00e676;" oninput="formatarMoedaDinamico(this)">
@@ -467,9 +472,11 @@ body.appAberto #btnSairFinal{display:block!important}
       </div>
       <p id="formMsg" style="margin-top:10px"></p>
 
+      <!-- QUADRO DE DIRETRIZES DA FICHA SALVA -->
       <div id="resultadoValidacaoVisual" class="hidden"></div>
     </section>
 
+    <!-- ABA RELATÓRIOS -->
     <section id="relatorio" class="card hidden">
       <div id="blocoRelatorioOrganizado"></div>
       <div class="grid" style="margin-top:10px">
@@ -478,6 +485,7 @@ body.appAberto #btnSairFinal{display:block!important}
       <div id="individualBox" style="margin-top:12px"></div>
     </section>
 
+    <!-- ABA MAPA DA OPERAÇÃO -->
     <section id="mapaReal" class="card hidden">
       <h2>📍 Localização e Status da Operação</h2>
       <p class="hint">Posicionamento atual dos captadores autorizados e desempenho dos pontos.</p>
@@ -494,6 +502,7 @@ body.appAberto #btnSairFinal{display:block!important}
       </div>
     </section>
 
+    <!-- ABA CONFIGURAÇÕES CEO -->
     <section id="ceo" class="card hidden">
       <h2>⚙️ Painel de Controle e Regras do CEO</h2>
       <div class="ceoPainel14">
@@ -559,6 +568,7 @@ body.appAberto #btnSairFinal{display:block!important}
   </div>
 </div>
 
+<!-- CONTAINER DE RENDERIZAÇÃO DA FICHA COMPARTILHÁVEL GRANDE (OCULTO NA TELA) -->
 <div style="position:absolute; top:-9999px; left:-9999px;">
   <div id="espacoFichaCompartilhavel"></div>
 </div>
@@ -622,7 +632,6 @@ function parseMoeda(v){
   return Number(s.replace(/\./g,''))||0;
 }
 function moeda(n){return (Number(n||0)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-function rendaTela(n){return (Number(n||0)).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
 
 // PREENCHER OPÇÕES DE IDADE OPERACIONAIS
 for(let i=18;i<=90;i++){
@@ -647,7 +656,7 @@ function verificarExibicaoRendaLiquida() {
 function formatarMoedaDinamico(el) {
   let value = el.value.replace(/\D/g, "");
   if (!value) { el.value = ""; return; }
-  value = (LongCount = parseInt(value) / 100).toFixed(2);
+  value = (parseInt(value) / 100).toFixed(2);
   el.value = "R$ " + value.replace(".", ",").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
 }
 
@@ -748,7 +757,6 @@ function aba(id, btn){
   }
 }
 
-// ENGENHARIA DE QUALIFICAÇÃO INTEGRAL DO CEOPRO
 function processarQualificacaoAutomatica(ficha) {
   const cfg = getCfg();
   const rendaMin = cfg.rendaMin||15000;
@@ -769,7 +777,7 @@ function processarQualificacaoAutomatica(ficha) {
   let motivos = [];
   
   if(rendaAlcancada < rendaMin) motivos.push(`Renda abaixo do padrão (${moeda(rendaMin)})`);
-  if(idade1 < idadeMin || idade1 > idadeLimit = idadeMax) motivos.push(`Idade C1 fora do range (${idadeMin}-${idadeMax} anos)`);
+  if(idade1 < idadeMin || idade1 > idadeMax) motivos.push(`Idade C1 fora do range (${idadeMin}-${idadeMax} anos)`);
   if(ficha.convidado_2 && (idade2 < idadeMin || idade2 > idadeMax)) motivos.push(`Idade C2 fora do range (${idadeMin}-${idadeMax} anos)`);
   if(ficha.modelo_carro && normal(ficha.modelo_carro) !== 'sem carro' && anoCarro < anoMin) motivos.push(`Ano do carro abaixo de ${anoMin}`);
   
@@ -825,7 +833,7 @@ async function salvarFicha() {
   
   const qual = processarQualificacaoAutomatica(ficha);
   ficha.qualificacao_automatica = qual.status;
-  ficha.motivo_qualificacao = qual.mores = qual.motivo;
+  ficha.motivo_qualificacao = qual.motivo;
   
   try {
     const { data, error } = await db.from('pesquisas').insert([ficha]).select();
@@ -836,14 +844,13 @@ async function salvarFicha() {
     mostrarConfirmacaoVisual(ultimaFicha);
     carregarRelatorio();
   } catch(e) {
-    H('formMsg', `<span class="erro">Erro ao conectar ao banco. Detalhes: ${e.message||e}</span>`);
+    H('formMsg', `<span class="erro">Erro ao conectar ao banco: ${e.message||e}</span>`);
   }
 }
 
 function mostrarConfirmacaoVisual(f) {
   const box = E('resultadoValidacaoVisual');
   box.classList.remove('hidden');
-  
   const cor = f.qualificacao_automatica === 'Q' ? '#00e676' : '#ff5252';
   
   box.innerHTML = `
@@ -851,7 +858,7 @@ function mostrarConfirmacaoVisual(f) {
       <b style="color:${cor}">Ficha Salva - Perfil Analisado: ${f.qualificacao_automatica}</b>
       <p class="hint">${f.motivo_qualificacao}</p>
       <div class="grid" style="grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
-        <button class="main" style="background:linear-gradient(135deg, #00a651, #00e676); color:#000;" onclick="solicitarSalaCompartilhavel()">➡️ Solicitar Sala / Gerar Card</button>
+        <button class="main" style="background:linear-gradient(135deg, #00a651, #00e676); color:#000;" onclick="solicitarSalaCompartilhavel()">➡️ Compartilhar Ficha Visual</button>
         <button class="secondary" onclick="E('resultadoValidacaoVisual').classList.add('hidden')">Fechar Alerta</button>
       </div>
     </div>
@@ -860,7 +867,6 @@ function mostrarConfirmacaoVisual(f) {
 
 function solicitarSalaCompartilhavel() {
   if(!ultimaFicha) return;
-  
   const f = ultimaFicha;
   const area = E('espacoFichaCompartilhavel');
   
@@ -953,7 +959,7 @@ function solicitarSalaCompartilhavel() {
         await navigator.share({
           files: [arquivoCard],
           title: `Ficha - ${f.convidado_1}`,
-          text: `Solicitação de Sala: ${f.convidado_1} | Captador: ${f.captador_nome}`
+          text: `Solicitação de Sala: ${f.convidado_1}`
         });
       } else {
         const link = document.createElement('a');
@@ -962,7 +968,6 @@ function solicitarSalaCompartilhavel() {
         link.click();
       }
       
-      // Atualiza o status da sala na tabela pesquisas para indicar solicitação
       await db.from('pesquisas').update({ levou_sala: 'Pendente', sala_status: 'Pendente' }).match({ convidado_1: f.convidado_1, user_email: f.user_email });
     } catch(err) {
       alert("Erro ao compartilhar card visual: " + err.message);
@@ -977,7 +982,6 @@ function limparFormulario() {
   E('resultadoValidacaoVisual').classList.add('hidden');
 }
 
-// CONECTIVIDADE DE RELATÓRIO DO CEOPRO E MAPA DINÂMICO
 async function carregarRelatorio() {
   H('blocoRelatorioOrganizado', '<p class="hint">Consultando dados consolidados...</p>');
   try {
@@ -990,21 +994,15 @@ async function carregarRelatorio() {
     if(error) throw error;
     
     window.fichasGeraisOperacao = data||[];
-    
-    // Agrupamento estrutural por profissional
     const profsMap = {};
+    
     window.fichasGeraisOperacao.forEach(f => {
       const key = f.user_email;
       if(!profsMap[key]) {
-        profsMap[key] = { key, nome: f.captador_nome||f.user_email, total: 0, q: 0, nq: 0, salas: 0 };
+        profsMap[key] = { key, nome: f.captador_nome||f.user_email, total: 0 };
       }
       profsMap[key].total++;
-      if(f.qualificacao_automatica === 'Q') profsMap[key].q++;
-      else profsMap[key].nq++;
-      if(f.levou_sala === 'Sim' || f.sala_status === 'Confirmado') profsMap[key].salas++;
     });
-    
-    const rows = Object.values(profsMap);
     
     let htmlGeral = `
       <div class="painelCards20">
@@ -1017,7 +1015,7 @@ async function carregarRelatorio() {
     H('blocoRelatorioOrganizado', htmlGeral);
     
     let comboHtml = '<option value="">Escolha o profissional para ver as fichas</option>';
-    rows.forEach(r => {
+    Object.values(profsMap).forEach(r => {
       comboHtml += `<option value="${r.key}">${r.nome} (${r.total} fichas)</option>`;
     });
     H('profFiltro', comboHtml);
@@ -1032,8 +1030,8 @@ function mostrarIndividual() {
   if(!mail) { H('individualBox', ''); return; }
   
   const filtradas = (window.fichasGeraisOperacao||[]).filter(x => x.user_email === mail);
-  
   let h = `<h3>Fichas Cadastradas por este Profissional</h3>`;
+  
   if(filtradas.length === 0) { h += `<p class="hint">Nenhuma ficha registrada.</p>`; }
   else {
     filtradas.forEach(f => {
@@ -1054,18 +1052,13 @@ function mostrarIndividual() {
   H('individualBox', h);
 }
 
-// SISTEMA GPS REAL AUTOMÁTICO E MAPA COMPLETO
 function iniciarMonitoramentoGPS() {
   if(!navigator.geolocation) return;
-  
   navigator.geolocation.watchPosition(async (pos) => {
-    const lat = pos.coords.latitude;
-    const lng = pos.coords.longitude;
-    
     try {
       await db.from('approved_users').update({
-        latitude: lat,
-        longitude: lng,
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
         atualizado_em: new Date().toISOString()
       }).eq('email', usuarioEmail);
     } catch(e) {}
@@ -1074,13 +1067,10 @@ function iniciarMonitoramentoGPS() {
 
 async function carregarMapaCEO() {
   if(!mapaLeaflet) {
-    mapaLeaflet = L.map('mapaRealCEO37').setView([-22.7394, -45.5913], 13); // Default Campos do Jordão
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap'
-    }).addTo(mapaLeaflet);
+    mapaLeaflet = L.map('mapaRealCEO37').setView([-22.7394, -45.5913], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(mapaLeaflet);
   }
   
-  // Limpa marcadores
   marcadoresMapa.forEach(m => mapaLeaflet.removeLayer(m));
   marcadoresMapa = [];
   
@@ -1088,17 +1078,9 @@ async function carregarMapaCEO() {
     const { data: users, error: err1 } = await db.from('approved_users').select('*');
     if(err1) throw err1;
     
-    // Filtros de combos na aba de mapa
-    const comboPonto = E('mapFiltroPonto37');
-    const comboProf = E('mapFiltroProf37');
-    
-    const pontosUnicos = new Set();
-    const profsUnicos = new Set();
-    
     users.forEach(u => {
-      if(u.name) profsUnicos.add(u.name);
       if(u.latitude && u.longitude) {
-        const flagOnline = (new Date() - new Date(u.atualizado_em)) < 600000; // 10 min
+        const flagOnline = (new Date() - new Date(u.atualizado_em)) < 600000;
         const corPino = flagOnline ? 'green' : 'red';
         
         const myIcon = L.icon({
@@ -1108,45 +1090,16 @@ async function carregarMapaCEO() {
         });
         
         const pino = L.marker([u.latitude, u.longitude], {icon: myIcon})
-          .bindPopup(`<b>${u.name||u.email}</b><br>Status: ${flagOnline ? 'Online' : 'Offline'}<br>Visto em: ${new Date(u.atualizado_em).toLocaleTimeString('pt-BR')}`)
+          .bindPopup(`<b>${u.name||u.email}</b><br>Status: ${flagOnline ? 'Online' : 'Offline'}`)
           .addTo(mapaLeaflet);
           
         marcadoresMapa.push(pino);
       }
     });
-    
-    // Atualiza combos se estiverem vazios
-    if(comboProf.options.length <= 1) {
-      profsUnicos.forEach(p => {
-        comboProf.innerHTML += `<option value="${p}">${p}</option>`;
-      });
-    }
-    
-  } catch(e) {
-    console.log("Erro ao alimentar mapa: ", e);
-  }
+  } catch(e) {}
 }
 
-function atualizarMapaCEO() {
-  // Executa releitura com filtros de tela se necessário
-  carregarMapaCEO();
-}
-
-// LOG IN AUTOMÁTICO SE JÁ HOUVER SESSÃO SALVA LOCALMENTE
-document.addEventListener('DOMContentLoaded', () => {
-  const local = localStorage.getItem('loginSimples');
-  if(local) {
-    try {
-      const parsed = JSON.parse(local);
-      if(parsed.email) {
-        E('email').value = parsed.email;
-        E('nome').value = parsed.nome||'';
-        entrar();
-      }
-    }catch(e){}
-  }
-});
+function atualizarMapaCEO() { carregarMapaCEO(); }
 </script>
-
 </body>
 </html>
