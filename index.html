@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CaptaPro Versão 3.0</title>
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#050505,#180000);color:#fff}.wrap{max-width:900px;margin:auto;padding:12px}
 .top{text-align:center;margin:12px 0}.logo{font-size:38px;font-weight:900}.logo span{color:#ff3333}.version{display:inline-block;background:#1b0505;border:1px solid #671818;color:#ff8585;border-radius:999px;padding:5px 13px;font-size:12px;font-weight:900}
@@ -226,6 +226,39 @@ body.appAberto #btnSairFinal{display:block!important}
 .relFoot30{border-top:1px solid #3b1b1b;margin-top:12px;padding-top:10px;color:#aaa;font-size:11px;text-align:center}
 @media(max-width:700px){.relGrid30{grid-template-columns:1fr}.relImg30{padding:14px}}
 
+/* CaptaPro 4.1 • Relatório Diário redesenhado (mais completo) */
+.relImg30{max-width:640px;padding:26px;border-width:2px;border-radius:26px;box-shadow:0 0 40px rgba(239,27,36,.25)}
+.relImgHead30{position:relative;align-items:center}
+.relImgLogo30{width:60px;height:60px;border-radius:16px;font-size:24px}
+.relImgTitle30 b{font-size:24px}
+.relStatus41{margin-left:auto;padding:8px 14px;border-radius:999px;font-weight:900;font-size:12px;letter-spacing:.4px;white-space:nowrap}
+.relStatus41.exc{background:#06220f;border:1px solid #00e676;color:#00e676}
+.relStatus41.bom{background:#241c00;border:1px solid #ffd54f;color:#ffd54f}
+.relStatus41.reg{background:#241200;border:1px solid #ffb300;color:#ffb300}
+.relStatus41.ate{background:#260000;border:1px solid #ff5252;color:#ff5252}
+.relProf41{background:#101010;border:1px solid #292929;border-radius:14px;padding:12px 14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.relProf41 b{font-size:16px}
+.relProf41 span{color:#aaa;font-size:12px}
+.relGrid30{grid-template-columns:repeat(3,1fr)}
+.relCampo30{text-align:center}
+.relCampo30.q41{border-color:#00e676}.relCampo30.q41 .relBig30{color:#00e676}
+.relCampo30.nq1_41{border-color:#ffd54f}.relCampo30.nq1_41 .relBig30{color:#ffd54f}
+.relCampo30.nq41{border-color:#ff5252}.relCampo30.nq41 .relBig30{color:#ff5252}
+.relCampo30.sala41{border-color:#ffb300}.relCampo30.sala41 .relBig30{color:#ffb300}
+.relBarraBox41{margin:10px 0}
+.relBarraTop41{display:flex;justify-content:space-between;font-size:12px;color:#ccc;margin-bottom:5px}
+.relBarraTop41 b{color:#fff}
+.relBarraTrack41{height:12px;background:#101010;border:1px solid #292929;border-radius:999px;overflow:hidden}
+.relBarraFill41{height:100%;background:linear-gradient(90deg,#7a0000,#ef1b24);border-radius:999px}
+.relBarraFill41.gold41{background:linear-gradient(90deg,#7a5200,#ffb300)}
+.relSxBox41{display:flex;gap:8px;margin:10px 0}
+.relSxBox41 .relCampo30{flex:1;background:linear-gradient(160deg,#101010,#1a1200);border-color:#5a4a17}
+.relSxBox41 .relBig30{color:#ffd54f}
+.relObs41{background:#101010;border:1px solid #292929;border-radius:12px;padding:10px 12px;margin-top:4px}
+.relObs41 small{display:block;color:#ff7777;text-transform:uppercase;font-weight:900;font-size:10px;margin-bottom:4px}
+.relObs41 p{margin:0;font-size:13px;line-height:1.4;color:#eee;white-space:pre-wrap}
+@media(max-width:700px){.relGrid30{grid-template-columns:repeat(2,1fr)}}
+
 
 /* CaptaPro 3.0 Oficial • Portal CEO e Mapa da Operação */
 .portalCEO30{border:1px solid #5a1717;border-radius:18px;padding:12px;background:#070707;margin-bottom:12px}
@@ -376,6 +409,33 @@ body.appAberto #btnSairFinal{display:block!important}
   .fichaShare40{width:1080px;max-width:1080px}
 }
 
+/* CaptaPro 4.1 • Ficha compartilhável com agendamento (cor diferente) */
+.fichaAgendaTag40{background:linear-gradient(135deg,#ffb300,#7a5200);color:#111;font-weight:900;text-align:center;padding:16px;border-radius:18px;margin-bottom:24px;font-size:28px;letter-spacing:.6px}
+.fichaShare40.agendamento40{background:linear-gradient(180deg,#0a0700,#1a1200);border-color:#8a6200;box-shadow:0 0 50px rgba(255,179,0,.35)}
+.fichaShare40.agendamento40 .fichaShareHead40{border-color:#3b2e00}
+.fichaShare40.agendamento40 .fichaLogo40{background:linear-gradient(135deg,#ffb300,#7a5200)}
+.fichaShare40.agendamento40 .fichaResult40{border-color:#5a4a17}
+.fichaShare40.agendamento40 .fichaResult40 small,.fichaShare40.agendamento40 .campoShare40 small{color:#ffd54f}
+.fichaShare40.agendamento40 .campoShare40{border-color:#3b2e00}
+.fichaShare40.agendamento40 .fichaFoot40{border-color:#3b2e00}
+#btnAgendamento40.ativo41{background:linear-gradient(135deg,#ffb300,#7a5200)!important;color:#111!important;border-color:#ffb300!important}
+
+/* CaptaPro 4.1 • Modal de detalhes da pessoa no mapa */
+.pessoaModal41{position:fixed;z-index:10000;inset:0;background:rgba(0,0,0,.76);padding:20px;display:flex;align-items:center;justify-content:center}
+.pessoaModal41.hidden{display:none}
+.pessoaModalCard41{background:linear-gradient(145deg,#0c0c0c,#160000);border:1px solid #5a1717;border-radius:22px;padding:20px;max-width:420px;width:100%;max-height:86vh;overflow:auto;color:#fff}
+.pessoaModalHead41{display:flex;align-items:center;gap:10px;border-bottom:1px solid #3b1b1b;padding-bottom:12px;margin-bottom:12px}
+.pessoaModalAvatar41{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#ef1b24,#7a0000);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;flex-shrink:0}
+.pessoaModalHead41 b{display:block;font-size:17px}
+.pessoaModalHead41 small{color:#aaa}
+.pessoaModalFechar41{margin-left:auto;background:#181818;border:1px solid #333;color:#fff;border-radius:10px;padding:6px 10px;cursor:pointer;font-weight:900}
+.pessoaModalGrid41{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.pessoaModalGrid41 .relCampo30{margin:0}
+.pessoaModalStatus41{display:inline-block;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:900;margin-bottom:10px}
+.pessoaModalStatus41.on{background:#06220f;border:1px solid #00e676;color:#00e676}
+.pessoaModalStatus41.off{background:#260000;border:1px solid #ff5252;color:#ff5252}
+.pessoaModalLoad41{text-align:center;color:#aaa;padding:14px 0}
+
 </style>
 </head>
 <body>
@@ -387,7 +447,7 @@ body.appAberto #btnSairFinal{display:block!important}
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('diario',this)">Meu Profissional</button><button onclick="aba('relatorio',this)">Relatório</button><button onclick="aba('raking',this)">Ranking Julho</button><button onclick="aba('arena',this)">Arena SX</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('relatorio',this)">Relatório</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
 
 
 <section id="pesquisa" class="card">
@@ -478,12 +538,15 @@ body.appAberto #btnSairFinal{display:block!important}
 </div>
 <textarea id="obs" style="margin-top:8px" placeholder="Observações"></textarea>
 <div style="margin-top:8px"><button class="main" onclick="salvarPesquisa()">Salvar Ficha</button></div><button class="secondary" style="margin-top:8px;background:#073a21;border-color:#0a7b43" onclick="confirmarSala21()">✅ Casal em Sala</button><p id="formMsg"></p><div id="resultado" class="hidden"></div>
-<div id="fichaBox" class="card hidden"><h2>Ficha salva</h2><div id="fichaConteudo"></div><div class="grid"><button class="main" onclick="compartilharFicha()">Compartilhar imagem</button><button class="secondary" onclick="novaPesquisa()">Nova pesquisa</button></div></div>
+<div id="fichaBox" class="card hidden"><h2>Ficha salva</h2><div id="fichaConteudo"></div><div class="grid"><button class="main" onclick="compartilharFicha()">Compartilhar imagem</button><button class="secondary" id="btnAgendamento40" onclick="marcarAgendamento40()">📅 Marcar Agendamento</button><button class="secondary" onclick="novaPesquisa()">Nova pesquisa</button></div></div>
 </section>
 
 
-<section id="diario" class="card hidden">
-<h2>Meu Profissional</h2>
+<section id="relatorio" class="card hidden">
+<h2>Relatório</h2>
+
+<div id="diario" class="cardMerge41">
+<h3>📋 Meu Profissional</h3>
 <section id="painelInicialProfissional20" class="card painelClean20">
 <h2>Painel do Dia</h2>
 <p class="hint">Resumo individual de hoje.</p>
@@ -572,10 +635,7 @@ body.appAberto #btnSairFinal{display:block!important}
   <button class="main" onclick="carregarFechamentosCEO()">Atualizar fechamentos</button>
   <div id="fechamentosCEOBox" style="margin-top:8px"></div>
 </div>
-</section>
-
-<section id="relatorio" class="card hidden">
-<h2>Relatório</h2>
+</div>
 
 <div class="card scroll adminOnly" id="ceoDashboard20">
   <h2>CEO • Dashboard Geral</h2>
@@ -636,113 +696,19 @@ body.appAberto #btnSairFinal{display:block!important}
 <div class="card"><h2>Individual</h2><select id="profFiltro" onchange="mostrarIndividual()"><option value="">Escolha o profissional</option></select><div id="individualBox"></div></div>
 </section>
 
-<section id="raking" class="card hidden">
-<h2>Ranking Julho 2026</h2>
-<p class="hint">Julho começa do zero. O ranking será formado pelas fichas salvas no sistema.</p>
-<div class="rakingTools17">
-  <input id="rakingDe" type="date">
-  <input id="rakingAte" type="date">
-</div>
-<input id="csvRakingInput21" type="file" accept=".csv,text/csv" onchange="importarRakingCSV21(event)">
-<div class="grid" style="margin:8px 0">
-  <button class="main" onclick="carregarRaking()">Atualizar Ranking</button>
-  <button class="secondary" onclick="limparRakingCSV21()">Atualizar ranking</button>
-</div>
-<div class="card scroll">
-  <h2>Ranking Julho</h2>
-  <p class="hint">Relatório zerado: mostra somente os dados salvos de hoje em diante.</p>
-  <div id="rakingFonte21" class="mini"></div>
-  <div id="rakingBox"></div>
-</div>
-</section>
-
-
-
-<section id="arena" class="card hidden arenaCleanSX">
-<h2>Arena SX</h2>
-<p class="hint">Tela enxuta para o profissional: saldo, nível, ranking, desafios e conquistas.</p>
-
-<div class="sxHero">
-  <div class="sxHeroCard"><span>Meu SX Coin</span><b id="sxMeuSaldo">0</b><small>SX disponíveis</small></div>
-  <div class="sxHeroCard"><span>Meu nível</span><b id="sxMeuNivel">Iniciante</b><small id="sxProximoNivel">Faltam 1.000 SX para evoluir</small></div>
-</div>
-
-<div class="sxBarBox">
-  <div class="sxBarTop"><span>Evolução</span><b id="sxPctNivel">0%</b></div>
-  <div class="sxBar"><div id="sxBarFill"></div></div>
-</div>
-
-<div class="card scroll"><h2>🏆 Top 10 SX</h2><div id="sxRankingBox"></div><button class="secondary" style="margin-top:8px" onclick="toggleRankingCompletoSX()">Ver ranking completo</button></div>
-
-<div class="card">
-  <h2>⚔️ Criar Desafio</h2>
-  <p class="hint">Somente promotores participam. Liderança e direção apenas acompanham.</p>
-  <div class="grid">
-    <input id="sxDesafiante" placeholder="Seu nome" readonly>
-    <select id="sxAdversario"><option value="">Escolha o adversário</option></select>
-    <input id="sxAposta" type="number" placeholder="Aposta SX. Ex: 100">
-    <select id="sxCriterio">
-      <option value="pesquisas">Por pesquisas</option>
-      <option value="q">Por Q</option>
-      <option value="sala">Por sala</option>
-      <option value="dia">Resultado do dia</option>
-      <option value="semana">Resultado da semana</option>
-    </select>
-  </div>
-  <button class="main" style="margin-top:8px" onclick="criarDesafioSX20()">Criar desafio</button>
-  <p id="sxMsg"></p>
-</div>
-
-<div class="card scroll"><h2>📋 Meus Desafios</h2><div id="sxDesafiosBox"></div></div>
-<div class="card scroll"><h2>🏅 Conquistas</h2><div id="sxConquistasBox"></div></div>
-
-<button class="secondary" onclick="abrirComoFuncionaSX()">❓ Como funciona o SX?</button>
-
-<div id="sxModalRegras" class="sxModal hidden">
-  <div class="sxModalBox">
-    <h2>Como funciona o SX?</h2>
-    <p class="hint">Pontuação automática da Arena SX.</p>
-    <div class="kpis">
-      <div class="kpi">Pesquisa<b>+10</b></div><div class="kpi">NQ<b>+20</b></div>
-      <div class="kpi">1 Item<b>+50</b></div><div class="kpi">Q<b>+100</b></div>
-      <div class="kpi">Sala<b>+300</b></div><div class="kpi">Venda<b>+1000</b></div>
-    </div>
-    <button class="main" style="margin-top:8px" onclick="fecharComoFuncionaSX()">Fechar</button>
-  </div>
-</div>
-
-<div class="card scroll adminOnly">
-  <h2>CEO • Arena SX</h2>
-  <p class="hint">Administração da Arena: desafios, temporada e trocas SX.</p>
-  <div class="grid">
-    <button class="main" onclick="carregarArenaSX20()">Atualizar Arena</button>
-    <button class="secondary" onclick="exportarArenaSXCSV()">Exportar Arena CSV</button>
-  </div>
-  <div class="card scroll"><h2>Definir vencedor dos desafios</h2><div id="sxCEOBox"></div></div>
-  <div class="card scroll"><h2>Temporada Mensal SX</h2><div id="sxTemporadaBox"></div></div>
-  <div class="card scroll"><h2>Trocas SX</h2><div id="sxTrocasCEOBox"></div></div>
-</div>
-</section>
-
 
 <section id="qualificacao" class="card hidden adminOnly">
 <h2>Portal CEO</h2>
-<p class="hint">Central do CEO: dashboard, mapa da operação, sala, Arena SX, metas e configurações.</p>
+<p class="hint">Central do CEO: dashboard de qualificação e mapa da operação.</p>
 
 <div class="portalCEO30 portalCEO35 portalCEO36">
   
 <div class="portalHero30">
     <h2>Portal CEO</h2>
-    <p class="hint">Central do CEO: dashboard, equipe, mapa ao vivo, salas, ranking, metas e administração.</p>
+    <p class="hint">Central do CEO: dashboard de qualificação e mapa ao vivo.</p>
     <div class="grid">
-      <button class="main" onclick="abrirPortalBloco30('portalDashboard30')">📊 Dashboard</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalEquipe35')">👥 Equipe</button>
+      <button class="main" onclick="abrirPortalBloco30('portalDashboard30')">📊 Qualificação</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalMapa30')">📍 Mapa ao Vivo</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalSala30')">✅ Salas</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalRanking36')">🏆 Ranking</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalMetas36')">📈 Metas</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalArena30')">🎮 Arena SX</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalAdmin31')">⚙️ Administração</button>
     </div>
   </div>
 
@@ -780,147 +746,20 @@ body.appAberto #btnSairFinal{display:block!important}
       <button class="main" onclick="carregarMapaReal37()">Atualizar mapa</button>
     </div>
     <div id="mapaRealCEO37"></div>
-    <div class="mapAviso37">Os pinos aparecem quando o profissional toca em “Ativar localização real”. O círculo mostra referência de 50 metros.</div>
+    <div class="mapAviso37">Os pinos aparecem quando o profissional toca em “Ativar localização real”. O círculo mostra referência de 50 metros. Toque em um pino para ver os detalhes da pessoa.</div>
   </div>
 
-
-  <div id="portalEquipe35" class="card scroll portalBloco30">
-    <h2>👥 Equipe</h2>
-    <p class="hint">Resumo individual dos profissionais no dia.</p>
-    <div id="portalEquipeBox35"></div>
-  </div>
-
-
-  <div id="portalRanking36" class="card scroll portalBloco30">
-    <h2>🏆 Ranking</h2>
-    <p class="hint">Ranking do dia por sala, pesquisas e eficiência.</p>
-    <div id="portalRankingBox36"></div>
-  </div>
-
-  <div id="portalMetas36" class="card scroll portalBloco30">
-    <h2>📈 Metas</h2>
-    <p class="hint">Acompanhamento das metas individuais.</p>
-    <div id="portalMetasBox36"></div>
-  </div>
-
-  <div id="portalSala30" class="card scroll portalBloco30">
-    <h2>✅ Confirmação de Sala</h2>
-    <p class="hint">O profissional confirma casal em sala. O CEO pode corrigir/desfazer se necessário.</p>
-    <button class="main" onclick="carregarConferenciaSala20()">Atualizar sala</button>
-    <div id="portalSalaBox30" style="margin-top:8px"></div>
-  </div>
-
-  <div id="portalArena30" class="card scroll portalBloco30">
-    <h2>🪙 Arena SX • Administração</h2>
-    <p class="hint">Aprovação de desafios, temporada, trocas e ranking SX.</p>
-    <button class="main" onclick="carregarArenaSX20()">Atualizar Arena SX</button>
-    <div class="card scroll"><h2>Definir vencedor dos desafios</h2><div id="portalSxCEOBox30"></div></div>
-    <div class="card scroll"><h2>Temporada Mensal SX</h2><div id="portalSxTemporadaBox30"></div></div>
-    <div class="card scroll"><h2>Trocas SX</h2><div id="portalSxTrocasBox30"></div></div>
-  </div>
-
-  <div id="portalRelatorios30" class="card scroll portalBloco30">
-    <h2>📋 Relatórios dos Profissionais</h2>
-    <p class="hint">Fechamentos enviados no final do dia.</p>
-    <button class="main" onclick="carregarFechamentosCEO()">Atualizar fechamentos</button>
-    <div id="portalFechamentos30" style="margin-top:8px"></div>
-  </div>
-
-  <div id="portalConfig30" class="card scroll portalBloco30">
-    <h2>⚙️ Configurações e Metas</h2>
-    <p class="hint">Perfil de qualificação, regras e metas individuais continuam abaixo.</p>
-  </div>
-
-  <div id="portalAdmin31" class="card scroll portalBloco30 hidden">
-    <h2>🛠️ Administração do Sistema</h2>
-    <p class="hint">Gerencie o CaptaPro sem precisar abrir o Supabase.</p>
-
-    <div class="adminGrid31">
-      <div class="adminBox31">
-        <h3>✅ Aprovar Usuários</h3>
-        <div class="grid">
-          <input id="admUserEmail31" placeholder="E-mail do usuário">
-          <input id="admUserNome31" placeholder="Nome do usuário">
-          <select id="admUserRole31">
-            <option value="profissional">Profissional</option>
-            <option value="gestor">Gestor</option>
-            <option value="ceo">CEO</option>
-          </select>
-          <select id="admUserApproved31">
-            <option value="true">Aprovado</option>
-            <option value="false">Bloqueado</option>
-          </select>
+  <div id="pessoaModal41" class="pessoaModal41 hidden" onclick="if(event.target===this)fecharDetalhesPessoa41()">
+    <div class="pessoaModalCard41">
+      <div class="pessoaModalHead41">
+        <div class="pessoaModalAvatar41" id="pessoaModalAvatar41">CP</div>
+        <div>
+          <b id="pessoaModalNome41">-</b>
+          <small id="pessoaModalSub41">-</small>
         </div>
-        <button class="main" style="margin-top:8px" onclick="admSalvarUsuario31()">Salvar usuário</button>
-        <div id="admUsuariosBox31" class="adminList31"></div>
+        <button class="pessoaModalFechar41" onclick="fecharDetalhesPessoa41()">✕</button>
       </div>
-
-      <div class="adminBox31">
-        <h3>🎯 Metas Individuais</h3>
-        <div class="grid">
-          <input id="admMetaEmail31" placeholder="E-mail ou nome do profissional">
-          <input id="admMetaNome31" placeholder="Nome do profissional">
-          <input id="admMetaValor31" type="number" placeholder="Meta de sala. Ex: 35">
-        </div>
-        <button class="main" style="margin-top:8px" onclick="admSalvarMeta31()">Salvar meta</button>
-        <div id="admMetasBox31" class="adminList31"></div>
-      </div>
-
-      <div class="adminBox31">
-        <h3>📍 Pontos de Captação</h3>
-        <div class="grid">
-          <input id="admPontoNome31" placeholder="Nome do ponto">
-          <select id="admPontoAtivo31"><option value="true">Ativo</option><option value="false">Inativo</option></select>
-        </div>
-        <button class="main" style="margin-top:8px" onclick="admSalvarPonto31()">Salvar ponto</button>
-        <div id="admPontosBox31" class="adminList31"></div>
-      </div>
-
-      <div class="adminBox31">
-        <h3>🪙 Pontuação SX</h3>
-        <div class="grid">
-          <input id="admPtsPesquisa31" type="number" placeholder="Pesquisa +10">
-          <input id="admPtsQ31" type="number" placeholder="Q +100">
-          <input id="admPtsNQ31" type="number" placeholder="NQ +20">
-          <input id="admPtsItem31" type="number" placeholder="1 Item +50">
-          <input id="admPtsSala31" type="number" placeholder="Sala +300">
-          <input id="admPtsVenda31" type="number" placeholder="Venda +1000">
-        </div>
-        <button class="main" style="margin-top:8px" onclick="admSalvarPontuacao31()">Salvar pontuação</button>
-        <div id="admPontuacaoBox31" class="adminList31"></div>
-      </div>
-
-      <div class="adminBox31">
-        <h3>🏆 Loja SX</h3>
-        <div class="grid">
-          <input id="admPremioNome31" placeholder="Prêmio. Ex: Voucher R$100">
-          <input id="admPremioCusto31" type="number" placeholder="Custo SX. Ex: 5000">
-        </div>
-        <button class="main" style="margin-top:8px" onclick="admSalvarPremio31()">Salvar prêmio</button>
-        <div id="admPremiosBox31" class="adminList31"></div>
-      </div>
-
-      <div class="adminBox31">
-        <h3>📅 Temporada SX</h3>
-        <div class="grid">
-          <input id="admTempNome31" placeholder="Temporada. Ex: 2026-07">
-          <input id="admTempInicio31" type="date">
-          <input id="admTempFim31" type="date">
-          <select id="admTempAtiva31"><option value="true">Ativa</option><option value="false">Inativa</option></select>
-        </div>
-        <button class="main" style="margin-top:8px" onclick="admSalvarTemporada31()">Salvar temporada</button>
-        <div id="admTemporadaBox31" class="adminList31"></div>
-      </div>
-    </div>
-
-    <div class="adminBox31">
-      <h3>📦 Backup rápido</h3>
-      <p class="hint">Exporta dados principais em JSON para conferência/backup.</p>
-      <div class="grid">
-        <button class="secondary" onclick="admExportarBackup31()">Exportar backup JSON</button>
-        <button class="secondary" onclick="admCarregarTudo31()">Atualizar listas</button>
-      </div>
-      <p id="admMsg31"></p>
+      <div id="pessoaModalConteudo41"><div class="pessoaModalLoad41">Carregando detalhes...</div></div>
     </div>
   </div>
 
@@ -970,7 +809,15 @@ body.appAberto #btnSairFinal{display:block!important}
 
 <script>
 const SUPABASE_URL="https://veznreiamwstlulkpocz.supabase.co", SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlem5yZWlhbXdzdGx1bGtwb2N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODc1NDksImV4cCI6MjA5NzI2MzU0OX0.MeSqJZTZnk3zDKWgD920ccV2KUheH0W_BGD3TvhPXdM";
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+function dbFalho(){return {from(){const q={select(){return q},insert(){return q},update(){return q},upsert(){return q},delete(){return q},eq(){return q},order(){return q},limit(){return q},gte(){return q},lte(){return q},or(){return q},single(){return q},maybeSingle(){return q},then(res){return Promise.resolve({data:null,error:new Error('Supabase indisponível (CDN não carregou)')}).then(res)}};return q}}}
+let db;
+try{
+  if(!window.supabase)throw new Error('window.supabase não carregou (CDN bloqueado ou sem internet)');
+  db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+}catch(e){
+  console.error('Falha ao iniciar Supabase, o app vai usar apenas armazenamento local:',e);
+  db=dbFalho();
+}
 const CEOS=['raphaelbueno.captacao@gmail.com','marcel.dorado2@gmail.com'];
 let usuarioEmail='', usuarioNome='', role='profissional', ultimaFicha=null;
 
@@ -1197,7 +1044,9 @@ async function compartilharFicha(){
 }
 function novaPesquisa(){
  ['nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade','relacionamento','tempo','nomeCarro','anoCarro','cartao','casa','multi','renda','brinde','contato','obs'].forEach(id=>{if(E(id))E(id).value=''});
- H('resultado','');H('formMsg','');E('fichaBox').classList.add('hidden');ultimaFicha=null;E('nome1').focus();
+ H('resultado','');H('formMsg','');E('fichaBox').classList.add('hidden');ultimaFicha=null;
+ const btnAg=E('btnAgendamento40');if(btnAg){btnAg.textContent='📅 Marcar Agendamento';btnAg.classList.remove('ativo41')}
+ E('nome1').focus();
 }
 async function dados(t){
  let arr=[];
@@ -1938,9 +1787,9 @@ if(typeof abaBasePainelOnly20==='function'&&!window.__painelOnly20){
     const r=abaBasePainelOnly20.apply(this,arguments);
     const painel=X('painelInicialProfissional20')||X('painelInicial');
     if(painel){
-      painel.style.display = (id==='diario') ? '' : 'none';
+      painel.style.display = (id==='relatorio') ? '' : 'none';
     }
-    if(id==='diario' && typeof atualizarPainelInicial20==='function'){
+    if(id==='relatorio' && typeof atualizarPainelInicial20==='function'){
       setTimeout(()=>atualizarPainelInicial20(),150);
     }
     return r;
@@ -4023,8 +3872,54 @@ function salaOk30(x){const s=norm30(x.sala_status||x.levou_sala||'');return s.in
 async function resumoRel30(data,email){let p=[],a=[];try{p=await dados('pesquisas')}catch(e){}try{a=await dados('abordagens')}catch(e){}p=(p||[]).filter(x=>String(x.created_at||'').slice(0,10)===data&&(!email||x.user_email===email));a=(a||[]).filter(x=>String(x.created_at||'').slice(0,10)===data&&(!email||x.user_email===email));const q=p.filter(x=>x.qualificacao_automatica==='Q').length;const nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length;const nq=p.length-q-nq1;const sala=p.filter(salaOk30).length;const ef=p.length?Math.round(q/p.length*100):0;const conv=p.length?Math.round(sala/p.length*100):0;const sx=p.reduce((t,x)=>t+10+(x.qualificacao_automatica==='Q'?100:String(x.qualificacao_automatica||'').includes('1')?50:20)+(salaOk30(x)?300:0),0);const d=new Date(data+'T12:00:00'),dia=Math.max(1,d.getDate()),dias=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();return {abordagens:a.length,pesquisas:p.length,q,nq,nq1,sala,eficiencia:ef,conversao:conv,sxHoje:sx,projecao:Math.round((sala/dia)*dias)}}
 async function saldoNivel30(){try{if(typeof calcularSaldosSX20==='function'){const saldos=await calcularSaldosSX20();const nome=window.usuarioNome||usuarioNome||'';const meu=saldos.find(x=>norm30(x.nome)===norm30(nome))||{sx:0};let nivel='Iniciante';const sx=Number(meu.sx)||0;if(sx>=50000)nivel='Lenda SX';else if(sx>=30000)nivel='Mestre SX';else if(sx>=15000)nivel='Elite SX';else if(sx>=7500)nivel='Pro SX';else if(sx>=3000)nivel='Avançado';else if(sx>=1000)nivel='Aprendiz';return {sx,nivel}}}catch(e){}return {sx:0,nivel:'Iniciante'}}
 function campo30(t,v){return `<div class="relCampo30"><small>${t}</small>${v??'-'}</div>`}
-window.gerarRelatorioImagem30=async function(){const data=RV30('diarioData')||hoje30();const r=await resumoRel30(data,window.usuarioEmail||usuarioEmail);const sx=await saldoNivel30();const obs=RV30('diarioTexto')||'Sem observações.';const nome=window.usuarioNome||usuarioNome||RV30('diarioNome')||'-';const equipe=RV30('equipe')||'-';const ponto=RV30('ponto')||'-';RH30('relatorioImagemConteudo30',`<div id="relatorioImg30" class="relImg30"><div class="relImgHead30"><div class="relImgLogo30">CP</div><div class="relImgTitle30"><b>Relatório Diário</b><small>CaptaPro • Bueno Invest • ${new Date(data+'T12:00:00').toLocaleDateString('pt-BR')}</small></div></div>${campo30('Profissional',nome)}<div class="relGrid30">${campo30('Equipe',equipe)}${campo30('Ponto',ponto)}</div><div class="relGrid30">${campo30('Abordagens',`<span class="relBig30">${r.abordagens}</span>`)}${campo30('Pesquisas',`<span class="relBig30">${r.pesquisas}</span>`)}</div><div class="relGrid30">${campo30('Q',r.q)}${campo30('NQ',r.nq)}${campo30('1 Item',r.nq1)}${campo30('Sala Confirmada',r.sala)}</div><div class="relGrid30">${campo30('Eficiência',r.eficiencia+'%')}${campo30('Conversão Sala',r.conversao+'%')}${campo30('Projeção Mês',r.projecao)}${campo30('SX Hoje','+'+r.sxHoje)}</div><div class="relGrid30">${campo30('Saldo SX',sx.sx)}${campo30('Nível SX',sx.nivel)}</div>${campo30('Observações',obs)}<div class="relFoot30">Relatório gerado automaticamente pelo CaptaPro • Compartilhar no grupo da equipe</div></div>`);if(R30('relatorioImagemBox30'))R30('relatorioImagemBox30').classList.remove('hidden');return {r,sx}}
-window.finalizarDiario=async function(){const data=RV30('diarioData')||hoje30();const rel=await gerarRelatorioImagem30();const texto=RV30('diarioTexto')||'';const payload={nome:window.usuarioNome||usuarioNome||RV30('diarioNome'),user_email:window.usuarioEmail||usuarioEmail,data,abordagens:rel.r.abordagens,pesquisas:rel.r.pesquisas,q:rel.r.q,nq:rel.r.nq,nq_1_item:rel.r.nq1,sala:rel.r.sala,eficiencia:rel.r.eficiencia,conversao:rel.r.conversao,projecao_resultados:rel.r.projecao,sx_hoje:rel.r.sxHoje,relatorio_escrito:texto,status:'Enviado',created_at:new Date().toISOString()};try{await db.from('relatorios_diarios').upsert(payload,{onConflict:'user_email,data'});RH30('diarioMsg','<span class="ok">Relatório gerado. Agora compartilhe a imagem no grupo.</span>')}catch(e){RH30('diarioMsg','<span class="warn">Relatório gerado localmente. Compartilhe a imagem.</span>')}}
+function esc30(s){return String(s??'').replace(/[<>&]/g,a=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[a]))}
+function statusRel41(ef){
+  if(ef>=50)return {cls:'exc',label:'🔥 Excelente'};
+  if(ef>=30)return {cls:'bom',label:'👍 Bom'};
+  if(ef>=15)return {cls:'reg',label:'📊 Regular'};
+  return {cls:'ate',label:'⚠️ Atenção'};
+}
+window.gerarRelatorioImagem30=async function(){
+  const data=RV30('diarioData')||hoje30();
+  const r=await resumoRel30(data,window.usuarioEmail||usuarioEmail);
+  const obs=RV30('diarioTexto')||'Sem observações.';
+  const nome=window.usuarioNome||usuarioNome||RV30('diarioNome')||'-';
+  const equipe=RV30('equipe')||'-';
+  const ponto=RV30('ponto')||'-';
+  const st=statusRel41(r.eficiencia);
+  RH30('relatorioImagemConteudo30',`<div id="relatorioImg30" class="relImg30">
+    <div class="relImgHead30">
+      <div class="relImgLogo30">CP</div>
+      <div class="relImgTitle30"><b>Relatório Diário</b><small>CaptaPro • Bueno Invest • ${new Date(data+'T12:00:00').toLocaleDateString('pt-BR')}</small></div>
+      <div class="relStatus41 ${st.cls}">${st.label}</div>
+    </div>
+    <div class="relProf41"><b>${esc30(nome)}</b><span>${esc30(equipe)} • 📍 ${esc30(ponto)}</span></div>
+    <div class="relGrid30">
+      <div class="relCampo30"><small>Abordagens</small><span class="relBig30">${r.abordagens}</span></div>
+      <div class="relCampo30"><small>Pesquisas</small><span class="relBig30">${r.pesquisas}</span></div>
+      <div class="relCampo30 sala41"><small>Sala Confirmada</small><span class="relBig30">${r.sala}</span></div>
+    </div>
+    <div class="relGrid30">
+      <div class="relCampo30 q41"><small>Qualificados</small><span class="relBig30">${r.q}</span></div>
+      <div class="relCampo30 nq1_41"><small>1 Item</small><span class="relBig30">${r.nq1}</span></div>
+      <div class="relCampo30 nq41"><small>Não Qualif.</small><span class="relBig30">${r.nq}</span></div>
+    </div>
+    <div class="relBarraBox41">
+      <div class="relBarraTop41"><span>Eficiência (qualificação)</span><b>${r.eficiencia}%</b></div>
+      <div class="relBarraTrack41"><div class="relBarraFill41" style="width:${Math.min(100,r.eficiencia)}%"></div></div>
+    </div>
+    <div class="relBarraBox41">
+      <div class="relBarraTop41"><span>Conversão de sala</span><b>${r.conversao}%</b></div>
+      <div class="relBarraTrack41"><div class="relBarraFill41 gold41" style="width:${Math.min(100,r.conversao)}%"></div></div>
+    </div>
+    ${campo30('Projeção do mês',`${r.projecao} salas confirmadas`)}
+    <div class="relObs41"><small>Observações</small><p>${esc30(obs)}</p></div>
+    <div class="relFoot30">Relatório gerado automaticamente pelo CaptaPro • Compartilhar no grupo da equipe</div>
+  </div>`);
+  if(R30('relatorioImagemBox30'))R30('relatorioImagemBox30').classList.remove('hidden');
+  return {r};
+}
+window.finalizarDiario=async function(){const data=RV30('diarioData')||hoje30();const rel=await gerarRelatorioImagem30();const texto=RV30('diarioTexto')||'';const payload={nome:window.usuarioNome||usuarioNome||RV30('diarioNome'),user_email:window.usuarioEmail||usuarioEmail,data,abordagens:rel.r.abordagens,pesquisas:rel.r.pesquisas,q:rel.r.q,nq:rel.r.nq,nq_1_item:rel.r.nq1,sala:rel.r.sala,eficiencia:rel.r.eficiencia,conversao:rel.r.conversao,projecao_resultados:rel.r.projecao,relatorio_escrito:texto,status:'Enviado',created_at:new Date().toISOString()};try{await db.from('relatorios_diarios').upsert(payload,{onConflict:'user_email,data'});RH30('diarioMsg','<span class="ok">Relatório gerado. Agora compartilhe a imagem no grupo.</span>')}catch(e){RH30('diarioMsg','<span class="warn">Relatório gerado localmente. Compartilhe a imagem.</span>')}}
 async function canvasRel30(){if(!R30('relatorioImg30'))await gerarRelatorioImagem30();return await html2canvas(R30('relatorioImg30'),{scale:2,backgroundColor:'#090909'})}
 window.compartilharRelatorioImagem30=async function(){const c=await canvasRel30();c.toBlob(async b=>{const f=new File([b],'relatorio-diario-captapro.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'Relatório Diário CaptaPro'});else{const a=document.createElement('a');a.href=c.toDataURL();a.download='relatorio-diario-captapro.png';a.click()}})}
 window.baixarRelatorioImagem30=async function(){const c=await canvasRel30();const a=document.createElement('a');a.href=c.toDataURL();a.download='relatorio-diario-captapro.png';a.click()}
@@ -4732,7 +4627,7 @@ window.carregarMapaReal39=async function(){
     });
     const lat=Number(x.lat), lng=Number(x.lng);
     const marker=L.marker([lat,lng],{icon}).addTo(map39);
-    marker.bindPopup(`<b>${esc39(x.nome||x.email)}</b><br>${isOn?'🟢 Online':'🔴 Offline'}<br>📍 ${esc39(x.ponto||'Sem ponto')}<br>Equipe: ${esc39(x.equipe||'-')}<br>Atualizado: ${minAgo39(x.last_seen)<=0?'agora':'há '+minAgo39(x.last_seen)+' min'}<br>Precisão: ${Math.round(x.accuracy||0)}m`);
+    marker.on('click',()=>abrirDetalhesPessoa41(x));
     markers39.push(marker);
     bounds.push([lat,lng]);
   });
@@ -4741,6 +4636,56 @@ window.carregarMapaReal39=async function(){
   setTimeout(()=>map39.invalidateSize(),300);
 }
 window.carregarMapaReal37=window.carregarMapaReal39;
+
+/* CaptaPro 4.1 • Detalhes da pessoa ao clicar no ponto do mapa */
+function hojeISO41(){return new Date().toISOString().slice(0,10)}
+function normTxt41(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function salaOk41(x){const s=normTxt41(x.sala_status||x.levou_sala||'');return s.includes('sim')||s.includes('confirm')}
+async function statsPessoa41(email){
+  let p=[],a=[];
+  try{p=(typeof dados==='function')?await dados('pesquisas'):[]}catch(e){}
+  try{a=(typeof dados==='function')?await dados('abordagens'):[]}catch(e){}
+  const hoje=hojeISO41();
+  p=(p||[]).filter(x=>String(x.created_at||'').slice(0,10)===hoje&&x.user_email===email);
+  a=(a||[]).filter(x=>String(x.created_at||'').slice(0,10)===hoje&&x.user_email===email);
+  const q=p.filter(x=>x.qualificacao_automatica==='Q').length;
+  const nq1=p.filter(x=>String(x.qualificacao_automatica||'').includes('1')).length;
+  const nq=p.length-q-nq1;
+  const sala=p.filter(salaOk41).length;
+  const ef=p.length?Math.round(q/p.length*100):0;
+  const conv=p.length?Math.round(sala/p.length*100):0;
+  return {abordagens:a.length,pesquisas:p.length,q,nq,nq1,sala,eficiencia:ef,conversao:conv};
+}
+window.abrirDetalhesPessoa41=async function(x){
+  const modal=A39('pessoaModal41'); if(!modal)return;
+  modal.classList.remove('hidden');
+  const isOn=online39(x);
+  if(A39('pessoaModalNome41'))A39('pessoaModalNome41').textContent=x.nome||x.email||'-';
+  if(A39('pessoaModalSub41'))A39('pessoaModalSub41').textContent=(isOn?'🟢 Online':'🔴 Offline')+' • atualizado '+(minAgo39(x.last_seen)<=0?'agora':'há '+minAgo39(x.last_seen)+' min');
+  const av=A39('pessoaModalAvatar41'); if(av)av.textContent=String(x.nome||x.email||'?').trim().charAt(0).toUpperCase();
+  if(A39('pessoaModalConteudo41'))A39('pessoaModalConteudo41').innerHTML='<div class="pessoaModalLoad41">Carregando detalhes...</div>';
+  let st={abordagens:0,pesquisas:0,q:0,nq:0,nq1:0,sala:0,eficiencia:0,conversao:0};
+  try{st=await statsPessoa41(x.email)}catch(e){}
+  if(A39('pessoaModalConteudo41'))A39('pessoaModalConteudo41').innerHTML=`
+    <span class="pessoaModalStatus41 ${isOn?'on':'off'}">${isOn?'🟢 Online agora':'🔴 Offline'}</span>
+    <div class="relCampo30"><small>Ponto atual</small>📍 ${esc39(x.ponto||'Sem ponto informado')}</div>
+    <div class="pessoaModalGrid41">
+      <div class="relCampo30"><small>Equipe</small>${esc39(x.equipe||'-')}</div>
+      <div class="relCampo30"><small>Precisão GPS</small>${Math.round(x.accuracy||0)}m</div>
+    </div>
+    <div class="pessoaModalGrid41">
+      <div class="relCampo30"><small>Abordagens hoje</small><span class="relBig30">${st.abordagens}</span></div>
+      <div class="relCampo30"><small>Pesquisas hoje</small><span class="relBig30">${st.pesquisas}</span></div>
+      <div class="relCampo30 q41"><small>Qualificados</small><span class="relBig30">${st.q}</span></div>
+      <div class="relCampo30 nq1_41"><small>1 Item</small><span class="relBig30">${st.nq1}</span></div>
+      <div class="relCampo30 nq41"><small>NQ</small><span class="relBig30">${st.nq}</span></div>
+      <div class="relCampo30 sala41"><small>Sala confirmada</small><span class="relBig30">${st.sala}</span></div>
+    </div>
+    <div class="relCampo30"><small>Eficiência / Conversão de sala</small>${st.eficiencia}% eficiência • ${st.conversao}% conversão</div>
+    <div class="hint">E-mail: ${esc39(x.email||'-')}</div>
+  `;
+}
+window.fecharDetalhesPessoa41=function(){A39('pessoaModal41')?.classList.add('hidden')}
 
 const oldEntrar39=window.entrar;
 if(typeof oldEntrar39==='function'&&!window.__entrar39){
@@ -4827,12 +4772,14 @@ window.montarFichaImagem40=function(){
   const ponto=val40(f,['ponto_captacao','ponto'],V40('ponto'));
   const profissional=val40(f,['captador_nome','profissional'],window.usuarioNome||usuarioNome||'-');
   const obs=val40(f,['observacoes','obs'],V40('obs'));
+  const isAgendamento=f.agendamento===true||f.agendamento==='Sim';
   const box=document.createElement('div');
   box.id='fichaShareTemp40';
   box.style.position='fixed';
   box.style.left='-99999px';
   box.style.top='0';
-  box.innerHTML=`<div class="fichaShare40" id="fichaShare40">
+  box.innerHTML=`<div class="fichaShare40${isAgendamento?' agendamento40':''}" id="fichaShare40">
+    ${isAgendamento?'<div class="fichaAgendaTag40">📅 AGENDAMENTO</div>':''}
     <div class="fichaShareHead40">
       <div class="fichaLogo40">CP</div>
       <div class="fichaTitle40">
@@ -4893,6 +4840,47 @@ window.baixarFichaGrande40=async function(){
   a.href=url;a.download='ficha-captaPro.png';a.click();
   setTimeout(()=>URL.revokeObjectURL(url),3000);
 }
+window.marcarAgendamento40=function(){
+  const f=window.ultimaFicha||(typeof ultimaFicha!=='undefined'?ultimaFicha:null);
+  if(!f){ if(typeof H==='function')H('formMsg','<span class="warn">Salve a ficha primeiro.</span>'); return; }
+  const novo=!(f.agendamento===true||f.agendamento==='Sim');
+  f.agendamento=novo;
+  const btn=F40('btnAgendamento40');
+  if(btn){
+    btn.textContent=novo?'✅ Agendamento marcado':'📅 Marcar Agendamento';
+    btn.classList.toggle('ativo41',novo);
+  }
+  if(typeof H==='function')H('formMsg',novo?'<span class="ok">Marcado como agendamento — a imagem compartilhada usará uma cor diferente.</span>':'<span class="mini">Agendamento desmarcado.</span>');
+  (async()=>{
+    try{
+      if(f.id) await db.from('pesquisas').update({agendamento:novo?'Sim':'Não'}).eq('id',f.id);
+      else if(f.user_email&&f.created_at) await db.from('pesquisas').update({agendamento:novo?'Sim':'Não'}).eq('user_email',f.user_email).eq('created_at',f.created_at);
+    }catch(e){ /* coluna "agendamento" pode não existir ainda na tabela pesquisas do Supabase; a marcação continua valendo localmente para a imagem */ }
+  })();
+}
+})();
+</script>
+
+<script>
+/* CaptaPro 4.1 • Meu Profissional foi movido para dentro de Relatório: garante que os dados continuem carregando */
+(function(){
+  const abaBase41=window.aba;
+  if(typeof abaBase41==='function'&&!window.__abaMergeRelatorio41){
+    window.__abaMergeRelatorio41=true;
+    window.aba=function(id,b){
+      const r=abaBase41.apply(this,arguments);
+      if(id==='relatorio'){
+        setTimeout(()=>{
+          try{if(typeof carregarDiario==='function')carregarDiario()}catch(e){}
+          try{if(typeof carregarFechamentosCEO==='function')carregarFechamentosCEO()}catch(e){}
+          try{if(typeof atualizarMetaPainelUnica20==='function')atualizarMetaPainelUnica20()}catch(e){}
+          try{if(typeof carregarMinhasPesquisas38==='function')carregarMinhasPesquisas38();else if(typeof carregarMinhasPesquisas35==='function')carregarMinhasPesquisas35()}catch(e){}
+          try{if(typeof atualizarMeta38==='function')atualizarMeta38();else if(typeof atualizarMeta35==='function')atualizarMeta35()}catch(e){}
+        },300);
+      }
+      return r;
+    };
+  }
 })();
 </script>
 
