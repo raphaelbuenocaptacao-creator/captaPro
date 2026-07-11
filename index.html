@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaptaPro Versão 1.0</title>
+<title>CaptaPro Versão 3.0</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
@@ -367,6 +367,23 @@ body.appAberto #btnSairFinal{display:block!important}
 .leaflet-popup-content{color:#111;font-weight:600}
 @media(max-width:700px){#mapaRealCEO37{height:380px}.mapFiltros37{grid-template-columns:1fr}}
 
+/* CaptaPro 4.3 • Pontos de Captação fixos direto no mapa */
+.mapFiltros41{grid-template-columns:1fr auto}
+@media(max-width:700px){.mapFiltros41{grid-template-columns:1fr}}
+.pontoMarker41{position:relative;width:26px;height:26px}
+.pontoMarker41 .pin41{width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:linear-gradient(135deg,#3ea1ff,#1257a8);border:2px solid #fff;box-shadow:0 0 10px rgba(62,161,255,.6)}
+.pontoMarker41 .badge41{position:absolute;top:-8px;right:-10px;background:#ff3333;color:#fff;font-size:10px;font-weight:900;border-radius:999px;padding:1px 5px;border:2px solid #0a0a0a;transform:rotate(0deg)}
+.pontoMarker41.temOnline41 .pin41{background:linear-gradient(135deg,#00e676,#00a651)}
+.pontoMarker41.arrastavel41 .pin41{box-shadow:0 0 0 6px rgba(255,213,79,.35),0 0 14px #ffd54f;cursor:grab}
+.pontoLabel41{background:rgba(10,10,10,.85);border:1px solid #3ea1ff;color:#cfe8ff;font-size:11px;font-weight:800;padding:2px 7px;border-radius:8px;white-space:nowrap}
+.leaflet-tooltip.pontoTooltip41::before{display:none}
+#btnAjustarPontos41.ativo41{background:linear-gradient(135deg,#ffb300,#7a5200)!important;color:#111!important;border-color:#ffb300!important}
+.pontoPopup41{min-width:180px}
+.pontoPopup41 b{display:block;margin-bottom:6px;font-size:13px}
+.pontoPopup41 .pessoaChip41{display:block;width:100%;text-align:left;border-radius:8px;padding:6px 8px;font-size:12px;font-weight:700;border:1px solid #333;background:#161616;color:#ddd;cursor:pointer;margin-bottom:4px}
+.pontoPopup41 .pessoaChip41.on41{border-color:#00e676;color:#00e676}
+.pontoPopup41 .pessoaChip41.off41{border-color:#5a2020;color:#ff8585}
+
 
 /* CaptaPro 3.8 • Casal em sala direto */
 .salaDireta38{color:#00e676;font-weight:900}
@@ -455,7 +472,7 @@ body.appAberto #btnSairFinal{display:block!important}
 <div class="card"><button class="main" style="min-height:62px;font-size:18px" onclick="registrarAbordagem()">+ REGISTRAR ABORDAGEM</button><p class="mini">Abordagens hoje: <b id="abordagensHoje" class="ok">0</b></p></div>
 <div class="grid pesquisaGrid14">
 <!-- 1 equipe -->
-<select id="equipe"><option value="">1. Equipe</option><option>PARK</option><option>EXTERNA</option></select>
+<input type="hidden" id="equipe" value="Bueno Invest">
 
 <!-- 2 ponto de captação -->
 <select id="ponto"><option value="">2. Ponto de captação</option><option>Porta dentro do Park</option><option>Park Dream House</option><option>Fábrica Spinassi</option><option>Corredor</option><option>Baden Baden</option><option>Djalma</option><option>Igreja</option><option>Renner</option><option>Guarda-chuvas</option><option>Posto Shell</option></select>
@@ -731,13 +748,8 @@ body.appAberto #btnSairFinal{display:block!important}
 
   <div id="portalMapa30" class="card scroll portalBloco30">
     <h2>📍 Mapa ao Vivo</h2>
-    <p class="hint">Mapa real com localização GPS dos profissionais. Cada celular precisa autorizar a localização.</p>
-    <div class="mapFiltros37">
-      <select id="mapEquipe37" onchange="carregarMapaReal37()">
-        <option value="">Todas as equipes</option>
-        <option value="PARK">PARK</option>
-        <option value="EXTERNA">EXTERNA</option>
-      </select>
+    <p class="hint">Mapa real com localização GPS dos profissionais e os pontos de captação fixos.</p>
+    <div class="mapFiltros37 mapFiltros41">
       <select id="mapStatus37" onchange="carregarMapaReal37()">
         <option value="">Todos</option>
         <option value="online">Somente online</option>
@@ -746,7 +758,9 @@ body.appAberto #btnSairFinal{display:block!important}
       <button class="main" onclick="carregarMapaReal37()">Atualizar mapa</button>
     </div>
     <div id="mapaRealCEO37"></div>
-    <div class="mapAviso37">Os pinos aparecem quando o profissional toca em “Ativar localização real”. O círculo mostra referência de 50 metros. Toque em um pino para ver os detalhes da pessoa.</div>
+    <div class="mapAviso37">🔵 Pontos de captação fixos • 🟢🔴 Profissionais (GPS ligado/desligado). Toque em qualquer marcador para ver detalhes.</div>
+    <button class="secondary" id="btnAjustarPontos41" style="margin-top:8px" onclick="toggleAjustarPontos41()">✏️ Ajustar posição dos pontos no mapa</button>
+    <p id="ajustarPontosMsg41" class="mini" style="margin-top:6px"></p>
   </div>
 
   <div id="pessoaModal41" class="pessoaModal41 hidden" onclick="if(event.target===this)fecharDetalhesPessoa41()">
@@ -4517,6 +4531,7 @@ window.carregarPortalCEO38=async function(){
   const sala=p.filter(sala38).length;
   const efic=p.length?Math.round(sala/p.length*100):0;
   ['p30Pesq','ceoPesqHoje','rPesq'].forEach(id=>RT38(id,p.length));
+  RT38('ceoAbordHoje',a.length);
   ['p30Q','ceoQHoje','rQ'].forEach(id=>RT38(id,q));
   ['p30NQ','ceoNQHoje','rNQ'].forEach(id=>RT38(id,p.length-q-nq1));
   ['p30Sala','ceoSalaHoje','rSala'].forEach(id=>RT38(id,sala));
@@ -4599,13 +4614,43 @@ async function pres39(){
   try{return JSON.parse(localStorage.getItem('captapro_presence_local')||'[]')}catch(e){return []}
 }
 
-let map39=null, markers39=[];
+let map39=null, markers39=[], leafletTentouFallback41=false;
+function carregarScript41(src){
+  return new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src=src; s.onload=()=>resolve(true); s.onerror=()=>reject(new Error('Falha ao carregar '+src));
+    document.head.appendChild(s);
+  });
+}
+async function garantirLeaflet41(){
+  if(window.L)return true;
+  if(leafletTentouFallback41)return !!window.L;
+  leafletTentouFallback41=true;
+  if(!document.querySelector('link[href*="leaflet.css"]')){
+    try{const link=document.createElement('link');link.rel='stylesheet';link.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';document.head.appendChild(link)}catch(e){}
+  }
+  try{
+    await carregarScript41('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');
+  }catch(e){
+    try{await carregarScript41('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js')}catch(e2){console.error('Leaflet não carregou por nenhuma CDN',e2)}
+  }
+  return !!window.L;
+}
 window.carregarMapaReal39=async function(){
   const box=A39('mapaRealCEO37');
-  if(!box || !window.L)return;
-  const equipe=AV39('mapEquipe37'), status=AV39('mapStatus37');
-  let data=(await pres39()).filter(x=>x.lat&&x.lng);
-  if(equipe)data=data.filter(x=>String(x.equipe||'').toUpperCase()===equipe);
+  if(!box)return;
+  const status=AV39('mapStatus37');
+  const todos=await pres39();
+  if(!window.L){
+    box.innerHTML='<div style="padding:40px 16px;text-align:center;color:#ffd54f;font-weight:700">⏳ Carregando o mapa...</div>';
+    const ok=await garantirLeaflet41();
+    if(!ok){
+      box.innerHTML='<div style="padding:40px 16px;text-align:center;color:#ff8585;font-weight:700">⚠️ Não foi possível carregar o mapa.<br><span style="font-weight:400;color:#ccc;font-size:13px">Verifique sua internet e toque em "Atualizar mapa" para tentar de novo.</span></div>';
+      return;
+    }
+    box.innerHTML='';
+  }
+  let data=todos.filter(x=>x.lat&&x.lng);
   if(status==='online')data=data.filter(online39);
   if(status==='offline')data=data.filter(x=>!online39(x));
   if(!map39){
@@ -4613,7 +4658,6 @@ window.carregarMapaReal39=async function(){
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map39);
   }
   markers39.forEach(m=>map39.removeLayer(m)); markers39=[];
-  if(!data.length){setTimeout(()=>map39.invalidateSize(),300);return}
   const bounds=[];
   data.forEach(x=>{
     const isOn=online39(x);
@@ -4631,11 +4675,123 @@ window.carregarMapaReal39=async function(){
     markers39.push(marker);
     bounds.push([lat,lng]);
   });
+  await renderPontosNoMapa41(todos);
   if(bounds.length===1)map39.setView(bounds[0],16);
-  else map39.fitBounds(bounds,{padding:[30,30]});
+  else if(bounds.length>1)map39.fitBounds(bounds,{padding:[30,30]});
   setTimeout(()=>map39.invalidateSize(),300);
 }
 window.carregarMapaReal37=window.carregarMapaReal39;
+
+/* CaptaPro 4.3 • Pontos de Captação fixos direto no mapa (arrastáveis pelo CEO) */
+const PONTOS_OFICIAIS41=['Porta dentro do Park','Park Dream House','Fábrica Spinassi','Corredor','Baden Baden','Djalma','Igreja','Renner','Guarda-chuvas','Posto Shell'];
+// Coordenadas iniciais aproximadas no bairro Capivari, Campos do Jordão-SP. Ajustáveis pelo CEO no botão "Ajustar posição dos pontos".
+const PONTOS_COORDS_PADRAO41={
+  'Porta dentro do Park':[-22.7381,-45.5901],
+  'Park Dream House':[-22.7378,-45.5896],
+  'Fábrica Spinassi':[-22.7391,-45.5884],
+  'Corredor':[-22.7374,-45.5908],
+  'Baden Baden':[-22.7370,-45.5903],
+  'Djalma':[-22.7365,-45.5898],
+  'Igreja':[-22.7398,-45.5915],
+  'Renner':[-22.7386,-45.5920],
+  'Guarda-chuvas':[-22.7371,-45.5904],
+  'Posto Shell':[-22.7404,-45.5892]
+};
+let pontosCoordsCache41=null, pontoMarkers41=[], ajustarPontosAtivo41=false;
+async function carregarPontosCoords41(){
+  if(pontosCoordsCache41)return pontosCoordsCache41;
+  let salvo={};
+  try{
+    const r=await db.from('captapro_pontos_gps').select('*');
+    if(!r.error&&r.data)r.data.forEach(x=>{if(x.nome&&x.lat&&x.lng)salvo[x.nome]=[Number(x.lat),Number(x.lng)]});
+  }catch(e){}
+  if(!Object.keys(salvo).length){
+    try{salvo=JSON.parse(localStorage.getItem('captapro_pontos_gps_local')||'{}')}catch(e){}
+  }
+  pontosCoordsCache41={...PONTOS_COORDS_PADRAO41,...salvo};
+  return pontosCoordsCache41;
+}
+async function salvarPontoCoord41(nome,lat,lng){
+  pontosCoordsCache41=pontosCoordsCache41||{}; pontosCoordsCache41[nome]=[lat,lng];
+  try{
+    const local=JSON.parse(localStorage.getItem('captapro_pontos_gps_local')||'{}');
+    local[nome]=[lat,lng];
+    localStorage.setItem('captapro_pontos_gps_local',JSON.stringify(local));
+  }catch(e){}
+  try{await db.from('captapro_pontos_gps').upsert({nome,lat,lng},{onConflict:'nome'})}catch(e){}
+}
+window.toggleAjustarPontos41=function(){
+  ajustarPontosAtivo41=!ajustarPontosAtivo41;
+  const btn=A39('btnAjustarPontos41');
+  if(btn){
+    btn.classList.toggle('ativo41',ajustarPontosAtivo41);
+    btn.textContent=ajustarPontosAtivo41?'✅ Arraste os pontos azuis e toque aqui para concluir':'✏️ Ajustar posição dos pontos no mapa';
+  }
+  const msg=A39('ajustarPontosMsg41');
+  if(msg)msg.textContent=ajustarPontosAtivo41?'Modo de ajuste ativo: arraste cada ponto azul até a posição correta no mapa. A posição é salva automaticamente.':'';
+  pontoMarkers41.forEach(m=>{
+    if(m.dragging){ajustarPontosAtivo41?m.dragging.enable():m.dragging.disable()}
+    const el=m.getElement(); if(el){const pin=el.querySelector('.pin41'); if(pin)el.querySelector('.pontoMarker41')?.classList.toggle('arrastavel41',ajustarPontosAtivo41)}
+  });
+}
+async function renderPontosNoMapa41(todos){
+  if(!map39)return;
+  pontoMarkers41.forEach(m=>map39.removeLayer(m)); pontoMarkers41=[];
+  const coords=await carregarPontosCoords41();
+  const porPonto={};
+  (todos||[]).forEach(x=>{const p=x.ponto||''; if(!p)return; if(!porPonto[p])porPonto[p]=[]; porPonto[p].push(x)});
+  const nomes=[...new Set([...PONTOS_OFICIAIS41,...Object.keys(porPonto)])];
+  nomes.forEach(nome=>{
+    const c=coords[nome]||PONTOS_COORDS_PADRAO41[nome];
+    if(!c)return;
+    const pessoas=porPonto[nome]||[];
+    const temOnline=pessoas.some(online39);
+    const icon=L.divIcon({
+      className:'',
+      html:`<div class="pontoMarker41${temOnline?' temOnline41':''}${ajustarPontosAtivo41?' arrastavel41':''}"><div class="pin41"></div>${pessoas.length?`<div class="badge41">${pessoas.length}</div>`:''}</div>`,
+      iconSize:[26,26],
+      iconAnchor:[13,26]
+    });
+    const marker=L.marker(c,{icon,draggable:ajustarPontosAtivo41}).addTo(map39);
+    marker.bindTooltip(nome,{permanent:true,direction:'top',offset:[0,-24],className:'pontoLabel41 pontoTooltip41'});
+    marker.on('dragend',async()=>{
+      const ll=marker.getLatLng();
+      await salvarPontoCoord41(nome,ll.lat,ll.lng);
+      const msg=A39('ajustarPontosMsg41'); if(msg)msg.textContent=`📍 "${nome}" salvo na nova posição.`;
+    });
+    marker.on('click',()=>{
+      if(ajustarPontosAtivo41)return;
+      if(!pessoas.length){abrirPontoVazio41(nome);return}
+      abrirPontoDetalhes41(nome,pessoas);
+    });
+    pontoMarkers41.push(marker);
+  });
+}
+window.abrirPontoVazio41=function(nome){
+  const modal=A39('pessoaModal41'); if(!modal)return;
+  modal.classList.remove('hidden');
+  if(A39('pessoaModalNome41'))A39('pessoaModalNome41').textContent=nome;
+  if(A39('pessoaModalSub41'))A39('pessoaModalSub41').textContent='📍 Ponto de captação';
+  const av=A39('pessoaModalAvatar41'); if(av)av.textContent='📍';
+  if(A39('pessoaModalConteudo41'))A39('pessoaModalConteudo41').innerHTML='<p class="mini">Ninguém está registrado neste ponto agora.</p>';
+}
+window.abrirPontoDetalhes41=function(nome,pessoas){
+  const modal=A39('pessoaModal41'); if(!modal)return;
+  modal.classList.remove('hidden');
+  if(A39('pessoaModalNome41'))A39('pessoaModalNome41').textContent=nome;
+  if(A39('pessoaModalSub41'))A39('pessoaModalSub41').textContent=`📍 ${pessoas.length} pessoa${pessoas.length>1?'s':''} neste ponto`;
+  const av=A39('pessoaModalAvatar41'); if(av)av.textContent='📍';
+  window.__pessoasIndex41=pessoas;
+  if(A39('pessoaModalConteudo41'))A39('pessoaModalConteudo41').innerHTML=`<div class="pontoPopup41">${pessoas.map((x,i)=>{
+    const isOn=online39(x);
+    return `<button class="pessoaChip41 ${isOn?'on41':'off41'}" onclick="abrirDetalhesPessoaIndice41(${i})">${isOn?'🟢':'🔴'} ${esc39(x.nome||x.email)}</button>`;
+  }).join('')}</div>`;
+}
+window.__pessoasIndex41=[];
+window.abrirDetalhesPessoaIndice41=function(i){
+  const x=window.__pessoasIndex41[i];
+  if(x)abrirDetalhesPessoa41(x);
+}
 
 /* CaptaPro 4.1 • Detalhes da pessoa ao clicar no ponto do mapa */
 function hojeISO41(){return new Date().toISOString().slice(0,10)}
@@ -4758,6 +4914,7 @@ window.montarFichaImagem40=function(){
   const rel=val40(f,['relacionamento'],V40('relacionamento'));
   const tempo=val40(f,['tempo_relacionamento','tempo'],V40('tempo'));
   const renda=val40(f,['renda','renda_familiar'],V40('renda'));
+  const rendaLiquida=val40(f,['renda_liquida'],V40('rendaLiquida'));
   const carro=val40(f,['carro','nome_carro'],V40('nomeCarro'));
   const ano=val40(f,['ano_carro'],V40('anoCarro'));
   const cartao=val40(f,['cartao'],V40('cartao'));
@@ -4794,7 +4951,8 @@ window.montarFichaImagem40=function(){
       <div class="campoShare40"><small>Idade / Profissão 1</small><b>${esc40(idade1)} anos • ${esc40(prof1)}</b></div>
       <div class="campoShare40"><small>Idade / Profissão 2</small><b>${esc40(idade2)} anos • ${esc40(prof2)}</b></div>
       <div class="campoShare40"><small>Relacionamento</small><b>${esc40(rel)} • ${esc40(tempo)}</b></div>
-      <div class="campoShare40"><small>Renda</small><b>${esc40(renda)}</b></div>
+      <div class="campoShare40"><small>Renda Bruta</small><b>${esc40(renda)}</b></div>
+      ${rendaLiquida?`<div class="campoShare40"><small>Renda Líquida</small><b>${esc40(rendaLiquida)}</b></div>`:''}
       <div class="campoShare40"><small>Veículo / Ano</small><b>${esc40(carro)} ${esc40(ano)}</b></div>
       <div class="campoShare40"><small>Cartão de crédito</small><b>${esc40(cartao)}</b></div>
       <div class="campoShare40"><small>Casa própria</small><b>${esc40(casa)}</b></div>
