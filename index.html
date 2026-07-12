@@ -226,30 +226,7 @@
           </table>
         </div>
 
-        <div class="card scroll adminOnly" id="ceoDashboard20">
-          <h2>CEO • Dashboard</h2>
-          <div class="kpis">
-            <div class="kpi">Abordagens<b id="ceoAbordHoje">0</b></div>
-            <div class="kpi">Pesquisas<b id="ceoPesqHoje">0</b></div>
-            <div class="kpi">Q<b id="ceoQHoje">0</b></div>
-            <div class="kpi">NQ<b id="ceoNQHoje">0</b></div>
-            <div class="kpi">Sala<b id="ceoSalaHoje">0</b></div>
-            <div class="kpi">Pendente<b id="ceoSalaPendente">0</b></div>
-            <div class="kpi">Eficiência<b id="ceoEficHoje">0%</b></div>
-            <div class="kpi">Conversão<b id="ceoConvHoje">0%</b></div>
-          </div>
-        </div>
-
-        <div class="card scroll adminOnly">
-          <h2>Ranking da Equipe</h2>
-          <div id="rankingEquipeBox13"></div>
-        </div>
-
-        <div class="card adminOnly">
-          <h2>Individual</h2>
-          <select id="profFiltro"><option value="">Escolha o profissional</option></select>
-          <div id="individualBox"></div>
-        </div>
+        <!-- CEO Dashboard, Ranking e Individual foram movidos para o Portal CEO -->
       </section>
 
       <!-- ABA PORTAL CEO -->
@@ -289,14 +266,30 @@
           <p id="cfgMsg"></p>
         </div>
 
-        <div class="card adminOnly">
-          <h2>Metas Individuais</h2>
-          <div class="grid">
-            <input id="metaProfNome20" placeholder="Nome do profissional">
-            <input id="metaProfValor20" type="number" placeholder="Meta (Ex: 100)">
+
+        <div class="card scroll adminOnly" id="ceoDashboard20">
+          <h2>CEO • Dashboard</h2>
+          <div class="kpis">
+            <div class="kpi">Abordagens<b id="ceoAbordHoje">0</b></div>
+            <div class="kpi">Pesquisas<b id="ceoPesqHoje">0</b></div>
+            <div class="kpi">Q<b id="ceoQHoje">0</b></div>
+            <div class="kpi">NQ<b id="ceoNQHoje">0</b></div>
+            <div class="kpi">Sala<b id="ceoSalaHoje">0</b></div>
+            <div class="kpi">Pendente<b id="ceoSalaPendente">0</b></div>
+            <div class="kpi">Eficiência<b id="ceoEficHoje">0%</b></div>
+            <div class="kpi">Conversão<b id="ceoConvHoje">0%</b></div>
           </div>
-          <button id="btnSalvarMeta" class="main" style="margin-top:8px">Salvar meta individual</button>
-          <div id="metasIndividuaisBox20" style="margin-top:10px"></div>
+        </div>
+
+        <div class="card scroll adminOnly">
+          <h2>Ranking da Equipe</h2>
+          <div id="rankingEquipeBox13"></div>
+        </div>
+
+        <div class="card adminOnly">
+          <h2>Individual</h2>
+          <select id="profFiltro"><option value="">Escolha o profissional</option></select>
+          <div id="individualBox"></div>
         </div>
       </section>
     </section>
