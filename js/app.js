@@ -4,7 +4,7 @@
 import { db, usuarioEmail, usuarioNome, role, entrar, sairCaptaProFinal, loadCfg, salvarConfig, aplicarRendaDigitavel, salvarMetaIndividual20, renderMetasIndividuais20 } from './supabase.js';
 import { popularIdades, registrarAbordagem, salvarPesquisa, confirmarSala21, compartilharFicha, novaPesquisa, carregarAbordagensHoje } from './pesquisa.js';
 import { carregarRelatorio, mostrarIndividual } from './relatorio.js';
-import { initCb300, adicionarRegra, lancarResultado } from './cb300.js';
+import { initMapa } from './mapa.js';
 
 // ===== HELPERS GLOBAIS (expostos no window para compatibilidade) =====
 window.E = (id) => document.getElementById(id);
@@ -51,7 +51,11 @@ function configurarListeners() {
   // Abas
   document.querySelectorAll('.tabs button').forEach(btn => {
     btn.addEventListener('click', function() {
-        : this.textContent.trim().toLowerCase().includes('cb300') || this.textContent.trim().toLowerCase().includes('game') ? 'cb300'
+      const txt = this.textContent.trim().toLowerCase();
+      const abaId = txt.includes('pesquisa') ? 'pesquisa'
+        : txt.includes('relatório') || txt.includes('relatorio') ? 'relatorio'
+        : txt.includes('cb300') || txt.includes('game') ? 'cb300'
+        : 'qualificacao';
       window.aba(abaId, this);
     });
   });
@@ -84,12 +88,9 @@ function configurarListeners() {
   const profFiltro = document.getElementById('profFiltro');
   if (profFiltro) profFiltro.addEventListener('change', mostrarIndividual);
 
-  // CEO - Salvar Config
-  const btnSalvarCEO = document.getElementById('btnSalvarCEO');
-  if (btnSalvarCEO) btnSalvarCEO.addEventListener('click', salvarConfig);
-
-
-  // Cb300 Game - Adicionar Regra
+  // CEO - Salvar Meta Individual
+  const btnSalvarMeta = document.getElementById('btnSalvarMeta');
+  if (btnSalvarMeta) btnSalvarMeta.addEventListener('click', salvarMetaIndividual20);
   const btnAddRegra = document.getElementById('btnAddRegra');
   if (btnAddRegra) btnAddRegra.addEventListener('click', adicionarRegra);
 
