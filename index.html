@@ -1,1 +1,1258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CaptaPro Versão 3.0</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #050505, #180000);
+      color: #fff;
+    }
+    
+    .wrap { max-width: 900px; margin: auto; padding: 12px; }
+    .top { text-align: center; margin: 12px 0; }
+    .logo { font-size: 38px; font-weight: 900; }
+    .logo span { color: #ff3333; }
+    .version {
+      display: inline-block;
+      background: #1b0505;
+      border: 1px solid #671818;
+      color: #ff8585;
+      border-radius: 999px;
+      padding: 5px 13px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    
+    .card {
+      background: #101010;
+      border: 1px solid #2b2b2b;
+      border-radius: 18px;
+      padding: 15px;
+      margin-bottom: 12px;
+      box-shadow: 0 0 16px rgba(239, 27, 36, 0.1);
+    }
+    
+    h2 {
+      margin: 0 0 12px;
+      border-left: 4px solid #ef1b24;
+      padding-left: 10px;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    
+    input, select, textarea, button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #333;
+      background: #050505;
+      color: #fff;
+      font-size: 15px;
+    }
+    
+    textarea { min-height: 70px; }
+    
+    button {
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .main {
+      background: linear-gradient(135deg, #ef1b24, #ff3333);
+      border: 0;
+    }
+    
+    .main:hover {
+      box-shadow: 0 0 20px rgba(239, 27, 36, 0.4);
+      transform: translateY(-2px);
+    }
+    
+    .secondary {
+      background: #202020;
+      border: 1px solid #444;
+    }
+    
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+    
+    .tabs button {
+      background: #181818;
+      border: 0;
+      padding: 14px;
+      border-radius: 14px;
+      color: #fff;
+      font-weight: 900;
+    }
+    
+    .tabs button.active {
+      background: linear-gradient(135deg, #ef1b24, #ff3333);
+    }
+    
+    body.ceo .tabs {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    body.ceo .adminOnly {
+      display: block !important;
+    }
+    
+    .adminOnly { display: none; }
+    .hidden { display: none !important; }
+    
+    .ok { color: #00e676; font-weight: 900; }
+    .erro { color: #ff5252; font-weight: 900; }
+    .warn { color: #ffd54f; font-weight: 900; }
+    .hint, .mini { color: #aaa; font-size: 12px; }
+    
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    
+    .kpi {
+      background: #181818;
+      border: 1px solid #2d2d2d;
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+      color: #ccc;
+    }
+    
+    .kpi b {
+      display: block;
+      color: #ff3333;
+      font-size: 26px;
+      margin-top: 4px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    
+    th, td {
+      border-bottom: 1px solid #2b2b2b;
+      padding: 8px;
+      text-align: left;
+    }
+    
+    th { color: #ff7777; }
+    
+    .scroll { overflow: auto; }
+    
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: #260000;
+      border: 1px solid #5b1111;
+      color: #ff8585;
+      font-weight: 900;
+    }
+    
+    .pessoaBox {
+      grid-column: 1/-1;
+      background: #151515;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 12px;
+      margin-top: 2px;
+    }
+    
+    .pessoaBox b {
+      display: block;
+      color: #ff8585;
+      margin-bottom: 8px;
+    }
+    
+    .pessoaGrid {
+      display: grid;
+      grid-template-columns: 1.4fr 0.7fr 1.3fr;
+      gap: 8px;
+    }
+    
+    .painelClean20 { border-color: #172b5a !important; }
+    
+    .painelCards20 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    
+    .painelCard20 {
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+      min-height: 104px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    
+    .painelCard20 span {
+      font-size: 13px;
+      color: #eaeaea;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    
+    .painelCard20 b {
+      font-size: 38px;
+      margin-top: 6px;
+      color: #fff;
+    }
+    
+    .painelCard20.azul { background: linear-gradient(135deg, #06336b, #0a6cff); }
+    .painelCard20.vermelho { background: linear-gradient(135deg, #5a0707, #ef1b24); }
+    .painelCard20.verde { background: linear-gradient(135deg, #06451f, #00a651); }
+    .painelCard20.amarelo { background: linear-gradient(135deg, #5f4600, #ffb300); color: #111; }
+    .painelCard20.roxo { background: linear-gradient(135deg, #35105a, #8e24aa); }
+    .painelCard20.preto { background: linear-gradient(135deg, #050505, #333); }
+    
+    .metaCard35 {
+      border-color: #00e676 !important;
+      background: linear-gradient(145deg, #07150d, #080808);
+    }
+    
+    .metaTitulo35 {
+      font-size: 13px;
+      text-transform: uppercase;
+      color: #aaa;
+      font-weight: 900;
+      text-align: center;
+    }
+    
+    .metaValor35 {
+      font-size: 30px;
+      color: #00e676;
+      font-weight: 900;
+      text-align: center;
+      margin: 8px 0;
+    }
+    
+    .metaBar35 {
+      height: 18px;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+    
+    #barraMetaFill35 {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(135deg, #00a651, #00e676);
+      border-radius: 999px;
+      transition: 0.3s;
+    }
+    
+    .metaInfo35 {
+      text-align: center;
+      font-weight: 900;
+      color: #ffd54f;
+    }
+    
+    #mapaRealCEO37 {
+      width: 100%;
+      height: 500px;
+      border-radius: 18px;
+      border: 1px solid #333;
+      background: #050505;
+      margin-top: 10px;
+    }
+    
+    @media (max-width: 700px) {
+      .grid, .kpis { grid-template-columns: 1fr; }
+      .tabs { grid-template-columns: 1fr; }
+      .painelCards20 { grid-template-columns: 1fr 1fr; }
+      .pessoaGrid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="logo">Capta<span>Pro</span></div>
+      <div class="version">Versão 3.0 Oficial</div>
+      <p class="mini"><b style="color:#00e676">Bueno Invest</b></p>
+      <button id="btnSairFinal" class="secondary hidden" style="max-width:160px;margin:8px auto 0" onclick="sairCaptaProFinal()">Sair</button>
+    </div>
+
+    <section id="loginBox" class="card">
+      <h2>Entrada</h2>
+      <div class="grid">
+        <input id="email" type="email" placeholder="Seu e-mail">
+        <input id="nome" placeholder="Seu nome completo">
+      </div>
+      <button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button>
+      <p id="loginMsg"></p>
+    </section>
+
+    <section id="app" class="hidden">
+      <div class="tabs">
+        <button class="active" onclick="aba('pesquisa',this)">Pesquisa</button>
+        <button onclick="aba('relatorio',this)">Relatório</button>
+        <button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button>
+      </div>
+
+      <!-- ABA PESQUISA -->
+      <section id="pesquisa" class="card">
+        <h2>Pesquisa</h2>
+        <p class="hint">Abordagem → ficha → salvar → compartilhar → nova ficha.</p>
+        
+        <div class="card">
+          <button class="main" style="min-height:62px;font-size:18px" onclick="registrarAbordagem()">+ REGISTRAR ABORDAGEM</button>
+          <p class="mini">Abordagens hoje: <b id="abordagensHoje" class="ok">0</b></p>
+        </div>
+
+        <div class="grid pesquisaGrid14">
+          <!-- Equipe (agora fixa) -->
+          <input type="hidden" id="equipe" value="Bueno Invest">
+
+          <!-- Ponto de Captação -->
+          <select id="ponto">
+            <option value="">2. Ponto de captação</option>
+            <option>Porta dentro do Park</option>
+            <option>Park Dream House</option>
+            <option>Fábrica Spinassi</option>
+            <option>Corredor</option>
+            <option>Baden Baden</option>
+            <option>Djalma</option>
+            <option>Igreja</option>
+            <option>Renner</option>
+            <option>Guarda-chuvas</option>
+            <option>Posto Shell</option>
+          </select>
+
+          <!-- Pessoa 1 -->
+          <div class="pessoaBox">
+            <b>3. Pessoa 1</b>
+            <div class="pessoaGrid">
+              <input id="nome1" placeholder="Nome">
+              <select id="idade1"><option value="">Idade</option></select>
+              <input id="profissao1" list="profissoes" placeholder="Profissão">
+            </div>
+          </div>
+
+          <!-- Pessoa 2 -->
+          <div class="pessoaBox">
+            <b>4. Pessoa 2</b>
+            <div class="pessoaGrid">
+              <input id="nome2" placeholder="Nome">
+              <select id="idade2"><option value="">Idade</option></select>
+              <input id="profissao2" list="profissoes" placeholder="Profissão">
+            </div>
+          </div>
+
+          <!-- Estado e Cidade -->
+          <select id="estado">
+            <option value="">6. Estado</option>
+            <option>SP</option><option>RJ</option><option>MG</option><option>PR</option><option>SC</option><option>RS</option><option>GO</option><option>DF</option><option>BA</option><option>CE</option><option>PE</option><option>ES</option><option>MT</option><option>MS</option><option>PA</option><option>AM</option>
+          </select>
+          <input id="cidade" list="cidades" placeholder="6. Cidade">
+
+          <!-- Relacionamento e Tempo -->
+          <select id="relacionamento">
+            <option value="">7. Relacionamento</option>
+            <option>Casados</option>
+            <option>União estável</option>
+            <option>Namorados</option>
+            <option>Noivos</option>
+            <option>Solteiro</option>
+          </select>
+          <select id="tempo">
+            <option value="">7. Tempo juntos</option>
+            <option>Menos de 1 ano</option><option>1 ano</option><option>2 anos</option><option>3 anos</option><option>4 anos</option><option>5 anos</option><option>6 anos</option><option>7 anos</option><option>8 anos</option><option>9 anos</option><option>10 anos</option><option>Mais de 10 anos</option>
+          </select>
+
+          <!-- Veículo -->
+          <input id="nomeCarro" placeholder="8. Carro (Ex: Onix)">
+          <input id="anoCarro" inputmode="numeric" placeholder="8. Ano do carro (Ex: 2015)">
+
+          <!-- Casa -->
+          <select id="casa">
+            <option value="">9. Casa própria?</option>
+            <option>Sim</option>
+            <option>Não</option>
+          </select>
+
+          <!-- Cartão -->
+          <select id="cartao">
+            <option value="">10. Cartão de crédito?</option>
+            <option>Sim</option>
+            <option>Não</option>
+          </select>
+
+          <!-- Renda -->
+          <input id="renda" inputmode="numeric" autocomplete="off" placeholder="11. Renda bruta do casal. Ex: 10000 vira 10.000,00">
+          <input id="rendaLiquida" class="hidden" inputmode="numeric" autocomplete="off" placeholder="Renda líquida para Empresário/Comerciante. Ex: 8000 vira 8.000,00">
+
+          <!-- Outros campos -->
+          <select id="multi">
+            <option value="">Já conheceu multipropriedade?</option>
+            <option>Sim</option>
+            <option>Não</option>
+          </select>
+
+          <select id="brinde">
+            <option value="">Selecione a cortesia</option>
+            <option>2 Museu de Cera</option>
+            <option>2 Mini Mundo</option>
+            <option>2 Vale dos Dinossauros</option>
+            <option>2 Terror</option>
+            <option>4 Espelho do Jordão</option>
+            <option>Rostie - 120,00 em consumo</option>
+            <option>Vemaguet - 120,00 em consumo</option>
+            <option>Armazém Brasil - 120,00 em consumo</option>
+            <option>Combustível - 120,00 em consumo</option>
+            <option>Chocolate Spinassi - 120,00 em consumo</option>
+            <option>Loja Parque R$ 150,00</option>
+            <option>Combo de experiência</option>
+          </select>
+
+          <input id="contato" placeholder="WhatsApp / contato">
+        </div>
+
+        <textarea id="obs" style="margin-top:8px" placeholder="Observações"></textarea>
+
+        <div style="margin-top:8px">
+          <button class="main" onclick="salvarPesquisa()">Salvar Ficha</button>
+        </div>
+
+        <button class="secondary" style="margin-top:8px;background:#073a21;border-color:#0a7b43" onclick="confirmarSala21()">✅ Casal em Sala</button>
+
+        <p id="formMsg"></p>
+
+        <div id="resultado" class="hidden"></div>
+
+        <div id="fichaBox" class="card hidden">
+          <h2>Ficha salva</h2>
+          <div id="fichaConteudo"></div>
+          <div class="grid">
+            <button class="main" onclick="compartilharFicha()">Compartilhar imagem</button>
+            <button class="secondary" onclick="novaPesquisa()">Nova pesquisa</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABA RELATÓRIO -->
+      <section id="relatorio" class="card hidden">
+        <h2>Relatório</h2>
+
+        <section id="painelInicialProfissional20" class="card painelClean20">
+          <h2>Painel do Dia</h2>
+          <p class="hint">Resumo individual de hoje.</p>
+          <div class="painelCards20">
+            <div class="painelCard20 azul"><span>Abordagens</span><b id="homeAbord">0</b></div>
+            <div class="painelCard20 vermelho"><span>Pesquisas</span><b id="homePesq">0</b></div>
+            <div class="painelCard20 verde"><span>Q</span><b id="homeQ">0</b></div>
+            <div class="painelCard20 amarelo"><span>NQ</span><b id="homeNQ">0</b></div>
+            <div class="painelCard20 roxo"><span>Sala</span><b id="homeSala">0</b></div>
+            <div class="painelCard20 preto"><span>Tempo de uso</span><b id="tempoUsoApp36">00h00</b></div>
+          </div>
+
+          <div class="card metaCard35">
+            <div class="metaTitulo35">🎯 Meta Mensal</div>
+            <div class="metaValor35" id="metaValor35">0 casais em sala</div>
+            <div class="metaBar35"><div id="barraMetaFill35"></div></div>
+            <p class="metaInfo35" id="metaInfo35">Faltam 35 casais</p>
+          </div>
+        </section>
+
+        <div class="kpis">
+          <div class="kpi">Abordagens<b id="dAbord">0</b></div>
+          <div class="kpi">Pesquisas<b id="dPesq">0</b></div>
+          <div class="kpi">Q<b id="dQ">0</b></div>
+          <div class="kpi">NQ<b id="dNQ">0</b></div>
+          <div class="kpi">1 Item<b id="dNQ1">0</b></div>
+          <div class="kpi">Sala<b id="dSala">0</b></div>
+          <div class="kpi">Eficiência<b id="dEfic">0%</b></div>
+          <div class="kpi">Conversão<b id="dConv">0%</b></div>
+        </div>
+
+        <div class="grid">
+          <input id="relDe" type="date">
+          <input id="relAte" type="date">
+        </div>
+
+        <button class="main" style="margin-top:8px" onclick="carregarRelatorio()">Atualizar</button>
+
+        <div class="scroll" style="margin-top:10px">
+          <table>
+            <tr>
+              <th>Métrica</th>
+              <th>Valor</th>
+            </tr>
+            <tr>
+              <td>Abordagens</td>
+              <td><b id="rAbord">0</b></td>
+            </tr>
+            <tr>
+              <td>Pesquisas</td>
+              <td><b id="rPesq">0</b></td>
+            </tr>
+            <tr>
+              <td>Q</td>
+              <td><b id="rQ">0</b></td>
+            </tr>
+            <tr>
+              <td>NQ</td>
+              <td><b id="rNQ">0</b></td>
+            </tr>
+            <tr>
+              <td>1 Item</td>
+              <td><b id="rNQ1">0</b></td>
+            </tr>
+            <tr>
+              <td>Sala Confirmada</td>
+              <td><b id="rSala">0</b></td>
+            </tr>
+            <tr>
+              <td>Conversão</td>
+              <td><b id="rConv">0%</b></td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="card scroll adminOnly" id="ceoDashboard20">
+          <h2>CEO • Dashboard</h2>
+          <div class="kpis">
+            <div class="kpi">Abordagens<b id="ceoAbordHoje">0</b></div>
+            <div class="kpi">Pesquisas<b id="ceoPesqHoje">0</b></div>
+            <div class="kpi">Q<b id="ceoQHoje">0</b></div>
+            <div class="kpi">NQ<b id="ceoNQHoje">0</b></div>
+            <div class="kpi">Sala<b id="ceoSalaHoje">0</b></div>
+            <div class="kpi">Pendente<b id="ceoSalaPendente">0</b></div>
+            <div class="kpi">Eficiência<b id="ceoEficHoje">0%</b></div>
+            <div class="kpi">Conversão<b id="ceoConvHoje">0%</b></div>
+          </div>
+        </div>
+
+        <div class="card scroll adminOnly">
+          <h2>Ranking da Equipe</h2>
+          <div id="rankingEquipeBox13"></div>
+        </div>
+
+        <div class="card adminOnly">
+          <h2>Individual</h2>
+          <select id="profFiltro" onchange="mostrarIndividual()">
+            <option value="">Escolha o profissional</option>
+          </select>
+          <div id="individualBox"></div>
+        </div>
+      </section>
+
+      <!-- ABA PORTAL CEO -->
+      <section id="qualificacao" class="card hidden adminOnly">
+        <h2>Portal CEO</h2>
+        <p class="hint">Central do CEO: configurações e mapa ao vivo.</p>
+
+        <div class="card">
+          <h2>Mapa ao Vivo</h2>
+          <div id="mapaRealCEO37"></div>
+          <p class="mini" style="margin-top:8px">🔵 Pontos fixos • 🟢🔴 Profissionais (GPS ligado/desligado)</p>
+        </div>
+
+        <div class="ceoPainel14" style="border: 1px solid #5a1717; border-radius: 16px; padding: 12px; background: #080808; margin-bottom: 12px;">
+          <div class="grid" style="grid-template-columns: repeat(3, 1fr);">
+            <input id="cfgRendaMin" inputmode="numeric" placeholder="R$ 15.000,00">
+            <input id="cfgAnoMin" type="number" placeholder="Ano mínimo do carro. Ex: 2011">
+            <input id="cfgIdadeMin" type="number" placeholder="Idade mínima. Ex: 25">
+            <input id="cfgIdadeMax" type="number" placeholder="Idade máxima. Ex: 64">
+            <input id="cfgTempoMinNumero" type="number" placeholder="Tempo mínimo. Ex: 1">
+            <select id="cfgTempoMinUnidade37">
+              <option value="anos" selected>Anos</option>
+              <option value="meses">Meses</option>
+              <option value="dias">Dias</option>
+            </select>
+            <input id="cfgTempoMaxNumero" type="number" placeholder="Tempo máximo. Ex: 30">
+            <input id="cfgMetaMensalCasais" type="number" placeholder="Meta mensal. Ex: 100">
+            <select id="cfgCasa">
+              <option value="sim">Casa: Sim</option>
+              <option value="nao">Casa: Não</option>
+            </select>
+          </div>
+
+          <textarea id="cfgProfissoesBloqueadas" style="margin-top:8px" placeholder="Profissões que deixam NQ. Ex: Operador de caixa, Zelador, Estudante, Uber/App/Freelancer"></textarea>
+
+          <button class="main" style="margin-top:8px" onclick="salvarConfig()">Salvar CEO</button>
+          <p id="cfgMsg"></p>
+        </div>
+
+        <div class="card adminOnly">
+          <h2>Metas Individuais</h2>
+          <div class="grid">
+            <input id="metaProfNome20" placeholder="Nome do profissional">
+            <input id="metaProfValor20" type="number" placeholder="Meta (Ex: 100)">
+          </div>
+          <button class="main" style="margin-top:8px" onclick="salvarMetaIndividual20()">Salvar meta individual</button>
+          <div id="metasIndividuaisBox20" style="margin-top:10px"></div>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <datalist id="profissoes">
+    <option value="Outro(a)">
+    <option value="Empresário">
+    <option value="Empresária">
+    <option value="Comerciante">
+    <option value="Vendedor">
+    <option value="Gerente">
+    <option value="Professor">
+    <option value="Médico">
+    <option value="Advogado">
+    <option value="Engenheiro">
+    <option value="Autônomo">
+    <option value="Aposentado">
+  </datalist>
+
+  <datalist id="cidades">
+    <option value="Campos do Jordão">
+    <option value="São Paulo">
+    <option value="São José dos Campos">
+    <option value="Taubaté">
+    <option value="Pindamonhangaba">
+    <option value="Campinas">
+    <option value="Rio de Janeiro">
+  </datalist>
+
+  <script>
+    // ===== CONFIG =====
+    const SUPABASE_URL = "https://veznreiamwstlulkpocz.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlem5yZWlhbXdzdGx1bGtwb2N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODc1NDksImV4cCI6MjA5NzI2MzU0OX0.MeSqJZTZnk3zDKWgD920ccV2KUheH0W_BGD3TvhPXdM";
+    const CEOS = ['raphaelbueno.captacao@gmail.com', 'marcel.dorado2@gmail.com'];
+
+    let db, usuarioEmail = '', usuarioNome = '', role = 'profissional', ultimaFicha = null;
+
+    // Inicializa Supabase
+    try {
+      db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    } catch (e) {
+      console.error('Supabase não carregou:', e);
+      db = null;
+    }
+
+    // ===== HELPERS =====
+    const E = (id) => document.getElementById(id);
+    const V = (id) => (E(id)?.value || '').trim();
+    const H = (id, v) => { if (E(id)) E(id).innerHTML = v; };
+    const S = (id, v) => { if (E(id)) E(id).innerText = v; };
+    const normal = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+    const onlyDigits = (v) => String(v || '').replace(/\D/g, '');
+    const parseMoeda = (v) => {
+      let s = String(v || '').replace(/R\$|\s/g, '').trim();
+      if (!s) return 0;
+      s = s.replace(/[^0-9,.-]/g, '');
+      if (s.includes(',')) return Number(s.replace(/\./g, '').replace(',', '.')) || 0;
+      return Number(s.replace(/\./g, '')) || 0;
+    };
+    const moeda = (n) => (Number(n || 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    const rendaTela = (n) => (Number(n || 0)).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    // ===== IDADES =====
+    for (let i = 18; i <= 90; i++) {
+      if (E('idade1')) E('idade1').innerHTML += `<option>${i}</option>`;
+      if (E('idade2')) E('idade2').innerHTML += `<option>${i}</option>`;
+    }
+
+    // ===== LOGIN =====
+    async function entrar() {
+      usuarioEmail = V('email').toLowerCase();
+      usuarioNome = V('nome') || usuarioEmail;
+
+      if (!usuarioEmail) {
+        H('loginMsg', '<span class="erro">Informe o e-mail.</span>');
+        return;
+      }
+
+      try {
+        if (db) {
+          const r = await db.from('approved_users').select('*').eq('email', usuarioEmail).maybeSingle();
+          let u = r.data;
+
+          if (!u && CEOS.includes(usuarioEmail)) {
+            u = { role: 'ceo', approved: true, name: usuarioNome };
+          }
+
+          if (!u || u.approved === false) {
+            H('loginMsg', '<span class="erro">E-mail não aprovado.</span>');
+            return;
+          }
+
+          role = u.role || 'profissional';
+          usuarioNome = u.name || usuarioNome;
+        } else {
+          role = CEOS.includes(usuarioEmail) ? 'ceo' : 'profissional';
+        }
+      } catch (e) {
+        role = CEOS.includes(usuarioEmail) ? 'ceo' : 'profissional';
+      }
+
+      document.body.classList.toggle('ceo', role === 'ceo' || CEOS.includes(usuarioEmail));
+      E('loginBox').classList.add('hidden');
+      E('app').classList.remove('hidden');
+
+      try {
+        localStorage.setItem('loginSimples', JSON.stringify({ email: usuarioEmail, nome: usuarioNome }));
+      } catch (e) {}
+
+      loadCfg();
+      aplicarRendaDigitavel();
+      carregarAbordagensHoje();
+      carregarRelatorio();
+    }
+
+    // Auto-login
+    (function () {
+      try {
+        const l = JSON.parse(localStorage.getItem('loginSimples') || 'null');
+        if (l) {
+          E('email').value = l.email;
+          E('nome').value = l.nome;
+          setTimeout(entrar, 300);
+        }
+      } catch (e) {}
+    })();
+
+    function sairCaptaProFinal() {
+      localStorage.removeItem('loginSimples');
+      location.reload();
+    }
+
+    // ===== ABAS =====
+    function aba(id, b) {
+      ['pesquisa', 'relatorio', 'qualificacao'].forEach(x => {
+        if (E(x)) E(x).classList.add('hidden');
+      });
+
+      if (E(id)) E(id).classList.remove('hidden');
+
+      document.querySelectorAll('.tabs button').forEach(x => x.classList.remove('active'));
+      if (b) b.classList.add('active');
+
+      if (id === 'relatorio') {
+        setTimeout(carregarRelatorio, 100);
+      }
+    }
+
+    // ===== CONFIGURAÇÕES =====
+    function getCfg() {
+      try {
+        return JSON.parse(localStorage.getItem('cfg') || '{}');
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function loadCfg() {
+      const c = getCfg();
+      if (E('cfgIdadeMin')) E('cfgIdadeMin').value = c.idadeMin || 25;
+      if (E('cfgIdadeMax')) E('cfgIdadeMax').value = c.idadeMax || 64;
+      if (E('cfgRendaMin')) E('cfgRendaMin').value = rendaTela(c.rendaMin || 15000);
+      if (E('cfgAnoMin')) E('cfgAnoMin').value = c.anoMin || 2011;
+      if (E('cfgMetaMensalCasais')) E('cfgMetaMensalCasais').value = c.metaMensalCasais || 35;
+      if (E('cfgProfissoesBloqueadas')) E('cfgProfissoesBloqueadas').value = c.profissoesBloqueadas || 'Operador de caixa, Zelador, Secretária, Auxiliar, Assistente, Estudante, Uber/App/Freelancer';
+    }
+
+    function salvarConfig() {
+      const c = {
+        rendaMin: parseMoeda(V('cfgRendaMin')) || 15000,
+        anoMin: Number(V('cfgAnoMin')) || 2011,
+        idadeMin: Number(V('cfgIdadeMin')) || 25,
+        idadeMax: Number(V('cfgIdadeMax')) || 64,
+        metaMensalCasais: Number(V('cfgMetaMensalCasais')) || 35,
+        profissoesBloqueadas: V('cfgProfissoesBloqueadas')
+      };
+      localStorage.setItem('cfg', JSON.stringify(c));
+      H('cfgMsg', '<span class="ok">Configurações salvas.</span>');
+    }
+
+    // ===== RENDA =====
+    function aplicarRendaDigitavel() {
+      const el = E('renda');
+      if (!el || el.__renda21) return;
+      el.__renda21 = true;
+
+      let digits = String(el.value || '').split(',')[0].replace(/\D/g, '');
+
+      function render() {
+        el.value = digits ? rendaTela(Number(digits)) : '';
+      }
+
+      el.addEventListener('input', () => {
+        if (!el.value.includes(',')) {
+          digits = onlyDigits(el.value);
+          render();
+        }
+      });
+    }
+
+    // ===== QUALIFICAÇÃO =====
+    function qual() {
+      const c = getCfg();
+      const cfg = Object.assign({
+        rendaMin: 15000,
+        anoMin: 2011,
+        idadeMin: 25,
+        idadeMax: 64,
+        profissoesBloqueadas: 'Operador de caixa, Zelador, Secretária, Auxiliar, Assistente, Estudante, Uber/App/Freelancer'
+      }, c);
+
+      const idade = Math.max(Number(V('idade1')) || 0, Number(V('idade2')) || 0);
+      const renda = parseMoeda(V('renda'));
+      const ano = Number(V('anoCarro')) || 0;
+
+      let status = 'Q', m = [];
+
+      function nq(txt) { status = 'NQ'; m.push(txt); }
+      function item(txt) { if (status === 'Q') status = 'NQ 1 Item'; m.push(txt); }
+
+      const lista = String(cfg.profissoesBloqueadas || '').toLowerCase().split(',').map(x => x.trim()).filter(Boolean);
+      const p1 = String(V('profissao1') || '').toLowerCase();
+      const p2 = String(V('profissao2') || '').toLowerCase();
+
+      if (idade < cfg.idadeMin || idade > cfg.idadeMax) nq('idade');
+      if (renda < cfg.rendaMin) item('renda');
+      if (cfg.anoMin && ano && ano < cfg.anoMin) item('ano do carro');
+      if (lista.some(x => p1.includes(x) || p2.includes(x))) nq('profissão fora do perfil');
+
+      return { status, motivo: m.join(', ') || 'Perfil dentro da regra' };
+    }
+
+    // ===== PESQUISA =====
+    async function registrarAbordagem() {
+      if (!usuarioEmail) return;
+      const p = {
+        user_email: usuarioEmail,
+        captador_nome: usuarioNome,
+        equipe: V('equipe'),
+        ponto_captacao: V('ponto'),
+        observacao: 'Abordagem',
+        created_at: new Date().toISOString()
+      };
+
+      try {
+        if (db) await db.from('abordagens').insert(p);
+      } catch (e) {
+        const a = JSON.parse(localStorage.getItem('abordagensLocal') || '[]');
+        a.push(p);
+        localStorage.setItem('abordagensLocal', JSON.stringify(a));
+      }
+
+      carregarAbordagensHoje();
+      H('formMsg', '<span class="ok">Abordagem registrada.</span>');
+    }
+
+    async function carregarAbordagensHoje() {
+      if (!usuarioEmail) return;
+      let total = 0;
+      const d = new Date().toISOString().slice(0, 10);
+
+      try {
+        if (db) {
+          const r = await db.from('abordagens').select('*', { count: 'exact', head: true })
+            .eq('user_email', usuarioEmail)
+            .gte('created_at', d + 'T00:00:00')
+            .lte('created_at', d + 'T23:59:59');
+          total = r.count || 0;
+        }
+      } catch (e) {
+        total = JSON.parse(localStorage.getItem('abordagensLocal') || '[]')
+          .filter(x => x.user_email === usuarioEmail && String(x.created_at).slice(0, 10) === d).length;
+      }
+
+      S('abordagensHoje', total);
+    }
+
+    function payload() {
+      const q = qual();
+      return {
+        user_email: usuarioEmail,
+        captador_nome: usuarioNome,
+        equipe: V('equipe'),
+        ponto_captacao: V('ponto'),
+        convidado_1: V('nome1'),
+        convidado_2: V('nome2'),
+        idade_1: Number(V('idade1')) || 0,
+        idade_2: Number(V('idade2')) || 0,
+        profissao_1: V('profissao1'),
+        profissao_2: V('profissao2'),
+        estado_origem: V('estado'),
+        cidade_origem: V('cidade'),
+        estado_civil: V('relacionamento'),
+        tempo_juntos: V('tempo'),
+        modelo_carro: V('nomeCarro'),
+        ano_veiculo: V('anoCarro'),
+        cartao_credito: V('cartao'),
+        casa_propria: V('casa'),
+        multipropriedade: V('multi'),
+        renda_casal: V('renda'),
+        brinde: V('brinde'),
+        contato: V('contato'),
+        observacoes: V('obs'),
+        qualificacao_automatica: q.status,
+        motivo_qualificacao: q.motivo,
+        levou_sala: 'Não',
+        created_at: new Date().toISOString()
+      };
+    }
+
+    async function salvarPesquisa() {
+      const p = payload();
+      if (!p.convidado_1) {
+        H('formMsg', '<span class="erro">Informe o Nome 1.</span>');
+        return;
+      }
+
+      try {
+        if (db) {
+          const r = await db.from('pesquisas').insert(p).select('*').single();
+          ultimaFicha = r.data || p;
+          H('formMsg', '<span class="ok">Ficha salva no Supabase.</span>');
+        } else {
+          ultimaFicha = p;
+          const a = JSON.parse(localStorage.getItem('pesquisasLocal') || '[]');
+          a.push(p);
+          localStorage.setItem('pesquisasLocal', JSON.stringify(a));
+          H('formMsg', '<span class="warn">Ficha salva localmente.</span>');
+        }
+      } catch (e) {
+        ultimaFicha = p;
+        const a = JSON.parse(localStorage.getItem('pesquisasLocal') || '[]');
+        a.push(p);
+        localStorage.setItem('pesquisasLocal', JSON.stringify(a));
+        H('formMsg', '<span class="warn">Ficha salva localmente.</span>');
+      }
+
+      const q = qual();
+      const cor = q.status === 'Q' ? 'ok' : (String(q.status).includes('1') ? 'warn' : 'erro');
+      renderFicha(ultimaFicha);
+      carregarRelatorio();
+    }
+
+    async function confirmarSala21() {
+      if (!ultimaFicha) {
+        H('formMsg', '<span class="warn">Salve a ficha primeiro.</span>');
+        return;
+      }
+
+      ultimaFicha.levou_sala = 'Sim';
+      ultimaFicha.sala_status = 'Sim';
+
+      const locais = JSON.parse(localStorage.getItem('pesquisasLocal') || '[]');
+      const idx = locais.findIndex(x =>
+        (ultimaFicha.id && String(x.id) === String(ultimaFicha.id)) ||
+        (String(x.created_at) === String(ultimaFicha.created_at) && String(x.user_email) === String(ultimaFicha.user_email))
+      );
+
+      if (idx >= 0) {
+        locais[idx] = { ...locais[idx], levou_sala: 'Sim', sala_status: 'Sim' };
+      } else {
+        locais.push({ ...ultimaFicha });
+      }
+
+      localStorage.setItem('pesquisasLocal', JSON.stringify(locais));
+
+      try {
+        if (db && ultimaFicha.id) {
+          await db.from('pesquisas').update({ levou_sala: 'Sim', sala_status: 'Sim' }).eq('id', ultimaFicha.id);
+        }
+      } catch (e) {
+        console.error('Erro ao sincronizar sala:', e);
+      }
+
+      H('formMsg', '<span class="ok">Casal confirmado em sala.</span>');
+      renderFicha(ultimaFicha);
+      carregarRelatorio();
+    }
+
+    function renderFicha(p) {
+      E('fichaBox').classList.remove('hidden');
+      const carroTxt = `${p.modelo_carro || '-'} ${p.ano_veiculo || ''}`.trim();
+
+      H('fichaConteudo', `
+        <div style="background: linear-gradient(145deg, #090909, #180000); border: 1px solid #5a1717; border-radius: 18px; padding: 18px;">
+          <h3 style="margin:0 0 12px; color:#ff8585;">Ficha Completa do Casal</h3>
+          <div style="background: #101010; border: 1px solid #292929; border-radius: 12px; padding: 10px; margin: 6px 0;">
+            <small style="color: #ff7777; text-transform: uppercase; font-weight: 900; font-size: 10px; display: block; margin-bottom: 4px;">Resultado</small>
+            ${p.qualificacao_automatica || '-'} • ${p.motivo_qualificacao || 'Perfil dentro da regra'}
+          </div>
+          <div style="background: #101010; border: 1px solid #292929; border-radius: 12px; padding: 10px; margin: 6px 0;">
+            <small style="color: #ff7777; text-transform: uppercase; font-weight: 900; font-size: 10px; display: block; margin-bottom: 4px;">Nome 1</small>
+            ${p.convidado_1 || '-'}
+          </div>
+          <div style="background: #101010; border: 1px solid #292929; border-radius: 12px; padding: 10px; margin: 6px 0;">
+            <small style="color: #ff7777; text-transform: uppercase; font-weight: 900; font-size: 10px; display: block; margin-bottom: 4px;">Nome 2</small>
+            ${p.convidado_2 || '-'}
+          </div>
+          <div style="background: #101010; border: 1px solid #292929; border-radius: 12px; padding: 10px; margin: 6px 0;">
+            <small style="color: #ff7777; text-transform: uppercase; font-weight: 900; font-size: 10px; display: block; margin-bottom: 4px;">Renda</small>
+            ${p.renda_casal || '-'}
+          </div>
+          <div style="background: #101010; border: 1px solid #292929; border-radius: 12px; padding: 10px; margin: 6px 0;">
+            <small style="color: #ff7777; text-transform: uppercase; font-weight: 900; font-size: 10px; display: block; margin-bottom: 4px;">Veículo</small>
+            ${carroTxt || '-'}
+          </div>
+          <div style="background: #101010; border: 1px solid #292929; border-radius: 12px; padding: 10px; margin: 6px 0;">
+            <small style="color: #ff7777; text-transform: uppercase; font-weight: 900; font-size: 10px; display: block; margin-bottom: 4px;">Contato</small>
+            ${p.contato || '-'}
+          </div>
+          <div style="background: #101010; border: 1px solid #292929; border-radius: 12px; padding: 10px; margin: 6px 0;">
+            <small style="color: #ff7777; text-transform: uppercase; font-weight: 900; font-size: 10px; display: block; margin-bottom: 4px;">Sala</small>
+            ${p.levou_sala || 'Pendente'}
+          </div>
+        </div>
+      `);
+    }
+
+    async function compartilharFicha() {
+      try {
+        const node = E('fichaConteudo');
+        if (!node) return;
+
+        const canvas = await html2canvas(node, { scale: 2, backgroundColor: '#090909' });
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL();
+        link.download = 'ficha-captapro.png';
+        link.click();
+      } catch (e) {
+        alert('Erro ao gerar imagem: ' + e.message);
+      }
+    }
+
+    function novaPesquisa() {
+      ['nome1', 'nome2', 'idade1', 'idade2', 'profissao1', 'profissao2', 'estado', 'cidade', 'relacionamento', 'tempo', 'nomeCarro', 'anoCarro', 'cartao', 'casa', 'multi', 'renda', 'brinde', 'contato', 'obs']
+        .forEach(id => {
+          if (E(id)) E(id).value = '';
+        });
+
+      H('resultado', '');
+      H('formMsg', '');
+      E('fichaBox').classList.add('hidden');
+      ultimaFicha = null;
+      E('nome1').focus();
+    }
+
+    // ===== RELATÓRIO =====
+    async function dados(t) {
+      let arr = [];
+      try {
+        if (db) {
+          const r = await db.from(t).select('*').order('created_at', { ascending: false }).limit(3000);
+          arr = r.data || [];
+        }
+      } catch (e) {
+        arr = JSON.parse(localStorage.getItem(t === 'pesquisas' ? 'pesquisasLocal' : 'abordagensLocal') || '[]');
+      }
+
+      if (t === 'pesquisas') {
+        const locais = JSON.parse(localStorage.getItem('pesquisasLocal') || '[]');
+        const key = x => String(x.id || '') + '|' + String(x.user_email || '') + '|' + String(x.created_at || '');
+        const map = {};
+
+        [...arr, ...locais].forEach(x => {
+          map[key(x)] = { ...(map[key(x)] || {}), ...x };
+        });
+
+        arr = Object.values(map);
+      }
+
+      return arr;
+    }
+
+    function per(x, de, ate) {
+      const d = String(x.created_at || '').slice(0, 10);
+      return (!de || d >= de) && (!ate || d <= ate);
+    }
+
+    function isSala(x) {
+      return normal(x.levou_sala || x.sala || x.sala_status || x.status_sala).includes('sim') || x.sala === true;
+    }
+
+    async function carregarRelatorio() {
+      if (!usuarioEmail) return;
+
+      const de = V('relDe'), ate = V('relAte');
+      let p = await dados('pesquisas');
+      let a = await dados('abordagens');
+
+      if (role !== 'ceo') {
+        p = p.filter(x => x.user_email === usuarioEmail);
+        a = a.filter(x => x.user_email === usuarioEmail);
+      }
+
+      p = p.filter(x => per(x, de, ate));
+      a = a.filter(x => per(x, de, ate));
+
+      const q = p.filter(x => x.qualificacao_automatica === 'Q').length;
+      const nq1 = p.filter(x => String(x.qualificacao_automatica || '').includes('1')).length;
+      const nq = p.length - q - nq1;
+      const sala = p.filter(isSala).length;
+
+      S('rAbord', a.length);
+      S('rPesq', p.length);
+      S('rQ', q);
+      S('rNQ', nq);
+      S('rNQ1', nq1);
+      S('rSala', sala);
+      S('rConv', p.length ? Math.round(sala / p.length * 100) + '%' : '0%');
+
+      S('dAbord', a.length);
+      S('dPesq', p.length);
+      S('dQ', q);
+      S('dNQ', nq);
+      S('dNQ1', nq1);
+      S('dSala', sala);
+      S('dEfic', p.length ? Math.round(q / p.length * 100) + '%' : '0%');
+      S('dConv', p.length ? Math.round(sala / p.length * 100) + '%' : '0%');
+
+      // CEO Dashboard
+      const todasAsAbord = (await dados('abordagens')).filter(x => per(x, de, ate));
+      const todasAsPesq = (await dados('pesquisas')).filter(x => per(x, de, ate));
+      const qTodas = todasAsPesq.filter(x => x.qualificacao_automatica === 'Q').length;
+      const nqTodas = todasAsPesq.filter(x => x.qualificacao_automatica === 'NQ').length;
+      const salaTodas = todasAsPesq.filter(isSala).length;
+
+      S('ceoAbordHoje', todasAsAbord.length);
+      S('ceoPesqHoje', todasAsPesq.length);
+      S('ceoQHoje', qTodas);
+      S('ceoNQHoje', nqTodas);
+      S('ceoSalaHoje', salaTodas);
+      S('ceoSalaPendente', todasAsPesq.length - salaTodas);
+      S('ceoEficHoje', todasAsPesq.length ? Math.round(qTodas / todasAsPesq.length * 100) + '%' : '0%');
+      S('ceoConvHoje', todasAsPesq.length ? Math.round(salaTodas / todasAsPesq.length * 100) + '%' : '0%');
+
+      // Ranking
+      const map = {};
+      p.forEach(x => {
+        const n = x.captador_nome || x.user_email || 'Sem nome';
+        if (!map[n]) map[n] = { nome: n, p: 0, s: 0, q: 0, nq: 0, nq1: 0, a: 0 };
+        map[n].p++;
+        if (x.qualificacao_automatica === 'Q') map[n].q++;
+        else if (String(x.qualificacao_automatica || '').includes('1')) map[n].nq1++;
+        else map[n].nq++;
+        if (isSala(x)) map[n].s++;
+      });
+
+      a.forEach(x => {
+        const n = x.captador_nome || x.user_email || 'Sem nome';
+        if (!map[n]) map[n] = { nome: n, p: 0, s: 0, q: 0, nq: 0, nq1: 0, a: 0 };
+        map[n].a++;
+      });
+
+      const rows = Object.values(map).sort((x, y) => y.p - x.p || y.s - x.s);
+
+      if (rows.length) {
+        H('rankingEquipeBox13', '<table><tr><th>Nome</th><th>Abord.</th><th>Pesq.</th><th>Q</th><th>NQ</th><th>1 Item</th><th>Sala</th></tr>' +
+          rows.map(r => `<tr><td>${r.nome}</td><td>${r.a}</td><td>${r.p}</td><td>${r.q}</td><td>${r.nq}</td><td>${r.nq1}</td><td>${r.s}</td></tr>`).join('') +
+          '</table>');
+      }
+
+      H('profFiltro', '<option value="">Escolha o profissional</option>' + rows.map(r => `<option>${r.nome}</option>`).join(''));
+      window.rowsRel = rows;
+      mostrarIndividual();
+    }
+
+    function mostrarIndividual() {
+      const r = (window.rowsRel || []).find(x => x.nome === V('profFiltro'));
+      H('individualBox', r ? `<div class="kpis"><div class="kpi">Abord.<b>${r.a}</b></div><div class="kpi">Pesq.<b>${r.p}</b></div><div class="kpi">Q<b>${r.q}</b></div><div class="kpi">NQ<b>${r.nq}</b></div><div class="kpi">1 Item<b>${r.nq1}</b></div><div class="kpi">Sala<b>${r.s}</b></div></div>` : '<p class="mini">Escolha um profissional.</p>');
+    }
+
+    // ===== METAS =====
+    function getMetasIndividuais20() {
+      try {
+        return JSON.parse(localStorage.getItem('metas_individuais_20') || '{}');
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function setMetasIndividuais20(obj) {
+      localStorage.setItem('metas_individuais_20', JSON.stringify(obj || {}));
+    }
+
+    window.salvarMetaIndividual20 = function () {
+      const nome = V('metaProfNome20');
+      const meta = Number(V('metaProfValor20')) || 0;
+
+      if (!nome || !meta) {
+        H('metasIndividuaisBox20', '<p class="erro">Informe nome e meta.</p>');
+        return;
+      }
+
+      const metas = getMetasIndividuais20();
+      const chave = nome.toLowerCase().replace(/[^a-z0-9]/g, '_');
+      metas[chave] = { nome, meta };
+
+      setMetasIndividuais20(metas);
+
+      if (E('metaProfNome20')) E('metaProfNome20').value = '';
+      if (E('metaProfValor20')) E('metaProfValor20').value = '';
+
+      renderMetasIndividuais20();
+    };
+
+    function renderMetasIndividuais20() {
+      const box = E('metasIndividuaisBox20');
+      if (!box) return;
+
+      const metas = getMetasIndividuais20();
+      const rows = Object.entries(metas);
+
+      if (!rows.length) {
+        box.innerHTML = '<p class="mini">Nenhuma meta cadastrada. Padrão: 35.</p>';
+        return;
+      }
+
+      box.innerHTML = '<table style="width:100%;"><tr><th>Profissional</th><th>Meta</th><th>Ação</th></tr>' +
+        rows.map(([k, v]) => `<tr><td>${v.nome}</td><td>${v.meta}</td><td><button class="secondary" style="width:100%;padding:6px;font-size:12px;" onclick="removerMetaIndividual20('${k}')">Remover</button></td></tr>`).join('') +
+        '</table>';
+    }
+
+    window.removerMetaIndividual20 = function (k) {
+      const metas = getMetasIndividuais20();
+      delete metas[k];
+      setMetasIndividuais20(metas);
+      renderMetasIndividuais20();
+    };
+
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        aplicarRendaDigitavel();
+        loadCfg();
+        renderMetasIndividuais20();
+        carregarAbordagensHoje();
+      }, 500);
+    });
+  </script>
+</body>
+</html>
