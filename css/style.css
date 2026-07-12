@@ -78,18 +78,22 @@ button {
 
 .tabs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
   margin: 12px 0;
 }
 
 .tabs button {
   background: #181818;
   border: 0;
-  padding: 14px;
+  padding: 12px 6px;
   border-radius: 14px;
   color: #fff;
   font-weight: 900;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tabs button.active {
@@ -97,7 +101,7 @@ button {
 }
 
 body.ceo .tabs {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
 }
 
 body.ceo .adminOnly {
@@ -278,7 +282,7 @@ th { color: #ff7777; }
 
 @media (max-width: 700px) {
   .grid, .kpis { grid-template-columns: 1fr; }
-  .tabs { grid-template-columns: 1fr; }
+  .tabs { grid-template-columns: repeat(2, 1fr); }
   .painelCards20 { grid-template-columns: 1fr 1fr; }
   .pessoaGrid { grid-template-columns: 1fr; }
 }
