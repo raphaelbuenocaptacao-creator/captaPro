@@ -4,7 +4,7 @@
 import { db, usuarioEmail, usuarioNome, role, entrar, sairCaptaProFinal, loadCfg, salvarConfig, aplicarRendaDigitavel, salvarMetaIndividual20, renderMetasIndividuais20 } from './supabase.js';
 import { popularIdades, registrarAbordagem, salvarPesquisa, confirmarSala21, compartilharFicha, novaPesquisa, carregarAbordagensHoje } from './pesquisa.js';
 import { carregarRelatorio, mostrarIndividual } from './relatorio.js';
-import { initMapa, pararGPS } from './mapa.js';
+import { initCb300, adicionarRegra, lancarResultado } from './cb300.js';
 
 // ===== HELPERS GLOBAIS (expostos no window para compatibilidade) =====
 window.E = (id) => document.getElementById(id);
@@ -14,7 +14,7 @@ window.S = (id, v) => { const el = window.E(id); if (el) el.innerText = v; };
 
 // ===== NAVEGAÇÃO POR ABAS =====
 window.aba = function(id, btn) {
-  ['pesquisa', 'relatorio', 'qualificacao'].forEach(x => {
+  ['pesquisa', 'relatorio', 'qualificacao', 'cb300'].forEach(x => {
     const el = document.getElementById(x);
     if (el) el.classList.add('hidden');
   });
@@ -25,10 +25,10 @@ window.aba = function(id, btn) {
   if (id === 'relatorio') {
     setTimeout(carregarRelatorio, 100);
   }
-  if (id === 'qualificacao') {
+  if (id === 'cb300') {
     setTimeout(() => {
-      initMapa();
-    }, 200);
+      initCb300();
+    }, 100);
   }
 };
 
@@ -51,9 +51,7 @@ function configurarListeners() {
   // Abas
   document.querySelectorAll('.tabs button').forEach(btn => {
     btn.addEventListener('click', function() {
-      const abaId = this.textContent.trim().toLowerCase().includes('pesquisa') ? 'pesquisa'
-        : this.textContent.trim().toLowerCase().includes('relatório') || this.textContent.trim().toLowerCase().includes('relatorio') ? 'relatorio'
-        : 'qualificacao';
+        : this.textContent.trim().toLowerCase().includes('cb300') || this.textContent.trim().toLowerCase().includes('game') ? 'cb300'
       window.aba(abaId, this);
     });
   });
@@ -90,9 +88,14 @@ function configurarListeners() {
   const btnSalvarCEO = document.getElementById('btnSalvarCEO');
   if (btnSalvarCEO) btnSalvarCEO.addEventListener('click', salvarConfig);
 
-  // CEO - Salvar Meta Individual
-  const btnSalvarMeta = document.getElementById('btnSalvarMeta');
-  if (btnSalvarMeta) btnSalvarMeta.addEventListener('click', salvarMetaIndividual20);
+
+  // Cb300 Game - Adicionar Regra
+  const btnAddRegra = document.getElementById('btnAddRegra');
+  if (btnAddRegra) btnAddRegra.addEventListener('click', adicionarRegra);
+
+  // Cb300 Game - Lançar Resultado
+  const btnLancar = document.getElementById('btnLancarResultado');
+  if (btnLancar) btnLancar.addEventListener('click', lancarResultado);
 }
 
 // ===== AUTO-LOGIN =====

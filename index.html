@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>CaptaPro Versão 3.0</title>
+ <title>CaptaPro Versão 2.0</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,9 +14,9 @@
   <div class="wrap">
     <div class="top">
       <div class="logo">Capta<span>Pro</span></div>
-      <div class="version">Versão 3.0 Oficial</div>
+      <div class="version">Versão 2.0</div>
       <p class="mini"><b style="color:#00e676">Bueno Invest</b></p>
-      <button id="btnSairFinal" class="secondary hidden" style="max-width:160px;margin:8px auto 0">Sair</button>
+      <button id="btnSairFinal" class="secondary" style="max-width:160px;margin:8px auto 0">Sair</button>
     </div>
 
     <!-- LOGIN -->
@@ -35,8 +35,7 @@
       <div class="tabs">
         <button class="active" data-aba="pesquisa">Pesquisa</button>
         <button data-aba="relatorio">Relatório</button>
-        <button class="adminOnly" data-aba="qualificacao">Portal CEO</button>
-      </div>
+        <button data-aba="cb300">Cb300 Game</button>
 
       <!-- ABA PESQUISA -->
       <section id="pesquisa" class="card">
@@ -184,7 +183,7 @@
             <div class="painelCard20 verde"><span>Q</span><b id="homeQ">0</b></div>
             <div class="painelCard20 amarelo"><span>NQ</span><b id="homeNQ">0</b></div>
             <div class="painelCard20 roxo"><span>Sala</span><b id="homeSala">0</b></div>
-            <div class="painelCard20 preto"><span>Tempo de uso</span><b id="tempoUsoApp36">00h00</b></div>
+            <div class="painelCard20 preto"><span>Meta</span><b id="homeMeta">35</b></div>
           </div>
 
           <div class="card metaCard35">
@@ -228,7 +227,72 @@
 
         <!-- CEO Dashboard, Ranking e Individual foram movidos para o Portal CEO -->
       </section>
+      <!-- ABA CB300 GAME -->
+      <section id="cb300" class="card hidden">
+        <h2>🏍️ Cb300 Game</h2>
+        <p class="hint">Competição interna: acumule pontos e suba no ranking!</p>
 
+        <!-- REGRAS FIXAS -->
+        <div class="card" style="border-color:#ffb300;">
+          <h2>Regras da Competição</h2>
+          <table style="width:100%;">
+            <tr><th>Ação</th><th>Pontos</th></tr>
+            <tr><td>✅ Veio trabalhar</td><td><b class="ok">+1</b></td></tr>
+            <tr><td>📋 Colocou casal Q</td><td><b class="ok">+3</b></td></tr>
+            <tr><td>💰 Vendeu</td><td><b class="ok">+10</b></td></tr>
+            <tr><td>🏆 Atingiu 1.000.000</td><td><b class="ok">+50</b></td></tr>
+            <tr><td>❌ Cortou (faltou)</td><td><b class="erro">-50</b></td></tr>
+          </table>
+        </div>
+
+        <!-- REGRAS PERSONALIZADAS -->
+        <div class="card">
+          <h2>Regras Personalizadas</h2>
+          <p class="mini">Adicione regras extras para a competição.</p>
+          <div class="grid">
+            <input id="cbRegraNome" placeholder="Nome da regra (Ex: Trouxe visitante)">
+            <input id="cbRegraPontos" type="number" placeholder="Pontos (Ex: 5)">
+          </div>
+          <button id="btnAddRegra" class="secondary" style="margin-top:8px">+ Adicionar Regra</button>
+          <div id="cbRegrasLista" style="margin-top:10px"></div>
+        </div>
+
+        <!-- LANÇAR RESULTADO -->
+        <div class="card">
+          <h2>Lançar Resultado</h2>
+          <p class="mini">Registre o resultado de um profissional.</p>
+          <div class="grid">
+            <input id="cbProfNome" placeholder="Nome do profissional">
+            <select id="cbAcao">
+              <option value="">Selecione a ação</option>
+              <option value="trabalhou">✅ Veio trabalhar (+1)</option>
+              <option value="casal_q">📋 Colocou casal Q (+3)</option>
+              <option value="vendeu">💰 Vendeu (+10)</option>
+              <option value="atingiu_1M">🏆 Atingiu 1.000.000 (+50)</option>
+              <option value="cortou">❌ Cortou (-50)</option>
+            </select>
+          </div>
+          <button id="btnLancarResultado" class="main" style="margin-top:8px">Lançar</button>
+          <p id="cbMsg"></p>
+        </div>
+
+        <!-- RANKING CB300 -->
+        <div class="card">
+          <h2>🏆 Ranking Cb300</h2>
+          <div id="cbRanking">
+            <p class="mini">Nenhum resultado lançado ainda.</p>
+          </div>
+        </div>
+
+        <!-- HISTÓRICO -->
+        <div class="card">
+          <h2>📜 Histórico</h2>
+          <div id="cbHistorico" style="max-height:300px;overflow-y:auto;">
+            <p class="mini">Nenhum resultado lançado ainda.</p>
+          </div>
+        </div>
+      </section>
+    </section>
       <!-- ABA PORTAL CEO -->
       <section id="qualificacao" class="card hidden adminOnly">
         <h2>Portal CEO</h2>
