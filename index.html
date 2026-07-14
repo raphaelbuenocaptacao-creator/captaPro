@@ -465,7 +465,7 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('relatorio',this)">Meu Profissional</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('historico',this)">Histórico</button><button onclick="aba('relatorio',this)">Meu Profissional</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
 
 
 <section id="pesquisa" class="card">
@@ -557,6 +557,18 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 <textarea id="obs" style="margin-top:8px" placeholder="Observações"></textarea>
 <div style="margin-top:8px"><button class="main" onclick="salvarPesquisa()">Salvar Ficha</button></div><button class="secondary" style="margin-top:8px;background:#073a21;border-color:#0a7b43" onclick="confirmarSala21()">✅ Casal em Sala</button><p id="formMsg"></p><div id="resultado" class="hidden"></div>
 <div id="fichaBox" class="card hidden"><h2>Ficha salva</h2><div id="fichaConteudo"></div><div class="grid"><button class="main" onclick="compartilharFicha()">Compartilhar imagem</button><button class="secondary" onclick="novaPesquisa()">Nova pesquisa</button></div></div>
+</section>
+
+<section id="historico" class="card hidden">
+<h2>Histórico</h2>
+<p class="hint">Todas as abordagens e pesquisas (casais) já feitas por todos os profissionais.</p>
+<div class="grid"><input id="histDe" type="date"><input id="histAte" type="date"></div>
+<button class="main" style="margin-top:8px" onclick="carregarHistorico()">Atualizar</button>
+<div class="kpis" style="margin-top:8px">
+  <div class="kpi">Abordagens<b id="histTotalAbord">0</b></div>
+  <div class="kpi">Pesquisas<b id="histTotalPesq">0</b></div>
+</div>
+<div id="historicoBox" style="margin-top:10px"></div>
 </section>
 
 
@@ -1004,7 +1016,7 @@ async function entrar(){
 (function(){try{const l=JSON.parse(localStorage.getItem('loginSimples')||'null'); if(l){E('email').value=l.email;E('nome').value=l.nome;setTimeout(entrar,300)}}catch(e){}})();
 
 function aba(id,b){
- ['pesquisa','diario','relatorio','raking','arena','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
+ ['pesquisa','historico','diario','relatorio','raking','arena','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
  if(E(id))E(id).classList.remove('hidden');
  document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
  if(b)b.classList.add('active');
@@ -5585,6 +5597,115 @@ document.addEventListener("DOMContentLoaded",()=>{
     removerRankingJulho();
     if(E("relDe") && !V("relDe")) E("relDe").value="2026-07-01";
     if(E("relAte") && !V("relAte")) E("relAte").value=hoje();
+  },700);
+});
+})();
+</script>
+
+<script>
+/* ===== CAPTAPRO • Aba Histórico: todas as abordagens e pesquisas (casais) ===== */
+(function(){
+"use strict";
+
+function E(id){return document.getElementById(id)}
+function V(id){return (E(id)?.value||"").trim()}
+function H(id,v){if(E(id))E(id).innerHTML=v}
+function S(id,v){if(E(id))E(id).textContent=v}
+function esc(s){return String(s??"").replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+function hoje(){return new Date().toISOString().slice(0,10)}
+
+function dataItem(x){return String(x.data||x.created_at||x.data_criacao||x.hora||"").slice(0,10)||hoje()}
+function horaItem(x){const d=x.created_at||x.data_criacao||x.hora; if(!d) return ""; const dt=new Date(d); return isNaN(dt)?"":dt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}
+function nomeProf(x){return x.captador_nome||x.profissional||x.nome_profissional||x.nome_usuario||x.nome||x.user_name||x.usuario||"Sem nome"}
+function pontoItem(x){return x.ponto||x.ponto_captacao||x.ponto_atual||x.local||"-"}
+function qual(x){return x.qualificacao_automatica||x.qualificacao||x.resultado_qualificacao||x.status_qualificacao||"N/I"}
+function isSala(x){const s=norm(x.levou_sala||x.sala||x.sala_status||x.status_sala||x.confirmou_sala||"");return s.includes("sim")||s.includes("confirm")||x.levou_sala===true||x.sala===true}
+
+function lerLocal(keys){
+  let arr=[];
+  keys.forEach(k=>{
+    try{ const v=JSON.parse(localStorage.getItem(k)||"[]"); if(Array.isArray(v)) arr=arr.concat(v); }catch(e){}
+  });
+  return arr;
+}
+async function buscarSupabase(tabela){
+  try{
+    if(typeof db!=="undefined" && db && db.from){
+      const r=await db.from(tabela).select("*").order("created_at",{ascending:false}).limit(5000);
+      return r.data||[];
+    }
+  }catch(e){}
+  return [];
+}
+async function getPesquisasHist(){
+  let arr=[].concat(lerLocal(["pesquisasLocal","cp_fichas","capta_pesquisas","cp50_fichas"]), await buscarSupabase("pesquisas"));
+  const seen={};
+  return arr.filter(x=>{
+    const k=String(x.id||"")+"|"+String(x.user_email||"")+"|"+String(dataItem(x))+"|"+String(x.nome1||x.nome_casal||x.convidado_1||"");
+    if(seen[k]) return false; seen[k]=1; return true;
+  });
+}
+async function getAbordagensHist(){
+  let arr=[].concat(lerLocal(["abordagensLocal","capta_abordagens","cp_abordagens_lista"]), await buscarSupabase("abordagens"));
+  const seen={};
+  return arr.filter(x=>{
+    const k=String(x.id||"")+"|"+String(x.user_email||"")+"|"+String(x.created_at||"");
+    if(seen[k]) return false; seen[k]=1; return true;
+  });
+}
+function periodoHist(){
+  const de=V("histDe")||"2026-07-01";
+  const ate=V("histAte")||hoje();
+  return {de,ate};
+}
+function inPeriodo(x,de,ate){const d=dataItem(x); return (!de||d>=de)&&(!ate||d<=ate)}
+
+function linhaPesquisa(x){
+  const casal=[x.convidado_1||x.nome1||x.nome_cliente||"", x.convidado_2||x.nome2||""].filter(Boolean).join(" & ") || "Casal sem nome";
+  return `<div class="relProFicha ${isSala(x)?"sala":""}">
+    <b>👫 ${esc(casal)}</b>
+    <small>${esc(dataItem(x))} ${esc(horaItem(x))} • ${esc(pontoItem(x))} • Profissional: ${esc(nomeProf(x))}</small>
+    <span class="tag">Pesquisa</span>
+    <span class="tag">${esc(qual(x))}</span>
+    <span class="tag">${isSala(x)?"✅ Sala":"⏳ Sem sala"}</span>
+  </div>`;
+}
+function linhaAbordagem(x){
+  return `<div class="relProFicha">
+    <b>🚶 Abordagem</b>
+    <small>${esc(dataItem(x))} ${esc(horaItem(x))} • ${esc(pontoItem(x))} • Profissional: ${esc(nomeProf(x))}</small>
+    <span class="tag">Abordagem</span>
+  </div>`;
+}
+
+window.carregarHistorico=async function(){
+  const {de,ate}=periodoHist();
+  const p=(await getPesquisasHist()).filter(x=>inPeriodo(x,de,ate));
+  const a=(await getAbordagensHist()).filter(x=>inPeriodo(x,de,ate));
+
+  S("histTotalAbord",a.length);
+  S("histTotalPesq",p.length);
+
+  const itens=[].concat(
+    p.map(x=>({t:"pesquisa",data:dataItem(x),hora:x.created_at||x.data_criacao||x.hora||"",html:linhaPesquisa(x)})),
+    a.map(x=>({t:"abordagem",data:dataItem(x),hora:x.created_at||x.data_criacao||x.hora||"",html:linhaAbordagem(x)}))
+  ).sort((x,y)=> (y.data+String(y.hora)).localeCompare(x.data+String(x.hora)));
+
+  H("historicoBox", itens.length ? itens.map(i=>i.html).join("") : '<p class="mini">Nenhuma abordagem ou pesquisa encontrada nesse período.</p>');
+};
+
+const oldAbaHist=window.aba;
+window.aba=function(id,btn){
+  const r=oldAbaHist?oldAbaHist.apply(this,arguments):undefined;
+  if(id==="historico") setTimeout(()=>{carregarHistorico()},300);
+  return r;
+};
+
+document.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(()=>{
+    if(E("histDe") && !V("histDe")) E("histDe").value="2026-07-01";
+    if(E("histAte") && !V("histAte")) E("histAte").value=hoje();
   },700);
 });
 })();
