@@ -465,7 +465,7 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('relatorio',this)">Relatório</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('relatorio',this)">Meu Profissional</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
 
 
 <section id="pesquisa" class="card">
@@ -653,29 +653,17 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 </section>
 
 <section id="relatorio" class="card hidden">
-<h2>Relatório</h2>
+<h2>Meu Profissional</h2>
+<p class="hint">Todas as fichas já feitas por cada profissional, com o relatório completo. Profissionais veem somente os próprios dados; o CEO pode escolher e ver qualquer profissional.</p>
 
 <div class="grid"><input id="relDe" type="date"><input id="relAte" type="date"></div>
 <button class="main" style="margin-top:8px" onclick="carregarRelatorio()">Atualizar</button>
-<div class="kpis">
-  <div class="kpi">Abordagens<b id="rAbord">0</b></div>
-  <div class="kpi">Pesquisas<b id="rPesq">0</b></div>
-  <div class="kpi">Q<b id="rQ">0</b></div>
-  <div class="kpi">NQ<b id="rNQ">0</b></div>
-  <div class="kpi">1 Item<b id="rNQ1">0</b></div>
-  <div class="kpi">Sala confirmada<b id="rSala">0</b></div>
-  <div class="kpi">Conversão<b id="rConv">0%</b></div>
-</div>
-<div class="card scroll"><h2>Ranking da Equipe</h2><div id="rankingEquipeBox13"></div></div>
 
-<div class="card scroll adminOnly">
-  <h2>Conferência de Sala</h2>
-  <p class="hint">O profissional confirma casal em sala. O CEO pode corrigir/desfazer se necessário.</p>
-  <button class="main" onclick="carregarConferenciaSala20()">Atualizar sala</button>
-  <div id="salaCEOBox20" style="margin-top:8px"></div>
+<div class="card adminOnly" style="margin-top:10px">
+  <select id="profFiltro" onchange="mostrarIndividual()"><option value="">Escolha o profissional</option></select>
 </div>
 
-<div class="card"><h2>Individual</h2><select id="profFiltro" onchange="mostrarIndividual()"><option value="">Escolha o profissional</option></select><div id="individualBox"></div></div>
+<div id="individualBox" style="margin-top:10px"></div>
 </section>
 
 <section id="qualificacao" class="card hidden adminOnly">
