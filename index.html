@@ -576,48 +576,8 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 <p class="hint">Campanha de pontos por resultado. Válida até <b>30/12/2026</b>.</p>
 
 <div class="card scroll">
-  <h2>📜 Regras</h2>
-  <ul class="mini" style="line-height:1.9;padding-left:18px">
-    <li>Foi trabalhar: <b class="ok">+1</b> ponto</li>
-    <li>Colocar casal NQ: <b class="ok">+2</b> pontos</li>
-    <li>Colocar casal 1 Item: <b class="ok">+3</b> pontos</li>
-    <li>Colocar casal Qualificado: <b class="ok">+5</b> pontos</li>
-    <li>Venda: <b class="ok">+10</b> pontos</li>
-    <li>Erro (induzir o casal a mentir): <b class="erro">-20</b> pontos</li>
-    <li>🥇 1º lugar no final da campanha: <b class="ok">+100</b> pontos</li>
-    <li>🥈 2º lugar no final da campanha: <b class="ok">+50</b> pontos</li>
-    <li>🥉 3º lugar no final da campanha: <b class="ok">+20</b> pontos</li>
-  </ul>
-</div>
-
-<div class="card adminOnly">
-  <h2>➕ Lançar pontos</h2>
-  <select id="cb300Prof"><option value="">Escolha o profissional</option></select>
-  <select id="cb300Cat" style="margin-top:8px">
-    <option value="trabalho">Foi trabalhar (+1)</option>
-    <option value="nq">Colocou casal NQ (+2)</option>
-    <option value="item">Colocou casal 1 Item (+3)</option>
-    <option value="qualificado">Colocou casal Qualificado (+5)</option>
-    <option value="venda">Venda (+10)</option>
-    <option value="erro">Erro / induziu a mentir (-20)</option>
-  </select>
-  <input id="cb300Obs" style="margin-top:8px" placeholder="Observação (opcional)">
-  <div class="grid" style="margin-top:8px">
-    <button class="main" onclick="lancarPontoCB300()">Lançar ponto</button>
-    <button class="secondary" onclick="aplicarBonusTop3CB300()">🏆 Aplicar bônus Top 3</button>
-  </div>
-  <p id="cb300Msg" class="mini" style="margin-top:6px"></p>
-</div>
-
-<div class="card scroll">
   <h2>🏆 Ranking</h2>
   <div id="cb300Ranking"></div>
-</div>
-
-<div class="card scroll adminOnly">
-  <h2>👥 Participantes</h2>
-  <p class="hint">Remova quem não participa da campanha (não conta no ranking).</p>
-  <div id="cb300Participantes"></div>
 </div>
 </section>
 
@@ -744,6 +704,7 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
       <button class="secondary" onclick="abrirPortalBloco30('portalSala30')">✅ Salas</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalRanking36')">🏆 Ranking</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalMetas36')">📈 Metas</button>
+      <button class="secondary" onclick="abrirPortalBloco30('portalCB300CEO')">🏍️ CB300</button>
       
       <button class="secondary" onclick="abrirPortalBloco30('portalAdmin31')">⚙️ Administração</button>
     </div>
@@ -804,6 +765,52 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
     <h2>📈 Metas</h2>
     <p class="hint">Acompanhamento das metas individuais.</p>
     <div id="portalMetasBox36"></div>
+  </div>
+
+  <div id="portalCB300CEO" class="card scroll portalBloco30">
+    <h2>🏍️ Moto CB300</h2>
+    <p class="hint">Campanha de pontos, válida até 30/12/2026. Só o CEO vê e mexe aqui.</p>
+
+    <div class="card scroll">
+      <h2>📜 Regras (editável)</h2>
+      <div class="grid">
+        <div>Foi trabalhar<input id="cb300RTrabalho" type="number"></div>
+        <div>Casal NQ<input id="cb300RNq" type="number"></div>
+        <div>Casal 1 Item<input id="cb300RItem" type="number"></div>
+        <div>Casal Qualificado<input id="cb300RQualificado" type="number"></div>
+        <div>Venda<input id="cb300RVenda" type="number"></div>
+        <div>Erro (induziu a mentir)<input id="cb300RErro" type="number"></div>
+        <div>Bônus 1º lugar<input id="cb300RBonus1" type="number"></div>
+        <div>Bônus 2º lugar<input id="cb300RBonus2" type="number"></div>
+        <div>Bônus 3º lugar<input id="cb300RBonus3" type="number"></div>
+      </div>
+      <button class="main" style="margin-top:8px" onclick="salvarRegrasCB300()">Salvar regras</button>
+      <p id="cb300RegrasMsg" class="mini"></p>
+    </div>
+
+    <div class="card">
+      <h2>➕ Lançar pontos</h2>
+      <select id="cb300Prof"><option value="">Escolha o profissional</option></select>
+      <select id="cb300Cat" style="margin-top:8px"></select>
+      <input id="cb300Obs" style="margin-top:8px" placeholder="Observação (opcional)">
+      <div class="grid" style="margin-top:8px">
+        <button class="main" onclick="lancarPontoCB300()">Lançar ponto</button>
+        <button class="secondary" onclick="aplicarBonusTop3CB300()">🏆 Aplicar bônus Top 3</button>
+      </div>
+      <p id="cb300Msg" class="mini" style="margin-top:6px"></p>
+    </div>
+
+    <div class="card scroll">
+      <h2>🧾 Pontos lançados</h2>
+      <p class="hint">Toque em Editar pra corrigir um valor, ou Excluir pra remover.</p>
+      <div id="cb300Lancamentos"></div>
+    </div>
+
+    <div class="card scroll">
+      <h2>👥 Participantes</h2>
+      <p class="hint">Remova quem não participa da campanha (não conta no ranking).</p>
+      <div id="cb300Participantes"></div>
+    </div>
   </div>
 
   <div id="portalSala30" class="card scroll portalBloco30">
@@ -5806,7 +5813,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 </script>
 
 <script>
-/* ===== CAPTAPRO • Aba gameCB300: campanha de pontos + ranking ===== */
+/* ===== CAPTAPRO • Aba gameCB300: campanha de pontos + ranking (regras editáveis) ===== */
 (function(){
 "use strict";
 
@@ -5827,7 +5834,36 @@ function isCEO(){
 const LIDERES_CB=["raphael bueno","raphael bueno da silva","raphaelbueno.captacao@gmail.com","francisco","francisco rodrigues","francisco antonio rodrigues","marcel","marcel dorado","marcel.dorado2@gmail.com"];
 function ehLider(nome,email){const n=norm(nome),e=norm(email);return LIDERES_CB.some(x=>{const y=norm(x);return n===y||e===y||(y.length>6&&n.includes(y))})}
 
-const CATEGORIAS={trabalho:{pontos:1,label:"Foi trabalhar"},nq:{pontos:2,label:"Casal NQ"},item:{pontos:3,label:"Casal 1 Item"},qualificado:{pontos:5,label:"Casal Qualificado"},venda:{pontos:10,label:"Venda"},erro:{pontos:-20,label:"Erro / induziu a mentir"},bonus:{pontos:0,label:"Bônus"}};
+const REGRAS_PADRAO={trabalho:1,nq:2,item:3,qualificado:5,venda:10,erro:-20,bonus1:100,bonus2:50,bonus3:20};
+const LABELS_CAT={trabalho:"Foi trabalhar",nq:"Casal NQ",item:"Casal 1 Item",qualificado:"Casal Qualificado",venda:"Venda",erro:"Erro / induziu a mentir",bonus:"Bônus"};
+
+async function getRegrasCB(){
+  try{const r=await db.from("cb300_regras").select("*").eq("id",1).maybeSingle();if(!r.error&&r.data)return Object.assign({},REGRAS_PADRAO,r.data)}catch(e){}
+  try{const l=JSON.parse(localStorage.getItem("cb300_regras_local")||"null");if(l)return Object.assign({},REGRAS_PADRAO,l)}catch(e){}
+  return Object.assign({},REGRAS_PADRAO);
+}
+window.salvarRegrasCB300=async function(){
+  const r={id:1,trabalho:Number(V("cb300RTrabalho"))||0,nq:Number(V("cb300RNq"))||0,item:Number(V("cb300RItem"))||0,qualificado:Number(V("cb300RQualificado"))||0,venda:Number(V("cb300RVenda"))||0,erro:Number(V("cb300RErro"))||0,bonus1:Number(V("cb300RBonus1"))||0,bonus2:Number(V("cb300RBonus2"))||0,bonus3:Number(V("cb300RBonus3"))||0};
+  try{await db.from("cb300_regras").upsert(r,{onConflict:"id"})}catch(e){}
+  try{localStorage.setItem("cb300_regras_local",JSON.stringify(r))}catch(e2){}
+  H("cb300RegrasMsg",'<span class="ok">Regras salvas.</span>');
+  carregarCB300CEO();
+};
+function preencherFormRegras(r){
+  if(E("cb300RTrabalho"))E("cb300RTrabalho").value=r.trabalho;
+  if(E("cb300RNq"))E("cb300RNq").value=r.nq;
+  if(E("cb300RItem"))E("cb300RItem").value=r.item;
+  if(E("cb300RQualificado"))E("cb300RQualificado").value=r.qualificado;
+  if(E("cb300RVenda"))E("cb300RVenda").value=r.venda;
+  if(E("cb300RErro"))E("cb300RErro").value=r.erro;
+  if(E("cb300RBonus1"))E("cb300RBonus1").value=r.bonus1;
+  if(E("cb300RBonus2"))E("cb300RBonus2").value=r.bonus2;
+  if(E("cb300RBonus3"))E("cb300RBonus3").value=r.bonus3;
+}
+function montarSelectCategorias(r){
+  const cats=[["trabalho",r.trabalho],["nq",r.nq],["item",r.item],["qualificado",r.qualificado],["venda",r.venda],["erro",r.erro]];
+  H("cb300Cat", cats.map(([k,v])=>`<option value="${k}">${LABELS_CAT[k]} (${v>0?"+":""}${v})</option>`).join(""));
+}
 
 async function profissionaisCB(){
   const m={};
@@ -5845,12 +5881,12 @@ async function excluirParticipanteCB(email,nome){
   try{await db.from("cb300_excluidos").insert({user_email:email,nome})}catch(e){
     try{const a=JSON.parse(localStorage.getItem("cb300_excluidos_local")||"[]");a.push(email);localStorage.setItem("cb300_excluidos_local",JSON.stringify(a))}catch(e2){}
   }
-  carregarCB300();
+  carregarCB300CEO(); carregarCB300Ranking();
 }
 async function readicionarParticipanteCB(email){
   try{await db.from("cb300_excluidos").delete().eq("user_email",email)}catch(e){}
   try{const a=JSON.parse(localStorage.getItem("cb300_excluidos_local")||"[]").filter(x=>norm(x)!==norm(email));localStorage.setItem("cb300_excluidos_local",JSON.stringify(a))}catch(e2){}
-  carregarCB300();
+  carregarCB300CEO(); carregarCB300Ranking();
 }
 window.excluirParticipanteCB300=function(email,nome){if(confirm("Remover "+nome+" da campanha CB300?"))excluirParticipanteCB(email,nome)};
 window.readicionarParticipanteCB300=function(email){readicionarParticipanteCB(email)};
@@ -5860,10 +5896,26 @@ async function getPontosCB(){
   try{return JSON.parse(localStorage.getItem("cb300_pontos_local")||"[]")}catch(e){return []}
 }
 async function salvarPontoCB(row){
+  if(!row.id) row.id="local_"+Date.now()+"_"+Math.random().toString(36).slice(2,7);
   try{const r=await db.from("cb300_pontos").insert(row);if(!r.error)return true}catch(e){}
   try{const a=JSON.parse(localStorage.getItem("cb300_pontos_local")||"[]");a.push(row);localStorage.setItem("cb300_pontos_local",JSON.stringify(a))}catch(e2){}
   return true;
 }
+window.editarPontoCB300=async function(id,atual){
+  const novo=prompt("Novo valor de pontos:",atual);
+  if(novo===null) return;
+  const n=Number(novo);
+  if(isNaN(n)){alert("Digite um número válido.");return}
+  try{await db.from("cb300_pontos").update({pontos:n}).eq("id",id)}catch(e){}
+  try{const a=JSON.parse(localStorage.getItem("cb300_pontos_local")||"[]");const it=a.find(x=>String(x.id)===String(id));if(it){it.pontos=n;localStorage.setItem("cb300_pontos_local",JSON.stringify(a))}}catch(e2){}
+  carregarCB300CEO(); carregarCB300Ranking();
+};
+window.excluirPontoCB300=async function(id){
+  if(!confirm("Excluir este lançamento de pontos?")) return;
+  try{await db.from("cb300_pontos").delete().eq("id",id)}catch(e){}
+  try{const a=JSON.parse(localStorage.getItem("cb300_pontos_local")||"[]").filter(x=>String(x.id)!==String(id));localStorage.setItem("cb300_pontos_local",JSON.stringify(a))}catch(e2){}
+  carregarCB300CEO(); carregarCB300Ranking();
+};
 
 window.lancarPontoCB300=async function(){
   const email=V("cb300Prof");
@@ -5871,27 +5923,28 @@ window.lancarPontoCB300=async function(){
   const nome=sel && sel.selectedOptions[0] ? sel.selectedOptions[0].textContent : "";
   const cat=V("cb300Cat");
   if(!email){H("cb300Msg",'<span class="erro">Escolha o profissional.</span>');return}
-  const c=CATEGORIAS[cat];
-  await salvarPontoCB({user_email:email,nome,categoria:cat,pontos:c.pontos,data:hoje(),observacao:V("cb300Obs"),created_at:new Date().toISOString()});
-  H("cb300Msg",'<span class="ok">Ponto lançado: '+c.label+' ('+(c.pontos>0?"+":"")+c.pontos+').</span>');
+  const r=await getRegrasCB();
+  const valores={trabalho:r.trabalho,nq:r.nq,item:r.item,qualificado:r.qualificado,venda:r.venda,erro:r.erro};
+  const pontos=valores[cat];
+  await salvarPontoCB({user_email:email,nome,categoria:cat,pontos,data:hoje(),observacao:V("cb300Obs"),created_at:new Date().toISOString()});
+  H("cb300Msg",'<span class="ok">Ponto lançado: '+LABELS_CAT[cat]+' ('+(pontos>0?"+":"")+pontos+').</span>');
   if(E("cb300Obs"))E("cb300Obs").value="";
-  carregarCB300();
+  carregarCB300CEO(); carregarCB300Ranking();
 };
 
 window.aplicarBonusTop3CB300=async function(){
-  const excluidos=await getExcluidosCB();
-  const pontos=await getPontosCB();
+  const [excluidos,pontos,r]=await Promise.all([getExcluidosCB(),getPontosCB(),getRegrasCB()]);
   const rank=calcularRankingCB(pontos,excluidos);
   if(rank.length<1){H("cb300Msg",'<span class="erro">Sem participantes no ranking ainda.</span>');return}
   const top=rank.slice(0,3);
-  const nomes=top.map((r,i)=>(i+1)+"º "+r.nome).join(", ");
-  if(!confirm("Aplicar bônus de fim de campanha para: "+nomes+"?\n1º +100 | 2º +50 | 3º +20\n\nIsso lança os pontos agora. Use só uma vez, no final da campanha.")) return;
-  const bonusVal=[100,50,20];
+  const nomes=top.map((x,i)=>(i+1)+"º "+x.nome).join(", ");
+  if(!confirm("Aplicar bônus de fim de campanha para: "+nomes+"?\n1º +"+r.bonus1+" | 2º +"+r.bonus2+" | 3º +"+r.bonus3+"\n\nIsso lança os pontos agora. Use só uma vez, no final da campanha.")) return;
+  const bonusVal=[r.bonus1,r.bonus2,r.bonus3];
   for(let i=0;i<top.length;i++){
     await salvarPontoCB({user_email:top[i].email,nome:top[i].nome,categoria:"bonus",pontos:bonusVal[i],data:hoje(),observacao:"Bônus "+(i+1)+"º lugar - fim de campanha",created_at:new Date().toISOString()});
   }
   H("cb300Msg",'<span class="ok">Bônus aplicado para o Top 3.</span>');
-  carregarCB300();
+  carregarCB300CEO(); carregarCB300Ranking();
 };
 
 function calcularRankingCB(pontos,excluidos){
@@ -5906,21 +5959,34 @@ function calcularRankingCB(pontos,excluidos){
   });
   return Object.values(map).sort((a,b)=>b.total-a.total||a.nome.localeCompare(b.nome));
 }
-
 function medalha(i){return i===0?"🥇":i===1?"🥈":i===2?"🥉":"🏍️"}
 
-window.carregarCB300=async function(){
-  const [profs,excluidos,pontos]=await Promise.all([profissionaisCB(),getExcluidosCB(),getPontosCB()]);
-
-  const disponiveis=profs.filter(p=>!excluidos.includes(norm(p.email)));
-  H("cb300Prof",'<option value="">Escolha o profissional</option>'+disponiveis.map(p=>`<option value="${esc(p.email)}">${esc(p.nome)}</option>`).join(""));
-
+window.carregarCB300Ranking=async function(){
+  const [excluidos,pontos]=await Promise.all([getExcluidosCB(),getPontosCB()]);
   const rank=calcularRankingCB(pontos,excluidos);
   H("cb300Ranking", rank.length ? rank.map((r,i)=>`
     <div class="relProFicha ${i<3?"sala":""}">
       <b>${medalha(i)} ${i+1}º • ${esc(r.nome)}</b>
-      <small>${esc(r.email||"")}</small>
       <span class="tag">${r.total} pontos</span>
+    </div>`).join("") : '<p class="mini">Nenhum ponto lançado ainda.</p>');
+};
+
+window.carregarCB300CEO=async function(){
+  const [profs,excluidos,pontos,regras]=await Promise.all([profissionaisCB(),getExcluidosCB(),getPontosCB(),getRegrasCB()]);
+
+  preencherFormRegras(regras);
+  montarSelectCategorias(regras);
+
+  const disponiveis=profs.filter(p=>!excluidos.includes(norm(p.email)));
+  H("cb300Prof",'<option value="">Escolha o profissional</option>'+disponiveis.map(p=>`<option value="${esc(p.email)}">${esc(p.nome)}</option>`).join(""));
+
+  const recentes=pontos.slice(0,80);
+  H("cb300Lancamentos", recentes.length ? recentes.map(x=>`
+    <div class="relProFicha">
+      <b>${esc(x.nome||x.user_email||"Sem nome")} • ${LABELS_CAT[x.categoria]||x.categoria}</b>
+      <small>${esc(x.data||"")} • ${esc(x.observacao||"")}</small>
+      <span class="tag">${x.pontos>0?"+":""}${x.pontos} pts</span>
+      ${x.id?`<button class="secondary" onclick="editarPontoCB300('${esc(x.id)}',${Number(x.pontos)||0})">Editar</button><button class="secondary" onclick="excluirPontoCB300('${esc(x.id)}')">Excluir</button>`:""}
     </div>`).join("") : '<p class="mini">Nenhum ponto lançado ainda.</p>');
 
   const excluidosInfo=profs.filter(p=>excluidos.includes(norm(p.email)));
@@ -5933,7 +5999,13 @@ window.carregarCB300=async function(){
 const oldAbaCB=window.aba;
 window.aba=function(id,btn){
   const r=oldAbaCB?oldAbaCB.apply(this,arguments):undefined;
-  if(id==="cb300") setTimeout(()=>{carregarCB300()},300);
+  if(id==="cb300") setTimeout(()=>{carregarCB300Ranking()},300);
+  return r;
+};
+const oldAbrirCB=window.abrirPortalBloco30;
+window.abrirPortalBloco30=function(id){
+  const r=oldAbrirCB?oldAbrirCB.apply(this,arguments):undefined;
+  if(id==="portalCB300CEO") setTimeout(()=>{carregarCB300CEO()},300);
   return r;
 };
 })();
