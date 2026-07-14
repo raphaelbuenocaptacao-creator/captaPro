@@ -655,42 +655,6 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 <section id="relatorio" class="card hidden">
 <h2>Relatório</h2>
 
-<div class="card scroll adminOnly" id="ceoDashboard20">
-  <h2>CEO • Dashboard Geral</h2>
-  <p class="hint">Visão geral em tempo real da operação.</p>
-  <div class="kpis">
-    <div class="kpi">Abordagens Hoje<b id="ceoAbordHoje">0</b></div>
-    <div class="kpi">Pesquisas Hoje<b id="ceoPesqHoje">0</b></div>
-    <div class="kpi">Q Hoje<b id="ceoQHoje">0</b></div>
-    <div class="kpi">NQ Hoje<b id="ceoNQHoje">0</b></div>
-    <div class="kpi">Sala Confirmada<b id="ceoSalaHoje">0</b></div>
-    <div class="kpi">Sala Pendente<b id="ceoSalaPendente">0</b></div>
-    <div class="kpi">Eficiência<b id="ceoEficHoje">0%</b></div>
-    <div class="kpi">Conversão Sala<b id="ceoConvHoje">0%</b></div>
-  </div>
-  <div class="grid" style="margin-top:8px">
-    <button class="main" onclick="carregarDashboardCEO25()">Atualizar CEO</button>
-    <button class="secondary" onclick="exportarExcelCEO25()">Exportar Excel/CSV</button>
-  </div>
-  <div id="ceoResumoMesBox25" style="margin-top:10px"></div>
-</div>
-
-<div class="card scroll adminOnly" id="ceoPresencaMapa29">
-  <h2>CEO • Online/Offline e Mapa dos Pontos</h2>
-  <p class="hint">Somente CEO: mostra quem está usando o app e em qual ponto está.</p>
-  <div class="kpis">
-    <div class="kpi">Online<b id="ceoOnlineAgora29">0</b></div>
-    <div class="kpi">Offline<b id="ceoOfflineAgora29">0</b></div>
-    <div class="kpi">Em campo<b id="ceoEmCampo29">0</b></div>
-    <div class="kpi">Sem ponto<b id="ceoSemPonto29">0</b></div>
-  </div>
-  <button class="main" style="margin-top:8px" onclick="carregarPresencaMapa29()">Atualizar presença/mapa</button>
-  <div class="grid" style="margin-top:10px">
-    <div class="card scroll"><h2>🟢 Online</h2><div id="ceoOnlineBox29"></div></div>
-    <div class="card scroll"><h2>🔴 Offline</h2><div id="ceoOfflineBox29"></div></div>
-  </div>
-  <div class="card scroll"><h2>📍 Pontos de Captação</h2><div id="ceoMapaPontosBox29"></div></div>
-</div>
 <div class="grid"><input id="relDe" type="date"><input id="relAte" type="date"></div>
 <button class="main" style="margin-top:8px" onclick="carregarRelatorio()">Atualizar</button>
 <div class="kpis">
