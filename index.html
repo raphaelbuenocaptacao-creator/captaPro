@@ -465,7 +465,7 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('historico',this)">Histórico</button><button onclick="aba('relatorio',this)">Meu Profissional</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('historico',this)">Histórico</button><button onclick="aba('relatorio',this)">Meu Profissional</button><button onclick="aba('cb300',this)">🏍️ CB300</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
 
 
 <section id="pesquisa" class="card">
@@ -569,6 +569,56 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
   <div class="kpi">Pesquisas<b id="histTotalPesq">0</b></div>
 </div>
 <div id="historicoBox" style="margin-top:10px"></div>
+</section>
+
+<section id="cb300" class="card hidden">
+<h2>🏍️ Moto CB300</h2>
+<p class="hint">Campanha de pontos por resultado. Válida até <b>30/12/2026</b>.</p>
+
+<div class="card scroll">
+  <h2>📜 Regras</h2>
+  <ul class="mini" style="line-height:1.9;padding-left:18px">
+    <li>Foi trabalhar: <b class="ok">+1</b> ponto</li>
+    <li>Colocar casal NQ: <b class="ok">+2</b> pontos</li>
+    <li>Colocar casal 1 Item: <b class="ok">+3</b> pontos</li>
+    <li>Colocar casal Qualificado: <b class="ok">+5</b> pontos</li>
+    <li>Venda: <b class="ok">+10</b> pontos</li>
+    <li>Erro (induzir o casal a mentir): <b class="erro">-20</b> pontos</li>
+    <li>🥇 1º lugar no final da campanha: <b class="ok">+100</b> pontos</li>
+    <li>🥈 2º lugar no final da campanha: <b class="ok">+50</b> pontos</li>
+    <li>🥉 3º lugar no final da campanha: <b class="ok">+20</b> pontos</li>
+  </ul>
+</div>
+
+<div class="card adminOnly">
+  <h2>➕ Lançar pontos</h2>
+  <select id="cb300Prof"><option value="">Escolha o profissional</option></select>
+  <select id="cb300Cat" style="margin-top:8px">
+    <option value="trabalho">Foi trabalhar (+1)</option>
+    <option value="nq">Colocou casal NQ (+2)</option>
+    <option value="item">Colocou casal 1 Item (+3)</option>
+    <option value="qualificado">Colocou casal Qualificado (+5)</option>
+    <option value="venda">Venda (+10)</option>
+    <option value="erro">Erro / induziu a mentir (-20)</option>
+  </select>
+  <input id="cb300Obs" style="margin-top:8px" placeholder="Observação (opcional)">
+  <div class="grid" style="margin-top:8px">
+    <button class="main" onclick="lancarPontoCB300()">Lançar ponto</button>
+    <button class="secondary" onclick="aplicarBonusTop3CB300()">🏆 Aplicar bônus Top 3</button>
+  </div>
+  <p id="cb300Msg" class="mini" style="margin-top:6px"></p>
+</div>
+
+<div class="card scroll">
+  <h2>🏆 Ranking</h2>
+  <div id="cb300Ranking"></div>
+</div>
+
+<div class="card scroll adminOnly">
+  <h2>👥 Participantes</h2>
+  <p class="hint">Remova quem não participa da campanha (não conta no ranking).</p>
+  <div id="cb300Participantes"></div>
+</div>
 </section>
 
 
@@ -1016,7 +1066,7 @@ async function entrar(){
 (function(){try{const l=JSON.parse(localStorage.getItem('loginSimples')||'null'); if(l){E('email').value=l.email;E('nome').value=l.nome;setTimeout(entrar,300)}}catch(e){}})();
 
 function aba(id,b){
- ['pesquisa','historico','diario','relatorio','raking','arena','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
+ ['pesquisa','historico','diario','relatorio','raking','arena','qualificacao','cb300'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
  if(E(id))E(id).classList.remove('hidden');
  document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
  if(b)b.classList.add('active');
@@ -5661,28 +5711,72 @@ function periodoHist(){
 }
 function inPeriodo(x,de,ate){const d=dataItem(x); return (!de||d>=de)&&(!ate||d<=ate)}
 
+function isCEO(){
+  const r=norm(window.role || (typeof role!=="undefined"?role:"") || document.body.className || "");
+  const e=norm(window.usuarioEmail || (typeof usuarioEmail!=="undefined"?usuarioEmail:"") || localStorage.getItem("email") || "");
+  return document.body.classList.contains("ceo") || r.includes("ceo") || r.includes("admin") || e.includes("raphaelbueno");
+}
+function emailAtual(){ return window.usuarioEmail || (typeof usuarioEmail!=="undefined"?usuarioEmail:"") || localStorage.getItem("email") || V("email") || ""; }
+function nomeAtual(){ return window.usuarioNome || (typeof usuarioNome!=="undefined"?usuarioNome:"") || localStorage.getItem("nome") || V("nome") || ""; }
+function filtrarPermissaoHist(arr){
+  if(isCEO()) return arr;
+  const em=norm(emailAtual()), nm=norm(nomeAtual());
+  return arr.filter(x=>{
+    const xe=norm(x.user_email||x.email||""), xn=norm(nomeProf(x));
+    return (em && xe===em) || (nm && xn===nm) || (nm && xn.includes(nm)) || (nm && nm.includes(xn));
+  });
+}
+
 function linhaPesquisa(x){
   const casal=[x.convidado_1||x.nome1||x.nome_cliente||"", x.convidado_2||x.nome2||""].filter(Boolean).join(" & ") || "Casal sem nome";
-  return `<div class="relProFicha ${isSala(x)?"sala":""}">
+  const extra=`<div class="detalhesFicha hidden" style="margin-top:8px;padding-top:8px;border-top:1px solid #333">
+    ${x.profissao_1||x.profissao1?`<div class="mini">Profissão 1: ${esc(x.profissao_1||x.profissao1)}</div>`:""}
+    ${x.profissao_2||x.profissao2?`<div class="mini">Profissão 2: ${esc(x.profissao_2||x.profissao2)}</div>`:""}
+    ${x.renda_casal||x.renda?`<div class="mini">Renda: ${esc(x.renda_casal||x.renda)}</div>`:""}
+    ${x.veiculo?`<div class="mini">Veículo: ${esc(x.veiculo)} ${esc(x.modelo_carro||"")} ${esc(x.ano_veiculo||"")}</div>`:""}
+    ${x.cartao_credito?`<div class="mini">Cartão: ${esc(x.cartao_credito)}</div>`:""}
+    ${x.casa_propria?`<div class="mini">Casa própria: ${esc(x.casa_propria)}</div>`:""}
+    ${x.contato?`<div class="mini">Contato: ${esc(x.contato)}</div>`:""}
+    ${x.brinde?`<div class="mini">Brinde: ${esc(x.brinde)}</div>`:""}
+    ${x.observacoes?`<div class="mini">Obs: ${esc(x.observacoes)}</div>`:""}
+    ${x.motivo_qualificacao?`<div class="mini">Motivo: ${esc(x.motivo_qualificacao)}</div>`:""}
+    ${isCEO()&&x.id?`<button class="secondary" style="margin-top:8px" onclick="event.stopPropagation();excluirHistoricoItem('pesquisas','${esc(x.id)}')">🗑️ Excluir ficha</button>`:""}
+  </div>`;
+  return `<div class="relProFicha ${isSala(x)?"sala":""}" onclick="this.querySelector('.detalhesFicha').classList.toggle('hidden')" style="cursor:pointer">
     <b>👫 ${esc(casal)}</b>
     <small>${esc(dataItem(x))} ${esc(horaItem(x))} • ${esc(pontoItem(x))} • Profissional: ${esc(nomeProf(x))}</small>
     <span class="tag">Pesquisa</span>
     <span class="tag">${esc(qual(x))}</span>
     <span class="tag">${isSala(x)?"✅ Sala":"⏳ Sem sala"}</span>
+    ${extra}
   </div>`;
 }
 function linhaAbordagem(x){
-  return `<div class="relProFicha">
+  const extra=`<div class="detalhesFicha hidden" style="margin-top:8px;padding-top:8px;border-top:1px solid #333">
+    ${isCEO()&&x.id?`<button class="secondary" onclick="event.stopPropagation();excluirHistoricoItem('abordagens','${esc(x.id)}')">🗑️ Excluir abordagem</button>`:'<div class="mini">Sem detalhes adicionais.</div>'}
+  </div>`;
+  return `<div class="relProFicha" onclick="this.querySelector('.detalhesFicha').classList.toggle('hidden')" style="cursor:pointer">
     <b>🚶 Abordagem</b>
     <small>${esc(dataItem(x))} ${esc(horaItem(x))} • ${esc(pontoItem(x))} • Profissional: ${esc(nomeProf(x))}</small>
     <span class="tag">Abordagem</span>
+    ${extra}
   </div>`;
 }
 
+window.excluirHistoricoItem=async function(tabela,id){
+  if(!confirm("Excluir este registro? Essa ação não pode ser desfeita.")) return;
+  try{ await db.from(tabela).delete().eq("id",id); }catch(e){}
+  ["pesquisasLocal","abordagensLocal"].forEach(k=>{
+    try{ let arr=JSON.parse(localStorage.getItem(k)||"[]"); arr=arr.filter(x=>String(x.id)!==String(id)); localStorage.setItem(k,JSON.stringify(arr)); }catch(e){}
+  });
+  carregarHistorico();
+};
+
 window.carregarHistorico=async function(){
   const {de,ate}=periodoHist();
-  const p=(await getPesquisasHist()).filter(x=>inPeriodo(x,de,ate));
-  const a=(await getAbordagensHist()).filter(x=>inPeriodo(x,de,ate));
+  let p=(await getPesquisasHist()).filter(x=>inPeriodo(x,de,ate));
+  let a=(await getAbordagensHist()).filter(x=>inPeriodo(x,de,ate));
+  p=filtrarPermissaoHist(p); a=filtrarPermissaoHist(a);
 
   S("histTotalAbord",a.length);
   S("histTotalPesq",p.length);
@@ -5708,6 +5802,140 @@ document.addEventListener("DOMContentLoaded",()=>{
     if(E("histAte") && !V("histAte")) E("histAte").value=hoje();
   },700);
 });
+})();
+</script>
+
+<script>
+/* ===== CAPTAPRO • Aba gameCB300: campanha de pontos + ranking ===== */
+(function(){
+"use strict";
+
+function E(id){return document.getElementById(id)}
+function V(id){return (E(id)?.value||"").trim()}
+function H(id,v){if(E(id))E(id).innerHTML=v}
+function esc(s){return String(s??"").replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+function key(s){return norm(s).replace(/[^a-z0-9@._-]/g,"_")}
+function hoje(){return new Date().toISOString().slice(0,10)}
+const FIM_CAMPANHA="2026-12-30";
+
+function isCEO(){
+  const r=norm(window.role || (typeof role!=="undefined"?role:"") || document.body.className || "");
+  const e=norm(window.usuarioEmail || (typeof usuarioEmail!=="undefined"?usuarioEmail:"") || localStorage.getItem("email") || "");
+  return document.body.classList.contains("ceo") || r.includes("ceo") || r.includes("admin") || e.includes("raphaelbueno");
+}
+const LIDERES_CB=["raphael bueno","raphael bueno da silva","raphaelbueno.captacao@gmail.com","francisco","francisco rodrigues","francisco antonio rodrigues","marcel","marcel dorado","marcel.dorado2@gmail.com"];
+function ehLider(nome,email){const n=norm(nome),e=norm(email);return LIDERES_CB.some(x=>{const y=norm(x);return n===y||e===y||(y.length>6&&n.includes(y))})}
+
+const CATEGORIAS={trabalho:{pontos:1,label:"Foi trabalhar"},nq:{pontos:2,label:"Casal NQ"},item:{pontos:3,label:"Casal 1 Item"},qualificado:{pontos:5,label:"Casal Qualificado"},venda:{pontos:10,label:"Venda"},erro:{pontos:-20,label:"Erro / induziu a mentir"},bonus:{pontos:0,label:"Bônus"}};
+
+async function profissionaisCB(){
+  const m={};
+  function add(nome,email){nome=String(nome||email||"").trim();email=String(email||"").trim().toLowerCase();if(!nome)return;const k=email||key(nome);if(!m[k])m[k]={nome,email}}
+  try{const r=await db.from("approved_users").select("email,name,approved").eq("approved",true).limit(500);if(!r.error)r.data.forEach(u=>add(u.name||u.email,u.email))}catch(e){}
+  try{(await dados("pesquisas")||[]).forEach(x=>add(x.captador_nome||x.user_email,x.user_email))}catch(e){}
+  return Object.values(m).filter(p=>!ehLider(p.nome,p.email));
+}
+
+async function getExcluidosCB(){
+  try{const r=await db.from("cb300_excluidos").select("*");if(!r.error)return (r.data||[]).map(x=>norm(x.user_email||x.email||""))}catch(e){}
+  try{return JSON.parse(localStorage.getItem("cb300_excluidos_local")||"[]").map(norm)}catch(e){return []}
+}
+async function excluirParticipanteCB(email,nome){
+  try{await db.from("cb300_excluidos").insert({user_email:email,nome})}catch(e){
+    try{const a=JSON.parse(localStorage.getItem("cb300_excluidos_local")||"[]");a.push(email);localStorage.setItem("cb300_excluidos_local",JSON.stringify(a))}catch(e2){}
+  }
+  carregarCB300();
+}
+async function readicionarParticipanteCB(email){
+  try{await db.from("cb300_excluidos").delete().eq("user_email",email)}catch(e){}
+  try{const a=JSON.parse(localStorage.getItem("cb300_excluidos_local")||"[]").filter(x=>norm(x)!==norm(email));localStorage.setItem("cb300_excluidos_local",JSON.stringify(a))}catch(e2){}
+  carregarCB300();
+}
+window.excluirParticipanteCB300=function(email,nome){if(confirm("Remover "+nome+" da campanha CB300?"))excluirParticipanteCB(email,nome)};
+window.readicionarParticipanteCB300=function(email){readicionarParticipanteCB(email)};
+
+async function getPontosCB(){
+  try{const r=await db.from("cb300_pontos").select("*").order("created_at",{ascending:false}).limit(5000);if(!r.error)return r.data||[]}catch(e){}
+  try{return JSON.parse(localStorage.getItem("cb300_pontos_local")||"[]")}catch(e){return []}
+}
+async function salvarPontoCB(row){
+  try{const r=await db.from("cb300_pontos").insert(row);if(!r.error)return true}catch(e){}
+  try{const a=JSON.parse(localStorage.getItem("cb300_pontos_local")||"[]");a.push(row);localStorage.setItem("cb300_pontos_local",JSON.stringify(a))}catch(e2){}
+  return true;
+}
+
+window.lancarPontoCB300=async function(){
+  const email=V("cb300Prof");
+  const sel=E("cb300Prof");
+  const nome=sel && sel.selectedOptions[0] ? sel.selectedOptions[0].textContent : "";
+  const cat=V("cb300Cat");
+  if(!email){H("cb300Msg",'<span class="erro">Escolha o profissional.</span>');return}
+  const c=CATEGORIAS[cat];
+  await salvarPontoCB({user_email:email,nome,categoria:cat,pontos:c.pontos,data:hoje(),observacao:V("cb300Obs"),created_at:new Date().toISOString()});
+  H("cb300Msg",'<span class="ok">Ponto lançado: '+c.label+' ('+(c.pontos>0?"+":"")+c.pontos+').</span>');
+  if(E("cb300Obs"))E("cb300Obs").value="";
+  carregarCB300();
+};
+
+window.aplicarBonusTop3CB300=async function(){
+  const excluidos=await getExcluidosCB();
+  const pontos=await getPontosCB();
+  const rank=calcularRankingCB(pontos,excluidos);
+  if(rank.length<1){H("cb300Msg",'<span class="erro">Sem participantes no ranking ainda.</span>');return}
+  const top=rank.slice(0,3);
+  const nomes=top.map((r,i)=>(i+1)+"º "+r.nome).join(", ");
+  if(!confirm("Aplicar bônus de fim de campanha para: "+nomes+"?\n1º +100 | 2º +50 | 3º +20\n\nIsso lança os pontos agora. Use só uma vez, no final da campanha.")) return;
+  const bonusVal=[100,50,20];
+  for(let i=0;i<top.length;i++){
+    await salvarPontoCB({user_email:top[i].email,nome:top[i].nome,categoria:"bonus",pontos:bonusVal[i],data:hoje(),observacao:"Bônus "+(i+1)+"º lugar - fim de campanha",created_at:new Date().toISOString()});
+  }
+  H("cb300Msg",'<span class="ok">Bônus aplicado para o Top 3.</span>');
+  carregarCB300();
+};
+
+function calcularRankingCB(pontos,excluidos){
+  const validos=pontos.filter(x=>String(x.data||"").slice(0,10)<=FIM_CAMPANHA);
+  const map={};
+  validos.forEach(x=>{
+    const email=norm(x.user_email||"");
+    if(excluidos.includes(email)) return;
+    const k=email||key(x.nome);
+    if(!map[k]) map[k]={nome:x.nome||x.user_email||"Sem nome",email:x.user_email||"",total:0};
+    map[k].total+=Number(x.pontos)||0;
+  });
+  return Object.values(map).sort((a,b)=>b.total-a.total||a.nome.localeCompare(b.nome));
+}
+
+function medalha(i){return i===0?"🥇":i===1?"🥈":i===2?"🥉":"🏍️"}
+
+window.carregarCB300=async function(){
+  const [profs,excluidos,pontos]=await Promise.all([profissionaisCB(),getExcluidosCB(),getPontosCB()]);
+
+  const disponiveis=profs.filter(p=>!excluidos.includes(norm(p.email)));
+  H("cb300Prof",'<option value="">Escolha o profissional</option>'+disponiveis.map(p=>`<option value="${esc(p.email)}">${esc(p.nome)}</option>`).join(""));
+
+  const rank=calcularRankingCB(pontos,excluidos);
+  H("cb300Ranking", rank.length ? rank.map((r,i)=>`
+    <div class="relProFicha ${i<3?"sala":""}">
+      <b>${medalha(i)} ${i+1}º • ${esc(r.nome)}</b>
+      <small>${esc(r.email||"")}</small>
+      <span class="tag">${r.total} pontos</span>
+    </div>`).join("") : '<p class="mini">Nenhum ponto lançado ainda.</p>');
+
+  const excluidosInfo=profs.filter(p=>excluidos.includes(norm(p.email)));
+  H("cb300Participantes", `
+    ${disponiveis.length?disponiveis.map(p=>`<div class="relProFicha"><b>${esc(p.nome)}</b><small>${esc(p.email)}</small><button class="secondary" onclick="excluirParticipanteCB300('${esc(p.email)}','${esc(p.nome)}')">Remover</button></div>`).join(""):'<p class="mini">Nenhum participante encontrado.</p>'}
+    ${excluidosInfo.length?'<h2 style="margin-top:10px">🚫 Removidos</h2>'+excluidosInfo.map(p=>`<div class="relProFicha"><b>${esc(p.nome)}</b><small>${esc(p.email)}</small><button class="secondary" onclick="readicionarParticipanteCB300('${esc(p.email)}')">Readicionar</button></div>`).join(""):""}
+  `);
+};
+
+const oldAbaCB=window.aba;
+window.aba=function(id,btn){
+  const r=oldAbaCB?oldAbaCB.apply(this,arguments):undefined;
+  if(id==="cb300") setTimeout(()=>{carregarCB300()},300);
+  return r;
+};
 })();
 </script>
 
