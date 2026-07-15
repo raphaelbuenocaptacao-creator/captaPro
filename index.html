@@ -812,8 +812,11 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 
     <div class="card scroll">
       <h2>👥 Participantes</h2>
-      <p class="hint">Remova quem não participa da campanha (não conta no ranking).</p>
-      <div id="cb300Participantes"></div>
+      <p class="hint">Adicione manualmente quem não aparece na lista, ou remova quem não participa da campanha.</p>
+      <input id="cb300NovoNome" placeholder="Nome do profissional">
+      <input id="cb300NovoEmail" style="margin-top:8px" placeholder="E-mail (opcional)">
+      <button class="main" style="margin-top:8px" onclick="adicionarParticipanteCB300()">Adicionar profissional</button>
+      <div id="cb300Participantes" style="margin-top:10px"></div>
     </div>
   </div>
 
@@ -5182,30 +5185,36 @@ function ponto(x){return x.ponto||x.ponto_captacao||x.ponto_atual||x.local||""}
 function sala(x){const s=norm(x.levou_sala||x.sala||x.sala_status||x.status_sala||""); return s.includes("sim")||s.includes("confirm")||x.sala===true||x.levou_sala===true}
 function qual(x){return x.qualificacao_automatica||x.qualificacao||x.resultado_qualificacao||""}
 function pontoObj(nm){const n=norm(nm);return PONTOS.find(p=>norm(p.nome)===n||norm(p.nome).includes(n)||n.includes(norm(p.nome)))||PONTOS[0]}
-function profissionais(){
-  let arr=[].concat(lerLocal("pesquisasLocal"),lerLocal("cp_fichas"),lerLocal("capta_pesquisas"));
+async function profissionais(){
   const map={};
-  arr.forEach(x=>{
-    const n=nome(x);
-    if(!map[n]) map[n]={nome:n,ponto:ponto(x),pesq:0,q:0,sala:0,online:false};
-    map[n].pesq++;
-    if(norm(qual(x)).startsWith("q")) map[n].q++;
-    if(sala(x)) map[n].sala++;
-    map[n].ponto=ponto(x)||map[n].ponto;
-  });
   try{
-    const loc=JSON.parse(localStorage.getItem("cp_locs")||localStorage.getItem("cp14_locs")||"{}");
-    Object.entries(loc).forEach(([n,x])=>{
-      if(!map[n]) map[n]={nome:n,ponto:x.ponto||"",pesq:0,q:0,sala:0,online:true};
+    const arr=(await dados("pesquisas"))||[];
+    arr.forEach(x=>{
+      const n=nome(x);
+      if(!map[n]) map[n]={nome:n,ponto:ponto(x),pesq:0,q:0,sala:0,online:false};
+      map[n].pesq++;
+      if(norm(qual(x)).startsWith("q")) map[n].q++;
+      if(sala(x)) map[n].sala++;
+      map[n].ponto=ponto(x)||map[n].ponto;
+    });
+  }catch(e){}
+  try{
+    let pres=[];
+    try{const r=await db.from("captapro_presence").select("*").order("last_seen",{ascending:false}).limit(500); if(!r.error) pres=r.data||[];}catch(e){}
+    if(!pres.length){ try{pres=JSON.parse(localStorage.getItem("captapro_presence_local")||"[]");}catch(e){} }
+    pres.forEach(x=>{
+      const n=x.nome||x.email||"Sem nome";
+      const min=x.last_seen?Math.round((Date.now()-new Date(x.last_seen).getTime())/60000):99999;
+      if(!map[n]) map[n]={nome:n,ponto:x.ponto||"",pesq:0,q:0,sala:0,online:false};
       map[n].ponto=x.ponto||map[n].ponto;
-      map[n].online=true;
-      map[n].lat=x.lat; map[n].lng=x.lng;
+      map[n].online=min<5;
+      if(x.lat&&x.lng){map[n].lat=x.lat; map[n].lng=x.lng;}
     });
   }catch(e){}
   return Object.values(map);
 }
 
-window.carregarMapaReal37=function(){
+window.carregarMapaReal37=async function(){
   const box=E("mapaRealCEO37");
   if(!box || !window.L) return;
   if(!mapaFinal){
@@ -5221,7 +5230,8 @@ window.carregarMapaReal37=function(){
     const c=L.circle([p.lat,p.lng],{radius:50,color:"#00c2ff",fillColor:"#00c2ff",fillOpacity:.08,weight:1}).addTo(mapaFinal);
     layersFinal.push(m,c); bounds.push([p.lat,p.lng]);
   });
-  profissionais().forEach((r,i)=>{
+  const listaProfs=await profissionais();
+  listaProfs.forEach((r,i)=>{
     const p=(r.lat&&r.lng)?{lat:r.lat,lng:r.lng,nome:r.ponto||"GPS"}:pontoObj(r.ponto||"");
     const lat=Number(p.lat)+((i%5)-2)*0.00012;
     const lng=Number(p.lng)+(Math.floor(i/5)-1.5)*0.00012;
@@ -5235,7 +5245,7 @@ window.carregarMapaReal37=function(){
   setTimeout(()=>mapaFinal.invalidateSize(true),300);
 };
 
-function resumoMapa(){
+async function resumoMapa(){
   const box=E("portalMapa30");
   if(!box) return;
   let div=E("mapaResumoFinal");
@@ -5247,7 +5257,7 @@ function resumoMapa(){
     box.appendChild(div);
   }
   const alvo=E("mapaResumoListaFinal");
-  const profs=profissionais();
+  const profs=await profissionais();
   alvo.innerHTML=PONTOS.map(p=>{
     const lista=profs.filter(x=>norm(x.ponto||"").includes(norm(p.nome))||norm(p.nome).includes(norm(x.ponto||"")));
     return `<div class="mapaResumoFinal"><h3>📍 ${esc(p.nome)}</h3>${lista.length?lista.map(x=>`<span class="mapaPessoaFinal ${x.online?"on":"off"}">${x.online?"🟢":"🔴"} ${esc(x.nome)} • ${x.pesq||0} pesq. • ${x.sala||0} sala</span>`).join(""):'<span class="mini">Nenhum profissional informado neste ponto.</span>'}</div>`;
@@ -5783,11 +5793,14 @@ window.excluirHistoricoItem=async function(tabela,id){
   carregarHistorico();
 };
 
+let histSeq=0;
 window.carregarHistorico=async function(){
+  const mySeq=(++histSeq);
   const {de,ate}=periodoHist();
   let p=(await getPesquisasHist()).filter(x=>inPeriodo(x,de,ate));
   let a=(await getAbordagensHist()).filter(x=>inPeriodo(x,de,ate));
   p=filtrarPermissaoHist(p); a=filtrarPermissaoHist(a);
+  if(mySeq!==histSeq) return; // uma chamada mais nova já começou, descarta esta pra não piscar/sumir
 
   S("histTotalAbord",a.length);
   S("histTotalPesq",p.length);
@@ -5797,6 +5810,7 @@ window.carregarHistorico=async function(){
     a.map(x=>({t:"abordagem",data:dataItem(x),hora:x.created_at||x.data_criacao||x.hora||"",html:linhaAbordagem(x)}))
   ).sort((x,y)=> (y.data+String(y.hora)).localeCompare(x.data+String(x.hora)));
 
+  if(mySeq!==histSeq) return;
   H("historicoBox", itens.length ? itens.map(i=>i.html).join("") : '<p class="mini">Nenhuma abordagem ou pesquisa encontrada nesse período.</p>');
 };
 
@@ -5915,13 +5929,30 @@ function montarSelectCategorias(r){
   H("cb300Cat", cats.map(([k,v])=>`<option value="${k}">${LABELS_CAT[k]} (${v>0?"+":""}${v})</option>`).join(""));
 }
 
+async function getIncluidosCB(){
+  try{const r=await db.from("cb300_incluidos").select("*");if(!r.error)return r.data||[]}catch(e){}
+  try{return JSON.parse(localStorage.getItem("cb300_incluidos_local")||"[]")}catch(e){return []}
+}
 async function profissionaisCB(){
   const m={};
   function add(nome,email){nome=String(nome||email||"").trim();email=String(email||"").trim().toLowerCase();if(!nome)return;const k=email||key(nome);if(!m[k])m[k]={nome,email}}
   try{const r=await db.from("approved_users").select("email,name,approved").eq("approved",true).limit(500);if(!r.error)r.data.forEach(u=>add(u.name||u.email,u.email))}catch(e){}
   try{(await dados("pesquisas")||[]).forEach(x=>add(x.captador_nome||x.user_email,x.user_email))}catch(e){}
+  (await getIncluidosCB()).forEach(x=>add(x.nome,x.user_email||x.email));
   return Object.values(m).filter(p=>!ehLider(p.nome,p.email));
 }
+window.adicionarParticipanteCB300=async function(){
+  const nome=V("cb300NovoNome");
+  const email=V("cb300NovoEmail");
+  if(!nome){alert("Digite o nome do profissional.");return}
+  const row={nome,user_email:email||("sem-email-"+key(nome)+"@captapro.local")};
+  try{await db.from("cb300_incluidos").insert(row)}catch(e){
+    try{const a=JSON.parse(localStorage.getItem("cb300_incluidos_local")||"[]");a.push(row);localStorage.setItem("cb300_incluidos_local",JSON.stringify(a))}catch(e2){}
+  }
+  if(E("cb300NovoNome"))E("cb300NovoNome").value="";
+  if(E("cb300NovoEmail"))E("cb300NovoEmail").value="";
+  carregarCB300CEO();
+};
 
 async function getExcluidosCB(){
   try{const r=await db.from("cb300_excluidos").select("*");if(!r.error)return (r.data||[]).map(x=>norm(x.user_email||x.email||""))}catch(e){}
@@ -5940,6 +5971,7 @@ async function readicionarParticipanteCB(email){
 }
 window.excluirParticipanteCB300=function(email,nome){if(confirm("Remover "+nome+" da campanha CB300?"))excluirParticipanteCB(email,nome)};
 window.readicionarParticipanteCB300=function(email){readicionarParticipanteCB(email)};
+
 
 async function getPontosCB(){
   try{const r=await db.from("cb300_pontos").select("*").order("created_at",{ascending:false}).limit(5000);if(!r.error)return r.data||[]}catch(e){}
