@@ -563,11 +563,15 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 <h2>Histórico</h2>
 <p class="hint">Todas as abordagens e pesquisas (casais) já feitas por todos os profissionais.</p>
 <div class="grid"><input id="histDe" type="date"><input id="histAte" type="date"></div>
-<button class="main" style="margin-top:8px" onclick="carregarHistorico()">Atualizar</button>
+<div class="grid" style="margin-top:8px">
+  <button class="main" onclick="carregarHistorico()">Atualizar</button>
+  <button class="secondary" onclick="baixarExcelHistorico()">📊 Baixar Excel</button>
+</div>
 <div class="kpis" style="margin-top:8px">
   <div class="kpi">Abordagens<b id="histTotalAbord">0</b></div>
   <div class="kpi">Pesquisas<b id="histTotalPesq">0</b></div>
 </div>
+<button class="secondary adminOnly" style="margin-top:8px;background:#3a0707;border-color:#7b0a0a" onclick="limparTestesHistorico()">🧹 Remover todos os testes (nome "teste")</button>
 <div id="historicoBox" style="margin-top:10px"></div>
 </section>
 
@@ -5794,6 +5798,52 @@ window.carregarHistorico=async function(){
   ).sort((x,y)=> (y.data+String(y.hora)).localeCompare(x.data+String(x.hora)));
 
   H("historicoBox", itens.length ? itens.map(i=>i.html).join("") : '<p class="mini">Nenhuma abordagem ou pesquisa encontrada nesse período.</p>');
+};
+
+window.baixarExcelHistorico=async function(){
+  const {de,ate}=periodoHist();
+  let p=(await getPesquisasHist()).filter(x=>inPeriodo(x,de,ate));
+  let a=(await getAbordagensHist()).filter(x=>inPeriodo(x,de,ate));
+  p=filtrarPermissaoHist(p); a=filtrarPermissaoHist(a);
+
+  const linhas=["Tipo;Data;Hora;Profissional;Ponto;Casal;Qualificacao;Sala;Observacoes"];
+  p.forEach(x=>{
+    const casal=[x.convidado_1||x.nome1||"",x.convidado_2||x.nome2||""].filter(Boolean).join(" & ");
+    linhas.push(["Pesquisa",dataItem(x),horaItem(x),nomeProf(x),pontoItem(x),casal,qual(x),isSala(x)?"Sim":"Nao",String(x.observacoes||"").replace(/[\r\n;]/g," ")].join(";"));
+  });
+  a.forEach(x=>{
+    linhas.push(["Abordagem",dataItem(x),horaItem(x),nomeProf(x),pontoItem(x),"","","",""].join(";"));
+  });
+  const csv="\ufeff"+linhas.join("\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+  const link=document.createElement("a");
+  link.href=URL.createObjectURL(blob);
+  link.download="historico_captapro_"+hoje()+".csv";
+  link.click();
+};
+
+window.limparTestesHistorico=async function(){
+  const p=await getPesquisasHist();
+  const ehTeste=x=>{
+    const nomes=[x.convidado_1,x.convidado_2,x.nome1,x.nome2,x.nome_cliente].map(v=>norm(v||""));
+    return nomes.some(n=>n.includes("teste"));
+  };
+  const alvos=p.filter(ehTeste);
+  if(!alvos.length){ alert("Nenhum registro de teste encontrado (nome com \"teste\")."); return; }
+  if(!confirm('Encontrados '+alvos.length+' registro(s) com "teste" no nome do casal. Excluir todos agora? Essa ação não pode ser desfeita.')) return;
+
+  let ok=0;
+  for(const x of alvos){
+    if(x.id){ try{ await db.from("pesquisas").delete().eq("id",x.id); ok++; }catch(e){} }
+  }
+  try{
+    let arr=JSON.parse(localStorage.getItem("pesquisasLocal")||"[]");
+    arr=arr.filter(x=>!ehTeste(x));
+    localStorage.setItem("pesquisasLocal",JSON.stringify(arr));
+  }catch(e){}
+
+  alert(ok+" registro(s) de teste removido(s).");
+  carregarHistorico();
 };
 
 const oldAbaHist=window.aba;
