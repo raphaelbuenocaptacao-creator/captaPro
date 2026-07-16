@@ -5814,26 +5814,80 @@ window.carregarHistorico=async function(){
   H("historicoBox", itens.length ? itens.map(i=>i.html).join("") : '<p class="mini">Nenhuma abordagem ou pesquisa encontrada nesse período.</p>');
 };
 
+function csvCell(v){
+  let s=String(v??"").trim();
+  s=s.replace(/[\r\n]+/g," ");
+  if(/[;"]/.test(s)) s='"'+s.replace(/"/g,'""')+'"';
+  return s;
+}
+function simNao(v){ if(v===true) return "Sim"; if(v===false) return "Nao"; const s=norm(v||""); if(!s) return ""; return s.includes("sim")?"Sim":(s.includes("nao")||s.includes("não")?"Nao":String(v)); }
+
+const HIST_XLS_HEADERS=[
+  "Tipo","Data","Hora",
+  "Nome 1","Nome 2",
+  "Idade 1","Idade 2",
+  "Profissao 1","Profissao 2",
+  "Estado","Cidade",
+  "Estado Civil","Tempo Juntos",
+  "Veiculo","Modelo do Carro","Ano do Carro",
+  "Cartao de Credito","Casa Propria","Multipropriedade",
+  "Renda do Casal","Renda Liquida",
+  "Brinde","Contato",
+  "Qualificacao","Motivo Qualificacao","Sala",
+  "Equipe","Ponto de Captacao",
+  "Observacoes",
+  "Profissional","Email do Profissional"
+];
+
+function linhaXlsPesquisa(x){
+  return [
+    "Pesquisa", dataItem(x), horaItem(x),
+    x.convidado_1||x.nome1||x.nome_cliente||"", x.convidado_2||x.nome2||"",
+    x.idade_1||x.idade1||"", x.idade_2||x.idade2||"",
+    x.profissao_1||x.profissao1||"", x.profissao_2||x.profissao2||"",
+    x.estado_origem||x.estado||"", x.cidade_origem||x.cidade||"",
+    x.estado_civil||x.relacionamento||"", x.tempo_juntos||x.tempo||"",
+    x.veiculo||"", x.modelo_carro||x.nomeCarro||"", x.ano_veiculo||x.anoCarro||"",
+    x.cartao_credito||x.cartao||"", x.casa_propria||x.casa||"", x.multipropriedade||x.multi||"",
+    x.renda_casal||x.renda||"", x.renda_liquida||"",
+    x.brinde||"", x.contato||"",
+    qual(x), x.motivo_qualificacao||"", simNao(isSala(x)||x.levou_sala||x.sala_status),
+    x.equipe||"", pontoItem(x),
+    x.observacoes||x.obs||"",
+    nomeProf(x), x.user_email||x.email||""
+  ];
+}
+function linhaXlsAbordagem(x){
+  return [
+    "Abordagem", dataItem(x), horaItem(x),
+    "","","","","","","","","","","","","","","","","","","","","","","",
+    x.equipe||"", pontoItem(x),
+    x.observacao||x.observacoes||"",
+    nomeProf(x), x.user_email||x.email||""
+  ];
+}
+
 window.baixarExcelHistorico=async function(){
   const {de,ate}=periodoHist();
   let p=(await getPesquisasHist()).filter(x=>inPeriodo(x,de,ate));
   let a=(await getAbordagensHist()).filter(x=>inPeriodo(x,de,ate));
   p=filtrarPermissaoHist(p); a=filtrarPermissaoHist(a);
 
-  const linhas=["Tipo;Data;Hora;Profissional;Ponto;Casal;Qualificacao;Sala;Observacoes"];
-  p.forEach(x=>{
-    const casal=[x.convidado_1||x.nome1||"",x.convidado_2||x.nome2||""].filter(Boolean).join(" & ");
-    linhas.push(["Pesquisa",dataItem(x),horaItem(x),nomeProf(x),pontoItem(x),casal,qual(x),isSala(x)?"Sim":"Nao",String(x.observacoes||"").replace(/[\r\n;]/g," ")].join(";"));
-  });
-  a.forEach(x=>{
-    linhas.push(["Abordagem",dataItem(x),horaItem(x),nomeProf(x),pontoItem(x),"","","",""].join(";"));
-  });
-  const csv="\ufeff"+linhas.join("\n");
+  const todas=[].concat(
+    p.map(x=>({data:dataItem(x),hora:horaItem(x),linha:linhaXlsPesquisa(x)})),
+    a.map(x=>({data:dataItem(x),hora:horaItem(x),linha:linhaXlsAbordagem(x)}))
+  ).sort((x,y)=>(y.data+String(y.hora)).localeCompare(x.data+String(x.hora)));
+
+  const linhas=[HIST_XLS_HEADERS.map(csvCell).join(";")];
+  todas.forEach(item=>linhas.push(item.linha.map(csvCell).join(";")));
+
+  const csv="\ufeff"+linhas.join("\r\n");
   const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
   const link=document.createElement("a");
   link.href=URL.createObjectURL(blob);
   link.download="historico_captapro_"+hoje()+".csv";
   link.click();
+  setTimeout(()=>URL.revokeObjectURL(link.href),1000);
 };
 
 window.limparTestesHistorico=async function(){
