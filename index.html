@@ -454,6 +454,33 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
   .relProTools,.relProTabs,.relProPerfilHead{grid-template-columns:1fr}
 }
 
+
+/* ===== Fichas do Histórico/Relatório — visual novo ===== */
+.relProFicha{position:relative;background:linear-gradient(160deg,#131313,#0a0a0a);border:1px solid #2c2c2c;border-radius:18px;padding:0;margin:12px 0;overflow:hidden;transition:border-color .18s ease,transform .12s ease,box-shadow .18s ease}
+.relProFicha:active{transform:scale(.995)}
+.relProFicha:hover{border-color:#5a1717;box-shadow:0 4px 18px rgba(239,27,36,.12)}
+.relProFicha.sala{border-color:#0f4a2c}
+.relProFicha .fichaTop{display:flex;align-items:flex-start;gap:12px;padding:14px 16px}
+.relProFicha .fichaIcone{flex:0 0 auto;width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#ef1b24,#7a0000);display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 2px 8px rgba(239,27,36,.25)}
+.relProFicha.sala .fichaIcone{background:linear-gradient(135deg,#00c853,#00693a)}
+.relProFicha .fichaMeio{flex:1 1 auto;min-width:0}
+.relProFicha .fichaMeio b{display:block;color:#fff;font-size:16px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.relProFicha .fichaMeio small{display:block;color:#999;line-height:1.4;font-size:12px}
+.relProFicha .fichaChevron{flex:0 0 auto;color:#777;font-size:14px;transition:transform .2s ease;margin-top:10px}
+.relProFicha.aberta .fichaChevron{transform:rotate(180deg);color:#ff8585}
+.relProFicha .fichaTagsRow{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 14px}
+.relProFicha .tag{display:inline-flex;align-items:center;border-radius:999px;padding:5px 11px;background:#1b1b1b;border:1px solid #333;margin:0;font-weight:800;font-size:11px;letter-spacing:.2px;color:#ddd}
+.relProFicha .tag.q-qualificado{background:#062e18;border-color:#0f5c30;color:#3ddc84}
+.relProFicha .tag.q-1item{background:#332600;border-color:#5c4a0f;color:#ffd54f}
+.relProFicha .tag.q-nq{background:#330a0a;border-color:#5c1414;color:#ff8585}
+.relProFicha .tag.q-sala{background:#062e18;border-color:#0f5c30;color:#3ddc84}
+.relProFicha .tag.q-semsala{background:#1b1b1b;border-color:#333;color:#bbb}
+.relProFicha .detalhesFicha{background:#0a0a0a;border-top:1px solid #262626;padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
+.relProFicha .detalhesFicha.hidden{display:none}
+.relProFicha .detalhesFicha .mini{background:#141414;border:1px solid #262626;border-radius:10px;padding:8px 10px;color:#ccc;font-size:12px;margin:0}
+.relProFicha .detalhesFicha .mini b{color:#ff8585;font-weight:800}
+.relProFicha .detalhesFicha button{grid-column:1/-1;margin-top:4px}
+@media(max-width:700px){.relProFicha .detalhesFicha{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -465,7 +492,7 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('historico',this)">Histórico</button><button onclick="aba('relatorio',this)">Meu Profissional</button><button onclick="aba('cb300',this)">🏍️ CB300</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('historico',this)">Histórico</button><button onclick="aba('relatorio',this)">Meu Profissional</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
 
 
 <section id="pesquisa" class="card">
@@ -574,17 +601,6 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 <button class="secondary adminOnly" style="margin-top:8px;background:#3a0707;border-color:#7b0a0a" onclick="limparTestesHistorico()">🧹 Remover todos os testes (nome "teste")</button>
 <div id="historicoBox" style="margin-top:10px"></div>
 </section>
-
-<section id="cb300" class="card hidden">
-<h2>🏍️ Moto CB300</h2>
-<p class="hint">Campanha de pontos por resultado. Válida até <b>30/12/2026</b>.</p>
-
-<div class="card scroll">
-  <h2>🏆 Ranking</h2>
-  <div id="cb300Ranking"></div>
-</div>
-</section>
-
 
 <section id="diario" class="card hidden">
 <h2>Meu Profissional</h2>
@@ -708,8 +724,6 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
       <button class="secondary" onclick="abrirPortalBloco30('portalSala30')">✅ Salas</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalRanking36')">🏆 Ranking</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalMetas36')">📈 Metas</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalCB300CEO')">🏍️ CB300</button>
-      
       <button class="secondary" onclick="abrirPortalBloco30('portalAdmin31')">⚙️ Administração</button>
     </div>
   </div>
@@ -769,55 +783,6 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
     <h2>📈 Metas</h2>
     <p class="hint">Acompanhamento das metas individuais.</p>
     <div id="portalMetasBox36"></div>
-  </div>
-
-  <div id="portalCB300CEO" class="card scroll portalBloco30">
-    <h2>🏍️ Moto CB300</h2>
-    <p class="hint">Campanha de pontos, válida até 30/12/2026. Só o CEO vê e mexe aqui.</p>
-
-    <div class="card scroll">
-      <h2>📜 Regras (editável)</h2>
-      <div class="grid">
-        <div>Foi trabalhar<input id="cb300RTrabalho" type="number"></div>
-        <div>Casal NQ<input id="cb300RNq" type="number"></div>
-        <div>Casal 1 Item<input id="cb300RItem" type="number"></div>
-        <div>Casal Qualificado<input id="cb300RQualificado" type="number"></div>
-        <div>Venda<input id="cb300RVenda" type="number"></div>
-        <div>Erro (induziu a mentir)<input id="cb300RErro" type="number"></div>
-        <div>Bônus 1º lugar<input id="cb300RBonus1" type="number"></div>
-        <div>Bônus 2º lugar<input id="cb300RBonus2" type="number"></div>
-        <div>Bônus 3º lugar<input id="cb300RBonus3" type="number"></div>
-      </div>
-      <button class="main" style="margin-top:8px" onclick="salvarRegrasCB300()">Salvar regras</button>
-      <p id="cb300RegrasMsg" class="mini"></p>
-    </div>
-
-    <div class="card">
-      <h2>➕ Lançar pontos</h2>
-      <select id="cb300Prof"><option value="">Escolha o profissional</option></select>
-      <select id="cb300Cat" style="margin-top:8px"></select>
-      <input id="cb300Obs" style="margin-top:8px" placeholder="Observação (opcional)">
-      <div class="grid" style="margin-top:8px">
-        <button class="main" onclick="lancarPontoCB300()">Lançar ponto</button>
-        <button class="secondary" onclick="aplicarBonusTop3CB300()">🏆 Aplicar bônus Top 3</button>
-      </div>
-      <p id="cb300Msg" class="mini" style="margin-top:6px"></p>
-    </div>
-
-    <div class="card scroll">
-      <h2>🧾 Pontos lançados</h2>
-      <p class="hint">Toque em Editar pra corrigir um valor, ou Excluir pra remover.</p>
-      <div id="cb300Lancamentos"></div>
-    </div>
-
-    <div class="card scroll">
-      <h2>👥 Participantes</h2>
-      <p class="hint">Adicione manualmente quem não aparece na lista, ou remova quem não participa da campanha.</p>
-      <input id="cb300NovoNome" placeholder="Nome do profissional">
-      <input id="cb300NovoEmail" style="margin-top:8px" placeholder="E-mail (opcional)">
-      <button class="main" style="margin-top:8px" onclick="adicionarParticipanteCB300()">Adicionar profissional</button>
-      <div id="cb300Participantes" style="margin-top:10px"></div>
-    </div>
   </div>
 
   <div id="portalSala30" class="card scroll portalBloco30">
@@ -1080,7 +1045,7 @@ async function entrar(){
 (function(){try{const l=JSON.parse(localStorage.getItem('loginSimples')||'null'); if(l){E('email').value=l.email;E('nome').value=l.nome;setTimeout(entrar,300)}}catch(e){}})();
 
 function aba(id,b){
- ['pesquisa','historico','diario','relatorio','raking','arena','qualificacao','cb300'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
+ ['pesquisa','historico','diario','relatorio','raking','arena','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
  if(E(id))E(id).classList.remove('hidden');
  document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
  if(b)b.classList.add('active');
@@ -5575,15 +5540,24 @@ function cards(r){
     <div class="relProCard red"><small>Abord. → Pesquisa</small><b>${pct(r.pesq,r.abord)}</b></div>
   </div>`;
 }
+function classeQual(q){const n=norm(q||"");if(n.includes("nq")&&n.includes("item"))return "q-1item";if(n.includes("nq"))return "q-nq";return "q-qualificado"}
 function fichaLinha(f){
   const casal=[f.nome1||f.convidado_1||f.nome_cliente||"", f.nome2||f.convidado_2||""].filter(Boolean).join(" & ") || "Casal sem nome";
+  const q=qual(f);
   return `<div class="relProFicha ${isSala(f)?"sala":""}">
-    <b>${esc(casal)}</b>
-    <small>${esc(dataFicha(f))} • ${esc(pontoProf(f))} • ${esc(qual(f))}</small>
-    <span class="tag">${isSala(f)?"✅ Sala":"⏳ Não sala"}</span>
-    <span class="tag">Profissional: ${esc(nomeProf(f))}</span>
-    ${f.brinde?`<span class="tag">🎁 ${esc(f.brinde)}</span>`:""}
-    ${f.renda?`<span class="tag">Renda: ${esc(f.renda)}</span>`:""}
+    <div class="fichaTop">
+      <div class="fichaIcone">👫</div>
+      <div class="fichaMeio">
+        <b>${esc(casal)}</b>
+        <small>${esc(dataFicha(f))} • ${esc(pontoProf(f))} • ${esc(nomeProf(f))}</small>
+      </div>
+    </div>
+    <div class="fichaTagsRow">
+      <span class="tag ${classeQual(q)}">${esc(q)}</span>
+      <span class="tag ${isSala(f)?"q-sala":"q-semsala"}">${isSala(f)?"✅ Sala":"⏳ Não sala"}</span>
+      ${f.brinde?`<span class="tag">🎁 ${esc(f.brinde)}</span>`:""}
+      ${f.renda?`<span class="tag">Renda: ${esc(f.renda)}</span>`:""}
+    </div>
   </div>`;
 }
 function tabelaEquipe(rows){
@@ -5748,38 +5722,57 @@ function filtrarPermissaoHist(arr){
   });
 }
 
+function classeQual(q){const n=norm(q||"");if(n.includes("nq")&&n.includes("item"))return "q-1item";if(n.includes("nq"))return "q-nq";return "q-qualificado"}
+function toggleFichaCard(el){const card=el.closest(".relProFicha");card.classList.toggle("aberta");const det=card.querySelector(".detalhesFicha");if(det)det.classList.toggle("hidden")}
 function linhaPesquisa(x){
   const casal=[x.convidado_1||x.nome1||x.nome_cliente||"", x.convidado_2||x.nome2||""].filter(Boolean).join(" & ") || "Casal sem nome";
-  const extra=`<div class="detalhesFicha hidden" style="margin-top:8px;padding-top:8px;border-top:1px solid #333">
-    ${x.profissao_1||x.profissao1?`<div class="mini">Profissão 1: ${esc(x.profissao_1||x.profissao1)}</div>`:""}
-    ${x.profissao_2||x.profissao2?`<div class="mini">Profissão 2: ${esc(x.profissao_2||x.profissao2)}</div>`:""}
-    ${x.renda_casal||x.renda?`<div class="mini">Renda: ${esc(x.renda_casal||x.renda)}</div>`:""}
-    ${x.veiculo?`<div class="mini">Veículo: ${esc(x.veiculo)} ${esc(x.modelo_carro||"")} ${esc(x.ano_veiculo||"")}</div>`:""}
-    ${x.cartao_credito?`<div class="mini">Cartão: ${esc(x.cartao_credito)}</div>`:""}
-    ${x.casa_propria?`<div class="mini">Casa própria: ${esc(x.casa_propria)}</div>`:""}
-    ${x.contato?`<div class="mini">Contato: ${esc(x.contato)}</div>`:""}
-    ${x.brinde?`<div class="mini">Brinde: ${esc(x.brinde)}</div>`:""}
-    ${x.observacoes?`<div class="mini">Obs: ${esc(x.observacoes)}</div>`:""}
-    ${x.motivo_qualificacao?`<div class="mini">Motivo: ${esc(x.motivo_qualificacao)}</div>`:""}
-    ${isCEO()&&x.id?`<button class="secondary" style="margin-top:8px" onclick="event.stopPropagation();excluirHistoricoItem('pesquisas','${esc(x.id)}')">🗑️ Excluir ficha</button>`:""}
+  const q=qual(x);
+  const extra=`<div class="detalhesFicha hidden">
+    ${x.profissao_1||x.profissao1?`<div class="mini"><b>Profissão 1:</b> ${esc(x.profissao_1||x.profissao1)}</div>`:""}
+    ${x.profissao_2||x.profissao2?`<div class="mini"><b>Profissão 2:</b> ${esc(x.profissao_2||x.profissao2)}</div>`:""}
+    ${x.renda_casal||x.renda?`<div class="mini"><b>Renda:</b> ${esc(x.renda_casal||x.renda)}</div>`:""}
+    ${x.veiculo?`<div class="mini"><b>Veículo:</b> ${esc(x.veiculo)} ${esc(x.modelo_carro||"")} ${esc(x.ano_veiculo||"")}</div>`:""}
+    ${x.cartao_credito?`<div class="mini"><b>Cartão:</b> ${esc(x.cartao_credito)}</div>`:""}
+    ${x.casa_propria?`<div class="mini"><b>Casa própria:</b> ${esc(x.casa_propria)}</div>`:""}
+    ${x.contato?`<div class="mini"><b>Contato:</b> ${esc(x.contato)}</div>`:""}
+    ${x.brinde?`<div class="mini"><b>Brinde:</b> ${esc(x.brinde)}</div>`:""}
+    ${x.observacoes?`<div class="mini"><b>Obs:</b> ${esc(x.observacoes)}</div>`:""}
+    ${x.motivo_qualificacao?`<div class="mini"><b>Motivo:</b> ${esc(x.motivo_qualificacao)}</div>`:""}
+    ${isCEO()&&x.id?`<button class="secondary" onclick="event.stopPropagation();excluirHistoricoItem('pesquisas','${esc(x.id)}')">🗑️ Excluir ficha</button>`:""}
   </div>`;
-  return `<div class="relProFicha ${isSala(x)?"sala":""}" onclick="this.querySelector('.detalhesFicha').classList.toggle('hidden')" style="cursor:pointer">
-    <b>👫 ${esc(casal)}</b>
-    <small>${esc(dataItem(x))} ${esc(horaItem(x))} • ${esc(pontoItem(x))} • Profissional: ${esc(nomeProf(x))}</small>
-    <span class="tag">Pesquisa</span>
-    <span class="tag">${esc(qual(x))}</span>
-    <span class="tag">${isSala(x)?"✅ Sala":"⏳ Sem sala"}</span>
+  return `<div class="relProFicha ${isSala(x)?"sala":""}" onclick="toggleFichaCard(this)">
+    <div class="fichaTop">
+      <div class="fichaIcone">👫</div>
+      <div class="fichaMeio">
+        <b>${esc(casal)}</b>
+        <small>${esc(dataItem(x))} ${esc(horaItem(x))} • ${esc(pontoItem(x))} • ${esc(nomeProf(x))}</small>
+      </div>
+      <div class="fichaChevron">▾</div>
+    </div>
+    <div class="fichaTagsRow">
+      <span class="tag">Pesquisa</span>
+      <span class="tag ${classeQual(q)}">${esc(q)}</span>
+      <span class="tag ${isSala(x)?"q-sala":"q-semsala"}">${isSala(x)?"✅ Sala":"⏳ Sem sala"}</span>
+    </div>
     ${extra}
   </div>`;
 }
 function linhaAbordagem(x){
-  const extra=`<div class="detalhesFicha hidden" style="margin-top:8px;padding-top:8px;border-top:1px solid #333">
+  const extra=`<div class="detalhesFicha hidden">
     ${isCEO()&&x.id?`<button class="secondary" onclick="event.stopPropagation();excluirHistoricoItem('abordagens','${esc(x.id)}')">🗑️ Excluir abordagem</button>`:'<div class="mini">Sem detalhes adicionais.</div>'}
   </div>`;
-  return `<div class="relProFicha" onclick="this.querySelector('.detalhesFicha').classList.toggle('hidden')" style="cursor:pointer">
-    <b>🚶 Abordagem</b>
-    <small>${esc(dataItem(x))} ${esc(horaItem(x))} • ${esc(pontoItem(x))} • Profissional: ${esc(nomeProf(x))}</small>
-    <span class="tag">Abordagem</span>
+  return `<div class="relProFicha" onclick="toggleFichaCard(this)">
+    <div class="fichaTop">
+      <div class="fichaIcone">🚶</div>
+      <div class="fichaMeio">
+        <b>Abordagem</b>
+        <small>${esc(dataItem(x))} ${esc(horaItem(x))} • ${esc(pontoItem(x))} • ${esc(nomeProf(x))}</small>
+      </div>
+      <div class="fichaChevron">▾</div>
+    </div>
+    <div class="fichaTagsRow">
+      <span class="tag">Abordagem</span>
+    </div>
     ${extra}
   </div>`;
 }
@@ -5930,221 +5923,5 @@ document.addEventListener("DOMContentLoaded",()=>{
 })();
 </script>
 
-<script>
-/* ===== CAPTAPRO • Aba gameCB300: campanha de pontos + ranking (regras editáveis) ===== */
-(function(){
-"use strict";
-
-function E(id){return document.getElementById(id)}
-function V(id){return (E(id)?.value||"").trim()}
-function H(id,v){if(E(id))E(id).innerHTML=v}
-function esc(s){return String(s??"").replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
-function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
-function key(s){return norm(s).replace(/[^a-z0-9@._-]/g,"_")}
-function hoje(){return new Date().toISOString().slice(0,10)}
-const FIM_CAMPANHA="2026-12-30";
-
-function isCEO(){
-  const r=norm(window.role || (typeof role!=="undefined"?role:"") || document.body.className || "");
-  const e=norm(window.usuarioEmail || (typeof usuarioEmail!=="undefined"?usuarioEmail:"") || localStorage.getItem("email") || "");
-  return document.body.classList.contains("ceo") || r.includes("ceo") || r.includes("admin") || e.includes("raphaelbueno");
-}
-const LIDERES_CB=["raphael bueno","raphael bueno da silva","raphaelbueno.captacao@gmail.com","francisco","francisco rodrigues","francisco antonio rodrigues","marcel","marcel dorado","marcel.dorado2@gmail.com"];
-function ehLider(nome,email){const n=norm(nome),e=norm(email);return LIDERES_CB.some(x=>{const y=norm(x);return n===y||e===y||(y.length>6&&n.includes(y))})}
-
-const REGRAS_PADRAO={trabalho:1,nq:2,item:3,qualificado:5,venda:10,erro:-20,bonus1:100,bonus2:50,bonus3:20};
-const LABELS_CAT={trabalho:"Foi trabalhar",nq:"Casal NQ",item:"Casal 1 Item",qualificado:"Casal Qualificado",venda:"Venda",erro:"Erro / induziu a mentir",bonus:"Bônus"};
-
-async function getRegrasCB(){
-  try{const r=await db.from("cb300_regras").select("*").eq("id",1).maybeSingle();if(!r.error&&r.data)return Object.assign({},REGRAS_PADRAO,r.data)}catch(e){}
-  try{const l=JSON.parse(localStorage.getItem("cb300_regras_local")||"null");if(l)return Object.assign({},REGRAS_PADRAO,l)}catch(e){}
-  return Object.assign({},REGRAS_PADRAO);
-}
-window.salvarRegrasCB300=async function(){
-  const r={id:1,trabalho:Number(V("cb300RTrabalho"))||0,nq:Number(V("cb300RNq"))||0,item:Number(V("cb300RItem"))||0,qualificado:Number(V("cb300RQualificado"))||0,venda:Number(V("cb300RVenda"))||0,erro:Number(V("cb300RErro"))||0,bonus1:Number(V("cb300RBonus1"))||0,bonus2:Number(V("cb300RBonus2"))||0,bonus3:Number(V("cb300RBonus3"))||0};
-  try{await db.from("cb300_regras").upsert(r,{onConflict:"id"})}catch(e){}
-  try{localStorage.setItem("cb300_regras_local",JSON.stringify(r))}catch(e2){}
-  H("cb300RegrasMsg",'<span class="ok">Regras salvas.</span>');
-  carregarCB300CEO();
-};
-function preencherFormRegras(r){
-  if(E("cb300RTrabalho"))E("cb300RTrabalho").value=r.trabalho;
-  if(E("cb300RNq"))E("cb300RNq").value=r.nq;
-  if(E("cb300RItem"))E("cb300RItem").value=r.item;
-  if(E("cb300RQualificado"))E("cb300RQualificado").value=r.qualificado;
-  if(E("cb300RVenda"))E("cb300RVenda").value=r.venda;
-  if(E("cb300RErro"))E("cb300RErro").value=r.erro;
-  if(E("cb300RBonus1"))E("cb300RBonus1").value=r.bonus1;
-  if(E("cb300RBonus2"))E("cb300RBonus2").value=r.bonus2;
-  if(E("cb300RBonus3"))E("cb300RBonus3").value=r.bonus3;
-}
-function montarSelectCategorias(r){
-  const cats=[["trabalho",r.trabalho],["nq",r.nq],["item",r.item],["qualificado",r.qualificado],["venda",r.venda],["erro",r.erro]];
-  H("cb300Cat", cats.map(([k,v])=>`<option value="${k}">${LABELS_CAT[k]} (${v>0?"+":""}${v})</option>`).join(""));
-}
-
-async function getIncluidosCB(){
-  try{const r=await db.from("cb300_incluidos").select("*");if(!r.error)return r.data||[]}catch(e){}
-  try{return JSON.parse(localStorage.getItem("cb300_incluidos_local")||"[]")}catch(e){return []}
-}
-async function profissionaisCB(){
-  const m={};
-  function add(nome,email){nome=String(nome||email||"").trim();email=String(email||"").trim().toLowerCase();if(!nome)return;const k=email||key(nome);if(!m[k])m[k]={nome,email}}
-  try{const r=await db.from("approved_users").select("email,name,approved").eq("approved",true).limit(500);if(!r.error)r.data.forEach(u=>add(u.name||u.email,u.email))}catch(e){}
-  try{(await dados("pesquisas")||[]).forEach(x=>add(x.captador_nome||x.user_email,x.user_email))}catch(e){}
-  (await getIncluidosCB()).forEach(x=>add(x.nome,x.user_email||x.email));
-  return Object.values(m).filter(p=>!ehLider(p.nome,p.email));
-}
-window.adicionarParticipanteCB300=async function(){
-  const nome=V("cb300NovoNome");
-  const email=V("cb300NovoEmail");
-  if(!nome){alert("Digite o nome do profissional.");return}
-  const row={nome,user_email:email||("sem-email-"+key(nome)+"@captapro.local")};
-  try{await db.from("cb300_incluidos").insert(row)}catch(e){
-    try{const a=JSON.parse(localStorage.getItem("cb300_incluidos_local")||"[]");a.push(row);localStorage.setItem("cb300_incluidos_local",JSON.stringify(a))}catch(e2){}
-  }
-  if(E("cb300NovoNome"))E("cb300NovoNome").value="";
-  if(E("cb300NovoEmail"))E("cb300NovoEmail").value="";
-  carregarCB300CEO();
-};
-
-async function getExcluidosCB(){
-  try{const r=await db.from("cb300_excluidos").select("*");if(!r.error)return (r.data||[]).map(x=>norm(x.user_email||x.email||""))}catch(e){}
-  try{return JSON.parse(localStorage.getItem("cb300_excluidos_local")||"[]").map(norm)}catch(e){return []}
-}
-async function excluirParticipanteCB(email,nome){
-  try{await db.from("cb300_excluidos").insert({user_email:email,nome})}catch(e){
-    try{const a=JSON.parse(localStorage.getItem("cb300_excluidos_local")||"[]");a.push(email);localStorage.setItem("cb300_excluidos_local",JSON.stringify(a))}catch(e2){}
-  }
-  carregarCB300CEO(); carregarCB300Ranking();
-}
-async function readicionarParticipanteCB(email){
-  try{await db.from("cb300_excluidos").delete().eq("user_email",email)}catch(e){}
-  try{const a=JSON.parse(localStorage.getItem("cb300_excluidos_local")||"[]").filter(x=>norm(x)!==norm(email));localStorage.setItem("cb300_excluidos_local",JSON.stringify(a))}catch(e2){}
-  carregarCB300CEO(); carregarCB300Ranking();
-}
-window.excluirParticipanteCB300=function(email,nome){if(confirm("Remover "+nome+" da campanha CB300?"))excluirParticipanteCB(email,nome)};
-window.readicionarParticipanteCB300=function(email){readicionarParticipanteCB(email)};
-
-
-async function getPontosCB(){
-  try{const r=await db.from("cb300_pontos").select("*").order("created_at",{ascending:false}).limit(5000);if(!r.error)return r.data||[]}catch(e){}
-  try{return JSON.parse(localStorage.getItem("cb300_pontos_local")||"[]")}catch(e){return []}
-}
-async function salvarPontoCB(row){
-  if(!row.id) row.id="local_"+Date.now()+"_"+Math.random().toString(36).slice(2,7);
-  try{const r=await db.from("cb300_pontos").insert(row);if(!r.error)return true}catch(e){}
-  try{const a=JSON.parse(localStorage.getItem("cb300_pontos_local")||"[]");a.push(row);localStorage.setItem("cb300_pontos_local",JSON.stringify(a))}catch(e2){}
-  return true;
-}
-window.editarPontoCB300=async function(id,atual){
-  const novo=prompt("Novo valor de pontos:",atual);
-  if(novo===null) return;
-  const n=Number(novo);
-  if(isNaN(n)){alert("Digite um número válido.");return}
-  try{await db.from("cb300_pontos").update({pontos:n}).eq("id",id)}catch(e){}
-  try{const a=JSON.parse(localStorage.getItem("cb300_pontos_local")||"[]");const it=a.find(x=>String(x.id)===String(id));if(it){it.pontos=n;localStorage.setItem("cb300_pontos_local",JSON.stringify(a))}}catch(e2){}
-  carregarCB300CEO(); carregarCB300Ranking();
-};
-window.excluirPontoCB300=async function(id){
-  if(!confirm("Excluir este lançamento de pontos?")) return;
-  try{await db.from("cb300_pontos").delete().eq("id",id)}catch(e){}
-  try{const a=JSON.parse(localStorage.getItem("cb300_pontos_local")||"[]").filter(x=>String(x.id)!==String(id));localStorage.setItem("cb300_pontos_local",JSON.stringify(a))}catch(e2){}
-  carregarCB300CEO(); carregarCB300Ranking();
-};
-
-window.lancarPontoCB300=async function(){
-  const email=V("cb300Prof");
-  const sel=E("cb300Prof");
-  const nome=sel && sel.selectedOptions[0] ? sel.selectedOptions[0].textContent : "";
-  const cat=V("cb300Cat");
-  if(!email){H("cb300Msg",'<span class="erro">Escolha o profissional.</span>');return}
-  const r=await getRegrasCB();
-  const valores={trabalho:r.trabalho,nq:r.nq,item:r.item,qualificado:r.qualificado,venda:r.venda,erro:r.erro};
-  const pontos=valores[cat];
-  await salvarPontoCB({user_email:email,nome,categoria:cat,pontos,data:hoje(),observacao:V("cb300Obs"),created_at:new Date().toISOString()});
-  H("cb300Msg",'<span class="ok">Ponto lançado: '+LABELS_CAT[cat]+' ('+(pontos>0?"+":"")+pontos+').</span>');
-  if(E("cb300Obs"))E("cb300Obs").value="";
-  carregarCB300CEO(); carregarCB300Ranking();
-};
-
-window.aplicarBonusTop3CB300=async function(){
-  const [excluidos,pontos,r]=await Promise.all([getExcluidosCB(),getPontosCB(),getRegrasCB()]);
-  const rank=calcularRankingCB(pontos,excluidos);
-  if(rank.length<1){H("cb300Msg",'<span class="erro">Sem participantes no ranking ainda.</span>');return}
-  const top=rank.slice(0,3);
-  const nomes=top.map((x,i)=>(i+1)+"º "+x.nome).join(", ");
-  if(!confirm("Aplicar bônus de fim de campanha para: "+nomes+"?\n1º +"+r.bonus1+" | 2º +"+r.bonus2+" | 3º +"+r.bonus3+"\n\nIsso lança os pontos agora. Use só uma vez, no final da campanha.")) return;
-  const bonusVal=[r.bonus1,r.bonus2,r.bonus3];
-  for(let i=0;i<top.length;i++){
-    await salvarPontoCB({user_email:top[i].email,nome:top[i].nome,categoria:"bonus",pontos:bonusVal[i],data:hoje(),observacao:"Bônus "+(i+1)+"º lugar - fim de campanha",created_at:new Date().toISOString()});
-  }
-  H("cb300Msg",'<span class="ok">Bônus aplicado para o Top 3.</span>');
-  carregarCB300CEO(); carregarCB300Ranking();
-};
-
-function calcularRankingCB(pontos,excluidos){
-  const validos=pontos.filter(x=>String(x.data||"").slice(0,10)<=FIM_CAMPANHA);
-  const map={};
-  validos.forEach(x=>{
-    const email=norm(x.user_email||"");
-    if(excluidos.includes(email)) return;
-    const k=email||key(x.nome);
-    if(!map[k]) map[k]={nome:x.nome||x.user_email||"Sem nome",email:x.user_email||"",total:0};
-    map[k].total+=Number(x.pontos)||0;
-  });
-  return Object.values(map).sort((a,b)=>b.total-a.total||a.nome.localeCompare(b.nome));
-}
-function medalha(i){return i===0?"🥇":i===1?"🥈":i===2?"🥉":"🏍️"}
-
-window.carregarCB300Ranking=async function(){
-  const [excluidos,pontos]=await Promise.all([getExcluidosCB(),getPontosCB()]);
-  const rank=calcularRankingCB(pontos,excluidos);
-  H("cb300Ranking", rank.length ? rank.map((r,i)=>`
-    <div class="relProFicha ${i<3?"sala":""}">
-      <b>${medalha(i)} ${i+1}º • ${esc(r.nome)}</b>
-      <span class="tag">${r.total} pontos</span>
-    </div>`).join("") : '<p class="mini">Nenhum ponto lançado ainda.</p>');
-};
-
-window.carregarCB300CEO=async function(){
-  const [profs,excluidos,pontos,regras]=await Promise.all([profissionaisCB(),getExcluidosCB(),getPontosCB(),getRegrasCB()]);
-
-  preencherFormRegras(regras);
-  montarSelectCategorias(regras);
-
-  const disponiveis=profs.filter(p=>!excluidos.includes(norm(p.email)));
-  H("cb300Prof",'<option value="">Escolha o profissional</option>'+disponiveis.map(p=>`<option value="${esc(p.email)}">${esc(p.nome)}</option>`).join(""));
-
-  const recentes=pontos.slice(0,80);
-  H("cb300Lancamentos", recentes.length ? recentes.map(x=>`
-    <div class="relProFicha">
-      <b>${esc(x.nome||x.user_email||"Sem nome")} • ${LABELS_CAT[x.categoria]||x.categoria}</b>
-      <small>${esc(x.data||"")} • ${esc(x.observacao||"")}</small>
-      <span class="tag">${x.pontos>0?"+":""}${x.pontos} pts</span>
-      ${x.id?`<button class="secondary" onclick="editarPontoCB300('${esc(x.id)}',${Number(x.pontos)||0})">Editar</button><button class="secondary" onclick="excluirPontoCB300('${esc(x.id)}')">Excluir</button>`:""}
-    </div>`).join("") : '<p class="mini">Nenhum ponto lançado ainda.</p>');
-
-  const excluidosInfo=profs.filter(p=>excluidos.includes(norm(p.email)));
-  H("cb300Participantes", `
-    ${disponiveis.length?disponiveis.map(p=>`<div class="relProFicha"><b>${esc(p.nome)}</b><small>${esc(p.email)}</small><button class="secondary" onclick="excluirParticipanteCB300('${esc(p.email)}','${esc(p.nome)}')">Remover</button></div>`).join(""):'<p class="mini">Nenhum participante encontrado.</p>'}
-    ${excluidosInfo.length?'<h2 style="margin-top:10px">🚫 Removidos</h2>'+excluidosInfo.map(p=>`<div class="relProFicha"><b>${esc(p.nome)}</b><small>${esc(p.email)}</small><button class="secondary" onclick="readicionarParticipanteCB300('${esc(p.email)}')">Readicionar</button></div>`).join(""):""}
-  `);
-};
-
-const oldAbaCB=window.aba;
-window.aba=function(id,btn){
-  const r=oldAbaCB?oldAbaCB.apply(this,arguments):undefined;
-  if(id==="cb300") setTimeout(()=>{carregarCB300Ranking()},300);
-  return r;
-};
-const oldAbrirCB=window.abrirPortalBloco30;
-window.abrirPortalBloco30=function(id){
-  const r=oldAbrirCB?oldAbrirCB.apply(this,arguments):undefined;
-  if(id==="portalCB300CEO") setTimeout(()=>{carregarCB300CEO()},300);
-  return r;
-};
-})();
-</script>
 
 </body></html>
