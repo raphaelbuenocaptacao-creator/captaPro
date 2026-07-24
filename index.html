@@ -499,8 +499,7 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 <h2>Pesquisa</h2><p class="hint">Abordagem → ficha → salvar → compartilhar → nova ficha.</p>
 <div class="card"><button class="main" style="min-height:62px;font-size:18px" onclick="registrarAbordagem()">+ REGISTRAR ABORDAGEM</button><p class="mini">Abordagens hoje: <b id="abordagensHoje" class="ok">0</b></p></div>
 <div class="grid pesquisaGrid14">
-<!-- 1 equipe -->
-<select id="equipe"><option value="">1. Equipe</option><option>PARK</option><option>EXTERNA</option></select>
+<input type="hidden" id="equipe" value="">
 
 <!-- 2 ponto de captação -->
 <select id="ponto"><option value="">2. Ponto de captação</option><option>Porta dentro do Park</option><option>Park Dream House</option><option>Fábrica Spinassi</option><option>Corredor</option><option>Baden Baden</option><option>Djalma</option><option>Igreja</option><option>Renner</option><option>Guarda-chuvas</option><option>Posto Shell</option></select>
@@ -571,6 +570,8 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 <option>2 Vale dos Dinossauros</option>
 <option>2 Terror</option>
 <option>4 Espelho do Jordão</option>
+<option>2 Espelho do Jordão</option>
+<option>Rostie - 100,00 em consumo + Ingressos Park</option>
 <option>Rostie - 120,00 em consumo</option>
 <option>Vemaguet - 120,00 em consumo</option>
 <option>Armazém Brasil - 120,00 em consumo</option>
@@ -710,17 +711,16 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 
 <section id="qualificacao" class="card hidden adminOnly">
 <h2>Portal CEO</h2>
-<p class="hint">Central do CEO: dashboard, mapa da operação, sala, Arena SX, metas e configurações.</p>
+<p class="hint">Central do CEO: dashboard, equipe, salas, Arena SX, metas e configurações.</p>
 
 <div class="portalCEO30 portalCEO35 portalCEO36">
   
 <div class="portalHero30">
     <h2>Portal CEO</h2>
-    <p class="hint">Central do CEO: dashboard, equipe, mapa ao vivo, salas, ranking, metas e administração.</p>
+    <p class="hint">Central do CEO: dashboard, equipe, salas, ranking, metas e administração.</p>
     <div class="grid">
       <button class="main" onclick="abrirPortalBloco30('portalDashboard30')">📊 Dashboard</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalEquipe35')">👥 Equipe</button>
-      <button class="secondary" onclick="abrirPortalBloco30('portalMapa30')">📍 Mapa ao Vivo</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalSala30')">✅ Salas</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalRanking36')">🏆 Ranking</button>
       <button class="secondary" onclick="abrirPortalBloco30('portalMetas36')">📈 Metas</button>
@@ -742,27 +742,6 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
       <div class="kpi">Eficiência<b id="p30Efic">0%</b></div>
     </div>
     <button class="main" style="margin-top:8px" onclick="carregarPortalCEO30()">Atualizar Portal CEO</button>
-  </div>
-
-
-  <div id="portalMapa30" class="card scroll portalBloco30">
-    <h2>📍 Mapa ao Vivo</h2>
-    <p class="hint">Mapa real com localização GPS dos profissionais. Cada celular precisa autorizar a localização.</p>
-    <div class="mapFiltros37">
-      <select id="mapEquipe37" onchange="carregarMapaReal37()">
-        <option value="">Todas as equipes</option>
-        <option value="PARK">PARK</option>
-        <option value="EXTERNA">EXTERNA</option>
-      </select>
-      <select id="mapStatus37" onchange="carregarMapaReal37()">
-        <option value="">Todos</option>
-        <option value="online">Somente online</option>
-        <option value="offline">Somente offline</option>
-      </select>
-      <button class="main" onclick="carregarMapaReal37()">Atualizar mapa</button>
-    </div>
-    <div id="mapaRealCEO37"></div>
-    <div class="mapAviso37">Os pinos aparecem quando o profissional toca em “Ativar localização real”. O círculo mostra referência de 50 metros.</div>
   </div>
 
 
@@ -1744,7 +1723,6 @@ if(typeof salvarBaseObrig20==='function'&&!window.__salvarObrig20){
   window.__salvarObrig20=true;
   window.salvarPesquisa=async function(){
     const faltas=[];
-    if(!PV('equipe'))faltas.push('Equipe');
     if(!PV('ponto'))faltas.push('Ponto de captação');
     if(!PV('nome1'))faltas.push('Nome 1');
     if(!PV('nome2'))faltas.push('Nome 2');
@@ -1756,7 +1734,7 @@ if(typeof salvarBaseObrig20==='function'&&!window.__salvarObrig20){
     if(!PV('cidade'))faltas.push('Cidade');
     if(faltas.length){
       PH('formMsg','<span class="erro">Preencha antes de salvar: '+faltas.join(', ')+'</span>');
-      const ids=['equipe','ponto','nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade'];
+      const ids=['ponto','nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade'];
       const primeiro=ids.find(id=>!PV(id));
       if(P(primeiro))P(primeiro).focus();
       return;
