@@ -1593,7 +1593,7 @@ document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{atualizarPainel
 function C(id){return document.getElementById(id)}
 function CV(id){return (C(id)?.value||'').trim()}
 function CH(id,v){if(C(id))C(id).innerHTML=v}
-const camposObrigatorios20=['equipe','ponto','nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade'];
+const camposObrigatorios20=['ponto','nome1','nome2','idade1','idade2','profissao1','profissao2','estado','cidade'];
 
 function limparObrigatorios20(){
   camposObrigatorios20.forEach(id=>{if(C(id))C(id).classList.remove('campoObrigatorioErro20')});
@@ -1617,7 +1617,7 @@ if(typeof salvarBaseVisual20==='function'&&!window.__salvarVisual20){
   window.__salvarVisual20=true;
   window.salvarPesquisa=async function(){
     const labels={
-      equipe:'Equipe',ponto:'Ponto de captação',nome1:'Nome 1',nome2:'Nome 2',
+      ponto:'Ponto de captação',nome1:'Nome 1',nome2:'Nome 2',
       idade1:'Idade 1',idade2:'Idade 2',profissao1:'Profissão 1',profissao2:'Profissão 2',
       estado:'Estado',cidade:'Cidade'
     };
