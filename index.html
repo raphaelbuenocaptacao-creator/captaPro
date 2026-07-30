@@ -307,7 +307,7 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 .relProNome{display:flex;align-items:center;gap:12px}
 /* CaptaPro • Arena XP • ajuste de colunas das abas com o novo botão */
 .tabs{grid-template-columns:repeat(4,1fr)!important}
-body.ceo .tabs{grid-template-columns:repeat(5,1fr)!important}
+body.ceo .tabs{grid-template-columns:repeat(6,1fr)!important}
 @media(max-width:700px){
   .tabs,body.ceo .tabs{grid-template-columns:1fr!important}
   .relProTop{grid-template-columns:1fr 1fr}
@@ -352,7 +352,7 @@ body.ceo .tabs{grid-template-columns:repeat(5,1fr)!important}
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('historico',this)">Histórico</button><button onclick="aba('relatorio',this)">Meu Profissional</button><button onclick="aba('xp42',this)">🏆 Arena</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('historico',this)">Histórico</button><button onclick="aba('relatorio',this)">Meu Profissional</button><button onclick="aba('xp42',this)">🏆 Arena</button><button class="adminOnly" onclick="aba('pulsador45',this)">📟 Pulsador</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
 
 
 <section id="pesquisa" class="card">
@@ -480,6 +480,12 @@ body.ceo .tabs{grid-template-columns:repeat(5,1fr)!important}
 <h2>🏆 Arena</h2>
 <p class="hint">Sistema de pontos (XP), nível e ranking da equipe. Ganhe XP registrando pesquisas, e mais XP ainda com qualificações e salas confirmadas.</p>
 <div id="arenaConteudo42" style="margin-top:10px"><p class="mini">Carregando...</p></div>
+</section>
+
+<section id="pulsador45" class="card hidden adminOnly">
+<h2>📟 Pulsador</h2>
+<p class="hint">Pulso em tempo real das metas e resultados de cada profissional no mês.</p>
+<div id="pulsadorConteudo45" style="margin-top:10px"><p class="mini">Carregando...</p></div>
 </section>
 
 <section id="qualificacao" class="card hidden adminOnly">
@@ -761,13 +767,14 @@ async function entrar(){
 (function(){try{const l=JSON.parse(localStorage.getItem('loginSimples')||'null'); if(l){E('email').value=l.email;E('nome').value=l.nome;setTimeout(entrar,300)}}catch(e){}})();
 
 function aba(id,b){
- ['pesquisa','historico','diario','relatorio','raking','arena','xp42','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
+ ['pesquisa','historico','diario','relatorio','raking','arena','xp42','pulsador45','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
  if(E(id))E(id).classList.remove('hidden');
  document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
  if(b)b.classList.add('active');
  if(id==='relatorio')carregarRelatorio();
  if(id==='raking')carregarRaking();
  if(id==='xp42')carregarArena42();
+ if(id==='pulsador45')carregarPulsador45();
 }
 
 function qual(){
@@ -4614,6 +4621,63 @@ async function carregarArena42(){
   html+='<table><tr><th>#</th><th>Nome</th><th>Nível</th><th>XP</th></tr>';
   ativos.forEach((x,i)=>{const niv=nivelInfo42(x.xpTotal),medalha=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
    html+=`<tr><td>${medalha}</td><td>${x.nome}</td><td>${niv.nivel}</td><td>${x.xpTotal}</td></tr>`});
+  html+='</table>';
+ }
+ html+='</div>';
+ if(box)box.innerHTML=html;
+}
+
+/* ===== CaptaPro • Pulsador (metas x resultados dos profissionais) =====
+   Lê 'pesquisas' e 'captapro_metas'. Não altera nada do fluxo de Pesquisa/Ficha. */
+const METAS_PADRAO_45={"adriano":40,"edson adriano":40,"alexandre":35,"ana caroline":50,"andre":50,"andré":50,"daniela":30,"felipe":30,"ivanilson":100,"jessica":45,"jéssica":45,"joao vitor":35,"joão vitor":35,"jonatas":35,"jose ademir":100,"josé ademir":100,"josyene":50,"larissa":32,"manara":30,"marcio vinicios":35,"márcio vinícios":35,"marcio vinicius":35,"márcio vinícius":35,"mateus esley":35,"matheus esley":35,"matheus domingos":30,"otavio":30,"otávio":30,"paulo":100,"pedro":100,"renam":35,"renan":35,"ricardo":100,"suenne":30,"suene":30,"mateus rosa":100,"matheus rosa":100,"clacion de souza":45};
+function metaPadrao45(nome){
+ const n=norm42(nome);
+ if(METAS_PADRAO_45[n])return METAS_PADRAO_45[n];
+ for(const k in METAS_PADRAO_45){if(n.includes(k)||k.includes(n))return METAS_PADRAO_45[k]}
+ return 35;
+}
+async function metasOverride45(){
+ const linhas=await dadosArena42('captapro_metas');
+ const mapa={};
+ (linhas||[]).forEach(r=>{const k=norm42(r.nome||''); if(k&&r.meta_sala)mapa[k]=Number(r.meta_sala)||undefined});
+ return mapa;
+}
+function mesAtual45(dataStr){return String(dataStr||'').slice(0,7)===new Date().toISOString().slice(0,7)}
+async function carregarPulsador45(){
+ const box=E('pulsadorConteudo45'); if(box)box.innerHTML='<p class="mini">Carregando...</p>';
+ const[pesq,overrides]=await Promise.all([dadosArena42('pesquisas'),metasOverride45()]);
+ const porNome={};
+ (pesq||[]).forEach(p=>{
+  const nome=p.captador_nome; if(!nome||!ativo42(nome))return;
+  const k=norm42(nome);
+  if(!porNome[k])porNome[k]={nome,pesquisas:0,q:0,sala:0};
+  if(mesAtual45(p.created_at)){
+   porNome[k].pesquisas++;
+   if(p.qualificacao_automatica==='Q')porNome[k].q++;
+   if(p.levou_sala==='Sim')porNome[k].sala++;
+  }
+ });
+ ATIVOS_42.forEach(nome=>{const k=norm42(nome); if(!porNome[k])porNome[k]={nome,pesquisas:0,q:0,sala:0}});
+ const linhas=Object.values(porNome).map(x=>{
+  const meta=overrides[norm42(x.nome)]||metaPadrao45(x.nome);
+  const pct=meta?Math.min(100,Math.round(x.sala/meta*100)):0;
+  return Object.assign({},x,{meta,pct});
+ }).sort((a,b)=>b.pct-a.pct);
+ const totalMeta=linhas.reduce((s,x)=>s+x.meta,0), totalFeito=linhas.reduce((s,x)=>s+x.sala,0);
+ const pctGeral=totalMeta?Math.min(100,Math.round(totalFeito/totalMeta*100)):0;
+ let html=`<div class="card" style="background:linear-gradient(135deg,#1b0505,#050505);border-color:#ff3333">
+  <h3 style="margin:0 0 6px">📟 Pulso da Equipe (mês atual)</h3>
+  <p class="mini">Meta somada: <b>${totalMeta}</b> salas • Feito: <b>${totalFeito}</b> • <b>${pctGeral}%</b></p>
+  <div style="background:#222;border-radius:999px;height:10px;overflow:hidden;margin-top:6px"><div style="background:linear-gradient(90deg,#ef1b24,#ff3333);height:100%;width:${pctGeral}%"></div></div>
+ </div>`;
+ html+='<div class="card"><h3 style="margin:0 0 10px">Metas e Resultados por Profissional</h3>';
+ if(!linhas.length){html+='<p class="mini">Sem dados ainda.</p>'}
+ else{
+  html+='<table><tr><th>Profissional</th><th>Meta</th><th>Salas</th><th>%</th><th>Pesquisas</th><th>Q</th></tr>';
+  linhas.forEach(x=>{
+   const cor=x.pct>=100?'#00e676':x.pct>=60?'#ffd54f':'#ff5252';
+   html+=`<tr><td>${x.nome}</td><td>${x.meta}</td><td>${x.sala}</td><td style="color:${cor};font-weight:900">${x.pct}%</td><td>${x.pesquisas}</td><td>${x.q}</td></tr>`;
+  });
   html+='</table>';
  }
  html+='</div>';
