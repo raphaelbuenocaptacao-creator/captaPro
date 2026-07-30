@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CaptaPro Versão 1.0 ELITE</title>
+<title>CaptaPro Versão 3.0</title>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
@@ -32,6 +32,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 .ceoPainel14{border:1px solid #5a1717;border-radius:16px;padding:12px;background:#080808}
 .ceoGrid14{grid-template-columns:repeat(3,1fr)}
 #cfgRendaMin{font-weight:900}
+#rankingBox.hidden{display:none!important}
 @media(max-width:700px){.ceoGrid14{grid-template-columns:1fr}}
 
 
@@ -57,6 +58,11 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
 /* Versão limpa */
 #renda{border-color:#00c2ff!important}
+#csvRakingInput21{border-color:#00e676!important;margin:8px 0}
+#rakingBox table{min-width:650px}
+#rakingBox tr:nth-child(2) td:first-child{color:#ffd54f;font-weight:900}
+#rakingBox tr:nth-child(3) td:first-child{color:#cfd8dc;font-weight:900}
+#rakingBox tr:nth-child(4) td:first-child{color:#d7a36a;font-weight:900}
 
 
 /* Versão 3.0 • layout do casal e ranking junho */
@@ -71,6 +77,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 @media(max-width:700px){.pessoaGrid{grid-template-columns:1fr}.pessoaBox{padding:10px}}
 
 /* CaptaPro Versão 3.0 • Relatório diário */
+#diario textarea{margin-top:10px;min-height:120px}
 #fechamentosCEOBox table{min-width:900px}
 
 
@@ -86,6 +93,7 @@ body.appAberto #app{display:block!important}
 
 
 /* CaptaPro 2.6 • CEO dashboard, sala Supabase, histórico e exportação */
+#csvRakingInput21{display:none!important}
 #ceoDashboard20{border-color:#00c2ff!important}
 #ceoResumoMesBox25 table{min-width:900px}
 .salaPendente25{color:#ffd54f;font-weight:900}
@@ -252,6 +260,7 @@ body.appAberto #btnSairFinal{display:block!important}
 
 
 /* CAPTAPRO 3.0 FINAL • sem Arena SX e sem Pulsador */
+button[onclick*="arena"], #arena, #portalArena30, [id*="sx"], [class*="sx"]{display:none!important}
 body.ceo .tabs{grid-template-columns:repeat(4,1fr)!important}
 .tabs{grid-template-columns:repeat(3,1fr)!important}
 #resultado button[onclick*="compartilharFicha"],
@@ -267,6 +276,7 @@ body.ceo .tabs{grid-template-columns:repeat(4,1fr)!important}
 
 
 /* CAPTAPRO 3.0 • remover Meu Profissional e melhorar relatório/mapa */
+button[onclick*="'diario'"], #diario{display:none!important}
 body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 .tabs{grid-template-columns:repeat(2,1fr)!important}
 .relPerfilFinal{background:#080808;border:1px solid #333;border-radius:16px;padding:12px;margin:10px 0}
@@ -283,6 +293,7 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 
 
 /* CAPTAPRO 3.0 • RELATÓRIO PRO FINAL */
+button[onclick*="'raking'"], button[onclick*='"raking"'], #raking{display:none!important}
 .tabs{grid-template-columns:repeat(2,1fr)!important}
 body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 .relProTop{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
@@ -305,9 +316,6 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 .relProPerfilHead{display:grid;grid-template-columns:1.2fr .8fr;gap:10px;align-items:center}
 .relProAvatar{width:70px;height:70px;border-radius:20px;background:linear-gradient(135deg,#ef1b24,#7a0000);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:26px}
 .relProNome{display:flex;align-items:center;gap:12px}
-/* CaptaPro • Arena XP • ajuste de colunas das abas com o novo botão */
-.tabs{grid-template-columns:repeat(4,1fr)!important}
-body.ceo .tabs{grid-template-columns:repeat(6,1fr)!important}
 @media(max-width:700px){
   .tabs,body.ceo .tabs{grid-template-columns:1fr!important}
   .relProTop{grid-template-columns:1fr 1fr}
@@ -345,18 +353,19 @@ body.ceo .tabs{grid-template-columns:repeat(6,1fr)!important}
 </head>
 <body>
 <div class="wrap">
-<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Versão 1.0 ELITE</div><p class="mini"><b style="color:#00e676">Bueno Invest</b></p><button id="btnSairFinal" class="secondary hidden" style="max-width:160px;margin:8px auto 0" onclick="sairCaptaProFinal()">Sair</button></div>
+<div class="top"><div class="logo">Capta<span>Pro</span></div><div class="version">Versão 3.0 Oficial</div><p class="mini"><b style="color:#00e676">Bueno Invest</b></p><button id="btnSairFinal" class="secondary hidden" style="max-width:160px;margin:8px auto 0" onclick="sairCaptaProFinal()">Sair</button></div>
 
 <section id="loginBox" class="card">
 <h2>Entrada</h2><div class="grid"><input id="email" type="email" placeholder="Seu e-mail"><input id="nome" placeholder="Seu nome completo"></div><button class="main" style="margin-top:8px" onclick="entrar()">Entrar</button><p id="loginMsg"></p>
 </section>
 
 <section id="app" class="hidden">
-<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('historico',this)">Histórico</button><button onclick="aba('relatorio',this)">Meu Profissional</button><button onclick="aba('xp42',this)">🏆 Arena</button><button class="adminOnly" onclick="aba('pulsador45',this)">📟 Pulsador</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
+<div class="tabs"><button class="active" onclick="aba('pesquisa',this)">Pesquisa</button><button onclick="aba('historico',this)">Histórico</button><button onclick="aba('relatorio',this)">Meu Profissional</button><button class="adminOnly" onclick="aba('qualificacao',this)">Portal CEO</button></div>
 
 
 <section id="pesquisa" class="card">
-<h2>Pesquisa</h2><p class="hint">Ficha → salvar → compartilhar → nova ficha.</p>
+<h2>Pesquisa</h2><p class="hint">Abordagem → ficha → salvar → compartilhar → nova ficha.</p>
+<div class="card"><button class="main" style="min-height:62px;font-size:18px" onclick="registrarAbordagem()">+ REGISTRAR ABORDAGEM</button><p class="mini">Abordagens hoje: <b id="abordagensHoje" class="ok">0</b></p></div>
 <div class="grid pesquisaGrid14">
 <input type="hidden" id="equipe" value="">
 
@@ -476,18 +485,6 @@ body.ceo .tabs{grid-template-columns:repeat(6,1fr)!important}
 <div id="individualBox" style="margin-top:10px"></div>
 </section>
 
-<section id="xp42" class="card hidden">
-<h2>🏆 Arena</h2>
-<p class="hint">Sistema de pontos (XP), nível e ranking da equipe. Ganhe XP registrando pesquisas, e mais XP ainda com qualificações e salas confirmadas.</p>
-<div id="arenaConteudo42" style="margin-top:10px"><p class="mini">Carregando...</p></div>
-</section>
-
-<section id="pulsador45" class="card hidden adminOnly">
-<h2>📟 Pulsador</h2>
-<p class="hint">Pulso em tempo real das metas e resultados de cada profissional no mês.</p>
-<div id="pulsadorConteudo45" style="margin-top:10px"><p class="mini">Carregando...</p></div>
-</section>
-
 <section id="qualificacao" class="card hidden adminOnly">
 <h2>Portal CEO</h2>
 <p class="hint">Central do CEO: dashboard, equipe, salas, metas e configurações.</p>
@@ -605,6 +602,42 @@ body.ceo .tabs{grid-template-columns:repeat(6,1fr)!important}
         </div>
         <button class="main" style="margin-top:8px" onclick="admSalvarPonto31()">Salvar ponto</button>
         <div id="admPontosBox31" class="adminList31"></div>
+      </div>
+
+      <div class="adminBox31">
+        <h3>🪙 Pontuação SX</h3>
+        <div class="grid">
+          <input id="admPtsPesquisa31" type="number" placeholder="Pesquisa +10">
+          <input id="admPtsQ31" type="number" placeholder="Q +100">
+          <input id="admPtsNQ31" type="number" placeholder="NQ +20">
+          <input id="admPtsItem31" type="number" placeholder="1 Item +50">
+          <input id="admPtsSala31" type="number" placeholder="Sala +300">
+          <input id="admPtsVenda31" type="number" placeholder="Venda +1000">
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarPontuacao31()">Salvar pontuação</button>
+        <div id="admPontuacaoBox31" class="adminList31"></div>
+      </div>
+
+      <div class="adminBox31">
+        <h3>🏆 Loja SX</h3>
+        <div class="grid">
+          <input id="admPremioNome31" placeholder="Prêmio. Ex: Voucher R$100">
+          <input id="admPremioCusto31" type="number" placeholder="Custo SX. Ex: 5000">
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarPremio31()">Salvar prêmio</button>
+        <div id="admPremiosBox31" class="adminList31"></div>
+      </div>
+
+      <div class="adminBox31">
+        <h3>📅 Temporada SX</h3>
+        <div class="grid">
+          <input id="admTempNome31" placeholder="Temporada. Ex: 2026-07">
+          <input id="admTempInicio31" type="date">
+          <input id="admTempFim31" type="date">
+          <select id="admTempAtiva31"><option value="true">Ativa</option><option value="false">Inativa</option></select>
+        </div>
+        <button class="main" style="margin-top:8px" onclick="admSalvarTemporada31()">Salvar temporada</button>
+        <div id="admTemporadaBox31" class="adminList31"></div>
       </div>
     </div>
 
@@ -762,19 +795,17 @@ async function entrar(){
  document.body.classList.toggle('ceo',role==='ceo'||CEOS.includes(usuarioEmail));
  E('loginBox').classList.add('hidden'); E('app').classList.remove('hidden');
  localStorage.setItem('loginSimples',JSON.stringify({email:usuarioEmail,nome:usuarioNome}));
- loadCfg(); aplicarRendaDigitavel(); aplicarRendaCEO(); carregarRelatorio(); carregarRaking();
+ loadCfg(); aplicarRendaDigitavel(); aplicarRendaCEO(); carregarAbordagensHoje(); carregarRelatorio(); carregarRaking();
 }
 (function(){try{const l=JSON.parse(localStorage.getItem('loginSimples')||'null'); if(l){E('email').value=l.email;E('nome').value=l.nome;setTimeout(entrar,300)}}catch(e){}})();
 
 function aba(id,b){
- ['pesquisa','historico','diario','relatorio','raking','arena','xp42','pulsador45','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
+ ['pesquisa','historico','diario','relatorio','raking','arena','qualificacao'].forEach(x=>{if(E(x))E(x).classList.add('hidden')});
  if(E(id))E(id).classList.remove('hidden');
  document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
  if(b)b.classList.add('active');
  if(id==='relatorio')carregarRelatorio();
  if(id==='raking')carregarRaking();
- if(id==='xp42')carregarArena42();
- if(id==='pulsador45')carregarPulsador45();
 }
 
 function qual(){
@@ -798,6 +829,17 @@ function qual(){
 }
 function calcularQualificacao(){const q=qual();H('resultado',`<div class=card><span class=badge>${q.status}</span><p class=mini>${q.motivo}</p></div>`);return q}
 
+async function registrarAbordagem(){
+ const p={user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),observacao:'Abordagem',created_at:new Date().toISOString()};
+ try{await db.from('abordagens').insert(p)}catch(e){const a=JSON.parse(localStorage.getItem('abordagensLocal')||'[]');a.push(p);localStorage.setItem('abordagensLocal',JSON.stringify(a))}
+ carregarAbordagensHoje(); H('formMsg','<span class=ok>Abordagem registrada.</span>');
+}
+async function carregarAbordagensHoje(){
+ let total=0,d=new Date().toISOString().slice(0,10);
+ try{const r=await db.from('abordagens').select('*',{count:'exact',head:true}).eq('user_email',usuarioEmail).gte('created_at',d+'T00:00:00').lte('created_at',d+'T23:59:59');total=r.count||0}
+ catch(e){total=JSON.parse(localStorage.getItem('abordagensLocal')||'[]').filter(x=>x.user_email===usuarioEmail&&String(x.created_at).slice(0,10)===d).length}
+ S('abordagensHoje',total);
+}
 function payload(){
  const q=calcularQualificacao();
  return {user_email:usuarioEmail,captador_nome:usuarioNome,equipe:V('equipe'),ponto_captacao:V('ponto'),convidado_1:V('nome1'),convidado_2:V('nome2'),idade_1:Number(V('idade1'))||0,idade_2:Number(V('idade2'))||0,profissao_1:V('profissao1'),profissao_2:V('profissao2'),estado_origem:V('estado'),cidade_origem:V('cidade'),estado_civil:V('relacionamento'),tempo_juntos:V('tempo'),veiculo:V('nomeCarro')?'Sim':'Não',marca_carro:'',modelo_carro:V('nomeCarro'),ano_veiculo:V('anoCarro'),cartao_credito:V('cartao'),casa_propria:V('casa'),multipropriedade:V('multi'),renda_casal:V('renda'),brinde:V('brinde'),contato:V('contato'),observacoes:V('obs'),qualificacao_automatica:q.status,motivo_qualificacao:q.motivo,levou_sala:'Não',created_at:new Date().toISOString()};
@@ -862,7 +904,7 @@ function renderFicha(p){
  E('fichaBox').classList.remove('hidden');
  const carroTxt=`${p.modelo_carro||'-'} ${p.ano_veiculo||''}`.trim();
  H('fichaConteudo',`<div id=fichaImg class=ficha>
-<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Versão 1.0 ELITE • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
+<div class="fichaHeaderFull"><div class="fichaLogoFull">CP</div><div class="fichaTitleFull"><b>Ficha Completa do Casal</b><small>CaptaPro Versão 3.0 • Criado pela empresa Bueno Invest • ${new Date().toLocaleString('pt-BR')}</small></div></div>
 ${campoFicha('Resultado da qualificação', `${p.qualificacao_automatica||'-'} • ${p.motivo_qualificacao||'Perfil dentro da regra'}`)}
 ${campoFicha('Nome 1', p.convidado_1)}${campoFicha('Idade 1 / Profissão 1', `${p.idade_1||'-'} anos • ${p.profissao_1||'-'}`)}
 ${campoFicha('Nome 2', p.convidado_2)}${campoFicha('Idade 2 / Profissão 2', `${p.idade_2||'-'} anos • ${p.profissao_2||'-'}`)}
@@ -3714,6 +3756,16 @@ const PONTOS=[
 ];
 let mapaFinal=null, layersFinal=[];
 
+function removeArena(){
+  document.querySelectorAll('button').forEach(function(b){
+    const t=norm(b.innerText), on=String(b.getAttribute("onclick")||"");
+    if(t.includes("arena") || t.includes("pulsador") || on.includes("arena") || on.includes("sx")){
+      b.style.display="none";
+      b.classList.add("hidden");
+    }
+  });
+  ["arena","portalArena30"].forEach(function(id){const el=E(id); if(el) el.remove();});
+}
 function corrigeCompartilhar(){
   const r=E("resultado");
   if(r) r.querySelectorAll('button[onclick*="compartilharFicha"],button[onclick*="novaPesquisa"]').forEach(function(b){b.remove()});
@@ -3813,15 +3865,15 @@ async function resumoMapa(){
 const oldPortal=window.abrirPortalBloco30;
 window.abrirPortalBloco30=function(id){
   if(oldPortal) oldPortal.apply(this,arguments);
-  setTimeout(()=>{corrigeCompartilhar(); if(id==="portalMapa30"){resumoMapa(); carregarMapaReal37();}},400);
+  setTimeout(()=>{removeArena(); corrigeCompartilhar(); if(id==="portalMapa30"){resumoMapa(); carregarMapaReal37();}},400);
 };
 const oldAba=window.aba;
 window.aba=function(id,btn){
   const r=oldAba?oldAba.apply(this,arguments):undefined;
-  setTimeout(()=>{corrigeCompartilhar(); if(id==="qualificacao"){resumoMapa(); setTimeout(carregarMapaReal37,500);}},500);
+  setTimeout(()=>{removeArena(); corrigeCompartilhar(); if(id==="qualificacao"){resumoMapa(); setTimeout(carregarMapaReal37,500);}},500);
   return r;
 };
-document.addEventListener("DOMContentLoaded",()=>setTimeout(()=>{corrigeCompartilhar(); resumoMapa();},800));
+document.addEventListener("DOMContentLoaded",()=>setTimeout(()=>{removeArena(); corrigeCompartilhar(); resumoMapa();},800));
 setInterval(corrigeCompartilhar,2000);
 })();
 </script>
@@ -4562,126 +4614,5 @@ if(typeof oldQual37==='function'&&!window.__qual37){
 }
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{if(typeof loadCfg==='function')loadCfg();},700));
 })();
-
-/* ===== CaptaPro • Arena (XP, Nível, Ranking, Capitão da Semana) =====
-   Lê apenas as tabelas 'abordagens' e 'pesquisas' já existentes.
-   Não altera em nada o fluxo de registro de Pesquisa/Ficha. */
-const ATIVOS_42=["Ana Caroline","Mateus Santos Santa Rosa","Pedro Henrique Gomes Santos","Clacion de Souza Braga Filho","Andre Carriço","Ivanilson Luiz Aguiar Lima","Josyene Freitas","Ricardo Maltchik","Matheus Esley Silva","Joao Vitor da Silva Francisco","Rafael Henrique Medeiros","Otavio Jose de Oliveira Martin","Suene Cintia da Silva","Renan Marcondes Johas","Jessica Barbosa","Marcio Alfaia","Manara Alexandre Sousa","Adriano Moreira","Felipe da Silva Ribeiro","Larissa Ribeiro","Matheus Domingos Santos"];
-function norm42(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
-function ativo42(nome){const k=norm42(nome);return ATIVOS_42.some(a=>norm42(a)===k)}
-const NIVEIS_42=[{nome:'Bronze',min:0},{nome:'Prata',min:500},{nome:'Ouro',min:1500},{nome:'Platina',min:3500},{nome:'Diamante',min:7000}];
-function nivelInfo42(xp){
- xp=Number(xp)||0; let atual=NIVEIS_42[0],idx=0;
- for(let i=0;i<NIVEIS_42.length;i++){if(xp>=NIVEIS_42[i].min){atual=NIVEIS_42[i];idx=i}}
- const proximo=NIVEIS_42[idx+1];
- if(!proximo)return{nivel:atual.nome,percent:100,faltam:0,proximoNome:null};
- const faixa=proximo.min-atual.min, percent=Math.min(100,Math.round(((xp-atual.min)/faixa)*100));
- return{nivel:atual.nome,percent,faltam:proximo.min-xp,proximoNome:proximo.nome};
-}
-async function dadosArena42(tabela){
- try{const r=await db.from(tabela).select('*').limit(5000); if(!r.error)return r.data||[]}catch(e){}
- try{return JSON.parse(localStorage.getItem(tabela+'Local')||'[]')}catch(e){return[]}
-}
-async function calcularXP42(){
- const pesq=await dadosArena42('pesquisas');
- const mapa={}, seteDias=Date.now()-7*24*60*60*1000;
- function add(nome,pontos,dataStr){
-  if(!nome)return; const k=norm42(nome);
-  if(!mapa[k])mapa[k]={nome,xpTotal:0,xpSemana:0};
-  mapa[k].xpTotal+=pontos;
-  if(new Date(dataStr||0).getTime()>=seteDias)mapa[k].xpSemana+=pontos;
- }
- (pesq||[]).forEach(p=>{
-  add(p.captador_nome,10,p.created_at);
-  if(p.qualificacao_automatica==='Q')add(p.captador_nome,30,p.created_at);
-  if(p.levou_sala==='Sim')add(p.captador_nome,100,p.created_at);
- });
- return mapa;
-}
-async function carregarArena42(){
- const box=E('arenaConteudo42'); if(box)box.innerHTML='<p class="mini">Carregando...</p>';
- const mapa=await calcularXP42();
- const ativos=Object.values(mapa).filter(x=>ativo42(x.nome)).sort((a,b)=>b.xpTotal-a.xpTotal);
- const meuNome=window.usuarioNome||usuarioNome||'';
- const meu=mapa[norm42(meuNome)]||{nome:meuNome,xpTotal:0,xpSemana:0};
- const info=nivelInfo42(meu.xpTotal);
- const capitao=ativos.filter(x=>x.xpSemana>0).sort((a,b)=>b.xpSemana-a.xpSemana)[0];
- let html='';
- html+=`<div class="card" style="background:linear-gradient(135deg,#1b0505,#050505);border-color:#ff3333">
-  <h3 style="margin:0 0 6px">⭐ Meu Nível: ${info.nivel}</h3>
-  <p class="mini">XP total: <b>${meu.xpTotal}</b>${info.proximoNome?` • Faltam <b>${info.faltam}</b> XP para ${info.proximoNome}`:' • Nível máximo atingido!'}</p>
-  <div style="background:#222;border-radius:999px;height:10px;overflow:hidden;margin-top:6px"><div style="background:linear-gradient(90deg,#ef1b24,#ff3333);height:100%;width:${info.percent}%"></div></div>
- </div>`;
- html+=`<div class="card"><h3 style="margin:0 0 6px">🏆 Capitão da Semana</h3>
-  ${capitao?`<p style="font-size:18px;font-weight:900;color:#ffd54f">${capitao.nome}</p><p class="mini">${capitao.xpSemana} XP nos últimos 7 dias</p>`:'<p class="mini">Ainda sem pontuação suficiente essa semana.</p>'}
- </div>`;
- html+='<div class="card"><h3 style="margin:0 0 10px">📊 Ranking Geral (XP)</h3>';
- if(!ativos.length){html+='<p class="mini">Sem dados de XP ainda.</p>'}
- else{
-  html+='<table><tr><th>#</th><th>Nome</th><th>Nível</th><th>XP</th></tr>';
-  ativos.forEach((x,i)=>{const niv=nivelInfo42(x.xpTotal),medalha=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
-   html+=`<tr><td>${medalha}</td><td>${x.nome}</td><td>${niv.nivel}</td><td>${x.xpTotal}</td></tr>`});
-  html+='</table>';
- }
- html+='</div>';
- if(box)box.innerHTML=html;
-}
-
-/* ===== CaptaPro • Pulsador (metas x resultados dos profissionais) =====
-   Lê 'pesquisas' e 'captapro_metas'. Não altera nada do fluxo de Pesquisa/Ficha. */
-const METAS_PADRAO_45={"adriano":40,"edson adriano":40,"alexandre":35,"ana caroline":50,"andre":50,"andré":50,"daniela":30,"felipe":30,"ivanilson":100,"jessica":45,"jéssica":45,"joao vitor":35,"joão vitor":35,"jonatas":35,"jose ademir":100,"josé ademir":100,"josyene":50,"larissa":32,"manara":30,"marcio vinicios":35,"márcio vinícios":35,"marcio vinicius":35,"márcio vinícius":35,"mateus esley":35,"matheus esley":35,"matheus domingos":30,"otavio":30,"otávio":30,"paulo":100,"pedro":100,"renam":35,"renan":35,"ricardo":100,"suenne":30,"suene":30,"mateus rosa":100,"matheus rosa":100,"clacion de souza":45};
-function metaPadrao45(nome){
- const n=norm42(nome);
- if(METAS_PADRAO_45[n])return METAS_PADRAO_45[n];
- for(const k in METAS_PADRAO_45){if(n.includes(k)||k.includes(n))return METAS_PADRAO_45[k]}
- return 35;
-}
-async function metasOverride45(){
- const linhas=await dadosArena42('captapro_metas');
- const mapa={};
- (linhas||[]).forEach(r=>{const k=norm42(r.nome||''); if(k&&r.meta_sala)mapa[k]=Number(r.meta_sala)||undefined});
- return mapa;
-}
-function mesAtual45(dataStr){return String(dataStr||'').slice(0,7)===new Date().toISOString().slice(0,7)}
-async function carregarPulsador45(){
- const box=E('pulsadorConteudo45'); if(box)box.innerHTML='<p class="mini">Carregando...</p>';
- const[pesq,overrides]=await Promise.all([dadosArena42('pesquisas'),metasOverride45()]);
- const porNome={};
- (pesq||[]).forEach(p=>{
-  const nome=p.captador_nome; if(!nome||!ativo42(nome))return;
-  const k=norm42(nome);
-  if(!porNome[k])porNome[k]={nome,pesquisas:0,q:0,sala:0};
-  if(mesAtual45(p.created_at)){
-   porNome[k].pesquisas++;
-   if(p.qualificacao_automatica==='Q')porNome[k].q++;
-   if(p.levou_sala==='Sim')porNome[k].sala++;
-  }
- });
- ATIVOS_42.forEach(nome=>{const k=norm42(nome); if(!porNome[k])porNome[k]={nome,pesquisas:0,q:0,sala:0}});
- const linhas=Object.values(porNome).map(x=>{
-  const meta=overrides[norm42(x.nome)]||metaPadrao45(x.nome);
-  const pct=meta?Math.min(100,Math.round(x.sala/meta*100)):0;
-  return Object.assign({},x,{meta,pct});
- }).sort((a,b)=>b.pct-a.pct);
- const totalMeta=linhas.reduce((s,x)=>s+x.meta,0), totalFeito=linhas.reduce((s,x)=>s+x.sala,0);
- const pctGeral=totalMeta?Math.min(100,Math.round(totalFeito/totalMeta*100)):0;
- let html=`<div class="card" style="background:linear-gradient(135deg,#1b0505,#050505);border-color:#ff3333">
-  <h3 style="margin:0 0 6px">📟 Pulso da Equipe (mês atual)</h3>
-  <p class="mini">Meta somada: <b>${totalMeta}</b> salas • Feito: <b>${totalFeito}</b> • <b>${pctGeral}%</b></p>
-  <div style="background:#222;border-radius:999px;height:10px;overflow:hidden;margin-top:6px"><div style="background:linear-gradient(90deg,#ef1b24,#ff3333);height:100%;width:${pctGeral}%"></div></div>
- </div>`;
- html+='<div class="card"><h3 style="margin:0 0 10px">Metas e Resultados por Profissional</h3>';
- if(!linhas.length){html+='<p class="mini">Sem dados ainda.</p>'}
- else{
-  html+='<table><tr><th>Profissional</th><th>Meta</th><th>Salas</th><th>%</th><th>Pesquisas</th><th>Q</th></tr>';
-  linhas.forEach(x=>{
-   const cor=x.pct>=100?'#00e676':x.pct>=60?'#ffd54f':'#ff5252';
-   html+=`<tr><td>${x.nome}</td><td>${x.meta}</td><td>${x.sala}</td><td style="color:${cor};font-weight:900">${x.pct}%</td><td>${x.pesquisas}</td><td>${x.q}</td></tr>`;
-  });
-  html+='</table>';
- }
- html+='</div>';
- if(box)box.innerHTML=html;
-}
 </script>
 </body></html>
