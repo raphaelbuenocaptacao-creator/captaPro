@@ -350,6 +350,15 @@ body.ceo .tabs{grid-template-columns:repeat(3,1fr)!important}
 .relProFicha .detalhesFicha button{grid-column:1/-1;margin-top:4px}
 @media(max-width:700px){.relProFicha .detalhesFicha{grid-template-columns:1fr}}
 </style>
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="CaptaPro" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/icon-192.svg" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.svg" />
+
 </head>
 <body>
 <div class="wrap">
@@ -4615,4 +4624,5 @@ if(typeof oldQual37==='function'&&!window.__qual37){
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{if(typeof loadCfg==='function')loadCfg();},700));
 })();
 </script>
+  <script src="./js/pwa-register.js" defer></script>
 </body></html>
