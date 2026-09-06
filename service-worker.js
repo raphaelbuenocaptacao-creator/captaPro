@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'captapro-';
-const CACHE_NAME = `${CACHE_PREFIX}shell-v4-safe`;
+const CACHE_NAME = `${CACHE_PREFIX}shell-v5-private-vary-safe`;
 const SHELL = ['./', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-512-maskable.png'];
 const SENSITIVE_PATHS = ['/api/', '/auth', '/login', '/logout', '/admin', '/session', '/token', '/me'];
 const SENSITIVE_QUERY_KEYS = new Set([
@@ -23,12 +23,20 @@ function isSensitiveRequest(req, url) {
   return SENSITIVE_PATHS.some(part => path.includes(part));
 }
 
+function variesPrivate(response) {
+  const vary = (response.headers.get('vary') || '').toLowerCase();
+  return vary.split(',').some(value => {
+    const key = value.trim();
+    return key === 'cookie' || key === 'authorization';
+  });
+}
+
 function isSafeResponse(response) {
   if (!response || !response.ok || response.status === 206 || response.type !== 'basic') return false;
   if (response.redirected || response.headers.has('content-range')) return false;
   const cacheControl = (response.headers.get('cache-control') || '').toLowerCase();
   if (cacheControl.includes('private') || cacheControl.includes('no-store')) return false;
-  if (response.headers.has('set-cookie')) return false;
+  if (response.headers.has('set-cookie') || variesPrivate(response)) return false;
   return true;
 }
 
