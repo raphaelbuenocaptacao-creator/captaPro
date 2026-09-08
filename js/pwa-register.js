@@ -7,7 +7,7 @@
 
   window.addEventListener('load', async () => {
     try {
-      registration = await navigator.serviceWorker.register('./service-worker.js', {
+      registration = await navigator.serviceWorker.register('./service-worker.js?v=6-private-vary-star-safe', {
         scope: './',
         updateViaCache: 'none'
       });
