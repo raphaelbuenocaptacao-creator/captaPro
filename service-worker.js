@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'captapro-';
-const CACHE_NAME = `${CACHE_PREFIX}shell-v5-private-vary-safe`;
+const CACHE_NAME = `${CACHE_PREFIX}shell-v6-private-vary-star-safe`;
 const SHELL = ['./', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-512-maskable.png'];
 const SENSITIVE_PATHS = ['/api/', '/auth', '/login', '/logout', '/admin', '/session', '/token', '/me'];
 const SENSITIVE_QUERY_KEYS = new Set([
@@ -27,7 +27,7 @@ function variesPrivate(response) {
   const vary = (response.headers.get('vary') || '').toLowerCase();
   return vary.split(',').some(value => {
     const key = value.trim();
-    return key === 'cookie' || key === 'authorization';
+    return key === '*' || key === 'cookie' || key === 'authorization';
   });
 }
 
