@@ -4,6 +4,10 @@ on:
   push:
     paths:
       - '.github/workflows/pwa-integrate.yml'
+      - 'service-worker.js'
+      - 'manifest.webmanifest'
+      - 'index.html'
+      - 'js/pwa-register.js'
   workflow_dispatch:
 
 permissions:
@@ -37,6 +41,17 @@ jobs:
           grep -q '"display": "standalone"' manifest.webmanifest
           grep -q 'icon-192' manifest.webmanifest
           grep -q 'icon-512' manifest.webmanifest
+      - name: Validate safe cache policy
+        run: |
+          grep -q "req.headers.has('authorization')" service-worker.js
+          grep -q "req.headers.has('cookie')" service-worker.js
+          grep -q "req.headers.has('range')" service-worker.js
+          grep -q "req.headers.has('if-range')" service-worker.js
+          grep -q "response.status === 206" service-worker.js
+          grep -q "response.headers.has('content-range')" service-worker.js
+          grep -q "key === 'range'" service-worker.js
+          grep -q "key === 'if-range'" service-worker.js
+          grep -q "key.startsWith(CACHE_PREFIX)" service-worker.js
       - name: Commit patch
         run: |
           if git diff --quiet; then exit 0; fi
